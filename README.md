@@ -47,7 +47,7 @@ Motion respects `prefers-reduced-motion`: the intro, the films and the scroll ef
 
 ## World pages
 
-`worlds/<slug>/index.html` holds each world's film, the sector, the rules that govern it, and the seven layers read for its category, with links to the previous and next worlds. The pages are generated, so edit `WORLDS` and `CATEGORY` in `scripts/build-worlds.py` and run `python3 scripts/build-worlds.py`. Only add verified facts. The pages describe each world and its rules. Where a world has optional `built` and `impact` entries (taken from the Sergio Ho portfolio), the page adds "What we built" and "What changed". Images in `assets/work/<slug>/` (cropped from the portfolio PDF and listed in `WORK`) become a "From the work" gallery, laid out in full-width rows at build time (needs Pillow). The page ends with a large "Next world" band.
+`worlds/<slug>/index.html` holds each world's film, the sector, the rules that govern it, and the seven layers read for its category, with links to the previous and next worlds. The pages are generated, so edit `WORLDS` and `CATEGORY` in `scripts/build-worlds.py` and run `python3 scripts/build-worlds.py`. Only add verified facts. The pages describe each world and its rules. "What we built" on each world page is generated from `LAYER_EXAMPLES` (one line per layer, linked to the layer page); an optional `impact` entry adds "What changed". Images in `assets/work/<slug>/` (cropped from the portfolio PDF and listed in `WORK`) become a "From the work" gallery, laid out in full-width rows at build time (needs Pillow). The page ends with a large "Next world" band.
 
 ## Category, booking and policy pages
 

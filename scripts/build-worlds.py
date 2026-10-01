@@ -142,12 +142,6 @@ WORLDS = [
         "about": ["Restoration Medical is a physician-led clinic group in Thornhill and Woodbridge, Ontario.",
                   "Its world holds five service lines under one name: family medicine, a pain centre, medical aesthetics, infusion therapy, and rehab and recovery."],
         "where": "Thornhill and Woodbridge, Ontario", "url": None,
-        "built": [
-            ("Lore", "Branding that holds five service lines under one name."),
-            ("Language", "Social media for the clinic group."),
-            ("Map", "The website and the Google Business Profile."),
-            ("Artifacts", "Forms, business cards and brochures."),
-        ],
         "plate": "83599bbc-73e5-49fc-9d23-e2025bdcb852.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/850eb902-d4a5-424e-a6cc-84a3ba62df2b.mp4",
         "alt": "Folded white linen and a surgical steel instrument on black marble",
     },
@@ -157,12 +151,6 @@ WORLDS = [
         "about": ["Black Lotus Coffee House is a coffee brand rooted in Vietnamese tradition and wellness, built for high performers and conscious drinkers.",
                   "KNGHT's founder was on the founding team. The world honours its origin story and still holds its own in a crowded global market of wellness coffee."],
         "where": "Da Nang, Vietnam", "url": None,
-        "built": [
-            ("Lore", "A brand that bridges Vietnamese culture and wellness performance."),
-            ("Artifacts", "Labels, packaging and mockups for direct-to-consumer and retail."),
-            ("Map", "A Shopify store built for bundles and subscriptions."),
-            ("Ground", "The launch strategy for a physical retail space in Da Nang."),
-        ],
         "impact": "The brand grew from online sales into local retail and is now exploring export. It is known for holding cultural roots and modern wellness in one mark.",
         "plate": "3d266ebf-aafe-43c9-a611-071e4fa225d5.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/9bc2161b-3fbe-4d64-9aa9-a550d24089dd.mp4",
         "alt": "A black espresso cup with rising steam beside a black lotus flower",
@@ -173,12 +161,6 @@ WORLDS = [
         "about": ["Castleblack Spirits is a premium rum distilled in St. Mary, Jamaica.",
                   "Its first brand leaned on pirate lore that did not land at home. The world was rebuilt around Jamaican heritage and flavour, with the same depth of story and none of the baggage."],
         "where": "St. Mary, Jamaica", "url": None,
-        "built": [
-            ("Lore", "A new flavour-led brand narrative, rooted in Jamaican pride."),
-            ("Artifacts", "A label system, with bottles and packaging sourced worldwide, plus barcodes, point-of-sale and digital collateral."),
-            ("Map", "A landing page and sales presentation tools."),
-            ("Language", "A marketing strategy and social ad campaigns."),
-        ],
         "impact": "Better reception, stronger sales and no local pushback. Castleblack now pours in bars, restaurants and hotels, and distributors have carried it to more than five countries.",
         "plate": "f9f4237f-3a1c-4d7b-970d-325e798efbcc.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/855d452e-bd6f-46b8-9a09-a593c1dd1f1a.mp4",
         "alt": "A dark bottle and a glass of rum on castle stone, lit by a candle",
@@ -189,11 +171,6 @@ WORLDS = [
         "about": ["Toronto Beauty is a growing network of aesthetic nurses offering cosmetic treatments across the Greater Toronto Area.",
                   "Its world holds medical trust and luxury beauty in one mark, and gives every nurse in the network a presence of their own."],
         "where": "Greater Toronto Area", "url": None,
-        "built": [
-            ("Lore", "Real and AI-generated nurse portraits, held to one look."),
-            ("Language", "Educational content, AI-generated podcasts, and targeted Google, Instagram and Facebook campaigns."),
-            ("Map", "A WordPress site with a profile for every nurse and a map search."),
-        ],
         "impact": "Reels passed 100K views in aggregate. Leads rose across paid and organic. The site now recruits practitioners as well as clients.",
         "plate": "2c1fbed2-57af-403d-aba0-96e21e6f1312.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/9b9465fa-41d8-471f-a259-18a3fc986ee6.mp4",
         "alt": "A marble face in profile with a single drop of serum falling from a pipette",
@@ -204,11 +181,6 @@ WORLDS = [
         "about": ["Lorelyns Gourmet Desserts makes allergen-friendly desserts that are peanut and nut free, gluten free and plant based, from recipes developed since 2006.",
                   "The range runs from chocolate truffle bars to brownies, cookies and cakes, sold online, through retailers and in food service. Founded by Lorelyn Martin."],
         "where": "Greater Toronto Area", "url": "https://lorelyns.com/",
-        "built": [
-            ("Map", "A Shopify store, shot from existing and new product imagery."),
-            ("Machinery", "Retail and wholesale ordering, with training so orders and updates run in house."),
-            ("Artifacts", "Cards, tent displays and trade banners."),
-        ],
         "impact": "A wider customer base, wholesale clients, and a sharper presence at events and on retail shelves. The structure to take on new commercial accounts.",
         "plate": "d7cffe34-9afd-4d03-baed-1ff5c1e4e99c.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/bbc35de0-9c24-4720-b5e1-b2a367da6c03.mp4",
         "alt": "A broken dark chocolate truffle bar and a fudge brownie with flakes of sea salt on slate",
@@ -228,11 +200,6 @@ WORLDS = [
         "about": ["Lisa Dang Immigration Law is a boutique Canadian immigration practice.",
                   "Lisa Dang is licensed by the Law Society of Ontario, has practised immigration law exclusively since 2009, and handles every file herself, from the first consultation to submission."],
         "where": None, "url": "https://lisadanglaw.com/",
-        "built": [
-            ("Lore", "The logo and branding."),
-            ("Map", "The lisadanglaw.com website."),
-            ("Artifacts", "Business cards."),
-        ],
         "plate": "51ffa9fe-d28d-4fa4-bb61-b1540ff3786f.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/eb0e5300-7279-422e-a9a3-9f34c33f7b67.mp4",
         "alt": "A brass compass and a fountain pen on a folded document in striped window light",
     },
@@ -244,12 +211,6 @@ WORLDS = [
         "where": "Toronto, Ontario", "url": None,
         "plate": "56012ed1-e8d9-41cf-853e-77e2d0d5a243.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/ca2b8fca-641f-4227-a88b-a10c499ed6ce.mp4",
         "alt": "A kettlebell and boxing gloves on a gym floor in front of a spray-painted wall",
-        "built": [
-            ("Lore", "A graffiti wall concept, turned into a custom brand system and logo."),
-            ("Map", "A Shopify site with bookings and e-commerce, connected to Google Analytics, Business Profile and local search."),
-            ("Language", "Google Ads for awareness and sign-ups."),
-            ("Artifacts", "Printed collateral for the gym floor, marketing and events."),
-        ],
         "impact": "Higher local visibility, more bookings, and one brand experience online and in the gym. A clear difference in a saturated market, bringing in new members and keeping them.",
     },
     {
@@ -260,12 +221,6 @@ WORLDS = [
         "where": None, "url": None,
         "plate": "29af57a6-44b4-4eec-9e05-c384387b9add.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/7b34d099-139f-435c-852a-70ac56491274.mp4",
         "alt": "An open colouring book with a half-shaded baby dragon beside coloured pencils",
-        "built": [
-            ("Lore", "Book templates and most of the titles across its themed series."),
-            ("Artifacts", "A distinct illustration style for each series."),
-            ("Language", "Branding, ad copy and SEO for Amazon and Shopify listings."),
-            ("Machinery", "Google Ads and Analytics across every platform."),
-        ],
         "impact": "A scalable content pipeline, sold across platforms to wellness-minded, creative buyers. A hybrid of creative product and mindfulness practice, built for long-term series growth.",
     },
 ]
@@ -321,50 +276,76 @@ WORK = {
 # only for the layers listed here. Add a world's work here once it is confirmed.
 LAYER_EXAMPLES = {
     "Lore": [
-        ("castleblack-spirits", "Rebuilt from a pirate theme that did not land at home into a brand rooted in Jamaican heritage and flavour."),
-        ("black-lotus-coffee", "A brand that bridges Vietnamese culture and wellness performance, built from day one on the founding team."),
-        ("wellfit-social-club", "A graffiti wall concept, turned into the whole brand system and logo."),
-        ("toronto-beauty", "Real and AI-generated nurse portraits, held to one look across a growing network."),
-        ("art-colouring", "Book templates and the themed series most titles sit inside."),
-        ("restoration-medical", "Branding that holds five service lines under one name."),
-        ("lisa-dang-immigration-law", "The logo and branding for a boutique immigration practice."),
+        ("restoration-medical", "Branding, naming and positioning for five service lines under one name, with brand guidelines the team follows."),
+        ("lisa-dang-immigration-law", "The logo, branding, positioning and founder story, with brand guidelines."),
+        ("toronto-beauty", "The logo and identity, positioning and network standards, and real and AI-generated nurse portraits held to one look."),
+        ("black-lotus-coffee", "The name, the lotus mark and brand guidelines for a brand that bridges Vietnamese culture and wellness, built from day one on the founding team."),
+        ("castleblack-spirits", "Rebuilt from a pirate theme that did not land at home into a heritage brand, with a new crest, narrative and brand guidelines."),
+        ("lorelyns", "A logo and identity refresh, the founder story and the positioning."),
+        ("rum-raiders-ring", "The name, the ring mark and the lore behind it: The Ring Is Calling."),
+        ("wellfit-social-club", "A graffiti wall concept turned into the brand system and logo, with positioning and guidelines written for future franchise locations."),
+        ("art-colouring", "The name and mark, the book templates, and the themed series and their stories, such as Kawaii Saurs."),
     ],
-    "Law": [],
+    "Law": [
+        ("restoration-medical", "Ads, posts and site copy reviewed against CPSO, CNO and Health Canada rules, plus pricing and treatment packages."),
+        ("toronto-beauty", "Posts and ads reviewed against nursing and Health Canada rules, plus treatment pricing and promotions."),
+        ("castleblack-spirits", "Labels and ads checked against alcohol rules, plus pricing and the distributor offer."),
+        ("rum-raiders-ring", "Labels and ads checked against alcohol rules, plus pricing for bars and stores."),
+        ("lorelyns", "Nut-free, gluten-free and plant-based claims and labels reviewed, plus retail and wholesale pricing."),
+        ("black-lotus-coffee", "Wellness, origin and label claims reviewed, plus pricing and bundles."),
+        ("lisa-dang-immigration-law", "The service and fee structure for consultations."),
+        ("wellfit-social-club", "Membership tiers, class packs and offers."),
+        ("art-colouring", "Image rights, AI-art use and marketplace listing rules reviewed, plus book pricing."),
+    ],
     "Language": [
-        ("toronto-beauty", "Educational content, AI-generated podcasts and targeted Google, Instagram and Facebook campaigns. Reels passed 100K views in aggregate."),
-        ("castleblack-spirits", "A marketing strategy and social ad campaigns built on flavour and story."),
-        ("wellfit-social-club", "Google Ads for awareness and sign-ups."),
-        ("art-colouring", "Branding, ad copy and SEO for Amazon and Shopify listings."),
-        ("restoration-medical", "Social media for the clinic group."),
+        ("restoration-medical", "Social media, a content strategy across five service lines, paid ads, video and on-camera content, and email and SMS."),
+        ("toronto-beauty", "Social media, educational content, AI-generated podcasts, Reels, ads and nurses' own profiles. Reels passed 100K views in aggregate."),
+        ("castleblack-spirits", "A marketing strategy, social ads, photo and video, cocktail content and the sales deck story."),
+        ("black-lotus-coffee", "Social media, plus product and lifestyle photo and video."),
+        ("lorelyns", "Product copy, plus photo and video."),
+        ("rum-raiders-ring", "Product copy, plus photo and video."),
+        ("lisa-dang-immigration-law", "The website copy and social media."),
+        ("wellfit-social-club", "Google Ads for awareness and sign-ups, plus photo and video."),
+        ("art-colouring", "Branding, ad copy, social media and SEO for Amazon and Shopify listings."),
     ],
     "Map": [
-        ("toronto-beauty", "A WordPress site with a profile for every nurse and a map search."),
-        ("black-lotus-coffee", "A Shopify store built for bundles and subscriptions."),
+        ("restoration-medical", "The website, Google Business Profile, SEO and online booking."),
+        ("toronto-beauty", "A WordPress site with a profile for every nurse and a map search, plus SEO, Google Business Profiles and online booking."),
+        ("black-lotus-coffee", "A Shopify store built for bundles and subscriptions, plus search and the Google listing for the Da Nang store."),
+        ("castleblack-spirits", "The full website, a landing page and sales presentation tools."),
         ("lorelyns", "A Shopify store with retail and wholesale ordering."),
+        ("rum-raiders-ring", "rumraider.com, with where-to-buy, an age gate and SEO."),
+        ("lisa-dang-immigration-law", "lisadanglaw.com, with SEO, a Google Business Profile and consultation booking."),
         ("wellfit-social-club", "A Shopify site with bookings and e-commerce, connected to Google Analytics, Business Profile and local search."),
-        ("castleblack-spirits", "A landing page and sales presentation tools."),
-        ("rum-raiders-ring", "The rumraider.com site."),
-        ("restoration-medical", "The website and the Google Business Profile."),
-        ("lisa-dang-immigration-law", "The lisadanglaw.com website."),
+        ("art-colouring", "The Shopify store and the Amazon listings."),
     ],
     "Ground": [
+        ("restoration-medical", "Signage in the Thornhill and Woodbridge clinics, and content for the screens in the waiting rooms."),
         ("black-lotus-coffee", "The launch strategy for a physical retail space in Da Nang."),
-        ("wellfit-social-club", "The graffiti wall and the printed pieces on the gym floor."),
+        ("wellfit-social-club", "The graffiti wall, motivational posters and wall graphics on the gym floor."),
+        ("lorelyns", "Booths for events and trade shows, and in-store displays at retail partners."),
+        ("rum-raiders-ring", "Events and tastings."),
+        ("lisa-dang-immigration-law", "Office signage."),
     ],
     "Artifacts": [
-        ("castleblack-spirits", "A label system, with bottles and packaging sourced worldwide, plus barcodes and point-of-sale materials."),
-        ("black-lotus-coffee", "Labels, packaging and mockups for direct-to-consumer and retail."),
-        ("lorelyns", "Cards, tent displays and trade banners."),
-        ("wellfit-social-club", "Printed collateral for the gym floor, marketing and events."),
-        ("art-colouring", "A distinct illustration style for each book series."),
+        ("castleblack-spirits", "A label system with bottles and packaging sourced worldwide, plus barcodes, point-of-sale, cases, sell sheets and business cards."),
+        ("rum-raiders-ring", "The RTD cans and bottle labels, cases, sell sheets, point-of-sale and print."),
+        ("black-lotus-coffee", "Labels, packaging, cups including seasonal designs, and merchandise."),
+        ("lorelyns", "Packaging and labels, flyers and sell sheets, cards, tent displays and trade banners."),
+        ("restoration-medical", "Forms, business cards, brochures and patient handouts."),
+        ("wellfit-social-club", "Business cards, printed collateral, merchandise and gift cards."),
+        ("art-colouring", "Covers and interiors, the line art for most titles, a distinct illustration style for each series, and print and merchandise."),
+        ("lisa-dang-immigration-law", "Business cards, letterhead and document templates."),
         ("toronto-beauty", "A services brochure for the network."),
-        ("restoration-medical", "Forms, business cards and brochures."),
-        ("lisa-dang-immigration-law", "Business cards."),
     ],
     "Machinery": [
-        ("lorelyns", "Retail and wholesale ordering, with training so orders and updates run in house."),
-        ("wellfit-social-club", "Bookings and e-commerce on one system."),
-        ("art-colouring", "Google Ads and Analytics set up across every platform."),
+        ("restoration-medical", "Online intake forms, CRM and automations for reminders and follow-up, and reporting."),
+        ("lorelyns", "Retail and wholesale ordering, fulfilment and shipping, reporting, and training so the team runs it in house."),
+        ("art-colouring", "A content pipeline for new titles, print-on-demand publishing, and Google Ads and Analytics across every platform."),
+        ("castleblack-spirits", "Ordering and distributor systems."),
+        ("lisa-dang-immigration-law", "Intake automation and reporting."),
+        ("wellfit-social-club", "Bookings and e-commerce on one system, plus reporting."),
+        ("toronto-beauty", "Reporting."),
     ],
 }
 
@@ -376,7 +357,7 @@ WORK_TAGS = {
     "lorelyns": ["Map", "Artifacts", "Artifacts", "Artifacts", "Artifacts"],
     "wellfit-social-club": ["Ground", "Artifacts", "Map", "Ground", "Artifacts"],
     "art-colouring": ["Artifacts", "Map", "Artifacts", "Artifacts"],
-    "rum-raiders-ring": ["Map", "Map", None, "Map", None],
+    "rum-raiders-ring": ["Map", "Map", "Artifacts", "Map", "Artifacts"],
     "lisa-dang-immigration-law": ["Map", "Map"],
 }
 
@@ -436,8 +417,9 @@ def page(i, w):
         meta_html += f'\n            <div><dt>Online</dt><dd><a class="link" href="{w["url"]}" rel="noopener">{host}</a></dd></div>'
     about = "\n".join(f"        <p>{e(p)}</p>" for p in w["about"])
     built_html = ""
-    if w.get("built"):
-        items = "\n".join(f'          <li><b>{e(t)}</b><span>{e(d)}</span></li>' for t, d in w["built"])
+    built = [(name, text) for name, _ in LAYERS for slug, text in LAYER_EXAMPLES[name] if slug == w["slug"]]
+    if built:
+        items = "\n".join(f'          <li><b><a class="link" href="../../layers/{t.lower()}/">{e(t)}</a></b><span>{e(d)}</span></li>' for t, d in built)
         built_html = f'''  <section class="wsec">
     <div class="wrap wsec__grid">
       <p class="eyebrow">What we built</p>
