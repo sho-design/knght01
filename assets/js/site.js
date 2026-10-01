@@ -116,7 +116,8 @@
   const sizeWorlds = () => {
     if (!worlds || !track) return;
     if (!horizontal()) { worlds.style.height = ''; travel = 0; track.style.transform = ''; return; }
-    travel = Math.max(0, track.scrollWidth - innerWidth);
+    const endPad = parseFloat(getComputedStyle(track).paddingLeft) || 0;
+    travel = Math.max(0, track.scrollWidth - innerWidth + endPad);
     worlds.style.height = `${innerHeight + travel}px`;
   };
 
