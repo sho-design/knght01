@@ -1,0 +1,346 @@
+#!/usr/bin/env python3
+"""Builds the codex page for each world into worlds/<slug>/index.html.
+
+Edit WORLDS (facts about each business) or CATEGORY (what each layer means in a
+category), then run:  python3 scripts/build-worlds.py
+Only put verified facts in WORLDS. The page says what the world is and which
+rules govern it; it does not claim specific deliverables unless you add them.
+"""
+import html
+import os
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CDN = "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW"
+
+CATEGORY = {
+    "clinic": {
+        "short": "clinics",
+        "label": "Healthcare",
+        "rules": [
+            ("CPSO", "Advertising by physicians must be factual and verifiable, with no testimonials."),
+            ("Health Canada", "Limits on advertising prescription drugs and medical devices to the public."),
+            ("PHIPA", "Ontario's rules for every piece of patient information the world touches."),
+            ("Competition Act", "No false or misleading claims, and pricing that shows the full cost."),
+        ],
+        "Law": "CPSO advertising rules, Health Canada drug and device advertising, and PHIPA for every patient record the site touches.",
+        "Language": "No testimonials, no promised outcomes, and a voice patients trust before they book.",
+        "Map": "Service pages patients and AI assistants can answer from, and a Google Business Profile for each location.",
+        "Artifacts": "Intake and consent forms, aftercare sheets and signage, each checked before print.",
+    },
+    "medspa": {
+        "short": "medspas",
+        "label": "Aesthetics",
+        "rules": [
+            ("CPSO and CNO", "Rules for the physicians and nurses who prescribe and deliver treatments."),
+            ("Health Canada", "Prescription drugs cannot be promoted to the public by brand name."),
+            ("Competition Act", "No false or misleading claims, and pricing that shows the full cost."),
+        ],
+        "Law": "CPSO and CNO rules, and Health Canada limits on naming prescription drugs to the public.",
+        "Language": "Treatment language that sells the result without naming the drug or promising the outcome.",
+        "Map": "Treatment pages that rank, and booking that starts from search or social.",
+        "Artifacts": "Consent forms, price menus and aftercare cards that match the room and the rules.",
+    },
+    "law": {
+        "short": "law firms",
+        "label": "Legal services",
+        "rules": [
+            ("Law Society of Ontario", "Marketing must not be false or misleading. Only Certified Specialists may use the title."),
+            ("Contingency fee rules", "Any advertised contingency arrangement must be explained in full."),
+            ("Competition Act", "No false or misleading claims about services or outcomes."),
+        ],
+        "Law": "The Law Society of Ontario's rules on marketing, specialist titles and contingency fees.",
+        "Language": "Plain, careful language that earns trust without promising outcomes.",
+        "Map": "Practice-area pages that answer the questions clients ask search engines and AI assistants.",
+        "Artifacts": "Retainer packages, intake forms and letterhead that look as careful as the work.",
+    },
+    "spirits": {
+        "short": "spirits",
+        "label": "Beverage alcohol",
+        "rules": [
+            ("AGCO", "Ontario's liquor advertising standards: no appeal to minors and no promotion of excess."),
+            ("CRTC alcohol code", "No emphasis on strength, and no link to social, sexual or business success."),
+            ("CFIA", "Labelling rules for every can, bottle and case."),
+            ("LCBO", "Listing, packaging and promotional requirements for the provincial channel."),
+        ],
+        "Law": "AGCO advertising standards, the CRTC alcohol code, CFIA labelling and LCBO listing requirements.",
+        "Language": "Lore and flavour, never strength, excess or social success.",
+        "Map": "A where-to-buy map, an age-gated site and a page for every product.",
+        "Artifacts": "Labels, cases, shelf talkers and sell sheets ready for buyers and inspectors.",
+    },
+    "coffee": {
+        "short": "coffee",
+        "label": "Food and beverage",
+        "rules": [
+            ("CFIA", "Food labelling for everything sold to take home."),
+            ("Competition Act", "Sourcing and environmental claims now need proof."),
+            ("Public health", "Food premises rules for the room itself."),
+        ],
+        "Law": "CFIA labelling, the Competition Act and its rules on sourcing and green claims.",
+        "Language": "A voice regulars repeat, and sourcing claims you can prove.",
+        "Map": "A Google Business Profile that wins the map pack, and a site that sells between visits.",
+        "Artifacts": "Menus, bags, cups and boards that hold one standard.",
+    },
+    "food": {
+        "short": "food",
+        "label": "Allergen-friendly food",
+        "rules": [
+            ("CFIA", "Allergen labelling and free-from claims that must hold for every batch."),
+            ("Health Canada", "Defined rules for nutrition and health claims."),
+            ("Competition Act", "No false or misleading claims, including on price."),
+        ],
+        "Law": "CFIA allergen labelling and free-from claims, and Health Canada nutrition and health claims.",
+        "Language": "Indulgent copy that never overstates a health or allergen claim.",
+        "Map": "Product pages, a retailer locator and a shop built for search and AI answers.",
+        "Artifacts": "Labels, ingredient panels and retail packaging checked line by line.",
+    },
+}
+
+LAYERS = [
+    ("Lore", "Who you are, who you stand against, and what you are called. The brief and the codex every other layer reads from."),
+    ("Law", "What you can say, what you can charge, and how it is packaged. Offers and claims checked against your regulator."),
+    ("Language", "Voice, hooks, content and ads. Written to stop the scroll and pass review."),
+    ("Map", "Site, search and AI visibility. Where people find your world and how they enter it."),
+    ("Ground", "The physical space. Arrival, flow, signage and the screens on your walls."),
+    ("Artifacts", "Print, labels, packaging and forms. Everything a customer holds."),
+    ("Machinery", "Intake, booking, follow-up and reporting. The systems that keep the world running without you."),
+]
+
+WORLDS = [
+    {
+        "slug": "restoration-medical", "name": "Restoration", "em": "Medical", "cat": "clinic",
+        "line": "Physician-led clinics in Thornhill and Woodbridge, built across five service lines.",
+        "about": ["Restoration Medical is a physician-led clinic group in Thornhill and Woodbridge, Ontario.",
+                  "Its world holds five service lines under one name: family medicine, a pain centre, medical aesthetics, infusion therapy, and rehab and recovery."],
+        "where": "Thornhill and Woodbridge, Ontario", "url": None,
+        "plate": "83599bbc-73e5-49fc-9d23-e2025bdcb852.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/850eb902-d4a5-424e-a6cc-84a3ba62df2b.mp4",
+        "alt": "Folded white linen and a surgical steel instrument on black marble",
+    },
+    {
+        "slug": "black-lotus-coffee", "name": "Black Lotus", "em": "Coffee", "cat": "coffee",
+        "line": "A coffee house built as a place people return to.",
+        "about": ["Black Lotus Coffee is a coffee house built as a place people return to.",
+                  "Its world is the cup, the room and the reason to come back."],
+        "where": None, "url": None,
+        "plate": "3d266ebf-aafe-43c9-a611-071e4fa225d5.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/9bc2161b-3fbe-4d64-9aa9-a550d24089dd.mp4",
+        "alt": "A black espresso cup with rising steam beside a black lotus flower",
+    },
+    {
+        "slug": "castleblack-spirits", "name": "Castleblack", "em": "Spirits", "cat": "spirits",
+        "line": "A ready-to-drink rum with a castle's worth of lore.",
+        "about": ["Castleblack Spirits is a ready-to-drink rum with a castle's worth of lore behind it.",
+                  "The story does the selling, inside the rules that govern how alcohol can be sold in Ontario."],
+        "where": None, "url": None,
+        "plate": "f9f4237f-3a1c-4d7b-970d-325e798efbcc.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/855d452e-bd6f-46b8-9a09-a593c1dd1f1a.mp4",
+        "alt": "A dark bottle and a glass of rum on castle stone, lit by a candle",
+    },
+    {
+        "slug": "toronto-beauty", "name": "Toronto", "em": "Beauty", "cat": "medspa",
+        "line": "One aesthetics standard across a GTA network of providers.",
+        "about": ["Toronto Beauty brings one aesthetics standard to a network of providers across the Greater Toronto Area.",
+                  "Every provider in the network looks and speaks to the same mark."],
+        "where": "Greater Toronto Area", "url": None,
+        "plate": "2c1fbed2-57af-403d-aba0-96e21e6f1312.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/9b9465fa-41d8-471f-a259-18a3fc986ee6.mp4",
+        "alt": "A marble face in profile with a single drop of serum falling from a pipette",
+    },
+    {
+        "slug": "lorelyns", "name": "Lorelyns", "em": "Gourmet Desserts", "cat": "food",
+        "line": "Nut free, gluten free, plant-based desserts, so no one sits out the celebration.",
+        "about": ["Lorelyns Gourmet Desserts makes allergen-friendly desserts that are peanut and nut free, gluten free and plant based, from recipes developed since 2006.",
+                  "The range runs from chocolate truffle bars to brownies, cookies and cakes, sold online, through retailers and in food service. Founded by Lorelyn Martin."],
+        "where": "Greater Toronto Area", "url": "https://lorelyns.com/",
+        "plate": "d7cffe34-9afd-4d03-baed-1ff5c1e4e99c.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/bbc35de0-9c24-4720-b5e1-b2a367da6c03.mp4",
+        "alt": "A broken dark chocolate truffle bar and a fudge brownie with flakes of sea salt on slate",
+    },
+    {
+        "slug": "rum-raiders-ring", "name": "Rum\u00a0Raiders", "em": "Ring", "cat": "spirits",
+        "line": "Premium rum RTDs and spirits, poured in a growing network of Ontario bars and stores.",
+        "about": ["Rum Raiders Ring makes premium rum RTDs and spirits under the line “The Ring Is Calling.”",
+                  "The RTDs are Gilded Pearl, Twisted Jewel, Spicy Siren and Pirate’s Kiss, alongside spiced, white, elderflower and coconut rums, poured in bars, restaurants and stores across Ontario."],
+        "where": "Ontario", "url": "https://rumraider.com/",
+        "plate": "eb66760c-d16c-43f8-976d-74c89aec4849.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/7e9912bd-d83f-470c-9145-8b3ebac372e0.mp4",
+        "alt": "A gold signet ring on wet sea rock beside a glass of rum on ice",
+    },
+    {
+        "slug": "lisa-dang-immigration-law", "name": "Lisa Dang", "em": "Immigration Law", "cat": "law",
+        "line": "A boutique immigration practice where every file is handled by the lawyer, start to finish.",
+        "about": ["Lisa Dang Immigration Law is a boutique Canadian immigration practice.",
+                  "Lisa Dang is licensed by the Law Society of Ontario, has practised immigration law exclusively since 2009, and handles every file herself, from the first consultation to submission."],
+        "where": None, "url": "https://lisadanglaw.com/",
+        "plate": "51ffa9fe-d28d-4fa4-bb61-b1540ff3786f.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/eb0e5300-7279-422e-a9a3-9f34c33f7b67.mp4",
+        "alt": "A brass compass and a fountain pen on a folded document in striped window light",
+    },
+]
+
+ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
+e = html.escape
+
+
+def page(i, w):
+    c = CATEGORY[w["cat"]]
+    prev_w, next_w = WORLDS[i - 1], WORLDS[(i + 1) % len(WORLDS)]
+    full = f'{w["name"]} {w["em"]}'
+    film = w["film"] if "%%" not in w["film"] else ""
+    rules = "\n".join(f'          <li><b>{e(t)}</b><span>{e(d)}</span></li>' for t, d in c["rules"])
+    chapters = []
+    for n, (name, what) in enumerate(LAYERS, 1):
+        extra = f'<p class="chapter__cat">{e(c[name])}</p>' if name in c else ""
+        chapters.append(f'''          <li class="chapter" data-reveal><span class="chapter__n">{n}</span><h3>{name}</h3><p>{e(what)}</p>{extra}</li>''')
+    meta = [("Sector", c["label"]), ("Rules", ", ".join(t for t, _ in c["rules"]))]
+    if w["where"]:
+        meta.append(("Where", w["where"]))
+    meta_html = "\n".join(f'            <div><dt>{k}</dt><dd>{e(v)}</dd></div>' for k, v in meta)
+    if w["url"]:
+        host = w["url"].split("//")[1].strip("/")
+        meta_html += f'\n            <div><dt>Online</dt><dd><a class="link" href="{w["url"]}" rel="noopener">{host}</a></dd></div>'
+    about = "\n".join(f"        <p>{e(p)}</p>" for p in w["about"])
+    film_tag = f'\n            <video muted playsinline loop autoplay preload="auto" poster="{CDN}/{w["plate"]}" src="{film}" aria-hidden="true"></video>' if film else ""
+
+    def card(x, label):
+        return f'''<a class="wnav__card" href="../{x["slug"]}/">
+          <span class="wnav__label">{label}</span>
+          <img src="{CDN}/{x["plate"]}" alt="" loading="lazy" width="1200" height="1500">
+          <span class="wnav__name">{e(x["name"])} <em>{e(x["em"])}</em></span>
+        </a>'''
+
+    return f'''<!doctype html>
+<html lang="en-CA" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{e(full)}: a KNGHT world</title>
+<meta name="description" content="{e(w["line"])} A brand world built and run by KNGHT.">
+<meta name="theme-color" content="#000000">
+<link rel="canonical" href="https://knght.com/worlds/{w["slug"]}/">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<meta property="og:title" content="{e(full)}: a KNGHT world">
+<meta property="og:description" content="{e(w["line"])}">
+<meta property="og:url" content="https://knght.com/worlds/{w["slug"]}/">
+<meta property="og:type" content="article">
+<meta property="og:image" content="{CDN}/{w["plate"]}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<script>document.documentElement.classList.replace('no-js','js')</script>
+<script type="application/ld+json">
+{{"@context":"https://schema.org","@type":"CreativeWork","name":"{e(full)}","description":"{e(w["line"])}","creator":{{"@type":"Organization","name":"KNGHT","url":"https://knght.com/"}}{(',"about":{"@type":"Organization","name":"' + e(full) + '","url":"' + w["url"] + '"}') if w["url"] else ''}}}
+</script>
+</head>
+<body class="worldpage">
+<a class="skip" href="#main">Skip to content</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"><span></span></div>
+
+<header class="nav is-solid">
+  <div class="wrap">
+    <a class="mark" href="../../" aria-label="KNGHT home">
+      <svg viewBox="0 0 120 600" aria-hidden="true"><circle cx="60" cy="40" r="26"/><path d="M6 140 H114 M60 66 V140 M46 160 L46 520 L60 590 L74 520 L74 160 Z"/></svg>
+      KNGHT
+    </a>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="../../#worlds">All worlds</a></li>
+        <li><a href="../../#layers">The layers</a></li>
+        <li><a href="../../#score">Score your world</a></li>
+      </ul>
+    </nav>
+    <div class="nav__end">
+      <button type="button" class="sound" data-sound aria-pressed="false" aria-label="Sound off. Turn sound on"><span class="sound__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sound__label">Sound</span></button>
+      <a class="btn btn--sm" href="mailto:hello@sergioho.com?subject=KNGHT%20Verdict" data-magnetic>Book a Verdict</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="whero">
+    <div class="wrap whero__grid">
+      <figure class="whero__plate" style="view-transition-name: plate-{w["slug"]}">
+        <img src="{CDN}/{w["plate"]}" alt="{e(w["alt"])}" width="1200" height="1500">{film_tag}
+      </figure>
+      <div class="whero__body">
+        <p class="eyebrow">World {ROMAN[i]} · {e(c["label"])}</p>
+        <h1 class="display whero__title">{e(w["name"])} <em>{e(w["em"])}</em></h1>
+        <p class="whero__line">{e(w["line"])}</p>
+        <dl class="whero__meta">
+{meta_html}
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <p class="eyebrow">The world</p>
+      <div class="wsec__text" data-reveal>
+{about}
+      </div>
+    </div>
+  </section>
+
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <p class="eyebrow">The rules of this world</p>
+      <ul class="wrules" data-reveal>
+{rules}
+      </ul>
+    </div>
+  </section>
+
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <div class="wsec__aside">
+        <p class="eyebrow">The codex</p>
+        <h2 class="display wsec__h" data-split>Seven layers,<br><em>read for {e(c["short"])}</em></h2>
+      </div>
+      <ol class="chapters">
+{chr(10).join(chapters)}
+      </ol>
+    </div>
+  </section>
+
+  <nav class="wnav wrap" aria-label="More worlds">
+    {card(prev_w, "Previous world")}
+    {card(next_w, "Next world")}
+  </nav>
+
+  <section class="wcta">
+    <div class="wrap">
+      <h2 class="display" data-split>Every world starts<br>with a <em class="sheen">Verdict.</em></h2>
+      <p>Tell us what you are building. We will tell you what is holding it up and what will bring it down.</p>
+      <div class="actions">
+        <a class="btn" href="mailto:hello@sergioho.com?subject=KNGHT%20Verdict" data-magnetic>Book a Verdict
+          <svg class="arrow" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+        </a>
+        <a class="link" href="../../#score">Score your world first</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT. A Sergio Ho studio, Toronto.</span><span><a href="../../">knght.com</a></span></div>
+  </div>
+</footer>
+
+<script src="../../assets/js/vendor/lenis.min.js" defer></script>
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>
+'''
+
+
+def main():
+    for i, w in enumerate(WORLDS):
+        d = os.path.join(ROOT, "worlds", w["slug"])
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, "index.html"), "w", encoding="utf-8") as f:
+            f.write(page(i, w))
+        print("wrote", os.path.relpath(os.path.join(d, "index.html"), ROOT))
+
+
+if __name__ == "__main__":
+    main()

@@ -6,6 +6,9 @@
 <title>KNGHT: Brand Worlds for Regulated Businesses</title>
 <meta name="description" content="KNGHT builds complete brand worlds for clinics, medspas, law firms, spirits, coffee and food in Ontario: name, compliance, site, space, print and systems. Book a Verdict.">
 <meta name="theme-color" content="#000000">
+<!-- Site settings: new worlds open this quarter (leave empty to hide), and a form endpoint for quiz leads (leave empty to skip) -->
+<meta name="knght:intake" content="2">
+<meta name="knght:form-endpoint" content="">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://knght.com/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -100,7 +103,7 @@
   <!-- I. Hero -->
   <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="hero__media" aria-hidden="true">
-      <video autoplay muted loop playsinline preload="auto" poster="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/223108b7-727b-4f95-83b3-b35e44c577ba.jpg">
+      <video autoplay muted loop playsinline preload="auto" data-scrub-src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/ad45085e-eabc-4676-a37c-b6337b8afc9e.mp4" poster="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/223108b7-727b-4f95-83b3-b35e44c577ba.jpg">
         <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/d7382d63-0629-4e84-a154-32250d837424.mp4" type="video/mp4">
       </video>
     </div>
@@ -109,6 +112,7 @@
       <span>Toronto, Ontario</span>
       <span>43.65&deg; N, 79.38&deg; W</span>
       <span data-clock>&nbsp;</span>
+      <span class="hero__intake" data-intake hidden></span>
     </div>
 
     <div class="hero__inner wrap">
@@ -120,6 +124,18 @@
         <span class="line"><span>that can't afford</span></span>
         <span class="line"><span>to <em class="sheen">get it wrong.</em></span></span>
       </h1>
+      <div class="cats" data-hero-fade>
+        <div class="cats__row" role="group" aria-label="Choose your category">
+          <span class="cats__label">Read it for</span>
+          <button type="button" class="cat" data-cat="clinic" aria-pressed="false">Clinics</button>
+          <button type="button" class="cat" data-cat="medspa" aria-pressed="false">Medspas</button>
+          <button type="button" class="cat" data-cat="law" aria-pressed="false">Law firms</button>
+          <button type="button" class="cat" data-cat="spirits" aria-pressed="false">Spirits</button>
+          <button type="button" class="cat" data-cat="coffee" aria-pressed="false">Coffee</button>
+          <button type="button" class="cat" data-cat="food" aria-pressed="false">Food</button>
+        </div>
+        <p class="cats__rules" data-cat-rules aria-live="polite">Pick your category. The page reads itself against your rules.</p>
+      </div>
       <div class="hero__foot" data-hero-fade>
         <p class="hero__lede">For clinics, medspas, law firms, spirits, coffee and food. <strong>KNGHT builds the whole world:</strong> the name, the rules, the voice, the site, the space, the print and the systems that run it.</p>
         <div class="actions">
@@ -182,85 +198,106 @@
           <p data-reveal>Every world we sell, we have built and run ourselves first. These are the first seven.</p>
         </div>
 
-        <article class="world" data-cursor="World I">
-          <figure class="world__plate" style="margin:0">
-            <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/83599bbc-73e5-49fc-9d23-e2025bdcb852.webp" alt="Folded white linen and a surgical steel instrument on black marble" loading="lazy" decoding="async" width="1200" height="1500">
+        <article class="world" data-cursor="Enter" data-slug="restoration-medical" data-cats="clinic medspa">
+          <figure class="world__plate" style="margin:0;view-transition-name:plate-restoration-medical">
+            <div class="world__ink">
+              <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/83599bbc-73e5-49fc-9d23-e2025bdcb852.webp" alt="Folded white linen and a surgical steel instrument on black marble" loading="lazy" decoding="async" width="1200" height="1500">
+              <video muted playsinline loop preload="none" aria-hidden="true"></video>
+            </div>
           </figure>
           <div class="world__body">
             <span class="world__n">I</span>
-            <h3 class="world__name">Restoration <em>Medical</em></h3>
+            <h3 class="world__name"><a class="world__link" href="worlds/restoration-medical/">Restoration <em>Medical</em></a></h3>
             <p class="world__desc">Physician-led clinics in Thornhill and Woodbridge, built across five service lines.</p>
             <span class="world__sector">Healthcare</span>
           </div>
         </article>
 
-        <article class="world" data-cursor="World II">
-          <figure class="world__plate" style="margin:0">
-            <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/3d266ebf-aafe-43c9-a611-071e4fa225d5.webp" alt="A black espresso cup with rising steam beside a black lotus flower" loading="lazy" decoding="async" width="1200" height="1500">
+        <article class="world" data-cursor="Enter" data-slug="black-lotus-coffee" data-cats="coffee food">
+          <figure class="world__plate" style="margin:0;view-transition-name:plate-black-lotus-coffee">
+            <div class="world__ink">
+              <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/3d266ebf-aafe-43c9-a611-071e4fa225d5.webp" alt="A black espresso cup with rising steam beside a black lotus flower" loading="lazy" decoding="async" width="1200" height="1500">
+              <video muted playsinline loop preload="none" aria-hidden="true"></video>
+            </div>
           </figure>
           <div class="world__body">
             <span class="world__n">II</span>
-            <h3 class="world__name">Black Lotus <em>Coffee</em></h3>
+            <h3 class="world__name"><a class="world__link" href="worlds/black-lotus-coffee/">Black Lotus <em>Coffee</em></a></h3>
             <p class="world__desc">A coffee house built as a place people return to.</p>
             <span class="world__sector">Food and beverage</span>
           </div>
         </article>
 
-        <article class="world" data-cursor="World III">
-          <figure class="world__plate" style="margin:0">
-            <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/f9f4237f-3a1c-4d7b-970d-325e798efbcc.webp" alt="A dark bottle and a glass of rum on castle stone, lit by a candle" loading="lazy" decoding="async" width="1200" height="1500">
+        <article class="world" data-cursor="Enter" data-slug="castleblack-spirits" data-cats="spirits">
+          <figure class="world__plate" style="margin:0;view-transition-name:plate-castleblack-spirits">
+            <div class="world__ink">
+              <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/f9f4237f-3a1c-4d7b-970d-325e798efbcc.webp" alt="A dark bottle and a glass of rum on castle stone, lit by a candle" loading="lazy" decoding="async" width="1200" height="1500">
+              <video muted playsinline loop preload="none" aria-hidden="true"></video>
+            </div>
           </figure>
           <div class="world__body">
             <span class="world__n">III</span>
-            <h3 class="world__name">Castleblack <em>Spirits</em></h3>
+            <h3 class="world__name"><a class="world__link" href="worlds/castleblack-spirits/">Castleblack <em>Spirits</em></a></h3>
             <p class="world__desc">A ready-to-drink rum with a castle's worth of lore.</p>
             <span class="world__sector">Beverage alcohol</span>
           </div>
         </article>
 
-        <article class="world" data-cursor="World IV">
-          <figure class="world__plate" style="margin:0">
-            <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/2c1fbed2-57af-403d-aba0-96e21e6f1312.webp" alt="A marble face in profile with a single drop of serum falling from a pipette" loading="lazy" decoding="async" width="1200" height="1500">
+        <article class="world" data-cursor="Enter" data-slug="toronto-beauty" data-cats="medspa">
+          <figure class="world__plate" style="margin:0;view-transition-name:plate-toronto-beauty">
+            <div class="world__ink">
+              <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/2c1fbed2-57af-403d-aba0-96e21e6f1312.webp" alt="A marble face in profile with a single drop of serum falling from a pipette" loading="lazy" decoding="async" width="1200" height="1500">
+              <video muted playsinline loop preload="none" aria-hidden="true"></video>
+            </div>
           </figure>
           <div class="world__body">
             <span class="world__n">IV</span>
-            <h3 class="world__name">Toronto <em>Beauty</em></h3>
+            <h3 class="world__name"><a class="world__link" href="worlds/toronto-beauty/">Toronto <em>Beauty</em></a></h3>
             <p class="world__desc">One aesthetics standard across a GTA network of providers.</p>
             <span class="world__sector">Aesthetics</span>
           </div>
         </article>
 
-        <article class="world" data-cursor="World V">
-          <figure class="world__plate" style="margin:0">
-            <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/d7cffe34-9afd-4d03-baed-1ff5c1e4e99c.webp" alt="A broken dark chocolate truffle bar and a fudge brownie with flakes of sea salt on slate" loading="lazy" decoding="async" width="1200" height="1500">
+        <article class="world" data-cursor="Enter" data-slug="lorelyns" data-cats="food">
+          <figure class="world__plate" style="margin:0;view-transition-name:plate-lorelyns">
+            <div class="world__ink">
+              <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/d7cffe34-9afd-4d03-baed-1ff5c1e4e99c.webp" alt="A broken dark chocolate truffle bar and a fudge brownie with flakes of sea salt on slate" loading="lazy" decoding="async" width="1200" height="1500">
+              <video muted playsinline loop preload="none" aria-hidden="true"></video>
+            </div>
           </figure>
           <div class="world__body">
             <span class="world__n">V</span>
-            <h3 class="world__name">Lorelyns <em>Gourmet Desserts</em></h3>
+            <h3 class="world__name"><a class="world__link" href="worlds/lorelyns/">Lorelyns <em>Gourmet Desserts</em></a></h3>
             <p class="world__desc">Nut free, gluten free, plant-based desserts, so no one sits out the celebration.</p>
             <span class="world__sector">Allergen-friendly food</span>
           </div>
         </article>
 
-        <article class="world" data-cursor="World VI">
-          <figure class="world__plate" style="margin:0">
-            <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/eb66760c-d16c-43f8-976d-74c89aec4849.webp" alt="A gold signet ring on wet sea rock beside a glass of rum on ice" loading="lazy" decoding="async" width="1200" height="1500">
+        <article class="world" data-cursor="Enter" data-slug="rum-raiders-ring" data-cats="spirits">
+          <figure class="world__plate" style="margin:0;view-transition-name:plate-rum-raiders-ring">
+            <div class="world__ink">
+              <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/eb66760c-d16c-43f8-976d-74c89aec4849.webp" alt="A gold signet ring on wet sea rock beside a glass of rum on ice" loading="lazy" decoding="async" width="1200" height="1500">
+              <video muted playsinline loop preload="none" aria-hidden="true"></video>
+            </div>
           </figure>
           <div class="world__body">
             <span class="world__n">VI</span>
-            <h3 class="world__name">Rum&nbsp;Raiders <em>Ring</em></h3>
+            <h3 class="world__name"><a class="world__link" href="worlds/rum-raiders-ring/">Rum&nbsp;Raiders <em>Ring</em></a></h3>
             <p class="world__desc">Premium rum RTDs and spirits, poured in a growing network of Ontario bars and stores.</p>
             <span class="world__sector">Beverage alcohol</span>
           </div>
         </article>
 
-        <article class="world" data-cursor="World VII">
-          <figure class="world__plate" style="margin:0">
-            <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/51ffa9fe-d28d-4fa4-bb61-b1540ff3786f.webp" alt="A brass compass and a fountain pen on a folded document in striped window light" loading="lazy" decoding="async" width="1200" height="1500">
+        <article class="world" data-cursor="Enter" data-slug="lisa-dang-immigration-law" data-cats="law">
+          <figure class="world__plate" style="margin:0;view-transition-name:plate-lisa-dang-immigration-law">
+            <div class="world__ink">
+              <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/51ffa9fe-d28d-4fa4-bb61-b1540ff3786f.webp" alt="A brass compass and a fountain pen on a folded document in striped window light" loading="lazy" decoding="async" width="1200" height="1500">
+              <video muted playsinline loop preload="none" aria-hidden="true"></video>
+            </div>
           </figure>
           <div class="world__body">
             <span class="world__n">VII</span>
-            <h3 class="world__name">Lisa Dang <em>Immigration Law</em></h3>
+            <h3 class="world__name"><a class="world__link" href="worlds/lisa-dang-immigration-law/">Lisa Dang <em>Immigration Law</em></a></h3>
             <p class="world__desc">A boutique immigration practice where every file is handled by the lawyer, start to finish.</p>
             <span class="world__sector">Legal services</span>
           </div>
@@ -287,7 +324,7 @@
         <div class="blade" aria-hidden="true"><i></i></div>
         <ol>
           <li class="layer" data-name="Lore"><span class="layer__n">1</span><h3 class="layer__name">Lore</h3><p class="layer__what">Who you are, who you stand against, and what you are called. The brief and the codex every other layer reads from.</p><ul class="layer__tags"><li>Brief</li><li>Codex</li><li>Name</li></ul></li>
-          <li class="layer" data-name="Law"><span class="layer__n">2</span><h3 class="layer__name">Law</h3><p class="layer__what">What you can say, what you can charge, and how it is packaged. Offers and claims checked against your regulator.</p><ul class="layer__tags"><li>Offers</li><li>Claims</li><li>Regulator</li></ul></li>
+          <li class="layer" data-name="Law"><span class="layer__n">2</span><h3 class="layer__name">Law</h3><p class="layer__what">What you can say, what you can charge, and how it is packaged. Offers and claims checked against your regulator.</p><p class="layer__cat" data-cat-law hidden></p><ul class="layer__tags"><li>Offers</li><li>Claims</li><li>Regulator</li></ul></li>
           <li class="layer" data-name="Language"><span class="layer__n">3</span><h3 class="layer__name">Language</h3><p class="layer__what">Voice, hooks, content and ads. Written to stop the scroll and pass review.</p><ul class="layer__tags"><li>Voice</li><li>Hooks</li><li>Ads</li></ul></li>
           <li class="layer" data-name="Map"><span class="layer__n">4</span><h3 class="layer__name">Map</h3><p class="layer__what">Site, search and AI visibility. Where people find your world and how they enter it.</p><ul class="layer__tags"><li>Site</li><li>Search</li><li>AI visibility</li></ul></li>
           <li class="layer" data-name="Ground"><span class="layer__n">5</span><h3 class="layer__name">Ground</h3><p class="layer__what">The physical space. Arrival, flow, signage and the screens on your walls.</p><ul class="layer__tags"><li>Arrival</li><li>Signage</li><li>Screens</li></ul></li>
@@ -295,6 +332,41 @@
           <li class="layer" data-name="Machinery"><span class="layer__n">7</span><h3 class="layer__name">Machinery</h3><p class="layer__what">Intake, booking, follow-up and reporting. The systems that keep the world running without you.</p><ul class="layer__tags"><li>Intake</li><li>Booking</li><li>Reporting</li></ul></li>
         </ol>
         <p class="rule-note" data-reveal>No layer is built before Lore.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Red pen -->
+  <section class="redpen" id="redpen" aria-labelledby="redpen-title">
+    <div class="wrap">
+      <div class="score__head">
+        <p class="eyebrow">The Law layer, live</p>
+        <h2 class="display" id="redpen-title" data-split>Red-pen<br><em>your ad</em></h2>
+        <p data-reveal>Paste a headline, a caption or a line from your site. We mark the words a regulator, a platform or a competitor could use against you.</p>
+      </div>
+      <div class="redpen__body">
+        <div class="redpen__input">
+          <div class="redpen__cats" role="group" aria-label="Category for the check">
+            <button type="button" class="cat" data-rp-cat="all" aria-pressed="true">Any</button>
+            <button type="button" class="cat" data-rp-cat="clinic" aria-pressed="false">Clinic</button>
+            <button type="button" class="cat" data-rp-cat="medspa" aria-pressed="false">Medspa</button>
+            <button type="button" class="cat" data-rp-cat="law" aria-pressed="false">Law</button>
+            <button type="button" class="cat" data-rp-cat="spirits" aria-pressed="false">Spirits</button>
+            <button type="button" class="cat" data-rp-cat="coffee" aria-pressed="false">Coffee</button>
+            <button type="button" class="cat" data-rp-cat="food" aria-pressed="false">Food</button>
+          </div>
+          <label class="redpen__label" for="redpen-text">Your line</label>
+          <textarea id="redpen-text" class="redpen__text" rows="4" spellcheck="false">The best results in Ontario, guaranteed. Free for a limited time and 100% risk-free.</textarea>
+          <div class="redpen__tools">
+            <button type="button" class="link" data-rp-sample>Try a sample for this category</button>
+            <span class="redpen__count" data-rp-count></span>
+          </div>
+        </div>
+        <div class="redpen__paper" aria-live="polite">
+          <p class="redpen__marked" data-rp-out></p>
+          <ol class="redpen__notes" data-rp-notes></ol>
+          <p class="redpen__fine">A quick screen for common wording risks in Ontario and Canada. Not legal or regulatory advice. The full Verdict checks the claims behind the words.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -320,7 +392,7 @@
             <div class="q__opts"><button type="button" class="opt" data-v="10">Yes, the same sentence</button><button type="button" class="opt" data-v="5">Roughly</button><button type="button" class="opt" data-v="0">Not really</button></div>
           </fieldset>
           <fieldset class="q" data-layer="Law" data-fix="One unchecked claim can cost a licence or a listing. Check every word against your regulator.">
-            <legend><span class="q__layer">2 · Law</span><span class="q__text">Has every claim on your site, ads and packaging been checked against your regulator's rules?</span></legend>
+            <legend><span class="q__layer">2 · Law</span><span class="q__text">Has every claim on your site, ads and packaging been checked against <span data-cat-reg>your regulator's</span> rules?</span></legend>
             <div class="q__opts"><button type="button" class="opt" data-v="10">Yes, and it is documented</button><button type="button" class="opt" data-v="5">Some of it</button><button type="button" class="opt" data-v="0">Never checked</button></div>
           </fieldset>
           <fieldset class="q" data-layer="Language" data-fix="Content that gets flagged or ignored costs twice. Set the voice, then write inside the rules.">
@@ -346,6 +418,7 @@
         </div>
 
         <div class="result" id="result" hidden>
+          <div class="seal" aria-hidden="true"><video muted playsinline preload="none" poster="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/27a2a3ee-1760-4bb5-b106-8b65b6463c38.jpg" data-src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/73bcbd63-efa2-4444-8935-9b23c1186c59.mp4"></video></div>
           <p class="eyebrow">Your verdict</p>
           <h3 class="result__band" data-r-band>Holding</h3>
           <p class="result__blurb" data-r-blurb></p>
@@ -358,8 +431,18 @@
             <a class="btn" data-r-cta href="mailto:hello@sergioho.com?subject=KNGHT%20Verdict" data-magnetic>Book the full Verdict
               <svg class="arrow" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
             </a>
+            <button type="button" class="link" data-r-card>Download your scorecard</button>
             <button type="button" class="link" data-r-reset>Start again</button>
           </div>
+          <form class="lead" data-lead hidden novalidate>
+            <label class="lead__label" for="lead-email">Send the scorecard to your inbox</label>
+            <div class="lead__row">
+              <input id="lead-email" name="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com" required>
+              <button type="submit" class="btn btn--sm">Send it</button>
+            </div>
+            <label class="lead__consent"><input id="lead-consent" name="consent" type="checkbox" required> Email me my scorecard and occasional notes from KNGHT. Unsubscribe any time.</label>
+            <p class="lead__status" data-lead-status aria-live="polite"></p>
+          </form>
           <p class="result__note">A quick self-check, not the full Verdict. Your answers stay in this page unless you send them to us.</p>
         </div>
 
@@ -380,7 +463,7 @@
     <div class="wrap">
       <div class="engage__head">
         <h2 class="display" id="engage-title" data-split>Three<br><em>ways in</em></h2>
-        <p data-reveal>Start with what you have. Build what is missing. Keep it alive after launch.</p>
+        <p data-reveal>Start with what you have. Build what is missing. Keep it alive after launch.<span class="engage__intake" data-intake hidden></span></p>
       </div>
       <div class="offers" data-reveal>
         <article class="offer offer--lead">
@@ -413,6 +496,7 @@
       <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/b57eea6f-5f82-46d5-b394-950587677b76.jpg" alt="" loading="lazy">
     </div>
     <canvas class="verdict__engrave" aria-hidden="true"></canvas>
+    <div class="knight3d" data-knight3d data-src="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/8a57fdf7-d960-4370-b926-4a48cf0421bb.glb" data-cursor="Turn"><span class="knight3d__hint">Drag to turn the knight</span></div>
     <div class="wrap">
       <h2 class="display" id="verdict-title" data-split>Every world starts<br>with a <em class="sheen">Verdict.</em></h2>
       <p data-reveal>Tell us what you are building. We will tell you what is holding it up and what will bring it down.</p>
@@ -445,5 +529,6 @@
 
 <script src="assets/js/vendor/lenis.min.js" defer></script>
 <script src="assets/js/site.js" defer></script>
+<script src="assets/js/features.js" defer></script>
 </body>
 </html>

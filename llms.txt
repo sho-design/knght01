@@ -43,3 +43,11 @@ Each world is built in this order. No layer is built before Lore.
 
 - [Home](https://knght.com/): the studio, the worlds, the seven layers, a free self-check and the three ways in.
 - [Score your world](https://knght.com/#score): a seven-question self-check that scores a brand out of 70 and names its weakest layer.
+- [Red-pen your ad](https://knght.com/#redpen): paste an ad line and see the wording a regulator, platform or competitor could use against you.
+- [Restoration Medical](https://knght.com/worlds/restoration-medical/): the world, the rules that govern it, and the seven layers read for its category.
+- [Black Lotus Coffee](https://knght.com/worlds/black-lotus-coffee/): the world, the rules that govern it, and the seven layers read for its category.
+- [Castleblack Spirits](https://knght.com/worlds/castleblack-spirits/): the world, the rules that govern it, and the seven layers read for its category.
+- [Toronto Beauty](https://knght.com/worlds/toronto-beauty/): the world, the rules that govern it, and the seven layers read for its category.
+- [Lorelyns Gourmet Desserts](https://knght.com/worlds/lorelyns/): the world, the rules that govern it, and the seven layers read for its category.
+- [Rum Raiders Ring](https://knght.com/worlds/rum-raiders-ring/): the world, the rules that govern it, and the seven layers read for its category.
+- [Lisa Dang Immigration Law](https://knght.com/worlds/lisa-dang-immigration-law/): the world, the rules that govern it, and the seven layers read for its category.

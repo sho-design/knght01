@@ -116,7 +116,7 @@
     if (lenis) lenis.start();
     try { sessionStorage.setItem('knght-intro', '1'); } catch (e) {}
   };
-  if (reduce || seen) {
+  if (reduce || seen || !$('.loader')) {
     root.classList.add('no-loader');
     requestAnimationFrame(finishIntro);
   } else {
@@ -205,7 +205,8 @@
     const vio = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting) {
-          verdictVideo.play().then(() => setTimeout(() => Sound.shing(0.8), 900)).catch(() => {});
+          verdictVideo.play().then(() => setTimeout(() => Sound.shing(0.8), 900)).catch(() => document.dispatchEvent(new CustomEvent('knght:knight')));
+          verdictVideo.addEventListener('ended', () => document.dispatchEvent(new CustomEvent('knght:knight')), { once: true });
           vio.disconnect();
         }
       });
@@ -214,6 +215,7 @@
   }
   const heroVideo = $('.hero video');
   if (heroVideo && reduce) { heroVideo.removeAttribute('autoplay'); heroVideo.pause(); }
+  if (reduce) document.dispatchEvent(new CustomEvent('knght:knight'));
 
   /* ---------- Horizontal worlds gallery ---------- */
   const worlds = $('.worlds');
@@ -259,7 +261,7 @@
     lastY = y;
 
     // Hero: the plate sinks and sharpens away as you leave
-    if (hero && !reduce) {
+    if (hero && !reduce && !root.classList.contains('hero-scrub')) {
       const p = clamp(y / vh, 0, 1);
       root.classList.toggle('is-scrolling', y > 2);
       if (heroMedia && root.classList.contains('is-loaded')) {
@@ -452,6 +454,7 @@
       paint();
       live.textContent = `Your score is ${sum} out of 70. ${band}. Weakest layer: ${wq.dataset.layer}.`;
       Sound.shing(0.6);
+      document.dispatchEvent(new CustomEvent('knght:verdict', { detail: { total: sum, band, weak: wq.dataset.layer, fix: wq.dataset.fix, layers: qs.map((q, i) => ({ name: q.dataset.layer, score: answers[i] })) } }));
       const h = $('[data-r-band]'); h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true });
     };
     quiz.addEventListener('click', (e) => {
@@ -470,6 +473,7 @@
       answers.fill(null);
       $$('.opt', quiz).forEach((o) => o.removeAttribute('aria-pressed'));
       result.hidden = true; quiz.hidden = false;
+      document.dispatchEvent(new CustomEvent('knght:reset'));
       show(0, true);
     });
     $$('.opt', quiz).forEach((o) => o.setAttribute('aria-pressed', 'false'));
@@ -542,6 +546,8 @@
       verdict.addEventListener('pointerleave', () => { inside = false; });
     }
   }
+
+  window.KNGHT = { Sound, get lenis() { return lenis; }, resize: () => { sizeWorlds(); onScroll(); } };
 
   /* ---------- Toronto time in the hero ---------- */
   const clock = $('[data-clock]');
