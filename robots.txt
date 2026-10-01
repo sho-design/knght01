@@ -1,0 +1,33 @@
+# KNGHT.com: open to search engines and AI assistants.
+User-agent: *
+Allow: /
+
+# AI crawlers are welcome. Being found by assistants is part of the Map layer.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://knght.com/sitemap.xml

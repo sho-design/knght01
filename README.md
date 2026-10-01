@@ -9,7 +9,13 @@ index.html            page, copy, structured data
 assets/js/vendor/     lenis.min.js (smooth scroll, MIT)
 assets/css/site.css   design tokens and all styles
 assets/js/site.js     intro, scroll choreography, cursor (no dependencies)
-favicon.svg           sword mark
+favicon.svg           sword mark (plus favicon-32.png, apple-touch-icon.png, icon-192/512.png)
+og.jpg                1200x630 share image for links
+404.html              not-found page (served automatically by Vercel, Netlify, GitHub Pages)
+robots.txt            open to search engines and AI crawlers, points to the sitemap
+sitemap.xml           pages for search engines
+llms.txt              plain-language summary of KNGHT for AI assistants
+site.webmanifest      name, colours and icons for home-screen installs
 scripts/localize-assets.sh   copies hosted media into assets/media/
 ```
 
@@ -44,6 +50,15 @@ All imagery and film was generated with Higgsfield: GPT Image 2.5 for the stills
 | Seven world plates, 1200x1500 WebP | 48 to 156 KB each |
 
 The media is currently served from Higgsfield's CDN. To self-host it, run `scripts/localize-assets.sh` once and commit `assets/media/`.
+
+## Search and AI visibility
+
+- Title, description, canonical URL, Open Graph and Twitter tags, with `og.jpg` as the share image.
+- `ProfessionalService` structured data with the logo, image, contact details, founder and the three offers.
+- `robots.txt` explicitly allows AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended and others).
+- `llms.txt` describes the studio, the seven layers, the offers and every world, linking out where the world has a site.
+- After launch, submit `https://knght.com/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
+- Update `lastmod` in `sitemap.xml`, and the worlds list in `llms.txt`, whenever a world is added.
 
 ## Before launch
 

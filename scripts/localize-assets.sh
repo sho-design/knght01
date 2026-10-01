@@ -25,6 +25,4 @@ for src in "${!FILES[@]}"; do
   echo "saved $dest"
 done
 rm -f index.html.bak
-# og:image must stay absolute
-sed -i.bak 's#content="assets/media/hero-poster.jpg"#content="https://knght.com/assets/media/hero-poster.jpg"#' index.html && rm -f index.html.bak
 echo "Done. index.html now uses local media."
