@@ -25,7 +25,7 @@ scripts/localize-assets.sh   copies hosted media into assets/media/
 
 The home page:
 
-1. **Hero**: on desktop, scrolling plays a Seedance 2.5 film: the camera pulls back and rises from the sword to show it standing at the centre of a vast citadel world. Phones and reduced-motion visitors get the original loop. A **category picker** (Clinics, Medspas, Law firms, Spirits, Coffee, Food) makes the page read itself against that category's regulators. It reorders the worlds, rewrites the Law layer and the quiz wording, and is remembered on the next visit. Link to a category with `?for=spirits`.
+1. **Hero**: on desktop, scrolling plays a Seedance 2.5 film: the sword draws itself out of the stone, spins end over end and strikes down into a crystal core, then the camera sweeps back through a turning rune ring to reveal a floating world of castles, techno-gothic towers and airships. Phones and reduced-motion visitors get the original loop. A **category picker** (Clinics, Medspas, Law firms, Spirits, Coffee, Food) makes the page read itself against that category's regulators. It reorders the worlds, rewrites the Law layer and the quiz wording, and is remembered on the next visit. Link to a category with `?for=spirits`.
 2. **Categories marquee**: clinics, medspas, law, spirits, coffee, food.
 3. **Thesis**: the stakes paragraph. Its words light up as you scroll.
 4. **Worlds**: a pinned horizontal gallery of the seven worlds. It becomes a vertical stack on phones. Each plate plays its own short film while it is in view. Each card opens that world's page, and the image carries across the page change.
@@ -58,7 +58,7 @@ All imagery and film was generated with Higgsfield: GPT Image 2.5 for the stills
 | Hero film, 1920x1080, 8 s loop | 0.97 MB |
 | Verdict film, 1920x1080, 6 s | 0.75 MB |
 | Seven world plates, 1200x1500 WebP | 48 to 156 KB each |
-| Scroll hero film, 1600x900, 8 s, keyframe every 3 frames | 4.5 MB (desktop only) |
+| Scroll hero film, 1600x900, 8 s, keyframe every 3 frames | 3.6 MB (desktop only) |
 | Seven world films, 600x800 loops | 100 to 440 KB each, loaded when in view |
 | Wax seal film and poster | 95 KB and 48 KB |
 
