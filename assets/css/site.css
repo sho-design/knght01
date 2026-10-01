@@ -563,3 +563,8 @@ html.lenis,html.lenis body{height:auto}
 .book__fallback{margin:0;padding:14px 0;border-top:1px solid var(--rule);font-size:.9rem;color:var(--ash)}
 @media (max-width:900px){.book__grid{grid-template-columns:minmax(0,1fr)}.book__title,.book__side{grid-column:1}.book__cal .calendly-inline-widget{height:1040px!important}}
 .hero__micro{margin:10px 0 0;font-size:.82rem;letter-spacing:.04em;color:var(--ash)}
+
+/* Privacy page: readable body copy instead of display serif */
+.legalpage .wsec__text p{font:400 1.08rem/1.65 var(--sans);letter-spacing:0;max-width:62ch;color:var(--argent)}
+.legalpage .wsec__text p + p{color:var(--ash)}
+.legalpage .wsec{padding-block:clamp(56px,7vw,100px)}
