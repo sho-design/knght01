@@ -37,9 +37,6 @@ declare -A FILES=(
   [c6aa4783-3ed2-4978-a660-0c0610424a19.webp]=work-rum-raiders-ring-5.webp
   [8f2c274b-d49c-4390-8755-f11a0a74c0e8.webp]=work-lisa-dang-1.webp
   [decd1905-4609-4c73-bd31-5a5c817edb50.webp]=work-lisa-dang-2.webp
-  [86e77434-a1a4-4601-b812-cef42a05fde7.webp]=work-lisa-dang-3.webp
-  [476990a0-73ac-4767-af8c-fbb1b7344c65.webp]=work-lisa-dang-4.webp
-  [d5a247c5-ba53-4ff2-a454-9544b13b0ee1.webp]=work-lisa-dang-5.webp
   [73bcbd63-efa2-4444-8935-9b23c1186c59.mp4]=seal.mp4
 )
 for src in "${!FILES[@]}"; do

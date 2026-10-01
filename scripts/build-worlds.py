@@ -299,9 +299,6 @@ WORK = {
     "lisa-dang-immigration-law": [
         ("The lisadanglaw.com homepage", "8f2c274b-d49c-4390-8755-f11a0a74c0e8.webp", 1600, 1000),
         ("The lisadanglaw.com homepage on a phone", "decd1905-4609-4c73-bd31-5a5c817edb50.webp", 780, 1688),
-        ("The introduction to the practice on lisadanglaw.com", "86e77434-a1a4-4601-b812-cef42a05fde7.webp", 1600, 467),
-        ("Every file handled directly by the lawyer, on lisadanglaw.com", "476990a0-73ac-4767-af8c-fbb1b7344c65.webp", 1600, 589),
-        ("Immigration services listed on lisadanglaw.com", "d5a247c5-ba53-4ff2-a454-9544b13b0ee1.webp", 1600, 589),
     ],
 }
 
