@@ -396,7 +396,7 @@ def page(i, w):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{e(full)}: a KNGHT world</title>
-<meta name="description" content="{e(w["line"])} A brand world built and run by KNGHT.">
+<meta name="description" content="{e(w["line"])} A brand world built by Sergio Ho, founder of KNGHT.">
 <meta name="theme-color" content="#000000">
 <link rel="canonical" href="https://knght.com/worlds/{w["slug"]}/">
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">

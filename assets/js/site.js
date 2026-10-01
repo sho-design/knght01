@@ -221,7 +221,10 @@
   const bar = $('.worlds__bar i');
   const countNow = $('.worlds__count b');
   const worldCards = $$('.world', track || document);
-  const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+  const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+  // Totals follow the cards, so adding a world never leaves a stale count.
+  $$('[data-world-total]').forEach((el) => { el.textContent = roman[worldCards.length - 1] || String(worldCards.length); });
+  $$('[data-world-total-num]').forEach((el) => { el.textContent = String(worldCards.length); });
   const horizontal = () => matchMedia('(min-width: 901px)').matches;
   let travel = 0;
   const sizeWorlds = () => {
