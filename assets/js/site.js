@@ -641,8 +641,8 @@
     toggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">'
       + '<line class="tg__a" x1="4" y1="9" x2="20" y2="9"/><line class="tg__b" x1="4" y1="15" x2="20" y2="15"/>'
       + '<g class="tg__sword"><circle class="tg__pommel" cx="6.5" cy="3.6" r="1.4"/><path d="M6.5 5v2.6M3.4 7.6h6.2" pathLength="1"/><path d="M5.75 19.6l.75 2.2.75-2.2" pathLength="1"/></g>'
-      + '<path class="tg__knight" pathLength="1" d="M12.6 20.5c.3-2.4 1.5-3.8 3.1-5.2l-2 .4c-.7.1-1.3-.3-1.4-1l-.2-1c1.4-3 3.4-5.4 5.6-6.4l.2-1.8 1.2 1.4c1.4 1.6 1.8 4.6 1.4 7.6-.3 2.2-.5 4.2-.4 6"/>'
-      + '<circle class="tg__eye" cx="17" cy="9.8" r=".55"/></svg>';
+      + '<path class="tg__knight" pathLength="1" d="M11.8 21c-.2-2.5-.4-5.5-.2-8.5.3-4 1.8-6.9 3.6-8.1l.2-2 1.4 1.5c2.1 1.1 3.6 3.7 4.4 6.7.3 1.1-.2 1.9-1 1.8l-1.8-.4c-1-.1-1.7.3-1.8 1.2.6 2.4 2.8 4.2 3.6 7.8"/>'
+      + '<circle class="tg__eye" cx="17.4" cy="7.4" r=".6"/></svg>';
     ($('.nav__end', navBar) || $('.wrap', navBar)).appendChild(toggle);
 
     const cta = $('.btn', navBar);
