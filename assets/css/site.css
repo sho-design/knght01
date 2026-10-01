@@ -226,6 +226,9 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 .offer--lead .offer__flag{position:absolute;top:0;left:clamp(24px,2.8vw,44px);background:var(--ink);color:var(--vellum);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;padding:5px 10px;transition:background .6s,color .6s}
 .engage .link{color:inherit}
 .offer__link{align-self:flex-start;font-size:.92rem}
+.offer__facts{list-style:none;margin:0;padding:0;border-top:1px solid currentColor;font-size:.92rem}
+.offer__facts li{padding:10px 0;border-bottom:1px solid color-mix(in srgb,currentColor 25%,transparent);opacity:.85}
+.offer__facts b{font:500 1.25rem/1 var(--serif);margin-right:6px;opacity:1}
 
 /* Score your world */
 .score{padding-block:clamp(110px,12vw,180px);border-top:1px solid var(--rule)}

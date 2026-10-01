@@ -25,7 +25,7 @@ Each world is built in this order. No layer is built before Lore.
 
 ## Three ways to work with KNGHT
 
-- The Verdict (fixed fee): a scored audit of an existing brand world. Every layer is judged against the buyer and the regulator, with a ranked fix list and the order to do it in. Every engagement starts here.
+- The Verdict (fixed fee from $3,500 CAD, scored report in 5 business days from the kickoff call, fee credited to a Build started within 60 days): a scored audit of an existing brand world. Every layer is judged against the buyer and the regulator, with a ranked fix list and the order to do it in. Every engagement starts here.
 - The Build (scoped by layer): a complete world from zero, or the missing layers, delivered ready to launch.
 - The Keep (monthly): KNGHT runs the world after launch, including content, signage, campaigns, new locations and new products.
 
