@@ -63,7 +63,7 @@ Motion respects `prefers-reduced-motion`: the intro, the films and the scroll ef
 - `process/` (how a world gets built) and `rules/` with short articles on specific rules.
 - The generated parts of `index.html`: the layer filter on the Worlds gallery, the seven-layer meter on each card, the "Beyond the screen" walls of Artifacts and Ground images, and links from the codex to each layer page.
 
-The evidence lives in `LAYER_EXAMPLES` and `WORK_TAGS` in `build-worlds.py`. Only verified work goes there; a world with no entries shows no meter and is skipped on layer pages.
+The evidence lives in `LAYER_EXAMPLES` and `WORK_TAGS` in `build-worlds.py`. Only verified work goes there; a world with no entries shows no meter and is skipped on layer pages. All nine worlds now have entries.
 
 ## Measurement
 

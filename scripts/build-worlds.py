@@ -142,6 +142,12 @@ WORLDS = [
         "about": ["Restoration Medical is a physician-led clinic group in Thornhill and Woodbridge, Ontario.",
                   "Its world holds five service lines under one name: family medicine, a pain centre, medical aesthetics, infusion therapy, and rehab and recovery."],
         "where": "Thornhill and Woodbridge, Ontario", "url": None,
+        "built": [
+            ("Lore", "Branding that holds five service lines under one name."),
+            ("Language", "Social media for the clinic group."),
+            ("Map", "The website and the Google Business Profile."),
+            ("Artifacts", "Forms, business cards and brochures."),
+        ],
         "plate": "83599bbc-73e5-49fc-9d23-e2025bdcb852.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/850eb902-d4a5-424e-a6cc-84a3ba62df2b.mp4",
         "alt": "Folded white linen and a surgical steel instrument on black marble",
     },
@@ -222,6 +228,11 @@ WORLDS = [
         "about": ["Lisa Dang Immigration Law is a boutique Canadian immigration practice.",
                   "Lisa Dang is licensed by the Law Society of Ontario, has practised immigration law exclusively since 2009, and handles every file herself, from the first consultation to submission."],
         "where": None, "url": "https://lisadanglaw.com/",
+        "built": [
+            ("Lore", "The logo and branding."),
+            ("Map", "The lisadanglaw.com website."),
+            ("Artifacts", "Business cards."),
+        ],
         "plate": "51ffa9fe-d28d-4fa4-bb61-b1540ff3786f.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/eb0e5300-7279-422e-a9a3-9f34c33f7b67.mp4",
         "alt": "A brass compass and a fountain pen on a folded document in striped window light",
     },
@@ -307,8 +318,7 @@ WORK = {
 # ---------------------------------------------------------------------------
 # Layer evidence. Only what the portfolio verifies. A world appears on a layer
 # page, gets a lit segment on its meter and passes the home-page layer filter
-# only for the layers listed here. Restoration Medical and Lisa Dang have none
-# yet: add them when the work is confirmed.
+# only for the layers listed here. Add a world's work here once it is confirmed.
 LAYER_EXAMPLES = {
     "Lore": [
         ("castleblack-spirits", "Rebuilt from a pirate theme that did not land at home into a brand rooted in Jamaican heritage and flavour."),
@@ -316,6 +326,8 @@ LAYER_EXAMPLES = {
         ("wellfit-social-club", "A graffiti wall concept, turned into the whole brand system and logo."),
         ("toronto-beauty", "Real and AI-generated nurse portraits, held to one look across a growing network."),
         ("art-colouring", "Book templates and the themed series most titles sit inside."),
+        ("restoration-medical", "Branding that holds five service lines under one name."),
+        ("lisa-dang-immigration-law", "The logo and branding for a boutique immigration practice."),
     ],
     "Law": [],
     "Language": [
@@ -323,6 +335,7 @@ LAYER_EXAMPLES = {
         ("castleblack-spirits", "A marketing strategy and social ad campaigns built on flavour and story."),
         ("wellfit-social-club", "Google Ads for awareness and sign-ups."),
         ("art-colouring", "Branding, ad copy and SEO for Amazon and Shopify listings."),
+        ("restoration-medical", "Social media for the clinic group."),
     ],
     "Map": [
         ("toronto-beauty", "A WordPress site with a profile for every nurse and a map search."),
@@ -331,6 +344,8 @@ LAYER_EXAMPLES = {
         ("wellfit-social-club", "A Shopify site with bookings and e-commerce, connected to Google Analytics, Business Profile and local search."),
         ("castleblack-spirits", "A landing page and sales presentation tools."),
         ("rum-raiders-ring", "The rumraider.com site."),
+        ("restoration-medical", "The website and the Google Business Profile."),
+        ("lisa-dang-immigration-law", "The lisadanglaw.com website."),
     ],
     "Ground": [
         ("black-lotus-coffee", "The launch strategy for a physical retail space in Da Nang."),
@@ -343,6 +358,8 @@ LAYER_EXAMPLES = {
         ("wellfit-social-club", "Printed collateral for the gym floor, marketing and events."),
         ("art-colouring", "A distinct illustration style for each book series."),
         ("toronto-beauty", "A services brochure for the network."),
+        ("restoration-medical", "Forms, business cards and brochures."),
+        ("lisa-dang-immigration-law", "Business cards."),
     ],
     "Machinery": [
         ("lorelyns", "Retail and wholesale ordering, with training so orders and updates run in house."),
@@ -360,7 +377,7 @@ WORK_TAGS = {
     "wellfit-social-club": ["Ground", "Artifacts", "Map", "Ground", "Artifacts"],
     "art-colouring": ["Artifacts", "Map", "Artifacts", "Artifacts"],
     "rum-raiders-ring": ["Map", "Map", None, "Map", None],
-    "lisa-dang-immigration-law": [None, None],
+    "lisa-dang-immigration-law": ["Map", "Map"],
 }
 
 
