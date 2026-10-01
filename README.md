@@ -15,7 +15,7 @@ scripts/localize-assets.sh   copies hosted media into assets/media/
 ## Sections
 
 1. **Hero**: a looping Seedance 2.5 film. A blade of light travels down a sword, and the headline is revealed line by line after a short intro.
-2. **Categories marquee**: clinics, medspas, spirits, coffee.
+2. **Categories marquee**: clinics, medspas, spirits, coffee, food.
 3. **Thesis**: the stakes paragraph. Its words light up as you scroll.
 4. **Worlds**: a pinned horizontal gallery of the five worlds. It becomes a vertical stack on phones.
 5. **Seven layers**: a sticky dial with a numeral that rolls from 1 to 7, plus a blade line that fills as you read.

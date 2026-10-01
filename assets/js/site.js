@@ -138,7 +138,7 @@
 
     // Nav: solid after the hero starts to go, hide when reading down, return on the way up
     if (nav) {
-      nav.classList.toggle('is-solid', y > vh * 0.6);
+      nav.classList.toggle('is-solid', y > 40);
       const goingDown = y > lastY + 4;
       const goingUp = y < lastY - 4;
       if (goingDown && y > vh) nav.classList.add('is-hidden');
