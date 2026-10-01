@@ -27,7 +27,6 @@ declare -A FILES=(
   [7e9912bd-d83f-470c-9145-8b3ebac372e0.mp4]=film-rum-raiders-ring.mp4
   [27a2a3ee-1760-4bb5-b106-8b65b6463c38.jpg]=seal-poster.jpg
   [73bcbd63-efa2-4444-8935-9b23c1186c59.mp4]=seal.mp4
-  [8a57fdf7-d960-4370-b926-4a48cf0421bb.glb]=knight.glb
 )
 for src in "${!FILES[@]}"; do
   dest="assets/media/${FILES[$src]}"

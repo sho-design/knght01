@@ -205,8 +205,7 @@
     const vio = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting) {
-          verdictVideo.play().then(() => setTimeout(() => Sound.shing(0.8), 900)).catch(() => document.dispatchEvent(new CustomEvent('knght:knight')));
-          verdictVideo.addEventListener('ended', () => document.dispatchEvent(new CustomEvent('knght:knight')), { once: true });
+          verdictVideo.play().then(() => setTimeout(() => Sound.shing(0.8), 900)).catch(() => {});
           vio.disconnect();
         }
       });
@@ -215,7 +214,6 @@
   }
   const heroVideo = $('.hero video');
   if (heroVideo && reduce) { heroVideo.removeAttribute('autoplay'); heroVideo.pause(); }
-  if (reduce) document.dispatchEvent(new CustomEvent('knght:knight'));
 
   /* ---------- Horizontal worlds gallery ---------- */
   const worlds = $('.worlds');
