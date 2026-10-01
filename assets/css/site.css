@@ -511,3 +511,16 @@ html.lenis,html.lenis body{height:auto}
   .verdict__media img{display:block}
   .marquee__track{animation:none}
 }
+
+/* Booking page */
+.book__grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(32px,6vw,96px);align-items:start}
+.book__intro{position:sticky;top:calc(var(--nav-h) + 4vh);display:flex;flex-direction:column;gap:clamp(18px,2.4vw,28px)}
+.book__title{font-size:clamp(3rem,6.2vw,6.4rem)}
+.book__title em{font-style:italic}
+.book__lede{margin:0;max-width:44ch;color:var(--ash);font-size:1.06rem;line-height:1.6}
+.book__micro{margin:0;font:italic 400 1.2rem/1.4 var(--serif);color:var(--argent)}
+.book__cal{border:1px solid var(--rule-strong);background:#0a0a0a;min-height:720px}
+.book__cal .calendly-inline-widget{width:100%}
+.book__fallback{margin:0;padding:14px 18px;border-top:1px solid var(--rule);font-size:.9rem;color:var(--ash)}
+@media (max-width:900px){.book__grid{grid-template-columns:minmax(0,1fr)}.book__intro{position:static}.book__cal .calendly-inline-widget{height:960px!important}}
+.hero__micro{margin:10px 0 0;font-size:.82rem;letter-spacing:.04em;color:var(--ash)}

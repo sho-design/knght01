@@ -447,9 +447,7 @@
       $('[data-r-blurb]').textContent = blurb;
       $('[data-r-weak]').textContent = wq.dataset.layer;
       $('[data-r-fix]').textContent = wq.dataset.fix;
-      const lines = qs.map((q, i) => `${q.dataset.layer}: ${answers[i]}/10`).join('\n');
-      const body = `My self-check score: ${sum}/70 (${band})\n\n${lines}\n\nWeakest layer: ${wq.dataset.layer}\n\nI would like to book the full Verdict.`;
-      $('[data-r-cta]').href = `mailto:hello@sergioho.com?subject=${encodeURIComponent(`KNGHT Verdict: ${sum}/70`)}&body=${encodeURIComponent(body)}`;
+      $('[data-r-cta]').href = `${$('[data-r-cta]').getAttribute('href').split('?')[0]}?score=${sum}&weak=${encodeURIComponent(wq.dataset.layer)}`;
       quiz.hidden = true;
       result.hidden = false;
       paint();
