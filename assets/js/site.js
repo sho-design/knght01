@@ -1,4 +1,4 @@
-/* KNGHT site behaviour. No dependencies. */
+/* KNGHT site behaviour. Smooth scroll uses the vendored Lenis build when present; everything else is plain JS. */
 (() => {
   const root = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -6,12 +6,114 @@
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  let lenis = null;
+
+  /* ---------- Sound: synthesised in the browser, off until the visitor asks ---------- */
+  const Sound = (() => {
+    let ctx = null, master = null, droneNodes = [], on = false;
+    const noiseBuffer = (c, seconds) => {
+      const b = c.createBuffer(1, c.sampleRate * seconds, c.sampleRate);
+      const d = b.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      return b;
+    };
+    const startDrone = () => {
+      const t = ctx.currentTime;
+      const bus = ctx.createGain(); bus.gain.value = 0;
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.6;
+      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.06;
+      const lfoGain = ctx.createGain(); lfoGain.gain.value = 160;
+      lfo.connect(lfoGain).connect(lp.frequency);
+      [[55, 0], [82.41, 4], [110, -6]].forEach(([f, det], i) => {
+        const o = ctx.createOscillator(); o.type = i === 2 ? 'triangle' : 'sine';
+        o.frequency.value = f; o.detune.value = det;
+        const g = ctx.createGain(); g.gain.value = i === 2 ? 0.18 : 0.5;
+        o.connect(g).connect(lp); o.start(); droneNodes.push(o);
+      });
+      const air = ctx.createBufferSource(); air.buffer = noiseBuffer(ctx, 4); air.loop = true;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 900; bp.Q.value = 0.5;
+      const ag = ctx.createGain(); ag.gain.value = 0.05;
+      air.connect(bp).connect(ag).connect(bus); air.start();
+      lp.connect(bus); bus.connect(master); lfo.start();
+      bus.gain.linearRampToValueAtTime(0.09, t + 3);
+      droneNodes.push(air, lfo);
+    };
+    const shing = (level = 1) => {
+      if (!on || !ctx) return;
+      const t = ctx.currentTime + 0.02;
+      const n = ctx.createBufferSource(); n.buffer = noiseBuffer(ctx, 0.6);
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.2;
+      bp.frequency.setValueAtTime(2400, t); bp.frequency.exponentialRampToValueAtTime(9000, t + 0.38);
+      const ng = ctx.createGain(); ng.gain.setValueAtTime(0, t);
+      ng.gain.linearRampToValueAtTime(0.16 * level, t + 0.08); ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+      n.connect(bp).connect(ng).connect(master); n.start(t); n.stop(t + 0.6);
+      [1870, 2960, 4410, 6230, 8150].forEach((f, i) => {
+        const o = ctx.createOscillator(); o.type = 'sine';
+        o.frequency.setValueAtTime(f, t + 0.12); o.frequency.linearRampToValueAtTime(f * 1.004, t + 2.4);
+        const g = ctx.createGain(); const peak = [0.07, 0.05, 0.035, 0.022, 0.014][i] * level;
+        const tail = 2.6 / (1 + i * 0.45);
+        g.gain.setValueAtTime(0, t + 0.12); g.gain.linearRampToValueAtTime(peak, t + 0.14);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.14 + tail);
+        o.connect(g).connect(master); o.start(t + 0.12); o.stop(t + 0.2 + tail);
+      });
+    };
+    const tick = () => {
+      if (!on || !ctx) return;
+      const t = ctx.currentTime;
+      const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(1320, t);
+      o.frequency.exponentialRampToValueAtTime(880, t + 0.08);
+      const g = ctx.createGain(); g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+      o.connect(g).connect(master); o.start(t); o.stop(t + 0.14);
+    };
+    const enable = async () => {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      if (!ctx) {
+        ctx = new AC();
+        master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+        startDrone();
+      }
+      try { await ctx.resume(); } catch (e) { return false; }
+      on = true;
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
+      master.gain.linearRampToValueAtTime(0.8, ctx.currentTime + 0.4);
+      shing();
+      return true;
+    };
+    const disable = () => {
+      on = false;
+      if (!ctx) return;
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
+      master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4);
+      setTimeout(() => { if (!on) ctx.suspend().catch(() => {}); }, 450);
+    };
+    document.addEventListener('visibilitychange', () => {
+      if (!ctx) return;
+      if (document.hidden) ctx.suspend().catch(() => {});
+      else if (on) ctx.resume().catch(() => {});
+    });
+    return { enable, disable, shing, tick, get on() { return on; } };
+  })();
+
+  const soundBtn = $('[data-sound]');
+  if (soundBtn) {
+    soundBtn.addEventListener('click', async () => {
+      const next = !Sound.on;
+      const ok = next ? await Sound.enable() : (Sound.disable(), true);
+      if (!ok) return;
+      soundBtn.setAttribute('aria-pressed', String(next));
+      soundBtn.setAttribute('aria-label', next ? 'Sound on. Turn sound off' : 'Sound off. Turn sound on');
+    });
+  }
 
   /* ---------- Loader ---------- */
   let seen = false;
   try { seen = sessionStorage.getItem('knght-intro') === '1'; } catch (e) {}
   const finishIntro = () => {
     root.classList.add('is-loaded');
+    if (lenis) lenis.start();
     try { sessionStorage.setItem('knght-intro', '1'); } catch (e) {}
   };
   if (reduce || seen) {
@@ -29,6 +131,12 @@
       else setTimeout(finishIntro, 180);
     };
     requestAnimationFrame(tick);
+  }
+
+  /* ---------- Smooth scroll ---------- */
+  if (!reduce && window.Lenis) {
+    lenis = new window.Lenis({ lerp: 0.085, smoothWheel: true, anchors: true, autoRaf: true });
+    if (!root.classList.contains('is-loaded') && !root.classList.contains('no-loader')) lenis.stop();
   }
 
   /* ---------- Split headings into masked lines ---------- */
@@ -96,7 +204,10 @@
   if (verdictVideo && !reduce) {
     const vio = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
-        if (e.isIntersecting) { verdictVideo.play().catch(() => {}); vio.disconnect(); }
+        if (e.isIntersecting) {
+          verdictVideo.play().then(() => setTimeout(() => Sound.shing(0.8), 900)).catch(() => {});
+          vio.disconnect();
+        }
       });
     }, { threshold: 0.45 });
     vio.observe(verdictVideo);
@@ -128,6 +239,7 @@
   const heroInner = $('.hero__inner');
   const footWord = $('.footer__word');
   const footLetters = footWord ? $$('span', footWord) : [];
+  const engage = $('.engage');
   let lastY = scrollY;
   let ticking = false;
 
@@ -175,6 +287,15 @@
         const idx = clamp(Math.round(p * (worldCards.length - 1)), 0, worldCards.length - 1);
         countNow.textContent = roman[idx];
       }
+    }
+
+    // The vellum page opens edge to edge as it arrives
+    if (engage && !reduce) {
+      const r = engage.getBoundingClientRect();
+      const p = clamp((vh - r.top) / (vh * 0.75), 0, 1);
+      const e = 1 - Math.pow(1 - p, 2);
+      engage.style.setProperty('--clip-x', `${((1 - e) * Math.min(innerWidth * 0.06, 90)).toFixed(1)}px`);
+      engage.style.setProperty('--clip-r', `${((1 - e) * 36).toFixed(1)}px`);
     }
 
     // Blade fills down the layers list
@@ -237,6 +358,189 @@
       });
       el.addEventListener('mouseleave', () => { el.style.transform = ''; });
     });
+  }
+
+  /* ---------- Score your world ---------- */
+  const quiz = $('#quiz');
+  if (quiz) {
+    const qs = $$('.q', quiz);
+    const result = $('#result');
+    const now = $('[data-q-now]', quiz);
+    const back = $('[data-q-back]', quiz);
+    const live = $('[data-live]');
+    const dial = $('[data-dial]');
+    const segsG = $('[data-dial-segs]');
+    const scoreEl = $('[data-dial-score]');
+    const answers = qs.map(() => null);
+    let at = 0, shown = 0, busy = false;
+
+    // Dial: seven arcs, one per layer, that fill with each answer
+    const N = qs.length, R = 96, C = 2 * Math.PI * R, gapDeg = 5;
+    const L = C / N - (gapDeg / 360) * C;
+    const NS = 'http://www.w3.org/2000/svg';
+    const tracks = [], fills = [], labels = [];
+    segsG.closest('svg').setAttribute('viewBox', '-30 -30 300 300');
+    qs.forEach((q, i) => {
+      const rot = -90 + i * (360 / N) + gapDeg / 2;
+      const mk = (cls) => {
+        const c = document.createElementNS(NS, 'circle');
+        c.setAttribute('cx', 120); c.setAttribute('cy', 120); c.setAttribute('r', R);
+        c.setAttribute('class', cls);
+        c.setAttribute('stroke-dasharray', `${L} ${C}`);
+        c.setAttribute('transform', `rotate(${rot} 120 120)`);
+        segsG.appendChild(c); return c;
+      };
+      tracks.push(mk('seg-track'));
+      const f = mk('seg-fill'); f.style.strokeDashoffset = L; fills.push(f);
+      const mid = (rot + (L / C) * 180) * Math.PI / 180;
+      const tx = 120 + Math.cos(mid) * 122, ty = 120 + Math.sin(mid) * 122;
+      const t = document.createElementNS(NS, 'text');
+      t.setAttribute('x', tx.toFixed(1)); t.setAttribute('y', (ty + 2.5).toFixed(1));
+      t.setAttribute('text-anchor', Math.abs(tx - 120) < 18 ? 'middle' : tx > 120 ? 'start' : 'end');
+      t.setAttribute('class', 'seg-label'); t.textContent = q.dataset.layer;
+      segsG.appendChild(t); labels.push(t);
+    });
+
+    const total = () => answers.reduce((a, v) => a + (v || 0), 0);
+    const countTo = (to) => {
+      const from = shown, t0 = performance.now(), d = reduce ? 0 : 900;
+      const step = (t) => {
+        const p = d ? clamp((t - t0) / d, 0, 1) : 1;
+        shown = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3)));
+        scoreEl.textContent = shown;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    const paint = () => {
+      answers.forEach((v, i) => { fills[i].style.strokeDashoffset = v == null ? L : L * (1 - v / 10); });
+      const done = !result.hidden;
+      tracks.forEach((t, i) => t.classList.toggle('is-now', !done && i === at));
+      labels.forEach((t, i) => t.classList.toggle('is-now', !done && i === at));
+      countTo(total());
+      dial.setAttribute('aria-label', `Score ${total()} out of 70`);
+    };
+    const show = (i, focus) => {
+      at = i;
+      qs.forEach((q, k) => q.classList.toggle('is-on', k === i));
+      now.textContent = i + 1;
+      back.disabled = i === 0;
+      paint();
+      if (focus) { const b = $('.opt', qs[i]); if (b) b.focus({ preventScroll: true }); }
+    };
+    const bands = [
+      [63, 'Fortified', 'Your world holds. The full Verdict finds the few cracks left and ranks them.'],
+      [49, 'Holding', 'Strong in places, thin in others. One weak layer is carrying risk for all the rest.'],
+      [28, 'Exposed', 'Several layers are missing or working against each other. Fix them in order, weakest first.'],
+      [0, 'At risk', 'The world is not built yet. Start with Lore and build up from there.'],
+    ];
+    const finish = () => {
+      const sum = total();
+      const [, band, blurb] = bands.find(([min]) => sum >= min);
+      let weak = 0;
+      answers.forEach((v, i) => { if (v < answers[weak]) weak = i; });
+      const wq = qs[weak];
+      $('[data-r-band]').textContent = band;
+      $('[data-r-blurb]').textContent = blurb;
+      $('[data-r-weak]').textContent = wq.dataset.layer;
+      $('[data-r-fix]').textContent = wq.dataset.fix;
+      const lines = qs.map((q, i) => `${q.dataset.layer}: ${answers[i]}/10`).join('\n');
+      const body = `My self-check score: ${sum}/70 (${band})\n\n${lines}\n\nWeakest layer: ${wq.dataset.layer}\n\nI would like to book the full Verdict.`;
+      $('[data-r-cta]').href = `mailto:hello@sergioho.com?subject=${encodeURIComponent(`KNGHT Verdict: ${sum}/70`)}&body=${encodeURIComponent(body)}`;
+      quiz.hidden = true;
+      result.hidden = false;
+      paint();
+      live.textContent = `Your score is ${sum} out of 70. ${band}. Weakest layer: ${wq.dataset.layer}.`;
+      Sound.shing(0.6);
+      const h = $('[data-r-band]'); h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true });
+    };
+    quiz.addEventListener('click', (e) => {
+      const opt = e.target.closest('.opt');
+      if (!opt || busy) return;
+      busy = true;
+      const i = qs.indexOf(opt.closest('.q'));
+      $$('.opt', qs[i]).forEach((o) => o.setAttribute('aria-pressed', String(o === opt)));
+      answers[i] = Number(opt.dataset.v);
+      Sound.tick();
+      paint();
+      setTimeout(() => { busy = false; i < qs.length - 1 ? show(i + 1, true) : finish(); }, reduce ? 0 : 420);
+    });
+    back.addEventListener('click', () => { if (at > 0) show(at - 1, true); });
+    $('[data-r-reset]').addEventListener('click', () => {
+      answers.fill(null);
+      $$('.opt', quiz).forEach((o) => o.removeAttribute('aria-pressed'));
+      result.hidden = true; quiz.hidden = false;
+      show(0, true);
+    });
+    $$('.opt', quiz).forEach((o) => o.setAttribute('aria-pressed', 'false'));
+    show(0, false);
+  }
+
+  /* ---------- Torchlight: an engraved plate only the light reveals ---------- */
+  const verdict = $('.verdict');
+  const engrave = $('.verdict__engrave');
+  if (verdict && engrave && engrave.getContext) {
+    const draw = () => {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const w = verdict.clientWidth, h = verdict.clientHeight;
+      engrave.width = w * dpr; engrave.height = h * dpr;
+      const c = engrave.getContext('2d');
+      c.scale(dpr, dpr);
+      c.strokeStyle = 'rgba(255,255,255,.55)';
+      c.lineWidth = 0.6;
+      // banknote ground: fine waves
+      c.globalAlpha = 0.35;
+      for (let y = -20; y < h + 20; y += 9) {
+        c.beginPath();
+        for (let x = 0; x <= w; x += 6) {
+          const yy = y + Math.sin(x / 38 + y / 57) * 5 + Math.sin(x / 13 + y / 21) * 1.2;
+          x ? c.lineTo(x, yy) : c.moveTo(x, yy);
+        }
+        c.stroke();
+      }
+      // guilloche bands around the knight, like the border of a banknote
+      c.globalAlpha = 0.75;
+      c.lineWidth = 0.5;
+      const cx = w / 2, cy = h * 0.4, base = Math.min(w, h);
+      [[0.2, 36, 0.012, 22], [0.31, 48, 0.014, 26], [0.43, 60, 0.012, 30], [0.56, 72, 0.01, 30]].forEach(([rr, waves, amp, n]) => {
+        for (let k = 0; k < n; k++) {
+          const ph = (k / n) * Math.PI * 2;
+          c.beginPath();
+          for (let t = 0; t <= Math.PI * 2 + 0.004; t += 0.004) {
+            const r = base * (rr + amp * Math.sin(waves * t + ph) + amp * 0.5 * Math.sin(waves / 4 * t - ph));
+            const x = cx + r * Math.cos(t), y = cy + r * Math.sin(t);
+            t ? c.lineTo(x, y) : c.moveTo(x, y);
+          }
+          c.stroke();
+        }
+      });
+    };
+    draw();
+    let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(draw, 200); });
+
+    let tx = 0.5, ty = 0.4, x = 0.5, y = 0.4, inside = false, visible = false, raf = 0;
+    const t0 = performance.now();
+    const loop = (t) => {
+      if (!inside || !finePointer) {
+        const s = (t - t0) / 1000;
+        tx = 0.5 + Math.sin(s * 0.37) * 0.3; ty = 0.42 + Math.sin(s * 0.53) * 0.16;
+      }
+      x += (tx - x) * 0.08; y += (ty - y) * 0.08;
+      verdict.style.setProperty('--mx', `${(x * 100).toFixed(2)}%`);
+      verdict.style.setProperty('--my', `${(y * 100).toFixed(2)}%`);
+      raf = visible ? requestAnimationFrame(loop) : 0;
+    };
+    if (!reduce) {
+      new IntersectionObserver(([e]) => {
+        visible = e.isIntersecting;
+        if (visible && !raf) raf = requestAnimationFrame(loop);
+      }).observe(verdict);
+      verdict.addEventListener('pointermove', (e) => {
+        const r = verdict.getBoundingClientRect();
+        tx = (e.clientX - r.left) / r.width; ty = (e.clientY - r.top) / r.height; inside = true;
+      });
+      verdict.addEventListener('pointerleave', () => { inside = false; });
+    }
   }
 
   /* ---------- Toronto time in the hero ---------- */

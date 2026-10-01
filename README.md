@@ -6,6 +6,7 @@ It is a static site with no build step. Open `index.html` or serve the folder fr
 
 ```
 index.html            page, copy, structured data
+assets/js/vendor/     lenis.min.js (smooth scroll, MIT)
 assets/css/site.css   design tokens and all styles
 assets/js/site.js     intro, scroll choreography, cursor (no dependencies)
 favicon.svg           sword mark
@@ -19,9 +20,16 @@ scripts/localize-assets.sh   copies hosted media into assets/media/
 3. **Thesis**: the stakes paragraph. Its words light up as you scroll.
 4. **Worlds**: a pinned horizontal gallery of the seven worlds. It becomes a vertical stack on phones.
 5. **Seven layers**: a sticky dial with a numeral that rolls from 1 to 7, plus a blade line that fills as you read.
-6. **Three ways in**: the Verdict, the Build and the Keep.
-7. **Verdict**: a Seedance 2.5 film in which a spotlight snaps on over an obsidian knight. It plays once when it comes into view.
-8. **Footer**: a full-width wordmark that rises letter by letter.
+6. **Score your world**: a seven-question self-check, one question per layer. A segmented dial fills with each answer and the page returns a score out of 70, a verdict band and the weakest layer. "Book the full Verdict" opens an email with the answers filled in. Nothing is stored or sent unless the visitor sends that email.
+7. **Three ways in**: the one white page in the site. It opens edge to edge as it scrolls in.
+8. **Verdict**: a Seedance 2.5 film in which a spotlight snaps on over an obsidian knight. It plays once when it comes into view. The cursor works as a torch that reveals a guilloche engraving. On touch screens the light drifts by itself.
+9. **Footer**: a full-width wordmark that rises letter by letter and catches a foil glint.
+
+Across the page:
+
+- **Smooth scroll**: inertial scrolling from Lenis 1.3.26 (MIT, hosted in `assets/js/vendor/`). It is off for reduced motion.
+- **Sound**: off by default. The nav toggle starts a low ambient tone, plus a blade ring at the intro and at the knight reveal. It is synthesised with Web Audio, so there are no audio files.
+- **Foil sheen**: a slow silver glint on "get it wrong.", "Verdict." and the footer wordmark.
 
 Motion respects `prefers-reduced-motion`: the intro, the films and the scroll effects are switched off and still frames are shown instead.
 
@@ -40,5 +48,6 @@ The media is currently served from Higgsfield's CDN. To self-host it, run `scrip
 ## Before launch
 
 - Booking runs through `mailto:hello@sergioho.com`. Swap in a booking link (Cal.com, Calendly, Jane) when one exists.
+- To capture quiz results as leads, post the answers to a form service (Formspree, Basin, a CRM webhook) in `finish()` in `site.js`.
 - Add analytics and consent mode if needed (see the growth-forge tracking plan).
 - Replace the world plates with real photography from each world as it becomes available.
