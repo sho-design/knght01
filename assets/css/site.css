@@ -341,7 +341,7 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 
 /* Scroll-driven hero */
 .hero-scrub .hero-pin{height:260vh;position:relative}
-.hero-scrub .hero{position:sticky;top:0;min-height:0;height:100svh}
+.hero-scrub .hero{position:sticky;top:var(--hero-top,0px);min-height:100svh;height:auto}
 .hero-scrub .hero__media{transform:none!important}
 .hero-scrub .hero::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:#000;opacity:calc((var(--hp,0) - .82) * 5.5)}
 

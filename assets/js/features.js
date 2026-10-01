@@ -242,6 +242,9 @@
       heroVideo.src = loopSrc; heroVideo.loop = true; heroVideo.play().catch(() => {});
     }, { once: true });
     const inner = $('.hero__inner', hero), metaEl = $('.hero__meta', hero);
+    /* If the hero is taller than the screen, pin it by its bottom edge so nothing is clipped. */
+    const fitHero = () => hero.style.setProperty('--hero-top', Math.min(0, innerHeight - hero.offsetHeight) + 'px');
+    fitHero(); addEventListener('resize', fitHero); if (document.fonts) document.fonts.ready.then(fitHero);
     let cur = 0, dur = 0;
     heroVideo.addEventListener('loadedmetadata', () => { dur = heroVideo.duration || 0; });
     const loop = () => {
