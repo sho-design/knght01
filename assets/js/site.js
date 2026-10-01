@@ -582,17 +582,67 @@
     }
   }
 
-  /* ---------- Mobile menu (built from the page's own nav links) ---------- */
+  /* ---------- Mobile menu: sigils, sub-menus, and a toggle that becomes a sword and a knight ---------- */
   const navBar = $('.nav');
-  const navLinks = $$('.nav nav ul a');
-  if (navBar && navLinks.length) {
+  if (navBar && $('.nav nav ul a')) {
+    const siteJs = $('script[src*="assets/js/site.js"]');
+    const rootUrl = new URL('../../', siteJs ? siteJs.src : location.href);
+    const onHome = new URL(rootUrl).pathname === location.pathname;
+    const to = (p) => (p.startsWith('#') && onHome) ? p : new URL(p, rootUrl).pathname + (p.includes('#') ? p.slice(p.indexOf('#')) : '');
+    const here = (p) => !p.includes('#') && new URL(p, rootUrl).pathname === location.pathname;
+
+    /* Sigils: hairline heraldry drawn on a 24 grid, same stroke as the mark. */
+    const SIGILS = {
+      orb: '<circle cx="12" cy="14" r="7"/><ellipse cx="12" cy="14" rx="3" ry="7"/><path d="M5 14h14M12 7V2M9.6 4h4.8"/>',
+      shield: '<path d="M4.5 4h15v7.5c0 5-3.6 8.2-7.5 10-3.9-1.8-7.5-5-7.5-10z"/><path d="M4.5 8.5h15M4.7 13h14.6M6.4 17.3h11.2"/>',
+      banner: '<path d="M5 2.5v19M5 3.5h14v13l-3.5-2.6L12 16.5V3.5"/>',
+      compass: '<circle cx="12" cy="12" r="9"/><path d="M12 5.5l2 6.5-2 6.5-2-6.5z"/><path d="M12 1.5v2M12 20.5v2M1.5 12h2M20.5 12h2"/>',
+      seal: '<path d="M5 3h11.5a2.5 2.5 0 0 1 2.5 2.5V8M5 3a2 2 0 0 0-2 2v1h2M5 3v15"/><path d="M8 7.5h7M8 10.5h5"/><circle cx="15" cy="17" r="4.2"/><path d="M15 15.2l.6 1.2 1.3.2-.95.9.22 1.3-1.17-.62-1.17.62.22-1.3-.95-.9 1.3-.2z"/>',
+      scales: '<path d="M12 3v18M7.5 21h9M4 6.5h16"/><path d="M6.5 6.5L3.5 13h6zM17.5 6.5l-3 6.5h6z"/><path d="M3.5 13a3 2 0 0 0 6 0M14.5 13a3 2 0 0 0 6 0"/>'
+    };
+    const sigil = (k) => `<svg class="mnav__sigil" viewBox="0 0 24 24" aria-hidden="true">${SIGILS[k]}</svg>`;
+    const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+    const MENU = [
+      { label: 'Worlds', sigil: 'orb', all: ['All worlds', '#worlds'], items: [
+        ['Restoration Medical', 'worlds/restoration-medical/'], ['Black Lotus Coffee', 'worlds/black-lotus-coffee/'],
+        ['Castleblack Spirits', 'worlds/castleblack-spirits/'], ['Toronto Beauty', 'worlds/toronto-beauty/'],
+        ['Lorelyns Gourmet Desserts', 'worlds/lorelyns/'], ['Rum Raiders Ring', 'worlds/rum-raiders-ring/'],
+        ['Lisa Dang Immigration Law', 'worlds/lisa-dang-immigration-law/'], ['Wellfit Social Club', 'worlds/wellfit-social-club/'],
+        ['Art Colouring', 'worlds/art-colouring/']] },
+      { label: 'The layers', sigil: 'shield', all: ['All seven layers', '#layers'], items:
+        ['Lore', 'Law', 'Language', 'Map', 'Ground', 'Artifacts', 'Machinery'].map((n) => [n, `layers/${n.toLowerCase()}/`]) },
+      { label: 'Who it’s for', sigil: 'banner', items: [
+        ['Clinics', 'for/clinics/'], ['Medspas', 'for/medspas/'], ['Law firms', 'for/law-firms/'],
+        ['Spirits', 'for/spirits/'], ['Coffee', 'for/coffee/'], ['Food', 'for/food/']] },
+      { label: 'How it works', sigil: 'compass', href: 'process/' },
+      { label: 'Rules journal', sigil: 'seal', all: ['All articles', 'rules/'], items: [
+        ['What a medspa can say about Botox', 'rules/medspa-prescription-drug-ads/'],
+        ['Selling spirits without the buzz', 'rules/alcohol-ads-strength-and-success/'],
+        ['Why lawyers can’t say “specialist”', 'rules/lawyers-and-the-word-specialist/']] },
+      { label: 'Score your world', sigil: 'scales', href: '#score' }
+    ];
+    const link = ([label, p], cls, n) => `<li><a class="${cls}" href="${to(p)}"${here(p) ? ' aria-current="page"' : ''}>${n ? `<span class="mnav__num">${n}</span>` : ''}${label}</a></li>`;
+    const group = (m, i) => {
+      const head = `${sigil(m.sigil)}<span class="mnav__label">${m.label}</span>`;
+      if (!m.items) return `<li class="mnav__item" style="--i:${i}"><a class="mnav__top" href="${to(m.href)}"${here(m.href) ? ' aria-current="page"' : ''}>${head}</a></li>`;
+      const open = m.items.concat(m.all ? [m.all] : []).some(([, p]) => here(p));
+      const subs = (m.all ? [link(m.all, 'mnav__all')] : []).concat(m.items.map((it, k) => link(it, '', m.sigil === 'seal' || m.sigil === 'banner' ? '' : ROMAN[k])));
+      return `<li class="mnav__item${open ? ' is-open' : ''}" style="--i:${i}"><button type="button" class="mnav__top" aria-expanded="${open}" aria-controls="mnav-sub-${i}">${head}<span class="mnav__plus" aria-hidden="true"></span></button>`
+        + `<div class="mnav__sub" id="mnav-sub-${i}"><ul>${subs.join('')}</ul></div></li>`;
+    };
+
     const toggle = document.createElement('button');
     toggle.type = 'button';
     toggle.className = 'nav__toggle';
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-controls', 'mnav');
     toggle.setAttribute('aria-label', 'Open menu');
-    toggle.innerHTML = '<span></span><span></span>';
+    /* Closed: two lines. Open: the top line turns into the blade of a sword (the KNGHT mark), the bottom line into the base of a knight. */
+    toggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">'
+      + '<line class="tg__a" x1="4" y1="9" x2="20" y2="9"/><line class="tg__b" x1="4" y1="15" x2="20" y2="15"/>'
+      + '<g class="tg__sword"><circle class="tg__pommel" cx="6.5" cy="3.6" r="1.4"/><path d="M6.5 5v2.6M3.4 7.6h6.2" pathLength="1"/><path d="M5.75 19.6l.75 2.2.75-2.2" pathLength="1"/></g>'
+      + '<path class="tg__knight" pathLength="1" d="M12.6 20.5c.3-2.4 1.5-3.8 3.1-5.2l-2 .4c-.7.1-1.3-.3-1.4-1l-.2-1c1.4-3 3.4-5.4 5.6-6.4l.2-1.8 1.2 1.4c1.4 1.6 1.8 4.6 1.4 7.6-.3 2.2-.5 4.2-.4 6"/>'
+      + '<circle class="tg__eye" cx="17" cy="9.8" r=".55"/></svg>';
     ($('.nav__end', navBar) || $('.wrap', navBar)).appendChild(toggle);
 
     const cta = $('.btn', navBar);
@@ -600,9 +650,16 @@
     panel.id = 'mnav';
     panel.className = 'mnav';
     panel.hidden = true;
-    panel.innerHTML = `<nav aria-label="Menu"><ol class="mnav__list">${navLinks.map((a, i) => `<li style="--i:${i}"><a href="${a.getAttribute('href')}">${a.textContent.trim()}</a></li>`).join('')}</ol></nav>`
-      + `<div class="mnav__foot">${cta ? `<a class="btn" href="${cta.getAttribute('href')}">${cta.textContent.trim()}</a>` : ''}<a class="link" href="mailto:sho@knght.com">sho@knght.com</a></div>`;
+    panel.innerHTML = `<nav aria-label="Menu"><ol class="mnav__list">${MENU.map(group).join('')}</ol></nav>`
+      + `<div class="mnav__foot"><a class="btn" href="${to('book/')}">${cta && /verdict/i.test(cta.textContent) ? cta.textContent.trim() : 'Book a Verdict'}</a><a class="link" href="mailto:sho@knght.com">sho@knght.com</a></div>`;
     document.body.appendChild(panel);
+
+    $$('button.mnav__top', panel).forEach((btn) => btn.addEventListener('click', () => {
+      const item = btn.parentElement, open = !item.classList.contains('is-open');
+      $$('.mnav__item.is-open', panel).forEach((o) => { if (o !== item) { o.classList.remove('is-open'); $('button', o).setAttribute('aria-expanded', 'false'); } });
+      item.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+    }));
 
     let closeTimer = 0;
     const setMenu = (open) => {
@@ -616,7 +673,7 @@
         navBar.classList.remove('is-hidden');
         if (lenis) lenis.stop();
         document.body.style.overflow = 'hidden';
-        setTimeout(() => { const first = $('a', panel); if (first) first.focus({ preventScroll: true }); }, 60);
+        setTimeout(() => { const first = $('.mnav__top', panel); if (first) first.focus({ preventScroll: true }); }, 60);
       } else {
         root.classList.remove('menu-open');
         if (lenis) lenis.start();
