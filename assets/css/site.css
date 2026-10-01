@@ -521,7 +521,9 @@ html.lenis,html.lenis body{height:auto}
 .nav__toggle[aria-expanded="true"] span:first-child{transform:rotate(45deg)}
 .nav__toggle[aria-expanded="true"] span:last-child{transform:rotate(-45deg)}
 .mnav{position:fixed;inset:0;z-index:79;display:flex;flex-direction:column;justify-content:space-between;gap:32px;padding:calc(var(--nav-h) + env(safe-area-inset-top,0px) + 6vh) var(--gutter) calc(32px + env(safe-area-inset-bottom,0px));background:#000;opacity:0;transition:opacity .45s var(--ease);overflow-y:auto}
-.menu-open .mnav{opacity:1}
+.mnav[hidden]{display:none}
+.mnav{pointer-events:none}
+.menu-open .mnav{opacity:1;pointer-events:auto}
 .menu-open .nav{transform:none;background:#000;border-color:var(--rule)}
 .mnav__list{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
 .mnav__list li{border-bottom:1px solid var(--rule);opacity:0;transform:translateY(18px);transition:opacity .5s var(--ease-out),transform .6s var(--ease-out);transition-delay:calc(var(--i) * 60ms + 80ms)}
