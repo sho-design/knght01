@@ -133,7 +133,7 @@ LAYERS = [
     ("Map", "Site, search and AI visibility. Where people find your world and how they enter it."),
     ("Ground", "The physical space. Arrival, flow, signage and the screens on your walls."),
     ("Artifacts", "Print, labels, packaging and forms. Everything a customer holds."),
-    ("Machinery", "Intake, booking, follow-up and reporting. The systems that keep the world running without you."),
+    ("Machinery", "Intake, booking, follow-up and reporting, with AI doing the repetitive work inside the rules. The systems that keep the world running without you."),
 ]
 
 WORLDS = [
@@ -340,7 +340,7 @@ LAYER_EXAMPLES = {
         ("toronto-beauty", "A services brochure for the network."),
     ],
     "Machinery": [
-        ("restoration-medical", "Online intake forms, CRM and automations for reminders and follow-up, and reporting."),
+        ("restoration-medical", "Online intake forms, CRM, AI and automations for reminders and follow-up, and reporting."),
         ("lorelyns", "Retail and wholesale ordering, fulfilment and shipping, reporting, and training so the team runs it in house."),
         ("art-colouring", "A content pipeline for new titles, print-on-demand publishing, and Google Ads and Analytics across every platform."),
         ("castleblack-spirits", "Ordering and distributor systems."),

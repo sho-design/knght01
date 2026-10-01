@@ -367,6 +367,8 @@
   if (finePointer && !reduce) {
     const cursor = $('.cursor');
     const label = cursor && $('span', cursor);
+    // Over the way in, the cursor becomes a small sword (the mark, point down-right)
+    if (cursor) cursor.insertAdjacentHTML('beforeend', '<svg class="cursor__sword" viewBox="0 0 24 24" aria-hidden="true"><circle cx="4.2" cy="4.2" r="1.7"/><path d="M5.4 5.4l2.2 2.2M5.2 10.2l5-5M8.8 8.8l11 11-.6 2.2-2.2.6-11-11"/></svg>');
     let mx = innerWidth / 2, my = innerHeight / 2, cx = mx, cy = my;
     addEventListener('mousemove', (e) => {
       mx = e.clientX; my = e.clientY;
@@ -383,8 +385,10 @@
       if (!cursor) return;
       const t = e.target.closest('a, button, [data-cursor]');
       const text = t && t.dataset.cursor;
-      cursor.classList.toggle('is-label', !!text);
-      cursor.classList.toggle('is-link', !!t && !text);
+      const sword = !!(t && t.matches('a[href*="book/"], a[href*="calendly.com"], [data-sword]'));
+      cursor.classList.toggle('is-sword', sword);
+      cursor.classList.toggle('is-label', !!text && !sword);
+      cursor.classList.toggle('is-link', !!t && !text && !sword);
       if (label) label.textContent = text || '';
     });
 
@@ -598,6 +602,7 @@
       banner: '<path d="M5 2.5v19M5 3.5h14v13l-3.5-2.6L12 16.5V3.5"/>',
       compass: '<circle cx="12" cy="12" r="9"/><path d="M12 5.5l2 6.5-2 6.5-2-6.5z"/><path d="M12 1.5v2M12 20.5v2M1.5 12h2M20.5 12h2"/>',
       seal: '<path d="M5 3h11.5a2.5 2.5 0 0 1 2.5 2.5V8M5 3a2 2 0 0 0-2 2v1h2M5 3v15"/><path d="M8 7.5h7M8 10.5h5"/><circle cx="15" cy="17" r="4.2"/><path d="M15 15.2l.6 1.2 1.3.2-.95.9.22 1.3-1.17-.62-1.17.62.22-1.3-.95-.9 1.3-.2z"/>',
+      crest: '<path d="M5 4.5h14V11c0 4.6-3.3 7.6-7 9.4-3.7-1.8-7-4.8-7-9.4z"/><path d="M12 7.5v8M8.5 10.5h7"/>',
       scales: '<path d="M12 3v18M7.5 21h9M4 6.5h16"/><path d="M6.5 6.5L3.5 13h6zM17.5 6.5l-3 6.5h6z"/><path d="M3.5 13a3 2 0 0 0 6 0M14.5 13a3 2 0 0 0 6 0"/>'
     };
     const sigil = (k) => `<svg class="mnav__sigil" viewBox="0 0 24 24" aria-hidden="true">${SIGILS[k]}</svg>`;
@@ -619,7 +624,8 @@
         ['What a medspa can say about Botox', 'rules/medspa-prescription-drug-ads/'],
         ['Selling spirits without the buzz', 'rules/alcohol-ads-strength-and-success/'],
         ['Why lawyers can’t say “specialist”', 'rules/lawyers-and-the-word-specialist/']] },
-      { label: 'Score your world', sigil: 'scales', href: '#score' }
+      { label: 'Score your world', sigil: 'scales', href: '#score' },
+      { label: 'Your sigil', sigil: 'crest', href: 'sigil/' }
     ];
     const link = ([label, p], cls, n) => `<li><a class="${cls}" href="${to(p)}"${here(p) ? ' aria-current="page"' : ''}>${n ? `<span class="mnav__num">${n}</span>` : ''}${label}</a></li>`;
     const group = (m, i) => {
@@ -687,6 +693,84 @@
       if (e.key === 'Escape' && root.classList.contains('menu-open')) { setMenu(false); toggle.focus(); }
     });
     matchMedia('(min-width: 901px)').addEventListener('change', (e) => { if (e.matches) setMenu(false); });
+  }
+
+
+  /* ---------- The knight's move: an L on the arrow keys, or press and hold the mark ---------- */
+  const CODEX = [
+    'No layer is built before Lore.',
+    'Every word is checked against your regulator.',
+    'We say what we can prove.',
+    'Strategy first, then the sword.',
+    'AI is the squire, not the knight.',
+    'We only show work we built.',
+    'If we cannot help, we say so.'
+  ];
+  let codexEl = null, codexReturn = null;
+  const openCodex = () => {
+    if (codexEl) return;
+    const up = (() => { const sj = $('script[src*="assets/js/site.js"]'); return sj ? new URL('../../', sj.src).pathname : '/'; })();
+    codexReturn = document.activeElement;
+    codexEl = document.createElement('div');
+    codexEl.className = 'codex';
+    codexEl.setAttribute('role', 'dialog');
+    codexEl.setAttribute('aria-modal', 'true');
+    codexEl.setAttribute('aria-labelledby', 'codex-title');
+    codexEl.innerHTML = `<div class="codex__in">
+      <svg class="codex__knight" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.8 21c-.2-2.5-.4-5.5-.2-8.5.3-4 1.8-6.9 3.6-8.1l.2-2 1.4 1.5c2.1 1.1 3.6 3.7 4.4 6.7.3 1.1-.2 1.9-1 1.8l-1.8-.4c-1-.1-1.7.3-1.8 1.2.6 2.4 2.8 4.2 3.6 7.8M6.5 21h11"/><circle cx="13.4" cy="7.4" r=".6"/></svg>
+      <p class="eyebrow">You found the knight's move</p>
+      <h2 class="display codex__h" id="codex-title">The <em>Codex</em></h2>
+      <p class="codex__lede">Seven rules we keep. Few people see this page.</p>
+      <ol class="codex__list">${CODEX.map((r, i) => `<li style="--i:${i}"><span>${['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'][i]}</span>${r}</li>`).join('')}</ol>
+      <div class="codex__actions"><a class="btn" href="${up}book/">Book a Verdict</a><button type="button" class="link" data-codex-close>Close the codex</button></div>
+    </div>`;
+    document.body.appendChild(codexEl);
+    if (lenis) lenis.stop();
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => codexEl.classList.add('is-on'));
+    Sound.shing && Sound.shing(0.6);
+    const close = $('[data-codex-close]', codexEl);
+    close.focus({ preventScroll: true });
+    close.addEventListener('click', closeCodex);
+    codexEl.addEventListener('click', (e) => { if (e.target === codexEl) closeCodex(); });
+    (window.dataLayer = window.dataLayer || []).push({ event: 'codex_found' });
+  };
+  const closeCodex = () => {
+    if (!codexEl) return;
+    const el = codexEl; codexEl = null;
+    el.classList.remove('is-on');
+    if (lenis) lenis.start();
+    document.body.style.overflow = '';
+    setTimeout(() => el.remove(), 500);
+    if (codexReturn && codexReturn.focus) codexReturn.focus({ preventScroll: true });
+  };
+  const AX = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
+  let moves = [], lastKey = 0;
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && codexEl) { closeCodex(); return; }
+    if (codexEl && e.key === 'Tab') { e.preventDefault(); $('[data-codex-close]', codexEl).focus(); return; }
+    if (!AX[e.key] || e.target.closest('input, textarea, select, [contenteditable]')) return;
+    const now = performance.now();
+    if (now - lastKey > 900) moves = [];
+    lastKey = now;
+    moves.push(AX[e.key]);
+    if (moves.length > 3) moves.shift();
+    if (moves.length === 3) {
+      const [a, b, c] = moves;
+      const straight = a[0] === b[0] && a[1] === b[1];
+      const turn = a[0] * c[0] + a[1] * c[1] === 0;
+      if (straight && turn) { moves = []; openCodex(); }
+    }
+  });
+  const markEl = $('.nav .mark');
+  if (markEl) {
+    let hold = 0, held = false;
+    const start = () => { held = false; clearTimeout(hold); hold = setTimeout(() => { held = true; markEl.classList.remove('is-holding'); openCodex(); }, 900); markEl.classList.add('is-holding'); };
+    const stop = () => { clearTimeout(hold); markEl.classList.remove('is-holding'); };
+    markEl.addEventListener('pointerdown', start);
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => markEl.addEventListener(ev, stop));
+    markEl.addEventListener('click', (e) => { if (held) { e.preventDefault(); held = false; } });
+    markEl.addEventListener('contextmenu', (e) => e.preventDefault());
   }
 
   /* ---------- Back to top (with a ring that fills as you read) ---------- */

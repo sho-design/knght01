@@ -20,7 +20,7 @@ Each world is built in this order. No layer is built before Lore.
 4. Map: site, search and AI visibility. Where people find your world and how they enter it.
 5. Ground: the physical space. Arrival, flow, signage and the screens on your walls.
 6. Artifacts: print, labels, packaging and forms. Everything a customer holds.
-7. Machinery: intake, booking, follow-up and reporting. The systems that keep the world running without you.
+7. Machinery: intake, booking, follow-up and reporting, with AI doing the repetitive work inside the rules. AI is the squire, not the knight: it drafts and reminds, and a person makes the call.
 
 ## Three ways to work with KNGHT
 
@@ -58,6 +58,8 @@ Each world is built in this order. No layer is built before Lore.
 - [Machinery](https://knght.com/layers/machinery/): layer 7 of 7, what it is, what we make, what we check it against and examples from the worlds.
 - [How a world gets built](https://knght.com/process/): the call, the Verdict, the Build, launch and the Keep.
 - [Rules](https://knght.com/rules/): short reads on marketing rules for regulated categories.
+- [Can your clinic put patient information into ChatGPT?](https://knght.com/rules/clinics-ai-and-patient-information/): PHIPA and AI tools for Ontario clinics, in plain language.
+- [Your sigil](https://knght.com/sigil/): a free tool that forges a black and white crest for a business from its name, category and the one thing it guards.
 - [Book the Verdict Call](https://knght.com/book/): a free 30-minute call. Leave with your three biggest risks, one fix for this week, and a straight answer on fit.
 - [Score your world](https://knght.com/#score): a seven-question self-check that scores a brand out of 70 and names its weakest layer.
 - [Restoration Medical](https://knght.com/worlds/restoration-medical/): the world, the rules that govern it, and the seven layers read for its category.

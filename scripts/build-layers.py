@@ -73,10 +73,10 @@ LAYER_INFO = {
     },
     "Machinery": {
         "question": "Does it run without you chasing it?",
-        "what": "Intake, booking, ordering, follow-up and reporting. The systems that keep the world running without you.",
+        "what": "Intake, booking, ordering, follow-up and reporting, with AI doing the repetitive work inside the rules. The systems that keep the world running without you. AI is the squire, not the knight: it drafts, sorts and reminds, and a person makes the call.",
         "wrong": "Leads wait, no-shows repeat, and the owner is the system.",
-        "make": ["Intake and booking", "Reminders and follow-up", "Ordering and fulfilment", "Reporting you can read in a minute"],
-        "check": ["Consent records under CASL", "Privacy under PIPEDA or PHIPA", "Who on your team can see what"],
+        "make": ["Intake and booking", "Reminders and follow-up", "AI agents for intake, answers and follow-up, with a person checking", "Ordering and fulfilment", "Reporting you can read in a minute"],
+        "check": ["Consent records under CASL", "Privacy under PIPEDA or PHIPA", "Which AI tools may touch personal or health information, and under what agreement", "Who on your team can see what"],
         "reads": "Map", "feeds": "Lore, through what the numbers say",
     },
 }
@@ -364,6 +364,22 @@ RULES = [
                     ("Law Society of Ontario: Certified Specialist program", "https://lso.ca/lawyers/enhance-your-practice/certified-specialist-program")],
         "layer": "Law", "for": "law-firms",
     },
+    {
+        "slug": "clinics-ai-and-patient-information",
+        "title": "Can your clinic put patient information into ChatGPT?",
+        "cat": "Clinics · PHIPA and IPC Ontario",
+        "dek": "Not into a consumer chatbot. AI can still take work off your desk, once it is set up for health information.",
+        "body": [
+            "In Ontario, the Personal Health Information Protection Act (PHIPA) governs how health information custodians, including physicians, nurses and the clinics they run, collect, use and disclose personal health information. Custodians must take reasonable steps to protect it against theft, loss and unauthorized use or disclosure.",
+            "Pasting a patient's details into a free, consumer AI chatbot sends that information to a company the clinic has no agreement with. Depending on the tool's terms, it may be stored, reviewed or used to improve the service. For a custodian, that can be an unauthorized disclosure. PHIPA requires custodians to notify affected patients of a privacy breach and, in certain cases, to report it to the Information and Privacy Commissioner of Ontario.",
+            "That does not rule AI out. It rules out using it carelessly. A tool that handles health information has to be chosen and set up for it: a written agreement with the provider, clear limits on what the provider can do with the data, access controls, and a record of who used what.",
+            "The safest work for AI sits away from the chart. Answering general questions about hours and services. Reminders that carry no clinical details. First drafts of posts and pages, which a person then checks against CPSO and CNO rules. Where AI does touch patient information, it should be inside tools the clinic has assessed, and a person should check what it produces.",
+            "Write it down. A one-page policy that says which tools staff may use, for what, and with what information protects patients and the clinic, and it is the first thing a regulator will ask to see.",
+        ],
+        "sources": [("Personal Health Information Protection Act, 2004, S.O. 2004, c. 3, Sched. A", "https://www.ontario.ca/laws/statute/04p03"),
+                    ("Information and Privacy Commissioner of Ontario: health privacy", "https://www.ipc.on.ca/")],
+        "layer": "Machinery", "for": "clinics",
+    },
 ]
 
 
@@ -387,7 +403,7 @@ def rule_page(r):
         <p class="article__note">A plain-language read, not legal advice. Rules change, so check the source or ask us before you publish.</p>
         <h2 class="article__h">Sources</h2>
         <ul class="article__sources">{srcs}</ul>
-        <p><a class="link" href="{up}for/{r["for"]}/">Brand worlds for {r["for"].replace("-", " ")}</a> · <a class="link" href="{up}layers/law/">The Law layer</a> · <a class="link" href="../">All rules</a></p>
+        <p><a class="link" href="{up}for/{r["for"]}/">Brand worlds for {r["for"].replace("-", " ")}</a> · <a class="link" href="{up}layers/{r["layer"].lower()}/">The {r["layer"]} layer</a> · <a class="link" href="../">All rules</a></p>
       </div>
     </div>
   </section>
@@ -414,6 +430,51 @@ def rules_index():
 
 {cta("../")}'''
     return shell(1, "Rules: marketing inside the rules | KNGHT", "Short reads on the rules that shape marketing for clinics, medspas, law firms, spirits, coffee and food, and how to work inside them.", "rules/", body)
+
+
+# ---------------------------------------------------------------------------
+FORM_ENDPOINT = ""  # same endpoint as the home page lead form; leave empty to hide the email option
+
+
+def sigil_page():
+    opts = "".join(f'<option value="{v}">{t}</option>' for v, t in (
+        ("clinic", "Clinic"), ("medspa", "Medspa"), ("law", "Law firm"), ("spirits", "Spirits"), ("coffee", "Coffee"), ("food", "Food"), ("other", "Something else")))
+    virtues = "".join(f'<label class="sigil__virtue"><input type="radio" name="virtue" value="{v}"{" checked" if v == "trust" else ""}><span>{t}</span></label>' for v, t in (
+        ("trust", "Trust"), ("craft", "Craft"), ("care", "Care"), ("heritage", "Heritage")))
+    body = f'''  <section class="whero sigil">
+    <div class="wrap sigil__grid">
+      <div class="sigil__intro">
+        <p class="eyebrow">Your sigil</p>
+        <h1 class="display book__title" style="margin-top:24px">Every world <br>has a <em>sigil.</em></h1>
+        <p class="book__lede">Give us a name, a category and the one thing you guard. We forge a crest in black and white. It is yours to keep and share.</p>
+        <form class="sigil__form" data-sigil-form autocomplete="off">
+          <label class="sigil__field"><span>Business name</span><input name="name" type="text" maxlength="40" placeholder="Your business" required></label>
+          <label class="sigil__field"><span>Category</span><select name="cat">{opts}</select></label>
+          <fieldset class="sigil__field sigil__virtues"><legend>What you guard</legend>{virtues}</fieldset>
+        </form>
+        <div class="sigil__actions">
+          <button type="button" class="btn" data-sigil-png>Download PNG</button>
+          <button type="button" class="link" data-sigil-svg>Download SVG</button>
+          <button type="button" class="link" data-sigil-share hidden>Share</button>
+        </div>
+        <form class="lead sigil__lead" data-sigil-lead data-endpoint="{FORM_ENDPOINT}" hidden novalidate>
+          <label class="lead__label" for="sigil-email">Send it to your inbox</label>
+          <div class="lead__row"><input id="sigil-email" name="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com" required><button type="submit" class="btn btn--sm">Send it</button></div>
+          <label class="lead__consent"><input name="consent" type="checkbox" required> Email me my sigil and occasional notes from KNGHT. Unsubscribe any time. <a class="link" href="../privacy/">Privacy</a></label>
+          <p class="lead__status" data-sigil-status aria-live="polite"></p>
+        </form>
+        <p class="sigil__note">Drawn in your browser. Nothing you type is sent anywhere.</p>
+      </div>
+      <figure class="sigil__figure">
+        <div class="sigil__stage" data-sigil-stage></div>
+        <figcaption class="sigil__blazon" data-sigil-blazon></figcaption>
+      </figure>
+    </div>
+  </section>
+
+{cta("../", "A sigil is the mark. The Verdict reads the whole world behind it. Fixed fee from $3,500 CAD, credited to your Build within 60 days.")}
+<script src="../assets/js/sigil.js" defer></script>'''
+    return shell(1, "Your sigil: forge a crest for your business | KNGHT", "Forge a black and white crest for your business from its name, category and the one thing it guards. Free to download and share.", "sigil/", body)
 
 
 # ---------------------------------------------------------------------------
@@ -472,6 +533,7 @@ def main():
     for i, n in enumerate(NAMES):
         write(f"layers/{n.lower()}/", layer_page(i, n))
     write("process/", process_page())
+    write("sigil/", sigil_page())
     write("rules/", rules_index())
     for r in RULES:
         write(f'rules/{r["slug"]}/', rule_page(r))

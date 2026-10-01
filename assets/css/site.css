@@ -815,3 +815,124 @@ html.lenis,html.lenis body{height:auto}
 .layer__work .wwork__item figcaption{left:6px;right:6px;bottom:6px;width:max-content;max-width:calc(100% - 12px);font-size:.58rem;letter-spacing:.1em;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .worlds__count,.layer__work-n{white-space:nowrap}
 @media (max-width:900px){.worlds__head .eyebrow{font-size:.7rem;letter-spacing:.18em}}
+
+/* ===== Magic: runes, decoding, the constellation, the portal, seals, marginalia, the codex, the sword cursor ===== */
+/* Runes carved into the dark */
+.thesis,.chap,.layers,.squire,.vow{position:relative;isolation:isolate}
+.runes{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.runes svg{position:absolute;fill:none;stroke:#fff;stroke-width:.7;stroke-linecap:round;stroke-linejoin:round;opacity:.045}
+.runes--lit svg{opacity:.55;filter:drop-shadow(0 0 6px rgba(255,255,255,.55))}
+.runes--lit{opacity:0;transition:opacity 1.2s var(--ease);-webkit-mask-image:radial-gradient(circle 190px at var(--rx,-999px) var(--ry,-999px),#000 0%,rgba(0,0,0,.35) 45%,transparent 100%);mask-image:radial-gradient(circle 190px at var(--rx,-999px) var(--ry,-999px),#000 0%,rgba(0,0,0,.35) 45%,transparent 100%)}
+.is-woken > .runes--lit{opacity:1;transition-duration:.35s}
+
+/* The constellation of worlds */
+.stars{position:absolute;z-index:2;right:var(--gutter);top:calc(var(--nav-h) + 4vh + 150px);width:clamp(170px,17vw,260px);color:#fff}
+.stars__label{margin:0 0 6px;text-align:right;font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ash)}
+.stars svg{display:block;width:100%;height:auto;overflow:visible}
+.stars__lines line{stroke:rgba(255,255,255,.28);stroke-width:.6;stroke-dasharray:1;stroke-dashoffset:1;animation:starLine 1.2s var(--ease-out) forwards;animation-delay:calc(1.6s + var(--d,0s))}
+.stars__lines line:nth-child(2){--d:.12s}.stars__lines line:nth-child(3){--d:.24s}.stars__lines line:nth-child(4){--d:.36s}.stars__lines line:nth-child(5){--d:.48s}.stars__lines line:nth-child(6){--d:.6s}.stars__lines line:nth-child(7){--d:.72s}.stars__lines line:nth-child(8){--d:.84s}.stars__lines line:nth-child(9){--d:.96s}
+@keyframes starLine{to{stroke-dashoffset:0}}
+.stars__star circle{fill:#fff;transform-box:fill-box;transform-origin:center;animation:twinkle 4s ease-in-out infinite;animation-delay:calc(var(--i) * -.45s)}
+.stars__star .stars__halo{fill:transparent;stroke:rgba(255,255,255,0);stroke-width:.6;animation:none;transition:stroke .3s}
+.stars__star text{fill:#fff;font:italic 400 9px var(--serif);opacity:0;transition:opacity .3s;pointer-events:none}
+.stars__star:hover text,.stars__star:focus-visible text{opacity:1}
+.stars__star:hover .stars__halo,.stars__star:focus-visible .stars__halo{stroke:rgba(255,255,255,.6)}
+.stars__star:focus{outline:none}
+@keyframes twinkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.7)}}
+@media (max-width:900px){.stars{display:none}}
+
+/* Portal into a world (fallback where page transitions are not supported) */
+.portal{position:fixed;z-index:180;overflow:hidden;background:#000;transition:left .5s var(--ease),top .5s var(--ease),width .5s var(--ease),height .5s var(--ease)}
+.portal img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05) brightness(.86)}
+.portal.is-open{left:0!important;top:0!important;width:100vw!important;height:100vh!important}
+
+/* Wax seals on the world plates */
+.wseal{position:absolute;z-index:3;right:16px;bottom:16px;width:64px;height:64px;pointer-events:none}
+.wseal__half{position:absolute;inset:0;transition:transform .9s var(--ease-out),opacity .7s var(--ease)}
+.wseal__l{clip-path:polygon(0 0,52% 0,46% 20%,55% 40%,45% 60%,53% 80%,48% 100%,0 100%)}
+.wseal__r{clip-path:polygon(52% 0,100% 0,100% 100%,48% 100%,53% 80%,45% 60%,55% 40%,46% 20%)}
+.wseal svg{width:100%;height:100%;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6))}
+.seal__wax{fill:#e9e9e9}
+.seal__ring{fill:none;stroke:rgba(0,0,0,.28);stroke-width:1.2}
+.seal__mark{fill:none;stroke:#111;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.is-unsealed .wseal__l{transform:translate(-18px,26px) rotate(-28deg);opacity:0}
+.is-unsealed .wseal__r{transform:translate(18px,30px) rotate(24deg);opacity:0}
+
+/* Notes in the margin */
+.mg{display:flex;gap:8px;align-items:flex-start;margin-top:10px;max-width:34ch;font:italic 400 1.02rem/1.35 var(--serif);color:var(--ash);opacity:0;transform:translateY(6px);transition:opacity 1s var(--ease-out),transform 1s var(--ease-out)}
+.mg.is-in{opacity:1;transform:none}
+.mg__arrow{flex:none;width:30px;height:18px;margin-top:2px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round}
+.mg--hero{position:absolute;z-index:2;margin:0;width:min(26ch,22vw);max-width:none;text-shadow:0 1px 10px #000}
+.engage .mg,.score .mg{color:color-mix(in srgb,currentColor 68%,transparent)}
+.offer__facts .mg{font-size:.98rem}
+.mg__target{text-decoration:underline;text-decoration-style:dotted;text-decoration-thickness:1px;text-underline-offset:5px;text-decoration-color:color-mix(in srgb,currentColor 45%,transparent)}
+.hero__title .mg__target{text-decoration:none}
+
+/* The Squire: AI inside the Machinery layer */
+.squire{padding-block:clamp(90px,12vw,170px);border-top:1px solid var(--rule)}
+.squire__grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px clamp(32px,6vw,96px);align-items:start}
+.squire__head{display:flex;flex-direction:column;gap:24px}
+.squire__head h2{font-size:clamp(2.8rem,5.4vw,5.2rem)}
+.squire__head h2 em{font-style:italic}
+.squire__head p{margin:0;color:var(--ash);max-width:40ch;font-size:1.1rem}
+.squire__list{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule-strong)}
+.squire__list li{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:8px 32px;padding:26px 0;border-bottom:1px solid var(--rule)}
+.squire__list b{font:400 clamp(1.5rem,2.2vw,2rem)/1.1 var(--serif)}
+.squire__list span{color:var(--ash)}
+.squire__more{grid-column:2;display:flex;flex-wrap:wrap;gap:12px 28px;margin:0}
+@media (max-width:900px){.squire__grid,.squire__list li{grid-template-columns:minmax(0,1fr)}.squire__more{grid-column:1}}
+
+/* The codex: found by the knight's move */
+.codex{position:fixed;inset:0;z-index:190;display:grid;place-items:center;padding:24px;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transition:opacity .5s var(--ease);overflow-y:auto}
+.codex.is-on{opacity:1}
+.codex__in{width:min(640px,100%);display:flex;flex-direction:column;align-items:flex-start;gap:18px;padding:clamp(28px,5vw,56px);border:1px solid var(--rule-strong);background:#000}
+.codex__knight{width:46px;height:46px;fill:none;stroke:#fff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}
+.codex__knight circle{fill:#fff;stroke:none}
+.codex__h{font-size:clamp(3rem,8vw,5rem)}
+.codex__h em{font-style:italic}
+.codex__lede{margin:0;color:var(--ash)}
+.codex__list{list-style:none;margin:8px 0 0;padding:0;width:100%;border-top:1px solid var(--rule)}
+.codex__list li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--rule);font:400 1.3rem/1.3 var(--serif);opacity:0;transform:translateY(10px);transition:opacity .6s var(--ease-out),transform .7s var(--ease-out);transition-delay:calc(.25s + var(--i) * 90ms)}
+.codex.is-on .codex__list li{opacity:1;transform:none}
+.codex__list span{font-style:italic;color:var(--ash)}
+.codex__actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin-top:10px}
+.codex .link{background:none;border:0;font:inherit;font-weight:500;cursor:pointer}
+.nav .mark.is-holding svg{animation:holdGlow .9s linear forwards}
+@keyframes holdGlow{to{filter:drop-shadow(0 0 6px #fff)}}
+
+/* The sword cursor over the way in */
+.cursor__sword{position:absolute;width:30px;height:30px;left:50%;top:50%;margin:-15px 0 0 -15px;fill:none;stroke:#fff;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:0;transform:scale(.4) rotate(-20deg);transition:opacity .25s,transform .35s var(--ease-out)}
+.cursor.is-sword{width:34px;height:34px;margin:-17px 0 0 -17px;background:transparent}
+.cursor.is-sword .cursor__sword{opacity:1;transform:none}
+
+/* Sigil page */
+.sigil__grid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(32px,6vw,96px);align-items:start}
+.sigil__intro{display:flex;flex-direction:column;gap:22px}
+.sigil__form{display:grid;gap:18px;margin-top:12px}
+.sigil__field{display:grid;gap:8px;margin:0;padding:0;border:0;min-width:0}
+.sigil__field > span,.sigil__field legend{font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);padding:0;margin-bottom:8px}
+.sigil__field input[type=text],.sigil__field select{width:100%;min-height:54px;padding:0 18px;border:1px solid var(--rule-strong);border-radius:999px;background:transparent;color:var(--argent);font:400 1.05rem var(--sans);appearance:none;-webkit-appearance:none}
+.sigil__field select{background-image:linear-gradient(45deg,transparent 50%,#fff 50%),linear-gradient(135deg,#fff 50%,transparent 50%);background-position:calc(100% - 26px) 50%,calc(100% - 20px) 50%;background-size:6px 6px;background-repeat:no-repeat}
+.sigil__field select option{background:#000;color:#fff}
+.sigil__field input:focus-visible,.sigil__field select:focus-visible{outline:1px solid #fff;outline-offset:3px}
+.sigil__virtues{display:flex;flex-wrap:wrap;gap:8px}
+.sigil__virtues legend{width:100%}
+.sigil__virtue{position:relative;cursor:pointer}
+.sigil__virtue input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.sigil__virtue span{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border:1px solid var(--rule-strong);border-radius:999px;font-size:.9rem;transition:background .3s,color .3s}
+.sigil__virtue input:checked + span{background:#fff;color:#000;border-color:#fff}
+.sigil__virtue input:focus-visible + span{outline:1px solid #fff;outline-offset:3px}
+.sigil__actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px}
+.sigil__actions .link{background:none;border:0;font:inherit;font-weight:500;cursor:pointer}
+.sigil__note{margin:0;font-size:.84rem;color:var(--ash-2)}
+.sigil__figure{margin:0;position:sticky;top:calc(var(--nav-h) + 24px)}
+.sigil__stage{border:1px solid var(--rule);background:#000}
+.sigil__stage svg{display:block;width:100%;height:auto}
+.sigil__blazon{margin-top:12px;font:italic 400 1.05rem/1.4 var(--serif);color:var(--ash)}
+@media (max-width:900px){.sigil__grid{grid-template-columns:minmax(0,1fr)}.sigil__figure{position:relative;top:0;order:-1;max-width:420px}}
+
+@media (prefers-reduced-motion:reduce){
+  .stars__lines line{animation:none;stroke-dashoffset:0}
+  .stars__star circle{animation:none}
+  .wseal__half,.mg,.codex,.codex__list li{transition:none}
+}
