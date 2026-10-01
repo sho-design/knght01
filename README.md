@@ -55,6 +55,16 @@ Motion respects `prefers-reduced-motion`: the intro, the films and the scroll ef
 - `book/`: the Verdict Call page with the Calendly embed and a FAQ (with FAQPage structured data).
 - `privacy/` and `accessibility/`: plain-language policy pages, linked from every footer.
 
+## Layers, process and rules
+
+`scripts/build-layers.py` (run after `build-worlds.py`) generates:
+
+- `layers/<layer>/` for all seven layers: the question, what goes wrong without it, what we make, what we check it against, examples from the worlds and tagged gallery images.
+- `process/` (how a world gets built) and `rules/` with short articles on specific rules.
+- The generated parts of `index.html`: the layer filter on the Worlds gallery, the seven-layer meter on each card, the "Beyond the screen" walls of Artifacts and Ground images, and links from the codex to each layer page.
+
+The evidence lives in `LAYER_EXAMPLES` and `WORK_TAGS` in `build-worlds.py`. Only verified work goes there; a world with no entries shows no meter and is skipped on layer pages.
+
 ## Measurement
 
 `assets/js/site.js` pushes events to `window.dataLayer`: `cta_click` (every link to the booking page, with label and section), `quiz_complete`, `scorecard_download`, `book_page_view`, `booking_slot_picked` and `calendly_booked` (from Calendly's own messages). Google Tag Manager loads only when `GTM_ID` near the top of the measurement block is set to your container ID. Mark `calendly_booked` as the conversion in GA4. When analytics goes live, add it to the "Who else sees it" list on the privacy page.

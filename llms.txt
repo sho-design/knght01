@@ -49,6 +49,15 @@ Each world is built in this order. No layer is built before Lore.
 - [Brand worlds for spirits brands](https://knght.com/for/spirits/): the rules, the seven layers read for spirits brands, and the worlds built for them.
 - [Brand worlds for coffee brands](https://knght.com/for/coffee/): the rules, the seven layers read for coffee brands, and the worlds built for them.
 - [Brand worlds for food brands](https://knght.com/for/food/): the rules, the seven layers read for food brands, and the worlds built for them.
+- [Lore](https://knght.com/layers/lore/): layer 1 of 7, what it is, what we make, what we check it against and examples from the worlds.
+- [Law](https://knght.com/layers/law/): layer 2 of 7, what it is, what we make, what we check it against and examples from the worlds.
+- [Language](https://knght.com/layers/language/): layer 3 of 7, what it is, what we make, what we check it against and examples from the worlds.
+- [Map](https://knght.com/layers/map/): layer 4 of 7, what it is, what we make, what we check it against and examples from the worlds.
+- [Ground](https://knght.com/layers/ground/): layer 5 of 7, what it is, what we make, what we check it against and examples from the worlds.
+- [Artifacts](https://knght.com/layers/artifacts/): layer 6 of 7, what it is, what we make, what we check it against and examples from the worlds.
+- [Machinery](https://knght.com/layers/machinery/): layer 7 of 7, what it is, what we make, what we check it against and examples from the worlds.
+- [How a world gets built](https://knght.com/process/): the call, the Verdict, the Build, launch and the Keep.
+- [Rules](https://knght.com/rules/): short reads on marketing rules for regulated categories.
 - [Book the Verdict Call](https://knght.com/book/): a free 30-minute call. Leave with your three biggest risks, one fix for this week, and a straight answer on fit.
 - [Score your world](https://knght.com/#score): a seven-question self-check that scores a brand out of 70 and names its weakest layer.
 - [Restoration Medical](https://knght.com/worlds/restoration-medical/): the world, the rules that govern it, and the seven layers read for its category.

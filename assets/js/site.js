@@ -657,6 +657,19 @@
     if (target) { target.setAttribute('tabindex', '-1'); setTimeout(() => target.focus({ preventScroll: true }), 50); }
   });
 
+  /* ---------- Worlds: filter the gallery by layer ---------- */
+  $$('.wfilter__chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const layer = chip.dataset.layer;
+      $$('.wfilter__chip').forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      $$('.world[data-layers]').forEach((w) => {
+        const on = !layer || (` ${w.dataset.layers} `).includes(` ${layer} `);
+        w.classList.toggle('is-dim', !on);
+      });
+      if (window.KNGHT_TRACK) window.KNGHT_TRACK('world_filter', { layer: layer || 'all' });
+    });
+  });
+
   window.KNGHT = { Sound, get lenis() { return lenis; }, resize: () => { sizeWorlds(); onScroll(); } };
 
   /* ---------- Toronto time in the hero ---------- */

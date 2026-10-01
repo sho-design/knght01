@@ -303,6 +303,81 @@ WORK = {
     ],
 }
 
+
+# ---------------------------------------------------------------------------
+# Layer evidence. Only what the portfolio verifies. A world appears on a layer
+# page, gets a lit segment on its meter and passes the home-page layer filter
+# only for the layers listed here. Restoration Medical and Lisa Dang have none
+# yet: add them when the work is confirmed.
+LAYER_EXAMPLES = {
+    "Lore": [
+        ("castleblack-spirits", "Rebuilt from a pirate theme that did not land at home into a brand rooted in Jamaican heritage and flavour."),
+        ("black-lotus-coffee", "A brand that bridges Vietnamese culture and wellness performance, built from day one on the founding team."),
+        ("wellfit-social-club", "A graffiti wall concept, turned into the whole brand system and logo."),
+        ("toronto-beauty", "Real and AI-generated nurse portraits, held to one look across a growing network."),
+        ("art-colouring", "Book templates and the themed series most titles sit inside."),
+    ],
+    "Law": [],
+    "Language": [
+        ("toronto-beauty", "Educational content, AI-generated podcasts and targeted Google, Instagram and Facebook campaigns. Reels passed 100K views in aggregate."),
+        ("castleblack-spirits", "A marketing strategy and social ad campaigns built on flavour and story."),
+        ("wellfit-social-club", "Google Ads for awareness and sign-ups."),
+        ("art-colouring", "Branding, ad copy and SEO for Amazon and Shopify listings."),
+    ],
+    "Map": [
+        ("toronto-beauty", "A WordPress site with a profile for every nurse and a map search."),
+        ("black-lotus-coffee", "A Shopify store built for bundles and subscriptions."),
+        ("lorelyns", "A Shopify store with retail and wholesale ordering."),
+        ("wellfit-social-club", "A Shopify site with bookings and e-commerce, connected to Google Analytics, Business Profile and local search."),
+        ("castleblack-spirits", "A landing page and sales presentation tools."),
+        ("rum-raiders-ring", "The rumraider.com site."),
+    ],
+    "Ground": [
+        ("black-lotus-coffee", "The launch strategy for a physical retail space in Da Nang."),
+        ("wellfit-social-club", "The graffiti wall and the printed pieces on the gym floor."),
+    ],
+    "Artifacts": [
+        ("castleblack-spirits", "A label system, with bottles and packaging sourced worldwide, plus barcodes and point-of-sale materials."),
+        ("black-lotus-coffee", "Labels, packaging and mockups for direct-to-consumer and retail."),
+        ("lorelyns", "Cards, tent displays and trade banners."),
+        ("wellfit-social-club", "Printed collateral for the gym floor, marketing and events."),
+        ("art-colouring", "A distinct illustration style for each book series."),
+        ("toronto-beauty", "A services brochure for the network."),
+    ],
+    "Machinery": [
+        ("lorelyns", "Retail and wholesale ordering, with training so orders and updates run in house."),
+        ("wellfit-social-club", "Bookings and e-commerce on one system."),
+        ("art-colouring", "Google Ads and Analytics set up across every platform."),
+    ],
+}
+
+# Which layer each portfolio gallery image shows (same order as WORK). None = not shown on layer pages.
+WORK_TAGS = {
+    "toronto-beauty": ["Map", "Map", "Artifacts", "Language"],
+    "black-lotus-coffee": ["Artifacts", "Ground", "Map", "Artifacts", "Ground"],
+    "castleblack-spirits": ["Language", "Artifacts", "Map", "Language", "Artifacts"],
+    "lorelyns": ["Map", "Artifacts", "Artifacts", "Artifacts", "Artifacts"],
+    "wellfit-social-club": ["Ground", "Artifacts", "Map", "Ground", "Artifacts"],
+    "art-colouring": ["Artifacts", "Map", "Artifacts", "Artifacts"],
+    "rum-raiders-ring": ["Map", "Map", None, "Map", None],
+    "lisa-dang-immigration-law": [None, None],
+}
+
+
+def world_layers(slug):
+    """Layer names (in codex order) with verified work for a world."""
+    return [name for name, _ in LAYERS if any(s == slug for s, _ in LAYER_EXAMPLES[name])]
+
+
+def meter(slug, label=True):
+    built = set(world_layers(slug))
+    if not built:
+        return ""
+    segs = "".join(f'<span class="meter__seg{" is-on" if name in built else ""}" title="{name}"></span>' for name, _ in LAYERS)
+    names = ", ".join(n for n, _ in LAYERS if n in built)
+    cap = f'<span class="meter__label">{len(built)} of 7 layers built</span>' if label else ""
+    return f'<span class="meter" role="img" aria-label="{len(built)} of 7 layers built: {names}">{segs}{cap}</span>'
+
 ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 e = html.escape
 
@@ -336,6 +411,9 @@ def page(i, w):
     if w["where"]:
         meta.append(("Where", w["where"]))
     meta_html = "\n".join(f'            <div><dt>{k}</dt><dd>{e(v)}</dd></div>' for k, v in meta)
+    if world_layers(w["slug"]):
+        links = " · ".join('<a href="../../layers/%s/">%s</a>' % (n.lower(), n) for n in world_layers(w["slug"]))
+        meta_html += '\n            <div class="whero__meter"><dt>Layers built</dt><dd>' + meter(w["slug"]) + '<span class="meter__names">' + links + '</span></dd></div>'
     if w["url"]:
         host = w["url"].split("//")[1].strip("/")
         meta_html += f'\n            <div><dt>Online</dt><dd><a class="link" href="{w["url"]}" rel="noopener">{host}</a></dd></div>'
