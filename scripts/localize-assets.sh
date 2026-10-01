@@ -30,6 +30,16 @@ declare -A FILES=(
   [ca2b8fca-641f-4227-a88b-a10c499ed6ce.mp4]=film-wellfit-social-club.mp4
   [7b34d099-139f-435c-852a-70ac56491274.mp4]=film-art-colouring.mp4
   [27a2a3ee-1760-4bb5-b106-8b65b6463c38.jpg]=seal-poster.jpg
+  [d4e937c0-f30b-45bb-97dd-221d1e97c2b5.webp]=work-rum-raiders-ring-1.webp
+  [0c64305d-1a91-46e5-80b1-5d1f9d70c81e.webp]=work-rum-raiders-ring-2.webp
+  [437ca3cf-3ebd-44f8-a531-2a25704182bf.webp]=work-rum-raiders-ring-3.webp
+  [f6781d26-d4a9-46cc-a870-db9899e39e35.webp]=work-rum-raiders-ring-4.webp
+  [c6aa4783-3ed2-4978-a660-0c0610424a19.webp]=work-rum-raiders-ring-5.webp
+  [8f2c274b-d49c-4390-8755-f11a0a74c0e8.webp]=work-lisa-dang-1.webp
+  [decd1905-4609-4c73-bd31-5a5c817edb50.webp]=work-lisa-dang-2.webp
+  [86e77434-a1a4-4601-b812-cef42a05fde7.webp]=work-lisa-dang-3.webp
+  [476990a0-73ac-4767-af8c-fbb1b7344c65.webp]=work-lisa-dang-4.webp
+  [d5a247c5-ba53-4ff2-a454-9544b13b0ee1.webp]=work-lisa-dang-5.webp
   [73bcbd63-efa2-4444-8935-9b23c1186c59.mp4]=seal.mp4
 )
 for src in "${!FILES[@]}"; do

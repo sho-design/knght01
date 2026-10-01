@@ -288,6 +288,21 @@ WORK = {
                       "The Art Colouring store on a laptop and phone",
                       "Four Kawaii Saurs covers",
                       "Printed Art Colouring books"],
+    # Captured from the live sites and hosted on the CDN: (alt, file, width, height).
+    "rum-raiders-ring": [
+        ("The rumraider.com homepage over its hero film", "d4e937c0-f30b-45bb-97dd-221d1e97c2b5.webp", 1600, 1000),
+        ("The rumraider.com homepage on a phone", "0c64305d-1a91-46e5-80b1-5d1f9d70c81e.webp", 780, 1460),
+        ("Gilded Pearl, Twisted Jewel, Spicy Siren and Pirate's Kiss cans", "437ca3cf-3ebd-44f8-a531-2a25704182bf.webp", 2400, 1100),
+        ("The RTD range on rumraider.com", "f6781d26-d4a9-46cc-a870-db9899e39e35.webp", 1600, 886),
+        ("Spiced, white, elderflower and coconut rums", "c6aa4783-3ed2-4978-a660-0c0610424a19.webp", 2400, 1100),
+    ],
+    "lisa-dang-immigration-law": [
+        ("The lisadanglaw.com homepage", "8f2c274b-d49c-4390-8755-f11a0a74c0e8.webp", 1600, 1000),
+        ("The lisadanglaw.com homepage on a phone", "decd1905-4609-4c73-bd31-5a5c817edb50.webp", 780, 1688),
+        ("The introduction to the practice on lisadanglaw.com", "86e77434-a1a4-4601-b812-cef42a05fde7.webp", 1600, 467),
+        ("Every file handled directly by the lawyer, on lisadanglaw.com", "476990a0-73ac-4767-af8c-fbb1b7344c65.webp", 1600, 589),
+        ("Immigration services listed on lisadanglaw.com", "d5a247c5-ba53-4ff2-a454-9544b13b0ee1.webp", 1600, 589),
+    ],
 }
 
 ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
@@ -351,13 +366,18 @@ def page(i, w):
 '''
     if w["slug"] in WORK:
         items = []
-        for n, alt in enumerate(WORK[w["slug"]], 1):
-            iw, ih = Image.open(os.path.join(ROOT, "assets", "work", w["slug"], f"{n}.webp")).size
-            items.append((n, alt, iw, ih, iw / ih))
+        for n, entry in enumerate(WORK[w["slug"]], 1):
+            if isinstance(entry, tuple):
+                alt, name, iw, ih = entry
+                src = f"{CDN}/{name}"
+            else:
+                alt, src = entry, f"../../assets/work/{w['slug']}/{n}.webp"
+                iw, ih = Image.open(os.path.join(ROOT, "assets", "work", w["slug"], f"{n}.webp")).size
+            items.append((src, alt, iw, ih, iw / ih))
         rows = justify([it[4] for it in items])
         out, k = [], 0
         for size in rows:
-            figs = "".join(f'\n            <figure class="wwork__item" style="flex:{r:.3f} 1 0;aspect-ratio:{iw}/{ih}"><img src="../../assets/work/{w["slug"]}/{n}.webp" alt="{e(alt)}" width="{iw}" height="{ih}" loading="lazy" decoding="async"></figure>' for n, alt, iw, ih, r in items[k:k + size])
+            figs = "".join(f'\n            <figure class="wwork__item" style="flex:{r:.3f} 1 0;aspect-ratio:{iw}/{ih}"><img src="{src}" alt="{e(alt)}" width="{iw}" height="{ih}" loading="lazy" decoding="async"></figure>' for src, alt, iw, ih, r in items[k:k + size])
             out.append(f'          <div class="wwork__row" data-reveal>{figs}\n          </div>')
             k += size
         figs = "\n".join(out)
