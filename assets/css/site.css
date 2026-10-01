@@ -107,7 +107,7 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 .hero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.55) 42%,rgba(0,0,0,0) 70%),linear-gradient(0deg,#000 0%,rgba(0,0,0,0) 32%)}
 .hero__inner{position:relative;width:100%;padding-top:calc(var(--nav-h) + 8vh);padding-bottom:clamp(36px,6vh,72px)}
 .hero__title{font-family:var(--serif);font-weight:400;font-size:clamp(2.6rem,min(6.6vw,11.5svh),8.2rem);line-height:.9;letter-spacing:-.03em;margin:24px 0 0}
-.hero__title .line{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.hero__title .line{display:block;overflow:hidden;padding-bottom:.24em;margin-bottom:-.24em}
 .hero__title .line > span{display:block}
 .hero__title em{font-style:italic}
 .hero__foot{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:32px 64px;margin-top:clamp(24px,4vh,48px);padding-top:28px;border-top:1px solid var(--rule)}
@@ -447,7 +447,7 @@ html.lenis,html.lenis body{height:auto}
 .js [data-reveal-delay="1"]{transition-delay:.1s}
 .js [data-reveal-delay="2"]{transition-delay:.2s}
 .js [data-reveal-delay="3"]{transition-delay:.3s}
-.js .split .line{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
+.js .split .line{display:block;overflow:hidden;padding-bottom:.24em;margin-bottom:-.24em}
 .js .split .line > span{display:block;transform:translateY(105%);transition:transform 1.2s var(--ease-out)}
 .js .split.in .line > span{transform:none}
 .js .split.in .line:nth-child(2) > span{transition-delay:.08s}
