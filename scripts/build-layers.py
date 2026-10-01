@@ -183,7 +183,7 @@ def shell(depth, title, desc, path, body, body_class="worldpage", ld=None):
 
 <footer class="footer">
   <div class="wrap">
-    <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT. A Sergio Ho studio, Toronto.</span><span><a href="mailto:sho@knght.com">sho@knght.com</a> · <a href="{up}privacy/">Privacy</a> · <a href="{up}accessibility/">Accessibility</a></span></div>
+    <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT, Toronto.</span><span><a href="mailto:sho@knght.com">sho@knght.com</a> · <a href="{up}privacy/">Privacy</a> · <a href="{up}accessibility/">Accessibility</a></span></div>
   </div>
 </footer>
 

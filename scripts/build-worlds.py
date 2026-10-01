@@ -598,7 +598,7 @@ def page(i, w):
 
 <footer class="footer">
   <div class="wrap">
-    <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT. A Sergio Ho studio, Toronto.</span><span><a href="../../privacy/">Privacy</a> · <a href="../../accessibility/">Accessibility</a> · <a href="../../">knght.com</a></span></div>
+    <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT, Toronto.</span><span><a href="../../privacy/">Privacy</a> · <a href="../../accessibility/">Accessibility</a> · <a href="../../">knght.com</a></span></div>
   </div>
 </footer>
 
@@ -774,7 +774,7 @@ def for_page(f):
 
 <footer class="footer">
   <div class="wrap">
-    <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT. A Sergio Ho studio, Toronto.</span><span><a href="mailto:sho@knght.com">sho@knght.com</a> · <a href="../../privacy/">Privacy</a> · <a href="../../accessibility/">Accessibility</a></span></div>
+    <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT, Toronto.</span><span><a href="mailto:sho@knght.com">sho@knght.com</a> · <a href="../../privacy/">Privacy</a> · <a href="../../accessibility/">Accessibility</a></span></div>
   </div>
 </footer>
 
