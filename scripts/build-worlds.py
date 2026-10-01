@@ -117,28 +117,48 @@ WORLDS = [
     },
     {
         "slug": "black-lotus-coffee", "name": "Black Lotus", "em": "Coffee", "cat": "coffee",
-        "line": "A coffee house built as a place people return to.",
-        "about": ["Black Lotus Coffee is a coffee house built as a place people return to.",
-                  "Its world is the cup, the room and the reason to come back."],
-        "where": None, "url": None,
+        "line": "A conscious coffee brand rooted in Vietnamese tradition and modern wellness.",
+        "about": ["Black Lotus Coffee House is a coffee brand rooted in Vietnamese tradition and wellness, built for high performers and conscious drinkers.",
+                  "KNGHT's founder was on the founding team. The world honours its origin story and still holds its own in a crowded global market of wellness coffee."],
+        "where": "Da Nang, Vietnam", "url": None,
+        "built": [
+            ("Lore", "A brand that bridges Vietnamese culture and wellness performance."),
+            ("Artifacts", "Labels, packaging and mockups for direct-to-consumer and retail."),
+            ("Map", "A Shopify store built for bundles and subscriptions."),
+            ("Ground", "The launch strategy for a physical retail space in Da Nang."),
+        ],
+        "impact": "The brand grew from online sales into local retail and is now exploring export. It is known for holding cultural roots and modern wellness in one mark.",
         "plate": "3d266ebf-aafe-43c9-a611-071e4fa225d5.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/9bc2161b-3fbe-4d64-9aa9-a550d24089dd.mp4",
         "alt": "A black espresso cup with rising steam beside a black lotus flower",
     },
     {
         "slug": "castleblack-spirits", "name": "Castleblack", "em": "Spirits", "cat": "spirits",
-        "line": "A ready-to-drink rum with a castle's worth of lore.",
-        "about": ["Castleblack Spirits is a ready-to-drink rum with a castle's worth of lore behind it.",
-                  "The story does the selling, inside the rules that govern how alcohol can be sold in Ontario."],
-        "where": None, "url": None,
+        "line": "Premium Jamaican rum from St. Mary, carried by a story of heritage.",
+        "about": ["Castleblack Spirits is a premium rum distilled in St. Mary, Jamaica.",
+                  "Its first brand leaned on pirate lore that did not land at home. The world was rebuilt around Jamaican heritage and flavour, with the same depth of story and none of the baggage."],
+        "where": "St. Mary, Jamaica", "url": None,
+        "built": [
+            ("Lore", "A new flavour-led brand narrative, rooted in Jamaican pride."),
+            ("Artifacts", "A label system, with bottles and packaging sourced worldwide, plus barcodes, point-of-sale and digital collateral."),
+            ("Map", "A landing page and sales presentation tools."),
+            ("Language", "A marketing strategy and social ad campaigns."),
+        ],
+        "impact": "Better reception, stronger sales and no local pushback. Castleblack now pours in bars, restaurants and hotels, and distributors have carried it to more than five countries.",
         "plate": "f9f4237f-3a1c-4d7b-970d-325e798efbcc.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/855d452e-bd6f-46b8-9a09-a593c1dd1f1a.mp4",
         "alt": "A dark bottle and a glass of rum on castle stone, lit by a candle",
     },
     {
         "slug": "toronto-beauty", "name": "Toronto", "em": "Beauty", "cat": "medspa",
-        "line": "One aesthetics standard across a GTA network of providers.",
-        "about": ["Toronto Beauty brings one aesthetics standard to a network of providers across the Greater Toronto Area.",
-                  "Every provider in the network looks and speaks to the same mark."],
+        "line": "A growing network of aesthetic nurses across the GTA, under one mark.",
+        "about": ["Toronto Beauty is a growing network of aesthetic nurses offering cosmetic treatments across the Greater Toronto Area.",
+                  "Its world holds medical trust and luxury beauty in one mark, and gives every nurse in the network a presence of their own."],
         "where": "Greater Toronto Area", "url": None,
+        "built": [
+            ("Lore", "Real and AI-generated nurse portraits, held to one look."),
+            ("Language", "Educational content, AI-generated podcasts, and targeted Google, Instagram and Facebook campaigns."),
+            ("Map", "A WordPress site with a profile for every nurse and a map search."),
+        ],
+        "impact": "Reels passed 100K views in aggregate. Leads rose across paid and organic. The site now recruits practitioners as well as clients.",
         "plate": "2c1fbed2-57af-403d-aba0-96e21e6f1312.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/9b9465fa-41d8-471f-a259-18a3fc986ee6.mp4",
         "alt": "A marble face in profile with a single drop of serum falling from a pipette",
     },
@@ -148,6 +168,12 @@ WORLDS = [
         "about": ["Lorelyns Gourmet Desserts makes allergen-friendly desserts that are peanut and nut free, gluten free and plant based, from recipes developed since 2006.",
                   "The range runs from chocolate truffle bars to brownies, cookies and cakes, sold online, through retailers and in food service. Founded by Lorelyn Martin."],
         "where": "Greater Toronto Area", "url": "https://lorelyns.com/",
+        "built": [
+            ("Map", "A Shopify store, shot from existing and new product imagery."),
+            ("Machinery", "Retail and wholesale ordering, with training so orders and updates run in house."),
+            ("Artifacts", "Cards, tent displays and trade banners."),
+        ],
+        "impact": "A wider customer base, wholesale clients, and a sharper presence at events and on retail shelves. The structure to take on new commercial accounts.",
         "plate": "d7cffe34-9afd-4d03-baed-1ff5c1e4e99c.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/bbc35de0-9c24-4720-b5e1-b2a367da6c03.mp4",
         "alt": "A broken dark chocolate truffle bar and a fudge brownie with flakes of sea salt on slate",
     },
@@ -193,6 +219,30 @@ def page(i, w):
         host = w["url"].split("//")[1].strip("/")
         meta_html += f'\n            <div><dt>Online</dt><dd><a class="link" href="{w["url"]}" rel="noopener">{host}</a></dd></div>'
     about = "\n".join(f"        <p>{e(p)}</p>" for p in w["about"])
+    built_html = ""
+    if w.get("built"):
+        items = "\n".join(f'          <li><b>{e(t)}</b><span>{e(d)}</span></li>' for t, d in w["built"])
+        built_html = f'''  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <p class="eyebrow">What we built</p>
+      <ul class="wrules" data-reveal>
+{items}
+      </ul>
+    </div>
+  </section>
+
+'''
+    if w.get("impact"):
+        built_html += f'''  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <p class="eyebrow">What changed</p>
+      <div class="wsec__text" data-reveal>
+        <p>{e(w["impact"])}</p>
+      </div>
+    </div>
+  </section>
+
+'''
     film_tag = f'\n            <video muted playsinline loop autoplay preload="auto" poster="{CDN}/{w["plate"]}" src="{film}" aria-hidden="true"></video>' if film else ""
 
     def card(x, label):
@@ -280,7 +330,7 @@ def page(i, w):
     </div>
   </section>
 
-  <section class="wsec">
+{built_html}  <section class="wsec">
     <div class="wrap wsec__grid">
       <p class="eyebrow">The rules of this world</p>
       <ul class="wrules" data-reveal>

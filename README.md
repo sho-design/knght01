@@ -47,7 +47,7 @@ Motion respects `prefers-reduced-motion`: the intro, the films and the scroll ef
 
 ## World pages
 
-`worlds/<slug>/index.html` holds each world's film, the sector, the rules that govern it, and the seven layers read for its category, with links to the previous and next worlds. The pages are generated, so edit `WORLDS` and `CATEGORY` in `scripts/build-worlds.py` and run `python3 scripts/build-worlds.py`. Only add verified facts. The pages describe each world and its rules; they do not claim specific deliverables.
+`worlds/<slug>/index.html` holds each world's film, the sector, the rules that govern it, and the seven layers read for its category, with links to the previous and next worlds. The pages are generated, so edit `WORLDS` and `CATEGORY` in `scripts/build-worlds.py` and run `python3 scripts/build-worlds.py`. Only add verified facts. The pages describe each world and its rules. Where a world has optional `built` and `impact` entries (taken from the Sergio Ho portfolio), the page adds "What we built" and "What changed".
 
 ## Media
 
