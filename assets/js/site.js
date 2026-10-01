@@ -596,6 +596,31 @@
     matchMedia('(min-width: 901px)').addEventListener('change', (e) => { if (e.matches) setMenu(false); });
   }
 
+  /* ---------- Back to top (with a ring that fills as you read) ---------- */
+  const topBtn = document.createElement('button');
+  topBtn.type = 'button';
+  topBtn.className = 'totop';
+  topBtn.setAttribute('aria-label', 'Back to top');
+  topBtn.innerHTML = '<svg viewBox="0 0 48 48" aria-hidden="true"><circle class="totop__track" cx="24" cy="24" r="22"/><circle class="totop__ring" cx="24" cy="24" r="22" pathLength="100"/><path d="M24 31V17M18 23l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
+  document.body.appendChild(topBtn);
+  const ring = $('.totop__ring', topBtn);
+  let topTick = false;
+  const paintTop = () => {
+    topTick = false;
+    const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
+    topBtn.classList.toggle('is-on', y > innerHeight * 1.5 && !root.classList.contains('menu-open'));
+    ring.style.strokeDashoffset = String(100 - (max > 0 ? clamp(y / max, 0, 1) * 100 : 0));
+  };
+  addEventListener('scroll', () => { if (!topTick) { topTick = true; requestAnimationFrame(paintTop); } }, { passive: true });
+  addEventListener('resize', paintTop);
+  paintTop();
+  topBtn.addEventListener('click', () => {
+    if (lenis && !reduce) lenis.scrollTo(0, { duration: 1.6 });
+    else scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    const target = $('.skip') ? $('#main') : null;
+    if (target) { target.setAttribute('tabindex', '-1'); setTimeout(() => target.focus({ preventScroll: true }), 50); }
+  });
+
   window.KNGHT = { Sound, get lenis() { return lenis; }, resize: () => { sizeWorlds(); onScroll(); } };
 
   /* ---------- Toronto time in the hero ---------- */

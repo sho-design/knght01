@@ -534,6 +534,18 @@ html.lenis,html.lenis body{height:auto}
 @media (max-width:600px){.nav .sound{display:none}}
 @media (prefers-reduced-motion:reduce){.mnav,.mnav__list li,.nav__toggle span{transition:none}}
 
+/* Back to top */
+.totop{position:fixed;right:calc(var(--gutter) - 4px);bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:70;width:48px;height:48px;padding:0;border:0;border-radius:50%;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--argent);cursor:pointer;opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .5s var(--ease),transform .6s var(--ease)}
+.totop.is-on{opacity:1;transform:none;pointer-events:auto}
+.totop svg{display:block;width:100%;height:100%}
+.totop circle{fill:none;stroke-width:1}
+.totop__track{stroke:var(--rule-strong)}
+.totop__ring{stroke:currentColor;stroke-dasharray:100;stroke-dashoffset:100;transform:rotate(-90deg);transform-origin:50% 50%}
+.totop path{transition:transform .4s var(--ease)}
+.totop:hover path{transform:translateY(-2px)}
+.totop:focus-visible{outline:1px solid var(--argent);outline-offset:4px}
+@media (prefers-reduced-motion:reduce){.totop,.totop path{transition:none}}
+
 /* Booking page */
 .book.whero{padding-top:calc(var(--nav-h) + clamp(28px,4vh,56px));padding-bottom:clamp(48px,6vw,90px)}
 .book__grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,80px);align-items:end}
