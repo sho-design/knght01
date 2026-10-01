@@ -17,6 +17,8 @@ declare -A FILES=(
   [d7cffe34-9afd-4d03-baed-1ff5c1e4e99c.webp]=world-lorelyns-gourmet-desserts.webp
   [eb66760c-d16c-43f8-976d-74c89aec4849.webp]=world-rum-raiders-ring.webp
   [51ffa9fe-d28d-4fa4-bb61-b1540ff3786f.webp]=world-lisa-dang-immigration-law.webp
+  [56012ed1-e8d9-41cf-853e-77e2d0d5a243.webp]=world-wellfit-social-club.webp
+  [29af57a6-44b4-4eec-9e05-c384387b9add.webp]=world-art-colouring.webp
   [e564eff6-2de7-4e88-84f5-b03eac1f5342.mp4]=hero-scrub.mp4
   [850eb902-d4a5-424e-a6cc-84a3ba62df2b.mp4]=film-restoration-medical.mp4
   [9bc2161b-3fbe-4d64-9aa9-a550d24089dd.mp4]=film-black-lotus-coffee.mp4
@@ -25,6 +27,8 @@ declare -A FILES=(
   [bbc35de0-9c24-4720-b5e1-b2a367da6c03.mp4]=film-lorelyns.mp4
   [eb0e5300-7279-422e-a9a3-9f34c33f7b67.mp4]=film-lisa-dang-immigration-law.mp4
   [7e9912bd-d83f-470c-9145-8b3ebac372e0.mp4]=film-rum-raiders-ring.mp4
+  [ca2b8fca-641f-4227-a88b-a10c499ed6ce.mp4]=film-wellfit-social-club.mp4
+  [7b34d099-139f-435c-852a-70ac56491274.mp4]=film-art-colouring.mp4
   [27a2a3ee-1760-4bb5-b106-8b65b6463c38.jpg]=seal-poster.jpg
   [73bcbd63-efa2-4444-8935-9b23c1186c59.mp4]=seal.mp4
 )

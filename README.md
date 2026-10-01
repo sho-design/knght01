@@ -28,7 +28,7 @@ The home page:
 1. **Hero**: on desktop, scrolling plays a Seedance 2.5 film: the sword draws itself out of the stone, spins end over end and strikes down into a crystal core, then the camera sweeps back through a turning rune ring to reveal a floating world of castles, techno-gothic towers and airships. Phones and reduced-motion visitors get the original loop. A **category picker** (Clinics, Medspas, Law firms, Spirits, Coffee, Food) makes the page read itself against that category's regulators. It reorders the worlds, rewrites the Law layer and the quiz wording, and is remembered on the next visit. Link to a category with `?for=spirits`.
 2. **Categories marquee**: clinics, medspas, law, spirits, coffee, food.
 3. **Thesis**: the stakes paragraph. Its words light up as you scroll.
-4. **Worlds**: a pinned horizontal gallery of the seven worlds. It becomes a vertical stack on phones. Each plate plays its own short film while it is in view. Each card opens that world's page, and the image carries across the page change.
+4. **Worlds**: a pinned horizontal gallery of the nine worlds. It becomes a vertical stack on phones. Each plate plays its own short film while it is in view. Each card opens that world's page, and the image carries across the page change.
 5. **Seven layers**: a sticky dial with a numeral that rolls from 1 to 7, plus a blade line that fills as you read.
 6. **Score your world**: a seven-question self-check, one question per layer. A segmented dial fills with each answer and the page returns a score out of 70, a verdict band and the weakest layer. "Book the full Verdict" opens an email with the answers filled in. A wax seal is pressed when the result appears. "Download your scorecard" saves a 1080x1350 image of the result. Set `knght:form-endpoint` in the page head to a form service (Formspree, Basin or a CRM webhook) to show an email field with a consent box. Until then nothing is stored or sent.
 7. **Three ways in**: the one white page in the site. It opens edge to edge as it scrolls in.
@@ -57,9 +57,9 @@ All imagery and film was generated with Higgsfield: GPT Image 2.5 for the stills
 | --- | --- |
 | Hero film, 1920x1080, 8 s loop | 0.97 MB |
 | Verdict film, 1920x1080, 6 s | 0.75 MB |
-| Seven world plates, 1200x1500 WebP | 48 to 156 KB each |
+| Nine world plates, 1200x1500 WebP | 48 to 156 KB each |
 | Scroll hero film, 1600x900, 8 s, keyframe every 3 frames | 3.6 MB (desktop only) |
-| Seven world films, 600x800 loops | 100 to 440 KB each, loaded when in view |
+| Nine world films, 600x800 loops | 100 to 440 KB each, loaded when in view |
 | Wax seal film and poster | 95 KB and 48 KB |
 
 The media is currently served from Higgsfield's CDN. To self-host it, run `scripts/localize-assets.sh` once and commit `assets/media/`.

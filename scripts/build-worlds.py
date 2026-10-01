@@ -93,6 +93,33 @@ CATEGORY = {
         "Map": "Product pages, a retailer locator and a shop built for search and AI answers.",
         "Artifacts": "Labels, ingredient panels and retail packaging checked line by line.",
     },
+    "fitness": {
+        "short": "fitness",
+        "label": "Fitness and wellness",
+        "rules": [
+            ("Consumer Protection Act", "Ontario's rules for gym memberships, including a cooling-off period and limits on contract length."),
+            ("Competition Act", "No false or misleading claims about results, and pricing that shows the full cost."),
+            ("CASL", "Consent before every commercial email and text."),
+        ],
+        "Law": "Ontario's Consumer Protection Act for memberships, the Competition Act for claims and pricing, and CASL for every message.",
+        "Language": "Energy that sells the class without promising the body.",
+        "Map": "A Google Business Profile and local search that fill the floor, and booking that starts from social.",
+        "Artifacts": "Walls, cards, gift cards and merch that carry one mark.",
+    },
+    "creative": {
+        "short": "creative products",
+        "label": "Creative products",
+        "rules": [
+            ("Competition Act", "No false or misleading claims, including what a product does for wellbeing."),
+            ("Copyright Act", "Clear rights to every illustration and line of text, including AI-assisted art."),
+            ("Marketplace policies", "Amazon and Shopify rules for listings, content and claims."),
+            ("CASL", "Consent before every commercial email."),
+        ],
+        "Law": "The Competition Act on claims, the Copyright Act on every illustration, and the marketplace rules each title is sold under.",
+        "Language": "Listings, ad copy and search terms that sell the feeling without overstating it.",
+        "Map": "Listings and a store that rank on Amazon, Shopify and search.",
+        "Artifacts": "Covers, interiors and series templates that hold one standard across every title.",
+    },
 }
 
 LAYERS = [
@@ -194,6 +221,38 @@ WORLDS = [
         "where": None, "url": "https://lisadanglaw.com/",
         "plate": "51ffa9fe-d28d-4fa4-bb61-b1540ff3786f.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/eb0e5300-7279-422e-a9a3-9f34c33f7b67.mp4",
         "alt": "A brass compass and a fountain pen on a folded document in striped window light",
+    },
+    {
+        "slug": "wellfit-social-club", "name": "Wellfit", "em": "Social Club", "cat": "fitness",
+        "line": "A boutique Toronto gym, built around a graffiti wall and a community that trains together.",
+        "about": ["Wellfit Social Club is a boutique fitness club in Toronto, offering personalised training and holistic wellness.",
+                  "Its world had to feel high energy and inclusive at once, local and authentic, and ready to expand by franchising."],
+        "where": "Toronto, Ontario", "url": None,
+        "plate": "56012ed1-e8d9-41cf-853e-77e2d0d5a243.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/ca2b8fca-641f-4227-a88b-a10c499ed6ce.mp4",
+        "alt": "A kettlebell and boxing gloves on a gym floor in front of a spray-painted wall",
+        "built": [
+            ("Lore", "A graffiti wall concept, turned into a custom brand system and logo."),
+            ("Map", "A Shopify site with bookings and e-commerce, connected to Google Analytics, Business Profile and local search."),
+            ("Language", "Google Ads for awareness and sign-ups."),
+            ("Artifacts", "Printed collateral for the gym floor, marketing and events."),
+        ],
+        "impact": "Higher local visibility, more bookings, and one brand experience online and in the gym. A clear difference in a saturated market, bringing in new members and keeping them.",
+    },
+    {
+        "slug": "art-colouring", "name": "Art", "em": "Colouring", "cat": "creative",
+        "line": "Colouring as self-expression, story and soul care.",
+        "about": ["Art Colouring reimagines the colouring book, blending mindful creativity with storytelling.",
+                  "Its world had to hold visual sophistication and the simple pleasure of a mindfulness tool, and stay open to a wide audience."],
+        "where": None, "url": None,
+        "plate": "29af57a6-44b4-4eec-9e05-c384387b9add.webp", "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/7b34d099-139f-435c-852a-70ac56491274.mp4",
+        "alt": "An open colouring book with a half-shaded baby dragon beside coloured pencils",
+        "built": [
+            ("Lore", "Book templates and most of the titles across its themed series."),
+            ("Artifacts", "A distinct illustration style for each series."),
+            ("Language", "Branding, ad copy and SEO for Amazon and Shopify listings."),
+            ("Machinery", "Google Ads and Analytics across every platform."),
+        ],
+        "impact": "A scalable content pipeline, sold across platforms to wellness-minded, creative buyers. A hybrid of creative product and mindfulness practice, built for long-term series growth.",
     },
 ]
 

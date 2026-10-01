@@ -38,6 +38,8 @@ Each world is built in this order. No layer is built before Lore.
 - [Lorelyns Gourmet Desserts](https://lorelyns.com/) (allergen-friendly food): nut free, gluten free, plant-based desserts.
 - [Rum Raiders Ring](https://rumraider.com/) (beverage alcohol): premium rum RTDs and spirits, poured in bars and stores across Ontario.
 - [Lisa Dang Immigration Law](https://lisadanglaw.com/) (legal services): a boutique immigration practice where every file is handled by the lawyer, start to finish.
+- Wellfit Social Club (fitness and wellness): a boutique Toronto gym built around a graffiti wall, with bookings, e-commerce and local search in one brand.
+- Art Colouring (creative products): colouring books that blend mindful creativity with storytelling, sold on Amazon and Shopify.
 
 ## Pages
 
@@ -50,3 +52,5 @@ Each world is built in this order. No layer is built before Lore.
 - [Lorelyns Gourmet Desserts](https://knght.com/worlds/lorelyns/): the world, the rules that govern it, and the seven layers read for its category.
 - [Rum Raiders Ring](https://knght.com/worlds/rum-raiders-ring/): the world, the rules that govern it, and the seven layers read for its category.
 - [Lisa Dang Immigration Law](https://knght.com/worlds/lisa-dang-immigration-law/): the world, the rules that govern it, and the seven layers read for its category.
+- [Wellfit Social Club](https://knght.com/worlds/wellfit-social-club/): the world, the rules that govern it, and the seven layers read for its category.
+- [Art Colouring](https://knght.com/worlds/art-colouring/): the world, the rules that govern it, and the seven layers read for its category.
