@@ -9,6 +9,8 @@ rules govern it; it does not claim specific deliverables unless you add them.
 import html
 import os
 
+from PIL import Image  # pip install pillow; reads portfolio image sizes
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CDN = "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW"
 
@@ -256,8 +258,53 @@ WORLDS = [
     },
 ]
 
+# Portfolio images (assets/work/<slug>/<n>.webp), cropped from the Sergio Ho portfolio.
+WORK = {
+    "toronto-beauty": ["Toronto Beauty site pages with nurse profiles, a map search and treatment menus",
+                       "The Toronto Beauty site on a laptop and phone",
+                       "The Toronto Beauty services brochure",
+                       "Toronto Beauty social posts"],
+    "black-lotus-coffee": ["Black Lotus Coffee House bags",
+                           "The team outside the Black Lotus storefront in Da Nang",
+                           "The Black Lotus Shopify store on a laptop and phone",
+                           "Black Lotus merchandise: shirts, apron, hoodie and bottles",
+                           "Black Lotus bags on a retail shelf"],
+    "castleblack-spirits": ["The Castleblack rum range in a presentation banner",
+                            "The Castleblack coconut rum label sheet",
+                            "The Castleblack site on a laptop and phone",
+                            "A Cuba Libre recipe card for Castleblack",
+                            "A bottle of Castleblack spiced rum"],
+    "lorelyns": ["The Lorelyns Shopify store with the variety pack",
+                 "Lorelyn Martin with her desserts in a grocery store",
+                 "Lorelyns business cards",
+                 "Lorelyns desserts in baskets beside a tent card",
+                 "A Lorelyns cookie bag"],
+    "wellfit-social-club": ["The Wellfit Social Club graffiti wall inside the gym",
+                            "Wellfit business cards",
+                            "The Wellfit site on a laptop and phone",
+                            "A Wellfit poster on the gym wall",
+                            "The Wellfit tiger t-shirt"],
+    "art-colouring": ["Kawaii Saurs Volume 1: cover, back cover and pages",
+                      "The Art Colouring store on a laptop and phone",
+                      "Four Kawaii Saurs covers",
+                      "Printed Art Colouring books"],
+}
+
 ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 e = html.escape
+
+
+def justify(ratios, target=3.2):
+    """Split images (in order) into rows whose summed aspect ratios sit closest to target."""
+    n = len(ratios)
+    best = [(0.0, [])] + [(float("inf"), [])] * n
+    for j in range(1, n + 1):
+        for i in range(j):
+            total = sum(ratios[i:j])
+            cost = best[i][0] + (total - target) ** 2
+            if cost < best[j][0]:
+                best[j] = (cost, best[i][1] + [j - i])
+    return best[n][1]
 
 
 def page(i, w):
@@ -302,14 +349,29 @@ def page(i, w):
   </section>
 
 '''
-    film_tag = f'\n            <video muted playsinline loop autoplay preload="auto" poster="{CDN}/{w["plate"]}" src="{film}" aria-hidden="true"></video>' if film else ""
+    if w["slug"] in WORK:
+        items = []
+        for n, alt in enumerate(WORK[w["slug"]], 1):
+            iw, ih = Image.open(os.path.join(ROOT, "assets", "work", w["slug"], f"{n}.webp")).size
+            items.append((n, alt, iw, ih, iw / ih))
+        rows = justify([it[4] for it in items])
+        out, k = [], 0
+        for size in rows:
+            figs = "".join(f'\n            <figure class="wwork__item" style="flex:{r:.3f} 1 0;aspect-ratio:{iw}/{ih}"><img src="../../assets/work/{w["slug"]}/{n}.webp" alt="{e(alt)}" width="{iw}" height="{ih}" loading="lazy" decoding="async"></figure>' for n, alt, iw, ih, r in items[k:k + size])
+            out.append(f'          <div class="wwork__row" data-reveal>{figs}\n          </div>')
+            k += size
+        figs = "\n".join(out)
+        built_html += f'''  <section class="wsec wwork">
+    <div class="wrap">
+      <p class="eyebrow">From the work</p>
+      <div class="wwork__grid">
+{figs}
+      </div>
+    </div>
+  </section>
 
-    def card(x, label):
-        return f'''<a class="wnav__card" href="../{x["slug"]}/">
-          <span class="wnav__label">{label}</span>
-          <img src="{CDN}/{x["plate"]}" alt="" loading="lazy" width="1200" height="1500">
-          <span class="wnav__name">{e(x["name"])} <em>{e(x["em"])}</em></span>
-        </a>'''
+'''
+    film_tag = f'\n            <video muted playsinline loop autoplay preload="auto" poster="{CDN}/{w["plate"]}" src="{film}" aria-hidden="true"></video>' if film else ""
 
     return f'''<!doctype html>
 <html lang="en-CA" class="no-js">
@@ -410,9 +472,19 @@ def page(i, w):
     </div>
   </section>
 
-  <nav class="wnav wrap" aria-label="More worlds">
-    {card(prev_w, "Previous world")}
-    {card(next_w, "Next world")}
+  <nav class="wnext" aria-label="More worlds">
+    <a class="wnext__link" href="../{next_w["slug"]}/" data-cursor="Enter">
+      <span class="wrap wnext__inner">
+        <span class="eyebrow">Next world · {ROMAN[(i + 1) % len(WORLDS)]}</span>
+        <span class="wnext__name">{e(next_w["name"])} <em>{e(next_w["em"])}</em></span>
+        <span class="wnext__line">{e(next_w["line"])}</span>
+      </span>
+      <img class="wnext__plate" src="{CDN}/{next_w["plate"]}" alt="" loading="lazy" width="1200" height="1500">
+    </a>
+    <div class="wrap wnext__foot">
+      <a class="link" href="../{prev_w["slug"]}/">Previous: {e(prev_w["name"])} {e(prev_w["em"])}</a>
+      <a class="link" href="../../#worlds">All worlds</a>
+    </div>
   </nav>
 
   <section class="wcta">
