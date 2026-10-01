@@ -645,7 +645,7 @@ html.lenis,html.lenis body{height:auto}
 .layerbar a b{font:400 .95rem/1 var(--serif);font-style:italic}
 .layerbar a:hover,.layerbar a.is-on{color:var(--argent);border-color:var(--argent)}
 .layer__pager{display:flex;justify-content:space-between;gap:24px;padding-block:28px;border-top:1px solid var(--rule)}
-.layer__more{display:inline-block;margin-top:14px;font-size:.88rem}
+.layer__more{grid-column:2;justify-self:start;display:inline-block;margin-top:14px;font-size:.88rem}
 
 /* Gallery captions (layer pages and walls) */
 .wwork__item{position:relative}
@@ -668,3 +668,150 @@ html.lenis,html.lenis body{height:auto}
 .chapter--off > *{opacity:.38}
 .chapter--off h3 a{text-decoration:none;color:inherit}
 .chapter--off h3 a:hover{opacity:.8}
+
+/* ===== Chapters: the home page read as five chapters ===== */
+/* Chapter openers */
+.chap{position:relative;overflow:hidden;padding-block:clamp(72px,13vh,150px) clamp(40px,7vh,80px)}
+.chap__in{position:relative;display:flex;flex-direction:column;gap:22px}
+.chap__num{position:absolute;right:var(--gutter);bottom:-.16em;font:italic 300 clamp(9rem,26vw,24rem)/1 var(--serif);color:transparent;-webkit-text-stroke:1px var(--rule-strong);letter-spacing:-.04em;pointer-events:none;transform:translate3d(0,var(--drift,0px),0);user-select:none}
+.chap__meta{position:relative;display:flex;align-items:center;gap:14px;margin:0;font-size:.78rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--ash)}
+.chap__meta b{font:italic 400 clamp(1.6rem,3vw,2.4rem)/1 var(--serif);letter-spacing:-.01em;text-transform:none;color:var(--argent)}
+.chap__sigil{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;color:var(--argent)}
+.chap__sword{position:relative;display:block;width:clamp(220px,42vw,580px);height:auto;overflow:visible;fill:none;stroke:var(--argent);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+.js .chap__sword *{stroke-dasharray:1;stroke-dashoffset:1}
+.js .chap__meta{opacity:0;transform:translateY(14px);transition:opacity .8s var(--ease-out),transform .9s var(--ease-out)}
+.chap.is-in .chap__meta{opacity:1;transform:none}
+.chap.is-in .chap__sword circle{stroke-dashoffset:0;transition:stroke-dashoffset .5s var(--ease-out) .15s}
+.chap.is-in .chap__sword path{stroke-dashoffset:0;transition:stroke-dashoffset .5s var(--ease-out) .45s}
+.chap.is-in .chap__sword .chap__blade{transition:stroke-dashoffset 1.4s var(--ease-out) .75s}
+
+/* Chapter rail */
+.crail{position:fixed;left:18px;top:50%;z-index:55;transform:translate(-8px,-50%);opacity:0;pointer-events:none;color:#fff;mix-blend-mode:difference;transition:opacity .5s var(--ease),transform .6s var(--ease)}
+.crail.is-on{opacity:1;transform:translate(0,-50%);pointer-events:auto}
+.crail ol{position:relative;z-index:1;display:flex;flex-direction:column;gap:22px;margin:0;padding:0;list-style:none}
+.crail a{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none;opacity:.42;transition:opacity .4s}
+.crail a.is-past{opacity:.7}
+.crail a.is-on,.crail a:hover,.crail a:focus-visible{opacity:1}
+.crail__sigil{flex:none;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s var(--ease-out)}
+.crail a.is-on .crail__sigil{transform:scale(1.18)}
+.crail__label{font:500 .7rem/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;opacity:0;transform:translateX(-6px);transition:opacity .3s,transform .4s var(--ease-out)}
+.crail__label i{font:italic 400 .95rem var(--serif);letter-spacing:0;text-transform:none;margin-right:4px}
+.crail a:hover .crail__label,.crail a:focus-visible .crail__label{opacity:1;transform:none}
+.crail__line{position:absolute;left:9.5px;top:-28px;bottom:-28px;width:1px;background:rgba(255,255,255,.25)}
+.crail__line i{position:absolute;inset:0;background:#fff;transform-origin:top;transform:scaleY(0)}
+@media (max-width:1199px){.crail{display:none}}
+
+/* Bottom bar on phones: where you are, and the way in */
+.cbar{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:65;display:none;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 18px;border:1px solid var(--rule-strong);border-radius:999px;background:rgba(0,0,0,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transform:translateY(calc(100% + 24px));transition:transform .5s var(--ease)}
+.cbar.is-on{transform:none}
+.cbar__chap{display:flex;align-items:baseline;gap:8px;min-width:0;margin:0;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cbar__n{font:italic 400 1.05rem/1 var(--serif);letter-spacing:0;text-transform:none;color:var(--argent)}
+@media (max-width:900px){.cbar{display:flex}.cbar-on .totop{transform:translateY(-64px)}}
+
+/* The self-check is a white page */
+.score{--argent:#000;--ash:#4d4d4d;--ash-2:#6b6b6b;--rule:rgba(0,0,0,.14);--rule-strong:rgba(0,0,0,.32);--sable:#fff;background:var(--vellum);color:var(--ink);border-top:0;clip-path:inset(0 var(--clip-x,0px) round var(--clip-r,0px))}
+.score ::selection{background:#000;color:#fff}
+.score .dial .seg-track.is-now{animation-name:segPulseInk}
+@keyframes segPulseInk{50%{stroke:rgba(0,0,0,.5)}}
+.score :focus-visible{outline-color:#000}
+
+/* Intermission: strategy first, then the sword */
+.vow{--kd:1;--sd:1;--td:1;position:relative;border-top:1px solid var(--rule)}
+.vow__pin{display:flex;align-items:center;min-height:70svh;padding-block:clamp(80px,12vh,140px)}
+.vow.is-live{height:230vh;border-top:0}
+.vow.is-live .vow__pin{position:sticky;top:0;height:100svh;min-height:0;padding-block:0;overflow:hidden}
+.vow__in{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(20px,3vh,32px);width:100%}
+.vow__art{width:min(100%,820px);height:auto;overflow:visible;fill:none;stroke:var(--argent);stroke-linejoin:round;stroke-linecap:round}
+.vow__art *{stroke-width:.5}
+.vow__knight{transform:translateX(calc((1 - var(--kd)) * -36px));opacity:calc(.15 + var(--kd) * .85)}
+.vow__knight path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--kd))}
+.vow__knight circle{fill:var(--argent);stroke:none;opacity:clamp(0,calc((var(--kd) - .9) * 10),1)}
+.vow__sword > :not(.vow__blade){opacity:clamp(0,calc(var(--sd) * 4),1)}
+.vow__blade{transform-box:fill-box;transform-origin:left center;transform:scaleX(var(--sd))}
+.vow__k,.vow__h,.vow__p{opacity:var(--td);transform:translateY(calc((1 - var(--td)) * 24px))}
+.vow__h{font-size:clamp(2.8rem,7vw,6.6rem)}
+.vow__h em{font-style:italic}
+.vow__p{margin:0;max-width:44ch;color:var(--ash);font-size:1.1rem}
+@media (max-width:900px){.vow.is-live{height:190vh}}
+
+/* Stacked offers */
+.offers{display:block;border-top:0}
+.offer{position:sticky;top:calc(var(--nav-h) + 20px + var(--i,0) * 26px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto 1fr auto auto auto;gap:20px clamp(32px,5vw,80px);min-height:min(62vh,540px);margin-bottom:12vh;border:1px solid var(--rule-ink-strong);background:var(--vellum);transform:scale(var(--s,1));transform-origin:50% 0;box-shadow:0 -24px 48px -32px rgba(0,0,0,.35)}
+.offer:last-child{margin-bottom:0}
+.offer + .offer{border-left:1px solid var(--rule-ink-strong)}
+.offer::after{content:"";position:absolute;inset:0;z-index:2;background:#000;opacity:calc(var(--dim,0) * .35);pointer-events:none}
+.offer__top{grid-column:1/-1}
+.offer h3{grid-column:1;grid-row:3/6;align-self:end;margin:0}
+.offer > p,.offer__facts,.offer__link{grid-column:2}
+.offer > p{grid-row:3}.offer__facts{grid-row:4}.offer__link{grid-row:5}
+.offer > p{max-width:46ch}
+@media (max-width:900px){
+  .offer{grid-template-columns:minmax(0,1fr);grid-template-rows:none;top:calc(16px + var(--i,0) * 18px);min-height:0;margin-bottom:8vh}
+  .offer h3,.offer > p,.offer__facts,.offer__link{grid-column:1;grid-row:auto}
+}
+
+/* Worlds swipe on phones */
+.worlds__hint{display:none}
+@media (max-width:900px){
+  .worlds__head{align-items:center}
+  .worlds__count{display:block;font-size:1.2rem}
+  .worlds__hint{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);transition:opacity .4s}
+  .worlds__hint::after{content:"\2192";animation:nudge 1.6s var(--ease) infinite}
+  .worlds__hint.is-gone{opacity:0}
+  .worlds__pin > .worlds__intro{padding:28px var(--gutter) 0}
+  .worlds__track{flex-direction:row;align-items:stretch;gap:14px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);padding:28px var(--gutter) 20px;scrollbar-width:none}
+  .worlds__track::-webkit-scrollbar{display:none}
+  .world{flex:0 0 min(80vw,360px);width:auto;scroll-snap-align:start;grid-template-columns:minmax(0,1fr);gap:18px}
+  .world__plate{aspect-ratio:1}
+  .world__body{gap:12px}
+  .world__name{font-size:clamp(2rem,8.4vw,2.8rem)}
+  .worlds__bar{display:block;margin:0 var(--gutter) 8px}
+  .worlds__head{gap:12px}
+}
+@keyframes nudge{50%{transform:translateX(4px)}}
+
+/* Layer sigils */
+.layer__n{display:flex;flex-direction:column;gap:14px}
+.layer__sigil{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;color:var(--argent);opacity:.8;transition:opacity .6s,transform .8s var(--ease-out)}
+.layer.on .layer__sigil{opacity:1;transform:rotate(-6deg) scale(1.06)}
+
+/* Work drawers inside the Artifacts and Ground rows */
+.layer__work{grid-column:2;margin-top:18px;border-top:1px solid var(--rule)}
+.layer__work summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;cursor:pointer;list-style:none;font:italic 400 1.3rem/1.2 var(--serif)}
+.layer__work summary::-webkit-details-marker{display:none}
+.layer__work summary::after{content:"+";font:300 1.6rem/1 var(--sans);transition:transform .4s var(--ease)}
+.layer__work[open] summary::after{transform:rotate(45deg)}
+.layer__work-n{margin-left:auto;font:500 .72rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
+.layer__work .wwork__grid{padding-bottom:8px}
+.layer__work[open] .wwork__grid{animation:qIn .7s var(--ease-out)}
+
+/* Knight-move hover: a board appears and the knight makes its L */
+.world__board,.world__knight{position:absolute;pointer-events:none;opacity:0}
+.world__board{inset:0;z-index:1;background:repeating-conic-gradient(rgba(255,255,255,.09) 0 25%,transparent 0 50%) 0 0/25% 20%;transition:opacity .6s var(--ease)}
+.world__knight{z-index:2;left:37.5%;top:70%;width:12.5%;height:10%;display:grid;place-items:center;color:#fff}
+.world__knight svg{width:78%;height:auto;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
+.world__knight circle{fill:currentColor;stroke:none}
+@media (hover:hover) and (min-width:901px){
+  .world:hover .world__board{opacity:1}
+  .world:hover .world__knight{animation:kmove 1.15s var(--ease-out) .15s forwards}
+}
+@keyframes kmove{
+  0%{opacity:0;transform:translate(0,30%)}
+  18%{opacity:1;transform:translate(0,0)}
+  52%{opacity:1;transform:translate(0,-200%)}
+  62%{transform:translate(0,-215%)}
+  100%{opacity:1;transform:translate(100%,-200%)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .chap__num{transform:none}
+  .js .chap__sword *{stroke-dashoffset:0}
+  .js .chap__meta{opacity:1;transform:none}
+  .offer{transform:none}
+  .offer::after{display:none}
+  .world:hover .world__knight{animation:none;opacity:1;transform:translate(100%,-200%)}
+  .worlds__hint::after{animation:none}
+}
+.layer__work .wwork__item figcaption{left:6px;right:6px;bottom:6px;width:max-content;max-width:calc(100% - 12px);font-size:.58rem;letter-spacing:.1em;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.worlds__count,.layer__work-n{white-space:nowrap}
+@media (max-width:900px){.worlds__head .eyebrow{font-size:.7rem;letter-spacing:.18em}}

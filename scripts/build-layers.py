@@ -444,29 +444,20 @@ def update_home():
     a = "These are the first nine.</p>" if "These are the first nine.</p>" in s else "All were built inside the rules.</p>"
     s = s.replace(a, a + f"\n          <!--wfilter-->{chips}<!--/wfilter-->", 1)
 
+    # strip the work drawers before relinking, so the layer regex sees a clean row
+    s = re.sub(r'<!--lwork-->.*?<!--/lwork-->', "", s, flags=re.S)
+
     # links from the codex layer list to each layer page
     for n in NAMES:
         s = re.sub(rf'(<li class="layer" data-name="{n}">.*?</ul>)(?:<a class="link layer__more"[^>]*>[^<]*</a>)?(</li>)',
                    lambda m, n=n: m.group(1) + f'<a class="link layer__more" href="layers/{n.lower()}/">The {n} layer</a>' + m.group(2), s, count=1, flags=re.S)
 
-    # objects and spaces walls
-    objects = work_images("Artifacts")
-    spaces = work_images("Ground")
-    beyond = f'''<!--beyond-->
-  <section class="beyond" id="beyond" aria-labelledby="beyond-title">
-    <div class="wrap">
-      <p class="eyebrow">Beyond the screen</p>
-      <h2 class="display beyond__h" id="beyond-title" data-split>Things you can hold. <br><em>Rooms you can walk into.</em></h2>
-      <p class="beyond__lede" data-reveal>A world is more than a website. Labels, packaging, menus, cards and the room itself, built to the same standard and checked against the same rules.</p>
-      <p class="eyebrow beyond__sub">Artifacts · <a class="link" href="layers/artifacts/">The Artifacts layer</a></p>
-      {rows(objects, "", target=4.2)}
-      <p class="eyebrow beyond__sub">Ground · <a class="link" href="layers/ground/">The Ground layer</a></p>
-      {rows(spaces, "", target=3.6)}
-    </div>
-  </section>
-<!--/beyond-->'''
-    s = re.sub(r'<!--beyond-->.*?<!--/beyond-->', "", s, flags=re.S)
-    s = s.replace("  <!-- III. Layers -->", beyond + "\n\n  <!-- III. Layers -->", 1)
+    # objects and spaces: a drawer of real work inside the Artifacts and Ground rows
+    for n, target, label in (("Artifacts", 2.8, "Things you can hold"), ("Ground", 2.6, "Rooms you can walk into")):
+        drawer = (f'<!--lwork--><details class="layer__work"><summary><span>{label}</span><span class="layer__work-n">'
+                  f'{len(work_images(n))} pieces</span></summary>{rows(work_images(n), "", target=target)}</details><!--/lwork-->')
+        s = s.replace(f'The {n} layer</a></li>', f'The {n} layer</a>{drawer}</li>', 1)
+    s = re.sub(r'\n*<!--beyond-->.*?<!--/beyond-->\n*', "\n\n", s, flags=re.S)
     open(p, "w", encoding="utf-8").write(s)
 
 
