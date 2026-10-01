@@ -417,15 +417,24 @@ def page(i, w):
         meta_html += f'\n            <div><dt>Online</dt><dd><a class="link" href="{w["url"]}" rel="noopener">{host}</a></dd></div>'
     about = "\n".join(f"        <p>{e(p)}</p>" for p in w["about"])
     built_html = ""
-    built = [(name, text) for name, _ in LAYERS for slug, text in LAYER_EXAMPLES[name] if slug == w["slug"]]
+    built = {name: text for name, _ in LAYERS for slug, text in LAYER_EXAMPLES[name] if slug == w["slug"]}
     if built:
-        items = "\n".join(f'          <li><b><a class="link" href="../../layers/{t.lower()}/">{e(t)}</a></b><span>{e(d)}</span></li>' for t, d in built)
+        rows = []
+        for n, (name, _) in enumerate(LAYERS, 1):
+            if name in built:
+                rows.append(f'          <li class="chapter" data-reveal><span class="chapter__n">{n}</span><h3><a class="link" href="../../layers/{name.lower()}/">{name}</a></h3><p>{e(built[name])}</p></li>')
+            else:
+                rows.append(f'          <li class="chapter chapter--off" data-reveal><span class="chapter__n">{n}</span><h3><a href="../../layers/{name.lower()}/">{name}</a></h3><p>Not in this world&rsquo;s scope.</p></li>')
+        count = "all seven built" if len(built) == 7 else f"{len(built)} of 7 built"
         built_html = f'''  <section class="wsec">
     <div class="wrap wsec__grid">
-      <p class="eyebrow">What we built</p>
-      <ul class="wrules" data-reveal>
-{items}
-      </ul>
+      <div class="wsec__aside">
+        <p class="eyebrow">What we built</p>
+        <h2 class="display wsec__h" data-split>Seven layers, <br><em>{count}</em></h2>
+      </div>
+      <ol class="chapters">
+{chr(10).join(rows)}
+      </ol>
     </div>
   </section>
 
@@ -554,18 +563,6 @@ def page(i, w):
       <ul class="wrules" data-reveal>
 {rules}
       </ul>{more}
-    </div>
-  </section>
-
-  <section class="wsec">
-    <div class="wrap wsec__grid">
-      <div class="wsec__aside">
-        <p class="eyebrow">The codex</p>
-        <h2 class="display wsec__h" data-split>Seven layers, <br><em>read for {e(c["short"])}</em></h2>
-      </div>
-      <ol class="chapters">
-{chr(10).join(chapters)}
-      </ol>
     </div>
   </section>
 
