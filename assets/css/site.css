@@ -523,6 +523,8 @@ html.lenis,html.lenis body{height:auto}
 .book__lede{margin:0;max-width:44ch;color:var(--ash);font-size:1.06rem;line-height:1.6}
 .book__micro{margin:0;font:italic 400 1.2rem/1.4 var(--serif);color:var(--argent)}
 .book__cal{grid-column:1/-1;margin-top:clamp(24px,4vw,56px);border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);background:#0a0a0a;scroll-margin-top:calc(var(--nav-h) + 16px)}
+/* The site declares color-scheme:dark; Calendly does not. A mismatch makes the browser paint the embed white, so the embed box opts out. */
+.book__cal{color-scheme:normal}
 .book__cal .calendly-inline-widget{width:100%}
 .book__fallback{margin:0;padding:14px 0;border-top:1px solid var(--rule);font-size:.9rem;color:var(--ash)}
 @media (max-width:900px){.book__grid{grid-template-columns:minmax(0,1fr)}.book__title,.book__side{grid-column:1}.book__cal .calendly-inline-widget{height:1040px!important}}
