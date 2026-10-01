@@ -110,7 +110,7 @@
   const bar = $('.worlds__bar i');
   const countNow = $('.worlds__count b');
   const worldCards = $$('.world', track || document);
-  const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+  const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
   const horizontal = () => matchMedia('(min-width: 901px)').matches;
   let travel = 0;
   const sizeWorlds = () => {

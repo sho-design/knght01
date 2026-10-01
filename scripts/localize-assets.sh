@@ -15,6 +15,8 @@ declare -A FILES=(
   [f9f4237f-3a1c-4d7b-970d-325e798efbcc.webp]=world-castleblack-spirits.webp
   [2c1fbed2-57af-403d-aba0-96e21e6f1312.webp]=world-toronto-beauty.webp
   [d7cffe34-9afd-4d03-baed-1ff5c1e4e99c.webp]=world-lorelyns-gourmet-desserts.webp
+  [eb66760c-d16c-43f8-976d-74c89aec4849.webp]=world-rum-raiders-ring.webp
+  [51ffa9fe-d28d-4fa4-bb61-b1540ff3786f.webp]=world-lisa-dang-immigration-law.webp
 )
 for src in "${!FILES[@]}"; do
   dest="assets/media/${FILES[$src]}"
