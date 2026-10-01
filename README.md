@@ -75,7 +75,7 @@ The media is currently served from Higgsfield's CDN. To self-host it, run `scrip
 
 ## Before launch
 
-- Booking runs through `mailto:hello@sergioho.com`. Swap in a booking link (Cal.com, Calendly, Jane) when one exists.
+- Booking runs through `book/`, which embeds Calendly (`calendly.com/sho-knght/30min`). Contact email is sho@knght.com. No phone number is published.
 - To capture quiz results as leads, post the answers to a form service (Formspree, Basin, a CRM webhook) in `finish()` in `site.js`.
 - Add analytics and consent mode if needed (see the growth-forge tracking plan).
 - Replace the world plates with real photography from each world as it becomes available.

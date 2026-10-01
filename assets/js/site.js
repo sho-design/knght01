@@ -546,6 +546,56 @@
     }
   }
 
+  /* ---------- Mobile menu (built from the page's own nav links) ---------- */
+  const navBar = $('.nav');
+  const navLinks = $$('.nav nav ul a');
+  if (navBar && navLinks.length) {
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'nav__toggle';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', 'mnav');
+    toggle.setAttribute('aria-label', 'Open menu');
+    toggle.innerHTML = '<span></span><span></span>';
+    ($('.nav__end', navBar) || $('.wrap', navBar)).appendChild(toggle);
+
+    const cta = $('.btn', navBar);
+    const panel = document.createElement('div');
+    panel.id = 'mnav';
+    panel.className = 'mnav';
+    panel.hidden = true;
+    panel.innerHTML = `<nav aria-label="Menu"><ol class="mnav__list">${navLinks.map((a, i) => `<li style="--i:${i}"><a href="${a.getAttribute('href')}">${a.textContent.trim()}</a></li>`).join('')}</ol></nav>`
+      + `<div class="mnav__foot">${cta ? `<a class="btn" href="${cta.getAttribute('href')}">${cta.textContent.trim()}</a>` : ''}<a class="link" href="mailto:sho@knght.com">sho@knght.com</a></div>`;
+    document.body.appendChild(panel);
+
+    let closeTimer = 0;
+    const setMenu = (open) => {
+      if (open === root.classList.contains('menu-open')) return;
+      clearTimeout(closeTimer);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      if (open) {
+        panel.hidden = false;
+        requestAnimationFrame(() => root.classList.add('menu-open'));
+        navBar.classList.remove('is-hidden');
+        if (lenis) lenis.stop();
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => { const first = $('a', panel); if (first) first.focus({ preventScroll: true }); }, 60);
+      } else {
+        root.classList.remove('menu-open');
+        if (lenis) lenis.start();
+        document.body.style.overflow = '';
+        closeTimer = setTimeout(() => { panel.hidden = true; }, 450);
+      }
+    };
+    toggle.addEventListener('click', () => setMenu(!root.classList.contains('menu-open')));
+    panel.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && root.classList.contains('menu-open')) { setMenu(false); toggle.focus(); }
+    });
+    matchMedia('(min-width: 901px)').addEventListener('change', (e) => { if (e.matches) setMenu(false); });
+  }
+
   window.KNGHT = { Sound, get lenis() { return lenis; }, resize: () => { sizeWorlds(); onScroll(); } };
 
   /* ---------- Toronto time in the hero ---------- */

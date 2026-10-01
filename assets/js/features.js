@@ -204,7 +204,7 @@
       status.textContent = 'Sent. Check your inbox.';
       lead.reset();
     } catch (err) {
-      status.textContent = 'That did not go through. Download the scorecard instead, or email hello@sergioho.com.';
+      status.textContent = 'That did not go through. Download the scorecard instead, or email sho@knght.com.';
     }
   });
 
