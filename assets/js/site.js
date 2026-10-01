@@ -122,7 +122,7 @@
   } else {
     const count = $('.loader__count');
     const start = performance.now();
-    const dur = 1500;
+    const dur = 800;
     const tick = (t) => {
       const p = clamp((t - start) / dur, 0, 1);
       const eased = 1 - Math.pow(1 - p, 3);
@@ -144,6 +144,42 @@
     const lines = el.innerHTML.split(/<br\s*\/?>/i);
     el.innerHTML = lines.map((l) => `<span class="line"><span>${l.trim()}</span></span>`).join('');
     el.classList.add('split');
+  });
+
+
+  /* ---------- Measurement ----------
+     Events go to window.dataLayer on every page. Google Tag Manager loads only
+     when GTM_ID is set below; until then nothing leaves the browser. */
+  const GTM_ID = '';
+  window.dataLayer = window.dataLayer || [];
+  const sendEvent = (event, params = {}) => window.dataLayer.push({ event, ...params });
+  window.KNGHT_TRACK = sendEvent;
+  if (/^GTM-[A-Z0-9]+$/.test(GTM_ID)) {
+    window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+    const g = document.createElement('script');
+    g.async = true;
+    g.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
+    document.head.appendChild(g);
+  }
+  // Every click that heads for the booking page, labelled by button text and section.
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href]');
+    if (!a || !/(^|\/)book\/?(\?|#|$)/.test(a.getAttribute('href'))) return;
+    const where = a.closest('section[id], section[class], header, footer, .mnav');
+    sendEvent('cta_click', {
+      cta_label: a.textContent.trim().replace(/\s+/g, ' '),
+      cta_location: where ? (where.id || where.className.split(' ')[0] || where.tagName.toLowerCase()) : 'page',
+      page_path: location.pathname,
+    });
+  });
+  document.addEventListener('knght:verdict', (e) => sendEvent('quiz_complete', { score: e.detail.total, band: e.detail.band, weakest_layer: e.detail.weak }));
+  if (document.body.classList.contains('bookpage')) sendEvent('book_page_view', { referrer: document.referrer || '(direct)' });
+  // Calendly reports its steps to the parent page through postMessage.
+  addEventListener('message', (e) => {
+    if (!/calendly\.com$/.test((() => { try { return new URL(e.origin).hostname; } catch (err) { return ''; } })())) return;
+    const ev = e.data && e.data.event;
+    if (ev === 'calendly.date_and_time_selected') sendEvent('booking_slot_picked');
+    if (ev === 'calendly.event_scheduled') sendEvent('calendly_booked', { value: 0, currency: 'CAD' });
   });
 
   /* ---------- Thesis: wrap words so they light up with scroll ---------- */

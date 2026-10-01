@@ -185,6 +185,7 @@
       a.href = URL.createObjectURL(blob);
       a.download = `knght-verdict-${lastVerdict.total}-of-70.png`;
       document.body.appendChild(a); a.click(); a.remove();
+      if (window.KNGHT_TRACK) window.KNGHT_TRACK('scorecard_download', { score: lastVerdict.total });
       setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     }, 'image/png');
   });

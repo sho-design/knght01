@@ -49,6 +49,16 @@ Motion respects `prefers-reduced-motion`: the intro, the films and the scroll ef
 
 `worlds/<slug>/index.html` holds each world's film, the sector, the rules that govern it, and the seven layers read for its category, with links to the previous and next worlds. The pages are generated, so edit `WORLDS` and `CATEGORY` in `scripts/build-worlds.py` and run `python3 scripts/build-worlds.py`. Only add verified facts. The pages describe each world and its rules. Where a world has optional `built` and `impact` entries (taken from the Sergio Ho portfolio), the page adds "What we built" and "What changed". Images in `assets/work/<slug>/` (cropped from the portfolio PDF and listed in `WORK`) become a "From the work" gallery, laid out in full-width rows at build time (needs Pillow). The page ends with a large "Next world" band.
 
+## Category, booking and policy pages
+
+- `for/<category>/` (clinics, medspas, law-firms, spirits, coffee, food): search landing pages generated with the world pages from `FOR_PAGES` in `scripts/build-worlds.py`. Each opens with a direct answer, then the rules, the seven layers for that category and its worlds.
+- `book/`: the Verdict Call page with the Calendly embed and a FAQ (with FAQPage structured data).
+- `privacy/` and `accessibility/`: plain-language policy pages, linked from every footer.
+
+## Measurement
+
+`assets/js/site.js` pushes events to `window.dataLayer`: `cta_click` (every link to the booking page, with label and section), `quiz_complete`, `scorecard_download`, `book_page_view`, `booking_slot_picked` and `calendly_booked` (from Calendly's own messages). Google Tag Manager loads only when `GTM_ID` near the top of the measurement block is set to your container ID. Mark `calendly_booked` as the conversion in GA4. When analytics goes live, add it to the "Who else sees it" list on the privacy page.
+
 ## Media
 
 All imagery and film was generated with Higgsfield: GPT Image 2.5 for the stills and Seedance 2.5 for the films. Everything was then graded to black and white and compressed. A first visit on desktop loads about 4 MB of media. The rest loads as visitors reach it.

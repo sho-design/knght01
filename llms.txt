@@ -43,6 +43,12 @@ Each world is built in this order. No layer is built before Lore.
 ## Pages
 
 - [Home](https://knght.com/): the studio, the worlds, the seven layers, a free self-check and the three ways in.
+- [Brand worlds for clinics](https://knght.com/for/clinics/): the rules, the seven layers read for clinics, and the worlds built for them.
+- [Brand worlds for medspas](https://knght.com/for/medspas/): the rules, the seven layers read for medspas, and the worlds built for them.
+- [Brand worlds for law firms](https://knght.com/for/law-firms/): the rules, the seven layers read for law firms, and the worlds built for them.
+- [Brand worlds for spirits brands](https://knght.com/for/spirits/): the rules, the seven layers read for spirits brands, and the worlds built for them.
+- [Brand worlds for coffee brands](https://knght.com/for/coffee/): the rules, the seven layers read for coffee brands, and the worlds built for them.
+- [Brand worlds for food brands](https://knght.com/for/food/): the rules, the seven layers read for food brands, and the worlds built for them.
 - [Book the Verdict Call](https://knght.com/book/): a free 30-minute call. Leave with your three biggest risks, one fix for this week, and a straight answer on fit.
 - [Score your world](https://knght.com/#score): a seven-question self-check that scores a brand out of 70 and names its weakest layer.
 - [Restoration Medical](https://knght.com/worlds/restoration-medical/): the world, the rules that govern it, and the seven layers read for its category.

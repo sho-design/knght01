@@ -7,6 +7,7 @@ Only put verified facts in WORLDS. The page says what the world is and which
 rules govern it; it does not claim specific deliverables unless you add them.
 """
 import html
+import json
 import os
 
 from PIL import Image  # pip install pillow; reads portfolio image sizes
@@ -329,6 +330,8 @@ def page(i, w):
     for n, (name, what) in enumerate(LAYERS, 1):
         extra = f'<p class="chapter__cat">{e(c[name])}</p>' if name in c else ""
         chapters.append(f'''          <li class="chapter" data-reveal><span class="chapter__n">{n}</span><h3>{name}</h3><p>{e(what)}</p>{extra}</li>''')
+    fp = next((x for x in FOR_PAGES if x["cat"] == w["cat"]), None)
+    more = f'\n      <p class="wrules__more"><a class="link" href="../../for/{fp["slug"]}/">Brand worlds for {e(fp["noun"])}</a></p>' if fp else ""
     meta = [("Sector", c["label"]), ("Rules", ", ".join(t for t, _ in c["rules"]))]
     if w["where"]:
         meta.append(("Where", w["where"]))
@@ -473,7 +476,7 @@ def page(i, w):
       <p class="eyebrow">The rules of this world</p>
       <ul class="wrules" data-reveal>
 {rules}
-      </ul>
+      </ul>{more}
     </div>
   </section>
 
@@ -481,7 +484,7 @@ def page(i, w):
     <div class="wrap wsec__grid">
       <div class="wsec__aside">
         <p class="eyebrow">The codex</p>
-        <h2 class="display wsec__h" data-split>Seven layers,<br><em>read for {e(c["short"])}</em></h2>
+        <h2 class="display wsec__h" data-split>Seven layers, <br><em>read for {e(c["short"])}</em></h2>
       </div>
       <ol class="chapters">
 {chr(10).join(chapters)}
@@ -506,7 +509,7 @@ def page(i, w):
 
   <section class="wcta">
     <div class="wrap">
-      <h2 class="display" data-split>Every world starts<br>with a <em class="sheen">Verdict.</em></h2>
+      <h2 class="display" data-split>Every world starts <br>with a <em class="sheen">Verdict.</em></h2>
       <p>Tell us what you are building. We will tell you what is holding it up and what will bring it down.</p>
       <div class="actions">
         <a class="btn" href="../../book/" data-magnetic>Book a Verdict
@@ -520,7 +523,183 @@ def page(i, w):
 
 <footer class="footer">
   <div class="wrap">
-    <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT. A Sergio Ho studio, Toronto.</span><span><a href="../../privacy/">Privacy</a> · <a href="../../">knght.com</a></span></div>
+    <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT. A Sergio Ho studio, Toronto.</span><span><a href="../../privacy/">Privacy</a> · <a href="../../accessibility/">Accessibility</a> · <a href="../../">knght.com</a></span></div>
+  </div>
+</footer>
+
+<script src="../../assets/js/vendor/lenis.min.js" defer></script>
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>
+'''
+
+
+# Category landing pages: /for/<slug>/. "cat" keys into CATEGORY; "worlds" are the
+# world slugs whose cards carry that category on the home page (data-cats).
+FOR_PAGES = [
+    {"slug": "clinics", "meta": "Brand worlds for Ontario clinics: name, voice, website, signage, forms and booking, all written inside CPSO, Health Canada and PHIPA rules.", "cat": "clinic", "noun": "clinics", "title": "Clinic branding and marketing in Ontario",
+     "answer": "KNGHT builds brand worlds for Ontario clinics: the name, the voice, the website, the signage, the forms and the booking system, each written inside CPSO advertising rules, Health Canada limits and PHIPA. Every engagement starts with a Verdict, a scored audit of what you have, from $3,500 CAD in 5 business days.",
+     "worlds": ["restoration-medical"]},
+    {"slug": "medspas", "meta": "Brand worlds for Ontario medspas: treatment pages, menus, content and ads that sell the result inside CPSO, CNO and Health Canada rules.", "cat": "medspa", "noun": "medspas", "title": "Medspa branding and marketing in Ontario",
+     "answer": "KNGHT builds brand worlds for Ontario medspas: treatment pages, price menus, content, ads and consent forms that sell the result without naming the drug or promising the outcome, inside CPSO, CNO and Health Canada rules. Every engagement starts with a Verdict, from $3,500 CAD in 5 business days.",
+     "worlds": ["toronto-beauty", "restoration-medical"]},
+    {"slug": "law-firms", "meta": "Brand worlds for Ontario law firms: practice-area pages, voice and intake that earn trust inside the Law Society of Ontario's marketing rules.", "cat": "law", "noun": "law firms", "title": "Law firm branding and marketing in Ontario",
+     "answer": "KNGHT builds brand worlds for Ontario law firms: practice-area pages, voice, intake and retainer packages that earn trust without promising outcomes, inside the Law Society of Ontario's marketing rules. Every engagement starts with a Verdict, a scored audit of what you have, from $3,500 CAD in 5 business days.",
+     "worlds": ["lisa-dang-immigration-law"]},
+    {"slug": "spirits", "meta": "Brand worlds for spirits and RTD brands: lore, labels, sell sheets and campaigns built inside AGCO, CRTC, CFIA and LCBO rules.", "cat": "spirits", "noun": "spirits brands", "title": "Spirits and RTD branding in Ontario",
+     "answer": "KNGHT builds brand worlds for spirits and ready-to-drink brands: lore, labels, sell sheets, an age-gated site and campaigns that sell flavour and story, never strength or excess, inside AGCO, CRTC, CFIA and LCBO rules. Every engagement starts with a Verdict, from $3,500 CAD in 5 business days.",
+     "worlds": ["castleblack-spirits", "rum-raiders-ring"]},
+    {"slug": "coffee", "meta": "Brand worlds for coffee brands and cafes: name, packaging, menus, the room and a site that sells, with claims you can prove.", "cat": "coffee", "noun": "coffee brands", "title": "Coffee brand and cafe branding in Ontario",
+     "answer": "KNGHT builds brand worlds for coffee brands and cafes: the name, packaging, menus, the room and a site that sells between visits, with labelling and sourcing claims you can prove under CFIA rules and the Competition Act. Every engagement starts with a Verdict, from $3,500 CAD in 5 business days.",
+     "worlds": ["black-lotus-coffee"]},
+    {"slug": "food", "meta": "Brand worlds for food brands: packaging, ingredient panels and product pages that never overstate a health or allergen claim.", "cat": "food", "noun": "food brands", "title": "Food brand packaging and marketing in Ontario",
+     "answer": "KNGHT builds brand worlds for food brands: packaging, ingredient panels, product pages and retail materials with indulgent copy that never overstates a health or allergen claim, inside CFIA and Health Canada rules. Every engagement starts with a Verdict, a scored audit, from $3,500 CAD in 5 business days.",
+     "worlds": ["lorelyns", "black-lotus-coffee"]},
+]
+
+
+def for_page(f):
+    c = CATEGORY[f["cat"]]
+    by_slug = {w["slug"]: w for w in WORLDS}
+    rules = "\n".join(f'          <li><b>{e(t)}</b><span>{e(d)}</span></li>' for t, d in c["rules"])
+    chapters = []
+    for n, (name, what) in enumerate(LAYERS, 1):
+        extra = f'<p class="chapter__cat">{e(c[name])}</p>' if name in c else ""
+        chapters.append(f'          <li class="chapter" data-reveal><span class="chapter__n">{n}</span><h3>{name}</h3><p>{e(what)}</p>{extra}</li>')
+    cards = []
+    for slug in f["worlds"]:
+        x = by_slug[slug]
+        cards.append(f'''      <a class="wnav__card fcard" href="../../worlds/{slug}/">
+        <img src="{CDN}/{x["plate"]}" alt="" loading="lazy" width="1200" height="1500">
+        <span class="wnav__label">{e(CATEGORY[x["cat"]]["label"])}</span>
+        <span class="wnav__name">{e(x["name"])} <em>{e(x["em"])}</em></span>
+        <span class="fcard__line">{e(x["line"])}</span>
+      </a>''')
+    others = " · ".join(f'<a class="link" href="../{o["slug"]}/">{e(o["noun"].capitalize())}</a>' for o in FOR_PAGES if o is not f)
+    desc = f["meta"]
+    ld = {
+        "@context": "https://schema.org", "@type": "Service",
+        "name": f'Brand worlds for {f["noun"]}', "serviceType": "Brand strategy, design and marketing",
+        "description": desc, "areaServed": "Ontario, Canada",
+        "provider": {"@type": "ProfessionalService", "name": "KNGHT", "url": "https://knght.com/"},
+        "offers": {"@type": "Offer", "name": "The Verdict", "priceSpecification": {"@type": "PriceSpecification", "minPrice": 3500, "priceCurrency": "CAD"}},
+    }
+    crumbs = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "KNGHT", "item": "https://knght.com/"},
+        {"@type": "ListItem", "position": 2, "name": f'For {f["noun"]}', "item": f'https://knght.com/for/{f["slug"]}/'}]}
+    return f'''<!doctype html>
+<html lang="en-CA" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{e(f["title"])} | KNGHT</title>
+<meta name="description" content="{e(desc)}">
+<meta name="theme-color" content="#000000">
+<link rel="canonical" href="https://knght.com/for/{f["slug"]}/">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<meta property="og:title" content="{e(f["title"])}">
+<meta property="og:description" content="{e(desc)}">
+<meta property="og:url" content="https://knght.com/for/{f["slug"]}/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://knght.com/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<script>document.documentElement.classList.replace('no-js','js')</script>
+<script type="application/ld+json">{json.dumps(ld)}</script>
+<script type="application/ld+json">{json.dumps(crumbs)}</script>
+</head>
+<body class="worldpage forpage">
+<a class="skip" href="#main">Skip to content</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"><span></span></div>
+
+<header class="nav is-solid">
+  <div class="wrap">
+    <a class="mark" href="../../" aria-label="KNGHT home">
+      <svg viewBox="0 0 120 600" aria-hidden="true"><circle cx="60" cy="40" r="26"/><path d="M6 140 H114 M60 66 V140 M46 160 L46 520 L60 590 L74 520 L74 160 Z"/></svg>
+      KNGHT
+    </a>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="../../#worlds">Worlds</a></li>
+        <li><a href="../../#layers">The layers</a></li>
+        <li><a href="../../?for={f["cat"]}#score">Score your world</a></li>
+      </ul>
+    </nav>
+    <div class="nav__end">
+      <a class="btn btn--sm" href="../../book/" data-magnetic>Book a Verdict</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="whero">
+    <div class="wrap">
+      <p class="eyebrow">For {e(f["noun"])} · {e(c["label"])}</p>
+      <h1 class="display book__title" style="margin-top:24px">Brand worlds for <br><em>{e(f["noun"])}.</em></h1>
+      <p class="for__answer">{e(f["answer"])}</p>
+      <div class="actions">
+        <a class="btn" href="../../book/" data-magnetic>Book a Verdict
+          <svg class="arrow" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+        </a>
+        <a class="link" href="../../?for={f["cat"]}#score">Score your world first</a>
+      </div>
+      <p class="hero__micro">Free 30-minute call · No obligation</p>
+    </div>
+  </section>
+
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <p class="eyebrow">The rules you work inside</p>
+      <ul class="wrules" data-reveal>
+{rules}
+      </ul>
+    </div>
+  </section>
+
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <div class="wsec__aside">
+        <p class="eyebrow">The codex</p>
+        <h2 class="display wsec__h" data-split>Seven layers, <br><em>read for {e(c["short"])}</em></h2>
+      </div>
+      <ol class="chapters">
+{chr(10).join(chapters)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="wsec">
+    <div class="wrap">
+      <p class="eyebrow" style="margin-bottom:clamp(28px,4vw,56px)">Worlds built for {e(f["noun"])}</p>
+      <div class="fcards">
+{chr(10).join(cards)}
+      </div>
+    </div>
+  </section>
+
+  <section class="wcta">
+    <div class="wrap">
+      <h2 class="display" data-split>Every world starts <br>with a <em class="sheen">Verdict.</em></h2>
+      <p>Fixed fee from $3,500 CAD. Scored report in 5 business days. Fee credited to your Build within 60 days.</p>
+      <div class="actions">
+        <a class="btn" href="../../book/" data-magnetic>Book a Verdict
+          <svg class="arrow" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+        </a>
+      </div>
+      <p class="for__others">Also for: {others}</p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT. A Sergio Ho studio, Toronto.</span><span><a href="mailto:sho@knght.com">sho@knght.com</a> · <a href="../../privacy/">Privacy</a> · <a href="../../accessibility/">Accessibility</a></span></div>
   </div>
 </footer>
 
@@ -537,6 +716,12 @@ def main():
         os.makedirs(d, exist_ok=True)
         with open(os.path.join(d, "index.html"), "w", encoding="utf-8") as f:
             f.write(page(i, w))
+        print("wrote", os.path.relpath(os.path.join(d, "index.html"), ROOT))
+    for f in FOR_PAGES:
+        d = os.path.join(ROOT, "for", f["slug"])
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, "index.html"), "w", encoding="utf-8") as fh:
+            fh.write(for_page(f))
         print("wrote", os.path.relpath(os.path.join(d, "index.html"), ROOT))
 
 
