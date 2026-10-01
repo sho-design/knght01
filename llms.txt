@@ -31,7 +31,7 @@ Each world is built in this order. No layer is built before Lore.
 ## Worlds built by KNGHT's founder
 
 - Restoration Medical (healthcare): physician-led clinics in Thornhill and Woodbridge, built across five service lines.
-- Black Lotus Coffee (food and beverage): a conscious coffee brand rooted in Vietnamese tradition and modern wellness, with a retail space in Da Nang.
+- Black Lotus Coffee (food and beverage): a conscious coffee brand rooted in Vietnamese tradition and modern wellness. Founded in Da Nang and now based in Toronto, importing into Canada and selling wholesale and retail.
 - Castleblack Spirits (beverage alcohol): premium Jamaican rum from St. Mary, rebuilt around heritage and flavour, now sold in more than five countries.
 - Toronto Beauty (aesthetics): a growing network of aesthetic nurses across the GTA, with a profile and map search for every nurse.
 - [Lorelyns Gourmet Desserts](https://lorelyns.com/) (allergen-friendly food): nut free, gluten free, plant-based desserts.

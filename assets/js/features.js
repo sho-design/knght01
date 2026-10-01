@@ -52,7 +52,7 @@
     coffee: {
       reg: 'CFIA and Competition Act',
       rules: 'Read against CFIA labelling and the Competition Act, including its rules on green claims.',
-      law: 'For coffee: CFIA food labelling, the Competition Act, and its rules on environmental and sourcing claims.',
+      law: 'For coffee: CFIA food labelling and import licensing, the Competition Act, and its rules on environmental and sourcing claims.',
     },
     food: {
       reg: 'CFIA and Health Canada',
