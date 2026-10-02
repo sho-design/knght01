@@ -148,19 +148,23 @@
 
 
   /* ---------- Measurement ----------
-     Events go to window.dataLayer on every page. Google Tag Manager loads only
-     when GTM_ID is set below; until then nothing leaves the browser. */
-  const GTM_ID = '';
+     Google Analytics 4 loads on every page. Every interaction goes through sendEvent,
+     which reports it to GA4 and also leaves it on window.dataLayer for a future tag manager. */
+  const GA_ID = 'G-T91QCDLE81';
   window.dataLayer = window.dataLayer || [];
-  const sendEvent = (event, params = {}) => window.dataLayer.push({ event, ...params });
-  window.KNGHT_TRACK = sendEvent;
-  if (/^GTM-[A-Z0-9]+$/.test(GTM_ID)) {
-    window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+  if (/^G-[A-Z0-9]+$/.test(GA_ID)) {
     const g = document.createElement('script');
     g.async = true;
-    g.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
+    g.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
     document.head.appendChild(g);
+    window.gtag('js', new Date());
+    window.gtag('config', GA_ID);
   }
+  const sendEvent = (event, params = {}) => {
+    if (/^G-[A-Z0-9]+$/.test(GA_ID)) window.gtag('event', event, params);
+  };
+  window.KNGHT_TRACK = sendEvent;
   // Every click that heads for the booking page, labelled by button text and section.
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a[href]');
@@ -734,7 +738,7 @@
     close.focus({ preventScroll: true });
     close.addEventListener('click', closeCodex);
     codexEl.addEventListener('click', (e) => { if (e.target === codexEl) closeCodex(); });
-    (window.dataLayer = window.dataLayer || []).push({ event: 'codex_found' });
+    sendEvent('codex_found');
   };
   const closeCodex = () => {
     if (!codexEl) return;

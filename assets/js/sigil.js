@@ -101,7 +101,7 @@
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   };
-  const track = (event, extra) => { (window.dataLayer = window.dataLayer || []).push({ event, ...extra }); };
+  const track = (event, extra) => { if (window.KNGHT_TRACK) window.KNGHT_TRACK(event, extra); };
 
   const pngBtn = $('[data-sigil-png]'), svgBtn = $('[data-sigil-svg]'), shareBtn = $('[data-sigil-share]');
   if (pngBtn) pngBtn.addEventListener('click', async () => { save(await toPng(), `${slug()}-sigil.png`); track('sigil_download', { format: 'png', category: form.cat.value }); });
