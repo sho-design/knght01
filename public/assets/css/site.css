@@ -907,3 +907,5 @@ html.lenis,html.lenis body{height:auto}
 .gsap [data-reveal]{transition:none}
 .gsap .chap__meta{opacity:1;transform:none;transition:none}
 .gsap .rung{translate:none}
+.gsap .footer__word span{transform:none} /* GSAP sets the start offset itself; the CSS one would double it */
+.footer__word{padding-bottom:.08em;margin-bottom:clamp(12px,2vw,28px)} /* clear of the footer line, whatever the serif's baseline */
