@@ -59,6 +59,7 @@ Each world is built in this order. No layer is built before Lore.
 - [How a world gets built](https://knght.com/process/): the call, the Verdict, the Build, launch and the Keep.
 - [Rules](https://knght.com/rules/): short reads on marketing rules for regulated categories.
 - [Can your clinic put patient information into ChatGPT?](https://knght.com/rules/clinics-ai-and-patient-information/): PHIPA and AI tools for Ontario clinics, in plain language.
+- [What a brand world costs in Ontario](https://knght.com/rules/what-a-brand-world-costs-in-ontario/): published price ranges for branding, websites and retainers in Toronto and the GTA, and how KNGHT prices the Verdict and the Build.
 - [Your sigil](https://knght.com/sigil/): a free tool that forges a black and white crest for a business from its name, category and the one thing it guards.
 - [Book the Verdict Call](https://knght.com/book/): a free 30-minute call. Leave with your three biggest risks, one fix for this week, and a straight answer on fit.
 - [Score your world](https://knght.com/#score): a seven-question self-check that scores a brand out of 70 and names its weakest layer.

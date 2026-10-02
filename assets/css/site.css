@@ -915,3 +915,5 @@ html.lenis,html.lenis body{height:auto}
   .js .rung__sigil *,.js .ladder__link path{stroke-dashoffset:0}
   .rung{transform:none}
 }
+.engage__pos{display:block;margin-bottom:10px;font:italic 400 clamp(1.4rem,2vw,1.8rem)/1.2 var(--serif);color:var(--ink)}
+.engage__head .link{margin-top:6px}

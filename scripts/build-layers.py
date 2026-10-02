@@ -380,6 +380,28 @@ RULES = [
                     ("Information and Privacy Commissioner of Ontario: health privacy", "https://www.ipc.on.ca/")],
         "layer": "Machinery", "for": "clinics",
     },
+    {
+        "slug": "what-a-brand-world-costs-in-ontario",
+        "title": "What a brand world costs in Ontario",
+        "cat": "Pricing · Toronto and the GTA", "eyebrow": "The numbers",
+        "dek": "From a $6,500 identity to a $100,000 agency program. What each price buys, and where the rules change the math.",
+        "body": [
+            "Branding prices in Toronto run wide because the word covers different jobs. A logo and colour palette, a full identity system, and a brand with a website and a launch are three different purchases. Compare quotes for the same job.",
+            "Boutique studios in Toronto typically charge about $6,500 to $18,000 for an identity: strategy, a logo suite, colour, type and guidelines, delivered in three to four weeks.",
+            "Strategy, identity, website and launch together usually run $25,000 to $80,000 or more. That is the common range for regulated industries and professional services, where the work has to hold up to review.",
+            "Mid-size Toronto agencies quote roughly $20,000 to $80,000 for brand programs. Some set minimums of $50,000, and the large networks start near $100,000.",
+            "Ongoing work is usually sold by channel. Most small and mid-size Toronto businesses pay about $2,000 to $6,000 a month for a retainer, and Toronto law firms often pay $5,000 to $15,000 a month for full-service marketing. Ad spend is billed on top.",
+            "In a regulated category the cheapest quote is rarely the cheapest outcome. A label that has to be reprinted, an ad that is rejected or a claim that draws a complaint costs more than the design did. Ask any studio how they check claims against your regulator, and who signs off.",
+            "KNGHT starts every world with a Verdict: a fixed fee from $3,500 CAD, a scored report in 5 business days, and the fee credited in full to a Build that starts within 60 days. The Build is scoped by layer, so you pay for the layers you are missing, not a package you do not need.",
+            "The ranges above are published figures from Toronto agencies and pricing guides, not quotes. Scope, locations and the number of products move every number.",
+        ],
+        "sources": [("852 Tangram: brand identity pricing in Toronto, 2026", "https://www.852tangram.org/stories/brand-identity-pricing-toronto-2026-QstuF"),
+                    ("Wise Media: how much does branding cost in Canada, 2026", "https://wisemedia.io/2026/07/21/branding-cost-canada-2026-pricing-guide/"),
+                    ("Digital Estate Media: marketing agency cost in Toronto, 2026", "https://www.digitalestatemedia.com/blog/marketing-agency-cost-toronto-2026"),
+                    ("Law Online: law firm marketing costs in Ontario", "https://lawonline.ca/law-firm-marketing/law-firm-marketing-costs-ontario/"),
+                    ("Clutch: top branding agencies in Toronto", "https://clutch.co/ca/agencies/branding/toronto")],
+        "layer": None, "for": None,
+    },
 ]
 
 
@@ -387,6 +409,11 @@ def rule_page(r):
     up = "../../"
     paras = "\n".join(f"        <p>{e(p)}</p>" for p in r["body"])
     srcs = "".join(f'<li><a class="link" href="{u}" rel="noopener">{e(t)}</a></li>' for t, u in r["sources"])
+    rel_links = ""
+    if r.get("for"):
+        rel_links += f'<a class="link" href="{up}for/{r["for"]}/">Brand worlds for {r["for"].replace("-", " ")}</a> · '
+    if r.get("layer"):
+        rel_links += f'<a class="link" href="{up}layers/{r["layer"].lower()}/">The {r["layer"]} layer</a> · ' 
     body = f'''  <article>
   <section class="whero">
     <div class="wrap">
@@ -397,13 +424,13 @@ def rule_page(r):
   </section>
   <section class="wsec">
     <div class="wrap wsec__grid">
-      <p class="eyebrow">The rule</p>
+      <p class="eyebrow">{r.get("eyebrow", "The rule")}</p>
       <div class="article">
 {paras}
         <p class="article__note">A plain-language read, not legal advice. Rules change, so check the source or ask us before you publish.</p>
         <h2 class="article__h">Sources</h2>
         <ul class="article__sources">{srcs}</ul>
-        <p><a class="link" href="{up}for/{r["for"]}/">Brand worlds for {r["for"].replace("-", " ")}</a> · <a class="link" href="{up}layers/{r["layer"].lower()}/">The {r["layer"]} layer</a> · <a class="link" href="../">All rules</a></p>
+        <p>{rel_links}<a class="link" href="../">All rules</a></p>
       </div>
     </div>
   </section>
