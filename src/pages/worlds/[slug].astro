@@ -106,7 +106,7 @@ const work = d.work.map(({ alt, src, width, height }) => ({ alt, src, width, hei
   </section>
 
   <nav class="wnext" aria-label="More worlds">
-    <a class="wnext__link" href={`/worlds/${next.id}/`} data-cursor="Enter">
+    <a class="wnext__link" href={`/worlds/${next.id}/`}>
       <span class="wrap wnext__inner">
         <span class="eyebrow">Next world · {ROMAN[(i + 1) % worlds.length]}</span>
         <span class="wnext__name">{next.data.name} <em>{next.data.em}</em></span>

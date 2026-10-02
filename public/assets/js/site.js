@@ -374,35 +374,8 @@
   sizeWorlds();
   frame();
 
-  /* ---------- Cursor + magnetic buttons (fine pointers only) ---------- */
+  /* ---------- Magnetic buttons (fine pointers only) ---------- */
   if (finePointer && !reduce) {
-    const cursor = $('.cursor');
-    const label = cursor && $('span', cursor);
-    // Over the way in, the cursor becomes a small sword (the mark, point down-right)
-    if (cursor) cursor.insertAdjacentHTML('beforeend', '<svg class="cursor__sword" viewBox="0 0 24 24" aria-hidden="true"><circle cx="4.2" cy="4.2" r="1.7"/><path d="M5.4 5.4l2.2 2.2M5.2 10.2l5-5M8.8 8.8l11 11-.6 2.2-2.2.6-11-11"/></svg>');
-    let mx = innerWidth / 2, my = innerHeight / 2, cx = mx, cy = my;
-    addEventListener('mousemove', (e) => {
-      mx = e.clientX; my = e.clientY;
-      root.classList.add('has-cursor');
-    }, { passive: true });
-    document.addEventListener('mouseleave', () => root.classList.remove('has-cursor'));
-    const loop = () => {
-      cx += (mx - cx) * 0.2; cy += (my - cy) * 0.2;
-      if (cursor) cursor.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-      requestAnimationFrame(loop);
-    };
-    loop();
-    document.addEventListener('mouseover', (e) => {
-      if (!cursor) return;
-      const t = e.target.closest('a, button, [data-cursor]');
-      const text = t && t.dataset.cursor;
-      const sword = !!(t && t.matches('a[href*="book/"], a[href*="calendly.com"], [data-sword]'));
-      cursor.classList.toggle('is-sword', sword);
-      cursor.classList.toggle('is-label', !!text && !sword);
-      cursor.classList.toggle('is-link', !!t && !text && !sword);
-      if (label) label.textContent = text || '';
-    });
-
     $$('[data-magnetic]').forEach((el) => {
       el.addEventListener('mousemove', (e) => {
         const r = el.getBoundingClientRect();

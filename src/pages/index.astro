@@ -89,7 +89,6 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
 </div>
 
 <div class="grain" aria-hidden="true"></div>
-<div class="cursor" aria-hidden="true"><span></span></div>
 
 <header class="nav">
   <div class="wrap">
@@ -193,7 +192,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
         </div>
 
         {worlds.map((w, k) => (
-          <article class="world" data-cursor="Enter" data-slug={w.id} data-layers={worldLayers(w).map((n) => n.toLowerCase()).join(' ')} data-cats={w.data.cats.join(' ')}>
+          <article class="world" data-slug={w.id} data-layers={worldLayers(w).map((n) => n.toLowerCase()).join(' ')} data-cats={w.data.cats.join(' ')}>
             <figure class="world__plate" style={`margin:0;view-transition-name:plate-${w.id}`}>
               <div class="world__ink">
                 <img src={`${CDN}/${w.data.plate}`} alt={w.data.alt} loading="lazy" decoding="async" width="1200" height="1500" />

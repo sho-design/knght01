@@ -1,6 +1,6 @@
 /* KNGHT home: the quiet magic.
    Runes that wake under the cursor, chapter names that decode,
-   a portal into each world and wax seals that break. */
+   and a portal into each world. */
 (() => {
   const root = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -97,24 +97,6 @@
       requestAnimationFrame(() => requestAnimationFrame(() => ghost.classList.add('is-open')));
       setTimeout(() => { location.href = a.href; }, 520);
     });
-  }
-
-  /* ---------- 5. Every world arrives sealed. The seal breaks on hover, or as it scrolls in on a phone ---------- */
-  const SEAL = `<svg viewBox="0 0 80 80" aria-hidden="true"><path class="seal__wax" d="M40 4c5 0 7 4 11 5s9-1 12 3 1 8 4 11 7 5 7 10-4 7-4 11 3 9 0 12-8 1-11 4-3 8-8 9-8-2-12-1-6 5-11 5-7-4-11-5-9 1-12-3-1-8-4-11-7-5-7-10 4-7 4-11-3-9 0-12 8-1 11-4 3-8 8-9 8 2 12 1 6-5 11-5z"/><circle cx="40" cy="40" r="22" class="seal__ring"/><g class="seal__mark"><circle cx="40" cy="26" r="2.4"/><path d="M40 28.4v3.4M34.5 31.8h11M38.6 33.4h2.8v15.4L40 53l-1.4-4.2z"/></g></svg>`;
-  $$('.world__plate').forEach((pl) => {
-    const s = document.createElement('span');
-    s.className = 'wseal';
-    s.innerHTML = `<span class="wseal__half wseal__l">${SEAL}</span><span class="wseal__half wseal__r">${SEAL}</span>`;
-    pl.appendChild(s);
-  });
-  const breakSeal = (w) => { if (!w.classList.contains('is-unsealed')) w.classList.add('is-unsealed'); };
-  $$('.world').forEach((w) => {
-    w.addEventListener('pointerenter', () => breakSeal(w));
-    w.addEventListener('focusin', () => breakSeal(w));
-  });
-  if (!fine && 'IntersectionObserver' in window) {
-    const so = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { setTimeout(() => breakSeal(e.target), 350); so.unobserve(e.target); } }), { threshold: 0.65 });
-    $$('.world').forEach((w) => so.observe(w));
   }
 
 })();

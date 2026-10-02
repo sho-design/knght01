@@ -65,13 +65,6 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 @keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
 
 /* Cursor */
-.cursor{position:fixed;left:0;top:0;z-index:150;pointer-events:none;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--argent);mix-blend-mode:difference;display:grid;place-items:center;transition:width .45s var(--ease-out),height .45s var(--ease-out),margin .45s var(--ease-out),opacity .3s;opacity:0}
-.cursor span{font:600 .62rem/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--sable);opacity:0;transition:opacity .25s}
-.has-cursor .cursor{opacity:1}
-.cursor.is-link{width:56px;height:56px;margin:-28px 0 0 -28px}
-.cursor.is-label{width:96px;height:96px;margin:-48px 0 0 -48px;mix-blend-mode:normal}
-.cursor.is-label span{opacity:1}
-@media (hover:none),(pointer:coarse){.cursor{display:none}}
 
 /* Loader */
 .loader{position:fixed;inset:0;z-index:120;display:grid;place-items:center;background:var(--sable);transition:clip-path 1.1s var(--ease);clip-path:inset(0 0 0 0)}
@@ -771,7 +764,7 @@ html.lenis,html.lenis body{height:auto}
 .worlds__count,.layer__work-n{white-space:nowrap}
 @media (max-width:900px){.worlds__head .eyebrow{font-size:.7rem;letter-spacing:.18em}}
 
-/* ===== Magic: runes, decoding, the constellation, the portal, seals, marginalia, the codex, the sword cursor ===== */
+/* ===== Magic: runes, decoding, the constellation, the portal, marginalia, the codex ===== */
 /* Runes carved into the dark */
 .thesis,.chap,.layers{position:relative;isolation:isolate}
 .runes{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
@@ -786,16 +779,9 @@ html.lenis,html.lenis body{height:auto}
 .portal.is-open{left:0!important;top:0!important;width:100vw!important;height:100vh!important}
 
 /* Wax seals on the world plates */
-.wseal{position:absolute;z-index:3;right:16px;bottom:16px;width:64px;height:64px;pointer-events:none}
-.wseal__half{position:absolute;inset:0;transition:transform .9s var(--ease-out),opacity .7s var(--ease)}
-.wseal__l{clip-path:polygon(0 0,52% 0,46% 20%,55% 40%,45% 60%,53% 80%,48% 100%,0 100%)}
-.wseal__r{clip-path:polygon(52% 0,100% 0,100% 100%,48% 100%,53% 80%,45% 60%,55% 40%,46% 20%)}
-.wseal svg{width:100%;height:100%;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6))}
 .seal__wax{fill:#e9e9e9}
 .seal__ring{fill:none;stroke:rgba(0,0,0,.28);stroke-width:1.2}
 .seal__mark{fill:none;stroke:#111;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.is-unsealed .wseal__l{transform:translate(-18px,26px) rotate(-28deg);opacity:0}
-.is-unsealed .wseal__r{transform:translate(18px,30px) rotate(24deg);opacity:0}
 
 /* AI inside the Machinery row */
 .layer__ai{grid-column:2;margin-top:22px;padding:22px 0 4px;border-top:1px solid var(--rule)}
@@ -827,10 +813,6 @@ html.lenis,html.lenis body{height:auto}
 .nav .mark.is-holding svg{animation:holdGlow .9s linear forwards}
 @keyframes holdGlow{to{filter:drop-shadow(0 0 6px #fff)}}
 
-/* The sword cursor over the way in */
-.cursor__sword{position:absolute;width:30px;height:30px;left:50%;top:50%;margin:-15px 0 0 -15px;fill:none;stroke:#fff;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:0;transform:scale(.4) rotate(-20deg);transition:opacity .25s,transform .35s var(--ease-out)}
-.cursor.is-sword{width:34px;height:34px;margin:-17px 0 0 -17px;background:transparent}
-.cursor.is-sword .cursor__sword{opacity:1;transform:none}
 
 /* Sigil page */
 .sigil__grid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(32px,6vw,96px);align-items:start}
@@ -859,7 +841,7 @@ html.lenis,html.lenis body{height:auto}
 @media (max-width:900px){.sigil__grid{grid-template-columns:minmax(0,1fr)}.sigil__figure{position:relative;top:0;order:-1;max-width:420px}}
 
 @media (prefers-reduced-motion:reduce){
-  .wseal__half,.codex,.codex__list li{transition:none}
+  .codex,.codex__list li{transition:none}
 }
 
 /* The offer ladder: three steps, one way up */
