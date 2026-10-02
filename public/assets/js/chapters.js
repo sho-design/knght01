@@ -7,6 +7,7 @@
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const mobile = matchMedia('(max-width: 900px)');
+  const G = !!window.KNGHT_MOTION; // GSAP owns the numerals, the white wipe and the ladder entrance
   if (!$('.hero')) return;
 
   /* Sigils: hairline heraldry on a 24 grid, the same family as the menu. */
@@ -48,7 +49,7 @@
     c.start = band;
     bands.push(band);
   });
-  if ('IntersectionObserver' in window) {
+  if (G) { /* motion.js */ } else if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { threshold: 0.35 });
     bands.forEach((b) => io.observe(b));
   } else bands.forEach((b) => b.classList.add('is-in'));
@@ -87,7 +88,7 @@
       };
       requestAnimationFrame(step);
     };
-    if ('IntersectionObserver' in window) {
+    if (G) { /* motion.js */ } else if ('IntersectionObserver' in window) {
       const lo = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { run(); lo.disconnect(); } }, { threshold: 0.25 });
       lo.observe(ladder);
     } else run();
@@ -186,7 +187,7 @@
     const vh = innerHeight, y = scrollY;
 
     // Numerals drift against the scroll
-    if (!reduce) bands.forEach((b) => {
+    if (!reduce && !G) bands.forEach((b) => {
       const r = b.getBoundingClientRect();
       if (r.bottom < -200 || r.top > vh + 200) return;
       b.style.setProperty('--drift', ((r.top + r.height / 2 - vh / 2) * -0.18).toFixed(1) + 'px');
@@ -216,7 +217,7 @@
     if (cur >= 0) { cbarN.textContent = CHAPTERS[cur].n; cbarT.textContent = CHAPTERS[cur].t; }
 
     // The self-check: white page opening edge to edge
-    if (score && !reduce) {
+    if (score && !reduce && !G) {
       const r = score.getBoundingClientRect();
       const p = clamp((vh - r.top) / (vh * 0.75), 0, 1);
       const e = 1 - Math.pow(1 - p, 2);

@@ -917,3 +917,11 @@ html.lenis,html.lenis body{height:auto}
 }
 .engage__pos{display:block;margin-bottom:10px;font:italic 400 clamp(1.4rem,2vw,1.8rem)/1.2 var(--serif);color:var(--ink)}
 .engage__head .link{margin-top:6px}
+
+/* ---------- GSAP (src/scripts/motion.js). The .gsap class is set in the head and dropped by site.js if the module never loads. ---------- */
+.gsap [data-split]{visibility:hidden}
+.gsap [data-split] .sheen{display:inline-block}
+.sl-mask{padding:0 .08em .24em;margin:0 -.08em -.24em}
+.gsap [data-reveal]{transition:none}
+.gsap .chap__meta{opacity:1;transform:none;transition:none}
+.gsap .rung{translate:none}

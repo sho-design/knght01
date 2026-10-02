@@ -1,3 +1,6 @@
+---
+import Motion from '../../components/Motion.astro';
+---
 <!doctype html>
 <html lang="en-CA" class="no-js">
 <head>
@@ -21,7 +24,7 @@
 <link rel="preconnect" href="https://assets.calendly.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css">
-<script is:inline>document.documentElement.classList.replace('no-js','js')</script>
+<script is:inline>document.documentElement.classList.replace('no-js','js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('gsap')</script>
 <script is:inline type="application/ld+json">
 {"@context":"https://schema.org","@type":"Service","name":"The Verdict Call","provider":{"@type":"ProfessionalService","name":"KNGHT","url":"https://knght.com/"},"description":"A free 30-minute call on an existing brand and the rules it lives under, with the three biggest risks named and one fix for the week.","offers":{"@type":"Offer","price":0,"priceCurrency":"CAD"},"areaServed":"Ontario"}
 </script>
@@ -168,6 +171,7 @@
 }());
 </script>
 <script is:inline src="https://assets.calendly.com/assets/external/widget.js" async></script>
+<Motion />
 <script is:inline src="/assets/js/vendor/lenis.min.js" defer></script>
 <script is:inline src="/assets/js/site.js" defer></script>
 </body>

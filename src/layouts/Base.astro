@@ -1,4 +1,5 @@
 ---
+import Motion from '../components/Motion.astro';
 // The page shell shared by every inner page: head, nav, footer and the site scripts.
 interface Props {
   title: string;
@@ -47,7 +48,7 @@ const url = `https://knght.com/${path}`;
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css">
-<script is:inline>document.documentElement.classList.replace('no-js','js')</script>
+<script is:inline>document.documentElement.classList.replace('no-js','js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('gsap')</script>
 {ld.map((x) => <script is:inline type="application/ld+json" set:html={JSON.stringify(x)} />)}
 <slot name="head" />
 </head>
@@ -84,6 +85,7 @@ const url = `https://knght.com/${path}`;
   </div>
 </footer>
 
+<Motion />
 <script is:inline src="/assets/js/vendor/lenis.min.js" defer></script>
 <script is:inline src="/assets/js/site.js" defer></script>
 <slot name="scripts" />

@@ -7,6 +7,9 @@
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   let lenis = null;
+  // src/scripts/motion.js (GSAP) runs the scroll animations when it loads; these are the fallbacks.
+  const G = !!window.KNGHT_MOTION;
+  if (!G) root.classList.remove('gsap');
 
   /* ---------- Sound: synthesised in the browser, off until the visitor asks ---------- */
   const Sound = (() => {
@@ -140,7 +143,7 @@
   }
 
   /* ---------- Split headings into masked lines ---------- */
-  $$('[data-split]').forEach((el) => {
+  if (!G) $$('[data-split]').forEach((el) => {
     const lines = el.innerHTML.split(/<br\s*\/?>/i);
     // A space between the lines keeps the words apart for screen readers and copy-paste.
     el.innerHTML = lines.map((l) => `<span class="line"><span>${l.trim()}</span></span>`).join(' ');
@@ -210,10 +213,12 @@
   }
 
   /* ---------- Reveal on view ---------- */
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.01 });
-  $$('[data-reveal], .split').forEach((el) => io.observe(el));
+  if (!G) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.01 });
+    $$('[data-reveal], .split').forEach((el) => io.observe(el));
+  }
 
   /* ---------- Layers: active layer follows the reading line ---------- */
   const layers = $$('.layer');
@@ -307,11 +312,11 @@
     if (hero && !reduce && !root.classList.contains('hero-scrub')) {
       const p = clamp(y / vh, 0, 1);
       root.classList.toggle('is-scrolling', y > 2);
-      if (heroMedia && root.classList.contains('is-loaded')) {
+      if (heroMedia && root.classList.contains('is-loaded') && !G) {
         heroMedia.style.transform = `translate3d(0, ${p * 18}vh, 0) scale(${1 + p * 0.12})`;
         heroMedia.style.opacity = String(1 - p * 0.85);
       }
-      if (heroInner) heroInner.style.transform = `translate3d(0, ${p * -8}vh, 0)`;
+      if (heroInner && !G) heroInner.style.transform = `translate3d(0, ${p * -8}vh, 0)`;
     }
 
     // Thesis words light up across the section
@@ -323,7 +328,7 @@
     }
 
     // Worlds: vertical scroll drives horizontal travel
-    if (worlds && track && travel > 0) {
+    if (worlds && track && travel > 0 && !G) {
       const r = worlds.getBoundingClientRect();
       const p = clamp(-r.top / (travel * WORLD_PACE), 0, 1);
       track.style.transform = `translate3d(${-p * travel}px, 0, 0)`;
@@ -335,7 +340,7 @@
     }
 
     // The vellum page opens edge to edge as it arrives
-    if (engage && !reduce) {
+    if (engage && !reduce && !G) {
       const r = engage.getBoundingClientRect();
       const p = clamp((vh - r.top) / (vh * 0.75), 0, 1);
       const e = 1 - Math.pow(1 - p, 2);
@@ -353,7 +358,7 @@
     }
 
     // Footer wordmark rises letter by letter
-    if (footWord && !reduce) {
+    if (footWord && !reduce && !G) {
       const r = footWord.getBoundingClientRect();
       const p = clamp((vh - r.top) / (r.height + 80), 0, 1);
       footLetters.forEach((s, i) => {
