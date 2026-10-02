@@ -13,7 +13,7 @@
   --rule-ink-strong:rgba(0,0,0,.32);
   --argent:#fff;
   --ash:#a6a6a6;
-  --ash-2:#6b6b6b;
+  --ash-2:#7a7a7a; /* 4.9:1 on black, the AA minimum for small text is 4.5 */
   --rule:rgba(255,255,255,.16);
   --rule-strong:rgba(255,255,255,.32);
   --serif:"Cormorant Garamond","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -197,7 +197,7 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 .layer__what{grid-column:2;margin:12px 0 0;color:var(--ash);max-width:48ch}
 .layer__tags{grid-column:2;display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding:0;list-style:none}
 .layer__tags li{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--rule);border-radius:999px;color:var(--ash)}
-.js .layer{opacity:.28}
+.js .layer{opacity:.76} /* dimmed, not hidden: inactive layers keep 4.5:1 contrast */
 .js .layer.on{opacity:1}
 .rule-note{margin:56px 0 0;font:italic 400 clamp(1.6rem,2.6vw,2.4rem)/1.2 var(--serif)}
 

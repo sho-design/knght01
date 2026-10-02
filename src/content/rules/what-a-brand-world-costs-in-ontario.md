@@ -31,6 +31,6 @@ Ongoing work is usually sold by channel. Most small and mid-size Toronto busines
 
 In a regulated category the cheapest quote is rarely the cheapest outcome. A label that has to be reprinted, an ad that is rejected or a claim that draws a complaint costs more than the design did. Ask any studio how they check claims against your regulator, and who signs off.
 
-KNGHT starts every world with a Verdict: a fixed fee from $3,500 CAD, a scored report in 5 business days, and the fee credited in full to a Build that starts within 60 days. The Build is scoped by layer, so you pay for the layers you are missing, not a package you do not need.
+KNGHT starts every world with a Verdict: a fixed fee from $3,500 CAD, a scored report in 5 business days, and the fee credited in full to a Build that starts within 60 days. A full Build starts at $25,000 CAD, and single layers start at $7,500, so you pay for the layers you are missing, not a package you do not need. The Keep starts at $4,500 CAD a month, with ad spend and printing billed separately.
 
 The ranges above are published figures from Toronto agencies and pricing guides, not quotes. Scope, locations and the number of products move every number.
