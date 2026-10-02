@@ -26,6 +26,7 @@ public/assets/js/                site.js, features.js, chapters.js, magic.js, si
 public/                          favicons, og.jpg, robots.txt, llms.txt, site.webmanifest
 src/lib/settings.ts              site settings: the form endpoint and the new-worlds line
 src/pages/sitemap.xml.ts         the sitemap, built from the pages and content files
+integrations/csp.mjs             Content Security Policy added to every page at build time (headers are in vercel.json)
 src/scripts/motion.js            GSAP scroll animations (the page scripts fall back without it)
 ```
 

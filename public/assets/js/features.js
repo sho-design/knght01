@@ -70,7 +70,7 @@
   const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 
   const setCategory = (cat, { persist = true } = {}) => {
-    const c = CATS[cat] ? cat : null;
+    const c = cat && Object.hasOwn(CATS, cat) ? cat : null; // only real categories, never inherited names like "constructor"
     root.dataset.cat = c || '';
     catBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cat === c)));
     if (rulesEl) rulesEl.textContent = c ? CATS[c].rules : 'Pick your category. The page reads itself against your rules.';
