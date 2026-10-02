@@ -30,9 +30,9 @@
   /* ---------- Categories: the page reads itself against your rules ---------- */
   const CATS = {
     clinic: {
-      reg: 'CPSO and Health Canada',
-      rules: 'Read against CPSO advertising rules, Health Canada and PHIPA.',
-      law: 'For clinics: CPSO advertising rules, Health Canada drug and device advertising, PHIPA and the Competition Act.',
+      reg: 'CPSO, CCO, the College of Physiotherapists and Health Canada',
+      rules: 'Read against CPSO, chiropractic and physiotherapy advertising rules, Health Canada and PHIPA.',
+      law: 'For clinics: CPSO, College of Chiropractors and College of Physiotherapists advertising rules, Health Canada drug and device advertising, PHIPA and the Competition Act.',
     },
     dental: {
       reg: 'RCDSO',

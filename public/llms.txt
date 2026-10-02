@@ -30,7 +30,7 @@ Each world is built in this order. No layer is built before Lore.
 
 ## Worlds built by KNGHT's founder
 
-- Restoration Medical (healthcare): physician-led clinics in Thornhill and Woodbridge, built across five service lines.
+- Restoration Medical (healthcare): physician-led clinics in Thornhill and Woodbridge, built across five service lines, including physiotherapy and chiropractic care.
 - Black Lotus Coffee (food and beverage): a conscious coffee brand rooted in Vietnamese tradition and modern wellness. Founded in Da Nang and now based in Toronto, importing into Canada and selling wholesale and retail.
 - Castleblack Spirits (beverage alcohol): premium Jamaican rum from St. Mary, rebuilt around heritage and flavour, now sold in more than five countries.
 - Toronto Beauty (aesthetics): a growing network of aesthetic nurses across the GTA, with a profile and map search for every nurse.
@@ -43,7 +43,7 @@ Each world is built in this order. No layer is built before Lore.
 ## Pages
 
 - [Home](https://knght.com/): the studio, the worlds, the seven layers, a free self-check and the three ways in.
-- [Brand worlds for clinics](https://knght.com/for/clinics/): the rules, the seven layers read for clinics, and the worlds built for them.
+- [Brand worlds for clinics](https://knght.com/for/clinics/): the rules for physicians, physiotherapists and chiropractors, the seven layers read for clinics, and the worlds built for them.
 - [Brand worlds for medspas](https://knght.com/for/medspas/): the rules, the seven layers read for medspas, and the worlds built for them.
 - [Brand worlds for law firms](https://knght.com/for/law-firms/): the rules, the seven layers read for law firms, and the worlds built for them.
 - [Brand worlds for spirits brands](https://knght.com/for/spirits/): the rules, the seven layers read for spirits brands, and the worlds built for them.

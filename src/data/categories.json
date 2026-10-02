@@ -8,6 +8,14 @@
         "text": "Advertising by physicians must be factual and verifiable, with no testimonials."
       },
       {
+        "title": "College of Chiropractors of Ontario",
+        "text": "No testimonials in chiropractic advertising, apart from generic ones."
+      },
+      {
+        "title": "College of Physiotherapists of Ontario",
+        "text": "Since May 2025, testimonials are allowed if they are true and verifiable, with the patient's consent."
+      },
+      {
         "title": "Health Canada",
         "text": "Limits on advertising prescription drugs and medical devices to the public."
       },
@@ -20,8 +28,8 @@
         "text": "No false or misleading claims, and pricing that shows the full cost."
       }
     ],
-    "Law": "CPSO advertising rules, Health Canada drug and device advertising, and PHIPA for every patient record the site touches.",
-    "Language": "No testimonials, no promised outcomes, and a voice patients trust before they book.",
+    "Law": "CPSO, chiropractic and physiotherapy advertising rules, Health Canada drug and device advertising, and PHIPA for every patient record the site touches.",
+    "Language": "Testimonials only where each profession's college allows them, no promised outcomes, and a voice patients trust before they book.",
     "Map": "Service pages patients and AI assistants can answer from, and a Google Business Profile for each location.",
     "Artifacts": "Intake and consent forms, aftercare sheets and signage, each checked before print."
   },
