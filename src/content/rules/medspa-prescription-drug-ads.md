@@ -8,6 +8,8 @@ for: "medspas"
 sources:
   - title: "Food and Drug Regulations, C.R.C., c. 870 (section C.01.044)"
     url: "https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._870/"
+  - title: "Health Canada: illegal marketing of medical devices"
+    url: "https://www.canada.ca/en/health-canada/services/drugs-health-products/marketing-drugs-devices/illegal-marketing/health-providers/devices.html"
   - title: "Health Canada: advertising of health products"
     url: "https://www.canada.ca/en/health-canada/services/drugs-health-products/regulatory-requirements-advertising.html"
 ---
@@ -16,7 +18,9 @@ Botox is a brand of botulinum toxin, and in Canada it is a prescription drug. Th
 
 Under section C.01.044, advertising a prescription drug to the public is limited to its brand name, its proper or common name, its price and its quantity. That is the whole list. Claims about what the drug does, how long it lasts or what it will do for your face fall outside it.
 
-So a price menu that reads like a menu is the safe ground. A post that names the drug and promises softer lines is not. The same goes for fillers and other prescription injectables.
+So a price menu that reads like a menu is the safe ground. A post that names the drug and promises softer lines is not. The same goes for other prescription injectables.
+
+Dermal fillers are different. In Canada they are medical devices, not drugs, so a different rule applies: an ad may only claim the uses the device is licensed for. A clinic can use a filler off-label, but it cannot market that use.
 
 The platforms add their own layer. Meta and Google both restrict prescription drug ads, so a post can be lawful and still be rejected. And the clinicians who prescribe and inject are bound by their own colleges, the CPSO and the CNO.
 
