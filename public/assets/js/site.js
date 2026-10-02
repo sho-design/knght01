@@ -165,6 +165,15 @@
     window.gtag('js', new Date());
     window.gtag('config', GA_ID);
   }
+  // Microsoft Clarity: heatmaps and session recordings. Text typed into fields is masked.
+  const CLARITY_ID = 'yrly3zmoyn';
+  if (/^[a-z0-9]{8,12}$/.test(CLARITY_ID)) {
+    window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
+    const c = document.createElement('script');
+    c.async = true;
+    c.src = `https://www.clarity.ms/tag/${CLARITY_ID}`;
+    document.head.appendChild(c);
+  }
   const sendEvent = (event, params = {}) => {
     if (/^G-[A-Z0-9]+$/.test(GA_ID)) window.gtag('event', event, params);
   };

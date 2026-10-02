@@ -1,4 +1,5 @@
 // Content Security Policy: after the build, every page gets a <meta> policy listing exactly what it may load.
+// Third parties allowed: GA4, Microsoft Clarity, Calendly, Google Fonts, the media CDN and the form service.
 // Inline scripts are allowed by their SHA-256 hash, so editing one updates the policy on the next build.
 // The form service is read from the built pages (src/lib/settings.ts), so setting an endpoint allows it automatically.
 // frame-ancestors cannot live in a <meta> tag; it is sent as a header from vercel.json.
@@ -9,18 +10,19 @@ import { fileURLToPath } from 'node:url';
 
 const GA = ['https://*.googletagmanager.com', 'https://*.google-analytics.com', 'https://*.analytics.google.com'];
 const CDN = 'https://d2ol7oe51mr4n9.cloudfront.net';
+const CLARITY = 'https://*.clarity.ms https://c.bing.com';
 
 const walk = async (dir) => (await Promise.all((await readdir(dir, { withFileTypes: true })).map((d) =>
   d.isDirectory() ? walk(join(dir, d.name)) : d.name.endsWith('.html') ? [join(dir, d.name)] : []))).flat();
 
 const policy = (hashes, formOrigins) => [
   "default-src 'self'",
-  `script-src 'self' ${hashes.map((h) => `'sha256-${h}'`).join(' ')} https://www.googletagmanager.com https://assets.calendly.com`,
+  `script-src 'self' ${hashes.map((h) => `'sha256-${h}'`).join(' ')} https://www.googletagmanager.com https://assets.calendly.com https://www.clarity.ms https://scripts.clarity.ms`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com",
   "font-src 'self' https://fonts.gstatic.com",
-  `img-src 'self' data: blob: ${CDN} ${GA.join(' ')}`,
+  `img-src 'self' data: blob: ${CDN} ${GA.join(' ')} ${CLARITY}`,
   `media-src 'self' ${CDN}`,
-  `connect-src 'self' ${CDN} ${GA.join(' ')} ${formOrigins.join(' ')}`.trim(),
+  `connect-src 'self' ${CDN} ${GA.join(' ')} ${CLARITY} ${formOrigins.join(' ')}`.trim(),
   'frame-src https://calendly.com',
   "object-src 'none'",
   "base-uri 'self'",
