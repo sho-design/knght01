@@ -26,7 +26,6 @@
   };
   PATHS.law = PATHS.scales;
   const sigil = (k, cls) => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${PATHS[k]}</svg>`;
-  const SWORD = '<svg class="chap__sword" viewBox="0 27 600 66" aria-hidden="true"><circle pathLength="1" cx="30" cy="60" r="16"/><path pathLength="1" d="M46 60H120M120 30V90"/><path class="chap__blade" pathLength="1" d="M136 51 530 51 594 60 530 69 136 69Z"/></svg>';
 
   /* The five chapters. IV opens with the intermission instead of a band. */
   const verdictSec = $('.verdict');
@@ -39,14 +38,14 @@
     { n: 'V', t: 'The Verdict', s: 'sword', el: verdictSec }
   ].filter((c) => c.el);
 
-  /* ---------- 1. Chapter openers: an outlined numeral and a sword drawn hilt first ---------- */
+  /* ---------- 1. Chapter openers: an outlined numeral, the sigil and the chapter above its title ---------- */
   const bands = [];
   CHAPTERS.forEach((c) => {
     if (c.n === 'IV') return;
     const band = document.createElement('div');
     band.className = 'chap';
     band.setAttribute('aria-hidden', 'true');
-    band.innerHTML = `<div class="wrap chap__in"><span class="chap__num">${c.n}</span><p class="chap__meta">${sigil(c.s, 'chap__sigil')}<span>Chapter ${c.n}</span><b>${c.t}</b></p>${SWORD}</div>`;
+    band.innerHTML = `<div class="wrap chap__in"><span class="chap__num">${c.n}</span><p class="chap__meta">${sigil(c.s, 'chap__sigil')}<span>Chapter ${c.n}</span><b>${c.t}</b></p></div>`;
     c.el.parentNode.insertBefore(band, c.el);
     c.start = band;
     bands.push(band);

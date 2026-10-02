@@ -1,5 +1,5 @@
 /* KNGHT home: the quiet magic.
-   Runes that wake under the cursor, chapter names that decode, a constellation of the worlds,
+   Runes that wake under the cursor, chapter names that decode,
    a portal into each world, wax seals that break, and notes in the margin. */
 (() => {
   const root = document.documentElement;
@@ -78,19 +78,7 @@
     decodeTargets.forEach((el) => io.observe(el));
   }
 
-  /* ---------- 10. A constellation of the worlds, in the shape of a knight ---------- */
-  const worlds = $$('.world').map((w) => ({ slug: w.dataset.slug, name: ($('.world__name', w) || w).textContent.replace(/\s+/g, ' ').trim(), href: ($('.world__link', w) || {}).getAttribute ? $('.world__link', w).getAttribute('href') : '#' }));
   const heroInner = $('.hero__inner');
-  if (heroInner && worlds.length >= 9) {
-    const P = [[2.8, 21], [2.6, 12.5], [6.4, 4.4], [6.8, 2.4], [11.2, 7.6], [12.4, 10.6], [9.4, 10.6], [8.7, 13.2], [11.2, 21]];
-    const pts = P.map(([x, y]) => [x * 10 - 10, y * 10 + 6]);
-    const lines = pts.map((p, i) => { const q = pts[(i + 1) % pts.length]; return `<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" pathLength="1"/>`; }).join('');
-    const stars = worlds.slice(0, 9).map((w, i) => `<a class="stars__star" href="${w.href}" style="--i:${i}" aria-label="${w.name}"><circle cx="${pts[i][0]}" cy="${pts[i][1]}" r="2.6"/><circle class="stars__halo" cx="${pts[i][0]}" cy="${pts[i][1]}" r="9"/><text x="${pts[i][0] + (i >= 4 && i <= 6 ? 12 : -12)}" y="${pts[i][1] + 4}" text-anchor="${i >= 4 && i <= 6 ? 'start' : 'end'}">${w.name}</text></a>`).join('');
-    const el = document.createElement('div');
-    el.className = 'stars';
-    el.innerHTML = `<p class="stars__label" aria-hidden="true">The nine worlds</p><svg viewBox="-40 0 200 230" role="group" aria-label="The nine worlds, drawn as a constellation"><g class="stars__lines" aria-hidden="true">${lines}</g>${stars}</svg>`;
-    $('.hero').appendChild(el);
-  }
 
   /* ---------- 12. Portal into a world (a fallback for browsers without page transitions) ---------- */
   const crossDocVT = 'CSSViewTransitionRule' in window;

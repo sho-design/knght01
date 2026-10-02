@@ -674,16 +674,11 @@ html.lenis,html.lenis body{height:auto}
 .chap{position:relative;overflow:hidden;padding-block:clamp(72px,13vh,150px) clamp(40px,7vh,80px)}
 .chap__in{position:relative;display:flex;flex-direction:column;gap:22px}
 .chap__num{position:absolute;right:var(--gutter);bottom:-.16em;font:italic 300 clamp(9rem,26vw,24rem)/1 var(--serif);color:transparent;-webkit-text-stroke:1px var(--rule-strong);letter-spacing:-.04em;pointer-events:none;transform:translate3d(0,var(--drift,0px),0);user-select:none}
-.chap__meta{position:relative;display:flex;align-items:center;gap:14px;margin:0;font-size:.78rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--ash)}
-.chap__meta b{font:italic 400 clamp(1.6rem,3vw,2.4rem)/1 var(--serif);letter-spacing:-.01em;text-transform:none;color:var(--argent)}
-.chap__sigil{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;color:var(--argent)}
-.chap__sword{position:relative;display:block;width:clamp(220px,42vw,580px);height:auto;overflow:visible;fill:none;stroke:var(--argent);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
-.js .chap__sword *{stroke-dasharray:1;stroke-dashoffset:1}
+.chap__meta{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin:0;font-size:.78rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--ash)}
+.chap__meta b{margin-top:4px;font:italic 400 clamp(2.4rem,5vw,4.2rem)/1 var(--serif);letter-spacing:-.01em;text-transform:none;color:var(--argent)}
+.chap__sigil{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;color:var(--argent)}
 .js .chap__meta{opacity:0;transform:translateY(14px);transition:opacity .8s var(--ease-out),transform .9s var(--ease-out)}
 .chap.is-in .chap__meta{opacity:1;transform:none}
-.chap.is-in .chap__sword circle{stroke-dashoffset:0;transition:stroke-dashoffset .5s var(--ease-out) .15s}
-.chap.is-in .chap__sword path{stroke-dashoffset:0;transition:stroke-dashoffset .5s var(--ease-out) .45s}
-.chap.is-in .chap__sword .chap__blade{transition:stroke-dashoffset 1.4s var(--ease-out) .75s}
 
 /* Chapter rail */
 .crail{position:fixed;left:18px;top:50%;z-index:55;transform:translate(-8px,-50%);opacity:0;pointer-events:none;color:#fff;mix-blend-mode:difference;transition:opacity .5s var(--ease),transform .6s var(--ease)}
@@ -805,7 +800,6 @@ html.lenis,html.lenis body{height:auto}
 
 @media (prefers-reduced-motion:reduce){
   .chap__num{transform:none}
-  .js .chap__sword *{stroke-dashoffset:0}
   .js .chap__meta{opacity:1;transform:none}
   .offer{transform:none}
   .offer::after{display:none}
@@ -824,22 +818,6 @@ html.lenis,html.lenis body{height:auto}
 .runes--lit svg{opacity:.55;filter:drop-shadow(0 0 6px rgba(255,255,255,.55))}
 .runes--lit{opacity:0;transition:opacity 1.2s var(--ease);-webkit-mask-image:radial-gradient(circle 190px at var(--rx,-999px) var(--ry,-999px),#000 0%,rgba(0,0,0,.35) 45%,transparent 100%);mask-image:radial-gradient(circle 190px at var(--rx,-999px) var(--ry,-999px),#000 0%,rgba(0,0,0,.35) 45%,transparent 100%)}
 .is-woken > .runes--lit{opacity:1;transition-duration:.35s}
-
-/* The constellation of worlds */
-.stars{position:absolute;z-index:2;right:var(--gutter);top:calc(var(--nav-h) + 4vh + 150px);width:clamp(170px,17vw,260px);color:#fff}
-.stars__label{margin:0 0 6px;text-align:right;font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ash)}
-.stars svg{display:block;width:100%;height:auto;overflow:visible}
-.stars__lines line{stroke:rgba(255,255,255,.28);stroke-width:.6;stroke-dasharray:1;stroke-dashoffset:1;animation:starLine 1.2s var(--ease-out) forwards;animation-delay:calc(1.6s + var(--d,0s))}
-.stars__lines line:nth-child(2){--d:.12s}.stars__lines line:nth-child(3){--d:.24s}.stars__lines line:nth-child(4){--d:.36s}.stars__lines line:nth-child(5){--d:.48s}.stars__lines line:nth-child(6){--d:.6s}.stars__lines line:nth-child(7){--d:.72s}.stars__lines line:nth-child(8){--d:.84s}.stars__lines line:nth-child(9){--d:.96s}
-@keyframes starLine{to{stroke-dashoffset:0}}
-.stars__star circle{fill:#fff;transform-box:fill-box;transform-origin:center;animation:twinkle 4s ease-in-out infinite;animation-delay:calc(var(--i) * -.45s)}
-.stars__star .stars__halo{fill:transparent;stroke:rgba(255,255,255,0);stroke-width:.6;animation:none;transition:stroke .3s}
-.stars__star text{fill:#fff;font:italic 400 9px var(--serif);opacity:0;transition:opacity .3s;pointer-events:none}
-.stars__star:hover text,.stars__star:focus-visible text{opacity:1}
-.stars__star:hover .stars__halo,.stars__star:focus-visible .stars__halo{stroke:rgba(255,255,255,.6)}
-.stars__star:focus{outline:none}
-@keyframes twinkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.7)}}
-@media (max-width:900px){.stars{display:none}}
 
 /* Portal into a world (fallback where page transitions are not supported) */
 .portal{position:fixed;z-index:180;overflow:hidden;background:#000;transition:left .5s var(--ease),top .5s var(--ease),width .5s var(--ease),height .5s var(--ease)}
@@ -932,7 +910,5 @@ html.lenis,html.lenis body{height:auto}
 @media (max-width:900px){.sigil__grid{grid-template-columns:minmax(0,1fr)}.sigil__figure{position:relative;top:0;order:-1;max-width:420px}}
 
 @media (prefers-reduced-motion:reduce){
-  .stars__lines line{animation:none;stroke-dashoffset:0}
-  .stars__star circle{animation:none}
   .wseal__half,.mg,.codex,.codex__list li{transition:none}
 }
