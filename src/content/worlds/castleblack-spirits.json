@@ -1,0 +1,65 @@
+{
+  "order": 3,
+  "name": "Castleblack",
+  "em": "Spirits",
+  "cat": "spirits",
+  "cats": [
+    "spirits"
+  ],
+  "line": "Premium Jamaican rum from St. Mary, carried by a story of heritage.",
+  "about": [
+    "Castleblack Spirits is a premium rum distilled in St. Mary, Jamaica.",
+    "Its first brand leaned on pirate lore that did not land at home. The world was rebuilt around Jamaican heritage and flavour, with the same depth of story and none of the baggage."
+  ],
+  "where": "St. Mary, Jamaica",
+  "url": null,
+  "impact": "Better reception, stronger sales and no local pushback. Castleblack now pours in bars, restaurants and hotels, and distributors have carried it to more than five countries.",
+  "plate": "f9f4237f-3a1c-4d7b-970d-325e798efbcc.webp",
+  "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/855d452e-bd6f-46b8-9a09-a593c1dd1f1a.mp4",
+  "alt": "A dark bottle and a glass of rum on castle stone, lit by a candle",
+  "built": {
+    "Lore": "Rebuilt from a pirate theme that did not land at home into a heritage brand, with a new crest, narrative and brand guidelines.",
+    "Law": "Labels and ads checked against alcohol rules, plus pricing and the distributor offer.",
+    "Language": "A marketing strategy, social ads, photo and video, cocktail content and the sales deck story.",
+    "Map": "The full website, a landing page and sales presentation tools.",
+    "Artifacts": "A label system with bottles and packaging sourced worldwide, plus barcodes, point-of-sale, cases, sell sheets and business cards.",
+    "Machinery": "Ordering and distributor systems."
+  },
+  "work": [
+    {
+      "alt": "The Castleblack rum range in a presentation banner",
+      "src": "/assets/work/castleblack-spirits/1.webp",
+      "width": 804,
+      "height": 316,
+      "layer": "Language"
+    },
+    {
+      "alt": "The Castleblack coconut rum label sheet",
+      "src": "/assets/work/castleblack-spirits/2.webp",
+      "width": 390,
+      "height": 757,
+      "layer": "Artifacts"
+    },
+    {
+      "alt": "The Castleblack site on a laptop and phone",
+      "src": "/assets/work/castleblack-spirits/3.webp",
+      "width": 390,
+      "height": 316,
+      "layer": "Map"
+    },
+    {
+      "alt": "A Cuba Libre recipe card for Castleblack",
+      "src": "/assets/work/castleblack-spirits/4.webp",
+      "width": 183,
+      "height": 318,
+      "layer": "Language"
+    },
+    {
+      "alt": "A bottle of Castleblack spiced rum",
+      "src": "/assets/work/castleblack-spirits/5.webp",
+      "width": 184,
+      "height": 317,
+      "layer": "Artifacts"
+    }
+  ]
+}

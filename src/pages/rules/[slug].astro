@@ -1,0 +1,46 @@
+---
+// One page per Rules article, from src/content/rules/<slug>.md.
+import Base from '../../layouts/Base.astro';
+import Cta from '../../components/Cta.astro';
+import { render } from 'astro:content';
+import { getRules } from '../../lib/site';
+
+export async function getStaticPaths() {
+  return (await getRules()).map((r) => ({ params: { slug: r.id }, props: { r } }));
+}
+const { r } = Astro.props;
+const d = r.data;
+const { Content } = await render(r);
+const ld = [{ '@context': 'https://schema.org', '@type': 'Article', headline: d.title, description: d.dek,
+  author: { '@type': 'Person', name: 'Sergio Ho' }, publisher: { '@type': 'Organization', name: 'KNGHT', url: 'https://knght.com/' },
+  datePublished: '2026-10-01', mainEntityOfPage: `https://knght.com/rules/${r.id}/` }];
+---
+<Base title={`${d.title} | KNGHT Rules`} description={d.dek} path={`rules/${r.id}/`} bodyClass="worldpage legalpage rulepage" ld={ld}>
+  <article>
+  <section class="whero">
+    <div class="wrap">
+      <p class="eyebrow">Rules · {d.cat}</p>
+      <h1 class="display book__title" style="margin-top:24px">{d.title}</h1>
+      <p class="for__answer">{d.dek}</p>
+    </div>
+  </section>
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <p class="eyebrow">{d.eyebrow ?? 'The rule'}</p>
+      <div class="article">
+        <Content />
+        <p class="article__note">A plain-language read, not legal advice. Rules change, so check the source or ask us before you publish.</p>
+        <h2 class="article__h">Sources</h2>
+        <ul class="article__sources">{d.sources.map((s) => <li><a class="link" href={s.url} rel="noopener">{s.title}</a></li>)}</ul>
+        <p>
+          {d.for && <Fragment><a class="link" href={`/for/${d.for}/`}>Brand worlds for {d.for.replace('-', ' ')}</a> · </Fragment>}
+          {d.layer && <Fragment><a class="link" href={`/layers/${d.layer.toLowerCase()}/`}>The {d.layer} layer</a> · </Fragment>}
+          <a class="link" href="/rules/">All rules</a>
+        </p>
+      </div>
+    </div>
+  </section>
+  </article>
+
+  <Cta />
+</Base>

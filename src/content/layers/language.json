@@ -1,0 +1,27 @@
+{
+  "order": 3,
+  "name": "Language",
+  "line": "Voice, hooks, content and ads. Written to stop the scroll and pass review.",
+  "question": "Do you sound like one brand everywhere, and does it pass review?",
+  "what": "Voice, hooks, content and ads. Written to stop the scroll and still pass platform and regulator review.",
+  "wrong": "Posts sound like five different people, ads get rejected, and nothing gets repeated by customers.",
+  "make": [
+    "A voice guide with words you own and words you never use",
+    "Hooks and content series",
+    "Ad copy and scripts",
+    "Captions, emails and campaign lines"
+  ],
+  "check": [
+    "Meta, Google and TikTok ad policies for your category",
+    "Your regulator's rules on claims, testimonials and before-and-after content",
+    "Canada's anti-spam law (CASL) for every email and text"
+  ],
+  "reads": "Lore and Law",
+  "feeds": "Map",
+  "quiz": "Does your content sound like one brand, and does it pass platform review?",
+  "tags": [
+    "Voice",
+    "Hooks",
+    "Ads"
+  ]
+}

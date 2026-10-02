@@ -1,0 +1,30 @@
+{
+  "order": 7,
+  "name": "Machinery",
+  "line": "Intake, booking, follow-up and reporting, with AI doing the repetitive work inside the rules. The systems that keep the world running without you.",
+  "question": "Does it run without you chasing it?",
+  "what": "Intake, booking, ordering, follow-up and reporting, with AI doing the repetitive work inside the rules. The systems that keep the world running without you. AI is the squire, not the knight: it drafts, sorts and reminds, and a person makes the call.",
+  "wrong": "Leads wait, no-shows repeat, and the owner is the system.",
+  "make": [
+    "Intake and booking",
+    "Reminders and follow-up",
+    "AI agents for intake, answers and follow-up, with a person checking",
+    "Ordering and fulfilment",
+    "Reporting you can read in a minute"
+  ],
+  "check": [
+    "Consent records under CASL",
+    "Privacy under PIPEDA or PHIPA",
+    "Which AI tools may touch personal or health information, and under what agreement",
+    "Who on your team can see what"
+  ],
+  "reads": "Map",
+  "feeds": "Lore, through what the numbers say",
+  "quiz": "Do intake, booking, follow-up and reporting run without you chasing them?",
+  "tags": [
+    "Intake",
+    "AI agents",
+    "Booking",
+    "Reporting"
+  ]
+}

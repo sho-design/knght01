@@ -1,0 +1,12 @@
+---
+// Seven segments, lit for each layer KNGHT built in a world.
+import { LAYER_NAMES, worldLayers, type World } from '../lib/site';
+interface Props { world: World; label?: boolean }
+const { world, label = true } = Astro.props;
+const built = worldLayers(world);
+---
+{built.length > 0 && (
+  <span class="meter" role="img" aria-label={`${built.length} of 7 layers built: ${built.join(', ')}`}>{LAYER_NAMES.map((n) => (
+    <span class:list={['meter__seg', { 'is-on': built.includes(n) }]} title={n}></span>
+  ))}{label && <span class="meter__label">{built.length} of 7 layers built</span>}</span>
+)}

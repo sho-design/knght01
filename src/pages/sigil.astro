@@ -1,0 +1,40 @@
+---
+// Your sigil: a crest forged in the browser by assets/js/sigil.js.
+import Base from '../layouts/Base.astro';
+import Cta from '../components/Cta.astro';
+---
+<Base title="Your sigil: forge a crest for your business | KNGHT" description="Forge a black and white crest for your business from its name, category and the one thing it guards. Free to download and share." path="sigil/">
+  <section class="whero sigil">
+    <div class="wrap sigil__grid">
+      <div class="sigil__intro">
+        <p class="eyebrow">Your sigil</p>
+        <h1 class="display book__title" style="margin-top:24px">Every world <br>has a <em>sigil.</em></h1>
+        <p class="book__lede">Give us a name, a category and the one thing you guard. We forge a crest in black and white. It is yours to keep and share.</p>
+        <form class="sigil__form" data-sigil-form autocomplete="off">
+          <label class="sigil__field"><span>Business name</span><input name="name" type="text" maxlength="40" placeholder="Your business" required></label>
+          <label class="sigil__field"><span>Category</span><select name="cat"><option value="clinic">Clinic</option><option value="medspa">Medspa</option><option value="law">Law firm</option><option value="spirits">Spirits</option><option value="coffee">Coffee</option><option value="food">Food</option><option value="other">Something else</option></select></label>
+          <fieldset class="sigil__field sigil__virtues"><legend>What you guard</legend><label class="sigil__virtue"><input type="radio" name="virtue" value="trust" checked><span>Trust</span></label><label class="sigil__virtue"><input type="radio" name="virtue" value="craft"><span>Craft</span></label><label class="sigil__virtue"><input type="radio" name="virtue" value="care"><span>Care</span></label><label class="sigil__virtue"><input type="radio" name="virtue" value="heritage"><span>Heritage</span></label></fieldset>
+        </form>
+        <div class="sigil__actions">
+          <button type="button" class="btn" data-sigil-png>Download PNG</button>
+          <button type="button" class="link" data-sigil-svg>Download SVG</button>
+          <button type="button" class="link" data-sigil-share hidden>Share</button>
+        </div>
+        <form class="lead sigil__lead" data-sigil-lead data-endpoint="" hidden novalidate>
+          <label class="lead__label" for="sigil-email">Send it to your inbox</label>
+          <div class="lead__row"><input id="sigil-email" name="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com" required><button type="submit" class="btn btn--sm">Send it</button></div>
+          <label class="lead__consent"><input name="consent" type="checkbox" required> Email me my sigil and occasional notes from KNGHT. Unsubscribe any time. <a class="link" href="/privacy/">Privacy</a></label>
+          <p class="lead__status" data-sigil-status aria-live="polite"></p>
+        </form>
+        <p class="sigil__note">Drawn in your browser. Nothing you type is sent anywhere.</p>
+      </div>
+      <figure class="sigil__figure">
+        <div class="sigil__stage" data-sigil-stage></div>
+        <figcaption class="sigil__blazon" data-sigil-blazon></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <Cta line="A sigil is the mark. The Verdict reads the whole world behind it. Fixed fee from $3,500 CAD, credited to your Build within 60 days." />
+  <script is:inline slot="scripts" src="/assets/js/sigil.js" defer></script>
+</Base>

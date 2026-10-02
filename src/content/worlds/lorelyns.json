@@ -1,0 +1,66 @@
+{
+  "order": 5,
+  "name": "Lorelyns",
+  "em": "Gourmet Desserts",
+  "cat": "food",
+  "cats": [
+    "food"
+  ],
+  "line": "Nut free, gluten free, plant-based desserts, so no one sits out the celebration.",
+  "about": [
+    "Lorelyns Gourmet Desserts makes allergen-friendly desserts that are peanut and nut free, gluten free and plant based, from recipes developed since 2006.",
+    "The range runs from chocolate truffle bars to brownies, cookies and cakes, sold online, through retailers and in food service. Founded by Lorelyn Martin."
+  ],
+  "where": "Greater Toronto Area",
+  "url": "https://lorelyns.com/",
+  "impact": "A wider customer base, wholesale clients, and a sharper presence at events and on retail shelves. The structure to take on new commercial accounts.",
+  "plate": "d7cffe34-9afd-4d03-baed-1ff5c1e4e99c.webp",
+  "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/bbc35de0-9c24-4720-b5e1-b2a367da6c03.mp4",
+  "alt": "A broken dark chocolate truffle bar and a fudge brownie with flakes of sea salt on slate",
+  "built": {
+    "Lore": "A logo and identity refresh, the founder story and the positioning.",
+    "Law": "Nut-free, gluten-free and plant-based claims and labels reviewed, plus retail and wholesale pricing.",
+    "Language": "Product copy, plus photo and video.",
+    "Map": "A Shopify store with retail and wholesale ordering.",
+    "Ground": "Booths for events and trade shows, and in-store displays at retail partners.",
+    "Artifacts": "Packaging and labels, flyers and sell sheets, cards, tent displays and trade banners.",
+    "Machinery": "Retail and wholesale ordering, fulfilment and shipping, reporting, and training so the team runs it in house."
+  },
+  "work": [
+    {
+      "alt": "The Lorelyns Shopify store with the variety pack",
+      "src": "/assets/work/lorelyns/1.webp",
+      "width": 803,
+      "height": 490,
+      "layer": "Map"
+    },
+    {
+      "alt": "Lorelyn Martin with her desserts in a grocery store",
+      "src": "/assets/work/lorelyns/2.webp",
+      "width": 390,
+      "height": 316,
+      "layer": "Artifacts"
+    },
+    {
+      "alt": "Lorelyns business cards",
+      "src": "/assets/work/lorelyns/3.webp",
+      "width": 390,
+      "height": 316,
+      "layer": "Artifacts"
+    },
+    {
+      "alt": "Lorelyns desserts in baskets beside a tent card",
+      "src": "/assets/work/lorelyns/4.webp",
+      "width": 390,
+      "height": 316,
+      "layer": "Artifacts"
+    },
+    {
+      "alt": "A Lorelyns cookie bag",
+      "src": "/assets/work/lorelyns/5.webp",
+      "width": 183,
+      "height": 317,
+      "layer": "Artifacts"
+    }
+  ]
+}

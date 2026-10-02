@@ -1,0 +1,27 @@
+{
+  "order": 6,
+  "name": "Artifacts",
+  "line": "Print, labels, packaging and forms. Everything a customer holds.",
+  "question": "Is everything a customer holds on brand and compliant?",
+  "what": "Print, labels, packaging, menus and forms. Everything a customer can pick up.",
+  "wrong": "A label gets rejected, a menu contradicts the website, and every reprint costs money.",
+  "make": [
+    "Labels and packaging",
+    "Menus and price lists",
+    "Forms and consent documents",
+    "Print, merchandise and displays"
+  ],
+  "check": [
+    "CFIA labelling, including allergen declarations",
+    "Bilingual requirements wherever they apply",
+    "LCBO and retailer specifications"
+  ],
+  "reads": "Lore and Law",
+  "feeds": "Ground",
+  "quiz": "Are your labels, forms, menus and packaging on brand and compliant?",
+  "tags": [
+    "Print",
+    "Labels",
+    "Packaging"
+  ]
+}

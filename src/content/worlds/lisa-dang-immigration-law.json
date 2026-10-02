@@ -1,0 +1,45 @@
+{
+  "order": 7,
+  "name": "Lisa Dang",
+  "em": "Immigration Law",
+  "cat": "law",
+  "cats": [
+    "law"
+  ],
+  "line": "A boutique immigration practice where every file is handled by the lawyer, start to finish.",
+  "about": [
+    "Lisa Dang Immigration Law is a boutique Canadian immigration practice.",
+    "Lisa Dang is licensed by the Law Society of Ontario, has practised immigration law exclusively since 2009, and handles every file herself, from the first consultation to submission."
+  ],
+  "where": null,
+  "url": "https://lisadanglaw.com/",
+  "impact": null,
+  "plate": "51ffa9fe-d28d-4fa4-bb61-b1540ff3786f.webp",
+  "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/eb0e5300-7279-422e-a9a3-9f34c33f7b67.mp4",
+  "alt": "A brass compass and a fountain pen on a folded document in striped window light",
+  "built": {
+    "Lore": "The logo, branding, positioning and founder story, with brand guidelines.",
+    "Law": "The service and fee structure for consultations.",
+    "Language": "The website copy and social media.",
+    "Map": "lisadanglaw.com, with SEO, a Google Business Profile and consultation booking.",
+    "Ground": "Office signage.",
+    "Artifacts": "Business cards, letterhead and document templates.",
+    "Machinery": "Intake automation and reporting."
+  },
+  "work": [
+    {
+      "alt": "The lisadanglaw.com homepage",
+      "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/8f2c274b-d49c-4390-8755-f11a0a74c0e8.webp",
+      "width": 1600,
+      "height": 1000,
+      "layer": "Map"
+    },
+    {
+      "alt": "The lisadanglaw.com homepage on a phone",
+      "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/decd1905-4609-4c73-bd31-5a5c817edb50.webp",
+      "width": 780,
+      "height": 1688,
+      "layer": "Map"
+    }
+  ]
+}

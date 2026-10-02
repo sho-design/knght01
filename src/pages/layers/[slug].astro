@@ -1,0 +1,81 @@
+---
+// One page per layer, from src/content/layers/<slug>.json. Examples and work come from the worlds.
+import Base from '../../layouts/Base.astro';
+import Cta from '../../components/Cta.astro';
+import WorkGrid from '../../components/WorkGrid.astro';
+import { CATEGORY, CATEGORY_ORDER, getLayers, getWorlds, workImages } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const layers = await getLayers();
+  return layers.map((l, i) => ({ params: { slug: l.id }, props: { i, layers } }));
+}
+const { i, layers } = Astro.props;
+const l = layers[i], d = l.data, name = d.name;
+const prev = i > 0 ? layers[i - 1] : null, next = i + 1 < layers.length ? layers[i + 1] : null;
+const examples = (await getWorlds()).filter((w) => w.data.built[name]);
+const imgs = await workImages(name);
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const checks = name === 'Law'
+  ? CATEGORY_ORDER.map((k) => ({ b: cap(CATEGORY[k].short), s: CATEGORY[k].Law as string }))
+  : d.check.map((x: string) => ({ b: x, s: '' }));
+let desc = `${name}, layer ${i + 1} of KNGHT's seven: ${d.what}`;
+if (desc.length > 158) desc = desc.slice(0, 155).replace(/\s+\S*$/, '') + '.';
+const ld = [{ '@context': 'https://schema.org', '@type': 'Service', name: `${name}: brand layer ${i + 1} of 7`, description: d.what,
+  provider: { '@type': 'ProfessionalService', name: 'KNGHT', url: 'https://knght.com/' }, areaServed: 'Ontario, Canada' }];
+---
+<Base title={`${name}: layer ${i + 1} of 7 | KNGHT`} description={desc} path={`layers/${l.id}/`} bodyClass="worldpage layerpage" ld={ld}>
+  <section class="whero">
+    <div class="wrap">
+      <p class="eyebrow">Layer {i + 1} of 7</p>
+      <h1 class="display book__title" style="margin-top:24px">{name}<span class="sr-only">: {d.question}</span></h1>
+      <p class="layer__q">{d.question}</p>
+      <p class="for__answer">{d.what}</p>
+      <div class="layerbar" aria-label="The seven layers">{layers.map((x, k) => (
+        <a href={`/layers/${x.id}/`} class={x.id === l.id ? 'is-on' : ''} aria-current={x.id === l.id ? 'page' : undefined}><b>{k + 1}</b>{x.data.name}</a>
+      ))}</div>
+    </div>
+  </section>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">Without it</p><div class="wsec__text" data-reveal><p>{d.wrong}</p></div></div></section>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">What we make</p>
+    <ul class="wrules" data-reveal>{d.make.map((m: string) => <li><b>{m}</b></li>)}</ul>
+  </div></section>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">What we check it against</p>
+    <ul class="wrules" data-reveal>{checks.map((c) => <li><b>{c.b}</b>{c.s && <span>{c.s}</span>}</li>)}</ul>
+  </div></section>
+
+  {examples.length > 0 && (
+    <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">From the worlds</p>
+      <ul class="wrules" data-reveal>{examples.map((w) => <li><b><a class="link" href={`/worlds/${w.id}/`}>{w.data.name} {w.data.em}</a></b><span>{w.data.built[name]}</span></li>)}</ul>
+    </div></section>
+  )}
+
+  {imgs.length > 0 && (
+    <section class="wsec wwork">
+      <div class="wrap">
+        <p class="eyebrow">{name}, in the work</p>
+        <WorkGrid imgs={imgs} />
+      </div>
+    </section>
+  )}
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">How it connects</p>
+    <ul class="wrules" data-reveal><li><b>Reads from</b><span>{d.reads || 'Nothing. Lore comes first.'}</span></li><li><b>Feeds</b><span>{d.feeds}</span></li></ul>
+  </div></section>
+
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <p class="eyebrow">Ask yourself</p>
+      <div class="wsec__text" data-reveal><p>{d.quiz}</p><p><a class="link" href="/#score">Score all seven layers in two minutes</a></p></div>
+    </div>
+  </section>
+
+  <nav class="wrap layer__pager" aria-label="More layers">
+    {prev && <a class="link" href={`/layers/${prev.id}/`}>Previous: {prev.data.name}</a>}
+    {next && <a class="link" href={`/layers/${next.id}/`}>Next: {next.data.name}</a>}
+  </nav>
+
+  <Cta />
+</Base>

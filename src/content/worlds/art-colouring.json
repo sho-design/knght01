@@ -1,0 +1,58 @@
+{
+  "order": 9,
+  "name": "Art",
+  "em": "Colouring",
+  "cat": "creative",
+  "cats": [
+    "creative"
+  ],
+  "line": "Colouring as self-expression, story and soul care.",
+  "about": [
+    "Art Colouring reimagines the colouring book, blending mindful creativity with storytelling.",
+    "Its world had to hold visual sophistication and the simple pleasure of a mindfulness tool, and stay open to a wide audience."
+  ],
+  "where": null,
+  "url": null,
+  "impact": "A scalable content pipeline, sold across platforms to wellness-minded, creative buyers. A hybrid of creative product and mindfulness practice, built for long-term series growth.",
+  "plate": "29af57a6-44b4-4eec-9e05-c384387b9add.webp",
+  "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/7b34d099-139f-435c-852a-70ac56491274.mp4",
+  "alt": "An open colouring book with a half-shaded baby dragon beside coloured pencils",
+  "built": {
+    "Lore": "The name and mark, the book templates, and the themed series and their stories, such as Kawaii Saurs.",
+    "Law": "Image rights, AI-art use and marketplace listing rules reviewed, plus book pricing.",
+    "Language": "Branding, ad copy, social media and SEO for Amazon and Shopify listings.",
+    "Map": "The Shopify store and the Amazon listings.",
+    "Artifacts": "Covers and interiors, the line art for most titles, a distinct illustration style for each series, and print and merchandise.",
+    "Machinery": "A content pipeline for new titles, print-on-demand publishing, and Google Ads and Analytics across every platform."
+  },
+  "work": [
+    {
+      "alt": "Kawaii Saurs Volume 1: cover, back cover and pages",
+      "src": "/assets/work/art-colouring/1.webp",
+      "width": 803,
+      "height": 485,
+      "layer": "Artifacts"
+    },
+    {
+      "alt": "The Art Colouring store on a laptop and phone",
+      "src": "/assets/work/art-colouring/2.webp",
+      "width": 595,
+      "height": 486,
+      "layer": "Map"
+    },
+    {
+      "alt": "Four Kawaii Saurs covers",
+      "src": "/assets/work/art-colouring/3.webp",
+      "width": 390,
+      "height": 316,
+      "layer": "Artifacts"
+    },
+    {
+      "alt": "Printed Art Colouring books",
+      "src": "/assets/work/art-colouring/4.webp",
+      "width": 389,
+      "height": 146,
+      "layer": "Artifacts"
+    }
+  ]
+}

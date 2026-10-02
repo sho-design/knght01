@@ -1,0 +1,194 @@
+{
+  "clinic": {
+    "short": "clinics",
+    "label": "Healthcare",
+    "rules": [
+      {
+        "title": "CPSO",
+        "text": "Advertising by physicians must be factual and verifiable, with no testimonials."
+      },
+      {
+        "title": "Health Canada",
+        "text": "Limits on advertising prescription drugs and medical devices to the public."
+      },
+      {
+        "title": "PHIPA",
+        "text": "Ontario's rules for every piece of patient information the world touches."
+      },
+      {
+        "title": "Competition Act",
+        "text": "No false or misleading claims, and pricing that shows the full cost."
+      }
+    ],
+    "Law": "CPSO advertising rules, Health Canada drug and device advertising, and PHIPA for every patient record the site touches.",
+    "Language": "No testimonials, no promised outcomes, and a voice patients trust before they book.",
+    "Map": "Service pages patients and AI assistants can answer from, and a Google Business Profile for each location.",
+    "Artifacts": "Intake and consent forms, aftercare sheets and signage, each checked before print."
+  },
+  "medspa": {
+    "short": "medspas",
+    "label": "Aesthetics",
+    "rules": [
+      {
+        "title": "CPSO and CNO",
+        "text": "Rules for the physicians and nurses who prescribe and deliver treatments."
+      },
+      {
+        "title": "Health Canada",
+        "text": "Prescription drugs cannot be promoted to the public by brand name."
+      },
+      {
+        "title": "Competition Act",
+        "text": "No false or misleading claims, and pricing that shows the full cost."
+      }
+    ],
+    "Law": "CPSO and CNO rules, and Health Canada limits on naming prescription drugs to the public.",
+    "Language": "Treatment language that sells the result without naming the drug or promising the outcome.",
+    "Map": "Treatment pages that rank, and booking that starts from search or social.",
+    "Artifacts": "Consent forms, price menus and aftercare cards that match the room and the rules."
+  },
+  "law": {
+    "short": "law firms",
+    "label": "Legal services",
+    "rules": [
+      {
+        "title": "Law Society of Ontario",
+        "text": "Marketing must not be false or misleading. Only Certified Specialists may use the title."
+      },
+      {
+        "title": "Contingency fee rules",
+        "text": "Any advertised contingency arrangement must be explained in full."
+      },
+      {
+        "title": "Competition Act",
+        "text": "No false or misleading claims about services or outcomes."
+      }
+    ],
+    "Law": "The Law Society of Ontario's rules on marketing, specialist titles and contingency fees.",
+    "Language": "Plain, careful language that earns trust without promising outcomes.",
+    "Map": "Practice-area pages that answer the questions clients ask search engines and AI assistants.",
+    "Artifacts": "Retainer packages, intake forms and letterhead that look as careful as the work."
+  },
+  "spirits": {
+    "short": "spirits",
+    "label": "Beverage alcohol",
+    "rules": [
+      {
+        "title": "AGCO",
+        "text": "Ontario's liquor advertising standards: no appeal to minors and no promotion of excess."
+      },
+      {
+        "title": "CRTC alcohol code",
+        "text": "No emphasis on strength, and no link to social, sexual or business success."
+      },
+      {
+        "title": "CFIA",
+        "text": "Labelling rules for every can, bottle and case."
+      },
+      {
+        "title": "LCBO",
+        "text": "Listing, packaging and promotional requirements for the provincial channel."
+      }
+    ],
+    "Law": "AGCO advertising standards, the CRTC alcohol code, CFIA labelling and LCBO listing requirements.",
+    "Language": "Lore and flavour, never strength, excess or social success.",
+    "Map": "A where-to-buy map, an age-gated site and a page for every product.",
+    "Artifacts": "Labels, cases, shelf talkers and sell sheets ready for buyers and inspectors."
+  },
+  "coffee": {
+    "short": "coffee",
+    "label": "Food and beverage",
+    "rules": [
+      {
+        "title": "CFIA",
+        "text": "Food labelling for everything sold to take home."
+      },
+      {
+        "title": "Competition Act",
+        "text": "Sourcing and environmental claims now need proof."
+      },
+      {
+        "title": "Public health",
+        "text": "Food premises rules for the room itself."
+      },
+      {
+        "title": "Safe Food for Canadians Regulations",
+        "text": "A licence to import food into Canada, with traceability and preventive controls."
+      }
+    ],
+    "Law": "CFIA labelling and import licensing, the Competition Act and its rules on sourcing and green claims.",
+    "Language": "A voice regulars repeat, and sourcing claims you can prove.",
+    "Map": "A Google Business Profile that wins the map pack, and a site that sells between visits.",
+    "Artifacts": "Menus, bags, cups and boards that hold one standard."
+  },
+  "food": {
+    "short": "food",
+    "label": "Allergen-friendly food",
+    "rules": [
+      {
+        "title": "CFIA",
+        "text": "Allergen labelling and free-from claims that must hold for every batch."
+      },
+      {
+        "title": "Health Canada",
+        "text": "Defined rules for nutrition and health claims."
+      },
+      {
+        "title": "Competition Act",
+        "text": "No false or misleading claims, including on price."
+      }
+    ],
+    "Law": "CFIA allergen labelling and free-from claims, and Health Canada nutrition and health claims.",
+    "Language": "Indulgent copy that never overstates a health or allergen claim.",
+    "Map": "Product pages, a retailer locator and a shop built for search and AI answers.",
+    "Artifacts": "Labels, ingredient panels and retail packaging checked line by line."
+  },
+  "fitness": {
+    "short": "fitness",
+    "label": "Fitness and wellness",
+    "rules": [
+      {
+        "title": "Consumer Protection Act",
+        "text": "Ontario's rules for gym memberships, including a cooling-off period and limits on contract length."
+      },
+      {
+        "title": "Competition Act",
+        "text": "No false or misleading claims about results, and pricing that shows the full cost."
+      },
+      {
+        "title": "CASL",
+        "text": "Consent before every commercial email and text."
+      }
+    ],
+    "Law": "Ontario's Consumer Protection Act for memberships, the Competition Act for claims and pricing, and CASL for every message.",
+    "Language": "Energy that sells the class without promising the body.",
+    "Map": "A Google Business Profile and local search that fill the floor, and booking that starts from social.",
+    "Artifacts": "Walls, cards, gift cards and merch that carry one mark."
+  },
+  "creative": {
+    "short": "creative products",
+    "label": "Creative products",
+    "rules": [
+      {
+        "title": "Competition Act",
+        "text": "No false or misleading claims, including what a product does for wellbeing."
+      },
+      {
+        "title": "Copyright Act",
+        "text": "Clear rights to every illustration and line of text, including AI-assisted art."
+      },
+      {
+        "title": "Marketplace policies",
+        "text": "Amazon and Shopify rules for listings, content and claims."
+      },
+      {
+        "title": "CASL",
+        "text": "Consent before every commercial email."
+      }
+    ],
+    "Law": "The Competition Act on claims, the Copyright Act on every illustration, and the marketplace rules each title is sold under.",
+    "Language": "Listings, ad copy and search terms that sell the feeling without overstating it.",
+    "Map": "Listings and a store that rank on Amazon, Shopify and search.",
+    "Artifacts": "Covers, interiors and series templates that hold one standard across every title."
+  }
+}

@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import Cta from '../../components/Cta.astro';
+import { getRules } from '../../lib/site';
+const rules = await getRules();
+---
+<Base title="Rules: marketing inside the rules | KNGHT" description="Short reads on the rules that shape marketing for clinics, medspas, law firms, spirits, coffee and food, and how to work inside them." path="rules/">
+  <section class="whero">
+    <div class="wrap">
+      <p class="eyebrow">Rules</p>
+      <h1 class="display book__title" style="margin-top:24px">One rule at a time, <br>and how to work <em>inside it.</em></h1>
+      <p class="for__answer">Short reads on the rules that shape marketing in regulated categories. What the rule says, where people trip, and what you can say instead.</p>
+    </div>
+  </section>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">Latest</p>
+    <ul class="wrules" data-reveal>{rules.map((r) => <li><b><a class="link" href={`/rules/${r.id}/`}>{r.data.title}</a></b><span>{r.data.cat}. {r.data.dek}</span></li>)}</ul>
+  </div></section>
+
+  <Cta />
+</Base>

@@ -1,0 +1,32 @@
+---
+// How it works: the five steps, from src/data/stages.json.
+import Base from '../layouts/Base.astro';
+import Cta from '../components/Cta.astro';
+import stages from '../data/stages.json';
+import { getLayers } from '../lib/site';
+const layers = await getLayers();
+const ld = [{ '@context': 'https://schema.org', '@type': 'HowTo', name: 'How a KNGHT brand world gets built',
+  step: stages.map((s, k) => ({ '@type': 'HowToStep', position: k + 1, name: s.title, text: s.text })) }];
+---
+<Base title="How a world gets built | KNGHT" description="The five steps from a free call to a running brand world: the call, the Verdict, the Build, launch and the Keep." path="process/" ld={ld}>
+  <section class="whero">
+    <div class="wrap">
+      <p class="eyebrow">How it works</p>
+      <h1 class="display book__title" style="margin-top:24px">How a world <br>gets <em>built.</em></h1>
+      <p class="for__answer">Every world goes through the same five steps. You always know what happens next, what it costs and when it lands.</p>
+    </div>
+  </section>
+
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <div class="wsec__aside"><p class="eyebrow">The path</p><h2 class="display wsec__h" data-split>Five steps, <br><em>in order</em></h2></div>
+      <ol class="chapters">{stages.map((s, k) => <li class="chapter" data-reveal><span class="chapter__n">{k + 1}</span><h3>{s.title}</h3><p class="process__terms">{s.terms}</p><p>{s.text}</p></li>)}</ol>
+    </div>
+  </section>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">Built in this order</p>
+    <ul class="wrules" data-reveal>{layers.map((l, k) => <li><b>{k + 1}. {l.data.name}</b><span>{l.data.question}</span></li>)}</ul>
+  </div></section>
+
+  <Cta score="/#score" />
+</Base>

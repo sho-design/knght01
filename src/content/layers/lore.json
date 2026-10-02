@@ -1,0 +1,28 @@
+{
+  "order": 1,
+  "name": "Lore",
+  "line": "Who you are, who you stand against, and what you are called. The brief and the codex every other layer reads from.",
+  "question": "Who are you, who are you for, and who are you against?",
+  "what": "The brief, the position and the name. The story every other layer reads from, written down so nobody has to guess.",
+  "wrong": "Every later decision gets argued from scratch, and the brand drifts toward whoever touched it last.",
+  "make": [
+    "The brief",
+    "A positioning line and a we-are-not line",
+    "Name and naming checks",
+    "The origin story",
+    "The codex: the rules every other layer follows"
+  ],
+  "check": [
+    "Trademark and social handle availability",
+    "Promises in the story that the business can actually keep",
+    "The words your regulator will later hold you to"
+  ],
+  "reads": null,
+  "feeds": "Every layer",
+  "quiz": "Can everyone on your team say who you serve, and who you stand against, in one sentence?",
+  "tags": [
+    "Brief",
+    "Codex",
+    "Name"
+  ]
+}

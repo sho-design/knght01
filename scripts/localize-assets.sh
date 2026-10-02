@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Downloads the hosted Higgsfield media into assets/media/ and points index.html at the local copies.
+# Downloads the hosted Higgsfield media into public/assets/media/ and points the pages and scripts at the local copies.
 # Run from the repo root on any machine with normal internet access.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-mkdir -p assets/media
+mkdir -p public/assets/media
 CDN="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW"
 declare -A FILES=(
   [d7382d63-0629-4e84-a154-32250d837424.mp4]=hero.mp4
@@ -40,11 +40,9 @@ declare -A FILES=(
   [73bcbd63-efa2-4444-8935-9b23c1186c59.mp4]=seal.mp4
 )
 for src in "${!FILES[@]}"; do
-  dest="assets/media/${FILES[$src]}"
+  dest="public/assets/media/${FILES[$src]}"
   curl -fsSL -o "$dest" "$CDN/$src"
-  sed -i.bak "s#$CDN/$src#assets/media/${FILES[$src]}#g" index.html
-  sed -i.bak "s#$CDN/$src#../../assets/media/${FILES[$src]}#g" worlds/*/index.html scripts/build-worlds.py
-  sed -i.bak "s#$CDN/$src#/assets/media/${FILES[$src]}#g" assets/js/features.js
+  grep -rl "$src" src public/assets/js | xargs -r sed -i.bak "s#$CDN/$src#/assets/media/${FILES[$src]}#g"
   echo "saved $dest"
 done
 find . -name "*.bak" -delete

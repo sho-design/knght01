@@ -1,0 +1,27 @@
+{
+  "order": 5,
+  "name": "Ground",
+  "line": "The physical space. Arrival, flow, signage and the screens on your walls.",
+  "question": "Does the place feel like the brand?",
+  "what": "The physical space: arrival, flow, walls, signage and the screens in the room.",
+  "wrong": "The ad promises one world and the front door shows another.",
+  "make": [
+    "Arrival and flow",
+    "Signage and wayfinding",
+    "Walls and murals",
+    "Screens and displays"
+  ],
+  "check": [
+    "Accessibility in the built environment",
+    "Local sign bylaws",
+    "Category rules on what can be shown in the room, such as price displays and age-restricted products"
+  ],
+  "reads": "Lore",
+  "feeds": "Artifacts",
+  "quiz": "Does your space, or the place you are sold, look and feel like your site and your ads?",
+  "tags": [
+    "Arrival",
+    "Signage",
+    "Screens"
+  ]
+}

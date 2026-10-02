@@ -1,0 +1,66 @@
+{
+  "order": 8,
+  "name": "Wellfit",
+  "em": "Social Club",
+  "cat": "fitness",
+  "cats": [
+    "fitness"
+  ],
+  "line": "A boutique Toronto gym, built around a graffiti wall and a community that trains together.",
+  "about": [
+    "Wellfit Social Club is a boutique fitness club in Toronto, offering personalised training and holistic wellness.",
+    "Its world had to feel high energy and inclusive at once, local and authentic, and ready to expand by franchising."
+  ],
+  "where": "Toronto, Ontario",
+  "url": null,
+  "impact": "Higher local visibility, more bookings, and one brand experience online and in the gym. A clear difference in a saturated market, bringing in new members and keeping them.",
+  "plate": "56012ed1-e8d9-41cf-853e-77e2d0d5a243.webp",
+  "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/ca2b8fca-641f-4227-a88b-a10c499ed6ce.mp4",
+  "alt": "A kettlebell and boxing gloves on a gym floor in front of a spray-painted wall",
+  "built": {
+    "Lore": "A graffiti wall concept turned into the brand system and logo, with positioning and guidelines written for future franchise locations.",
+    "Law": "Membership tiers, class packs and offers.",
+    "Language": "Google Ads for awareness and sign-ups, plus photo and video.",
+    "Map": "A Shopify site with bookings and e-commerce, connected to Google Analytics, Business Profile and local search.",
+    "Ground": "The graffiti wall, motivational posters and wall graphics on the gym floor.",
+    "Artifacts": "Business cards, printed collateral, merchandise and gift cards.",
+    "Machinery": "Bookings and e-commerce on one system, plus reporting."
+  },
+  "work": [
+    {
+      "alt": "The Wellfit Social Club graffiti wall inside the gym",
+      "src": "/assets/work/wellfit-social-club/1.webp",
+      "width": 390,
+      "height": 659,
+      "layer": "Ground"
+    },
+    {
+      "alt": "Wellfit business cards",
+      "src": "/assets/work/wellfit-social-club/2.webp",
+      "width": 390,
+      "height": 367,
+      "layer": "Artifacts"
+    },
+    {
+      "alt": "The Wellfit site on a laptop and phone",
+      "src": "/assets/work/wellfit-social-club/3.webp",
+      "width": 390,
+      "height": 367,
+      "layer": "Map"
+    },
+    {
+      "alt": "A Wellfit poster on the gym wall",
+      "src": "/assets/work/wellfit-social-club/4.webp",
+      "width": 184,
+      "height": 317,
+      "layer": "Ground"
+    },
+    {
+      "alt": "The Wellfit tiger t-shirt",
+      "src": "/assets/work/wellfit-social-club/5.webp",
+      "width": 184,
+      "height": 317,
+      "layer": "Artifacts"
+    }
+  ]
+}

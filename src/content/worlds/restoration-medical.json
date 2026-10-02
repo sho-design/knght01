@@ -1,0 +1,31 @@
+{
+  "order": 1,
+  "name": "Restoration",
+  "em": "Medical",
+  "cat": "clinic",
+  "cats": [
+    "clinic",
+    "medspa"
+  ],
+  "line": "Physician-led clinics in Thornhill and Woodbridge, built across five service lines.",
+  "about": [
+    "Restoration Medical is a physician-led clinic group in Thornhill and Woodbridge, Ontario.",
+    "Its world holds five service lines under one name: family medicine, a pain centre, medical aesthetics, infusion therapy, and rehab and recovery."
+  ],
+  "where": "Thornhill and Woodbridge, Ontario",
+  "url": null,
+  "impact": null,
+  "plate": "83599bbc-73e5-49fc-9d23-e2025bdcb852.webp",
+  "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/850eb902-d4a5-424e-a6cc-84a3ba62df2b.mp4",
+  "alt": "Folded white linen and a surgical steel instrument on black marble",
+  "built": {
+    "Lore": "Branding, naming and positioning for five service lines under one name, with brand guidelines the team follows.",
+    "Law": "Ads, posts and site copy reviewed against CPSO, CNO and Health Canada rules, plus pricing and treatment packages.",
+    "Language": "Social media, a content strategy across five service lines, paid ads, video and on-camera content, and email and SMS.",
+    "Map": "The website, Google Business Profile, SEO and online booking.",
+    "Ground": "Signage in the Thornhill and Woodbridge clinics, and content for the screens in the waiting rooms.",
+    "Artifacts": "Forms, business cards, brochures and patient handouts.",
+    "Machinery": "Online intake forms, CRM, AI and automations for reminders and follow-up, and reporting."
+  },
+  "work": []
+}

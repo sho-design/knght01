@@ -1,0 +1,12 @@
+---
+// Justified rows of portfolio images (same layout everywhere work is shown).
+import { workRows, type WorkImage } from '../lib/site';
+interface Props { imgs: WorkImage[]; target?: number; captions?: boolean }
+const { imgs, target = 3.2, captions = true } = Astro.props;
+const rows = workRows(imgs, target);
+---
+<div class="wwork__grid">{rows.map((row) => (
+  <div class="wwork__row" data-reveal>{row.map((i) => (
+    <figure class="wwork__item" style={`flex:${i.ratio.toFixed(3)} 1 0;aspect-ratio:${i.width}/${i.height}`}><img src={i.src} alt={i.alt} width={i.width} height={i.height} loading="lazy" decoding="async" />{captions && i.caption && <figcaption>{i.caption}</figcaption>}</figure>
+  ))}</div>
+))}</div>

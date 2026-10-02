@@ -1,0 +1,66 @@
+{
+  "order": 2,
+  "name": "Black Lotus",
+  "em": "Coffee",
+  "cat": "coffee",
+  "cats": [
+    "coffee",
+    "food"
+  ],
+  "line": "A conscious coffee brand rooted in Vietnamese tradition and modern wellness, now importing into Canada from Toronto.",
+  "about": [
+    "Black Lotus Coffee House is a coffee brand rooted in Vietnamese tradition and wellness, built for high performers and conscious drinkers.",
+    "KNGHT's founder was on the founding team. Born in Da Nang, the brand is now based in Toronto, importing into Canada and selling wholesale and retail."
+  ],
+  "where": "Toronto, Ontario. Founded in Da Nang, Vietnam",
+  "url": null,
+  "impact": "The brand grew from online sales into retail in Da Nang, and is now based in Toronto, importing into Canada and selling wholesale and retail. It is known for holding cultural roots and modern wellness in one mark.",
+  "plate": "3d266ebf-aafe-43c9-a611-071e4fa225d5.webp",
+  "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/9bc2161b-3fbe-4d64-9aa9-a550d24089dd.mp4",
+  "alt": "A black espresso cup with rising steam beside a black lotus flower",
+  "built": {
+    "Lore": "The name, the lotus mark and brand guidelines for a brand that bridges Vietnamese culture and wellness, built from day one on the founding team.",
+    "Law": "Wellness, origin and label claims reviewed, plus pricing and bundles.",
+    "Language": "Social media, plus product and lifestyle photo and video.",
+    "Map": "A Shopify store built for bundles and subscriptions, plus search and the Google listing for the Da Nang store.",
+    "Ground": "The launch strategy for a physical retail space in Da Nang.",
+    "Artifacts": "Labels, packaging, cups including seasonal designs, and merchandise."
+  },
+  "work": [
+    {
+      "alt": "Black Lotus Coffee House bags",
+      "src": "/assets/work/black-lotus-coffee/1.webp",
+      "width": 596,
+      "height": 316,
+      "layer": "Artifacts"
+    },
+    {
+      "alt": "The team outside the Black Lotus storefront in Da Nang",
+      "src": "/assets/work/black-lotus-coffee/2.webp",
+      "width": 390,
+      "height": 317,
+      "layer": "Ground"
+    },
+    {
+      "alt": "The Black Lotus Shopify store on a laptop and phone",
+      "src": "/assets/work/black-lotus-coffee/3.webp",
+      "width": 596,
+      "height": 316,
+      "layer": "Map"
+    },
+    {
+      "alt": "Black Lotus merchandise: shirts, apron, hoodie and bottles",
+      "src": "/assets/work/black-lotus-coffee/4.webp",
+      "width": 599,
+      "height": 316,
+      "layer": "Artifacts"
+    },
+    {
+      "alt": "Black Lotus bags on a retail shelf",
+      "src": "/assets/work/black-lotus-coffee/5.webp",
+      "width": 183,
+      "height": 316,
+      "layer": "Ground"
+    }
+  ]
+}

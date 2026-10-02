@@ -1,0 +1,23 @@
+{
+  "order": 2,
+  "name": "Law",
+  "line": "What you can say, what you can charge, and how it is packaged. Offers and claims checked against your regulator.",
+  "question": "What are you allowed to say, charge and promise?",
+  "what": "Offers, prices and claims checked against your regulator before anyone writes a headline.",
+  "wrong": "One ad, label or offer draws a complaint, a platform takedown or a letter from your regulator, and the launch stops.",
+  "make": [
+    "A regulator map for your category",
+    "A claims review: what you can say, and how to say it",
+    "Offer and pricing structure",
+    "Disclaimers and consent language"
+  ],
+  "check": [],
+  "reads": "Lore",
+  "feeds": "Language, Map and Artifacts",
+  "quiz": "Has every claim on your site, ads and packaging been checked against your regulator's rules?",
+  "tags": [
+    "Offers",
+    "Claims",
+    "Regulator"
+  ]
+}
