@@ -142,7 +142,8 @@
   /* ---------- Split headings into masked lines ---------- */
   $$('[data-split]').forEach((el) => {
     const lines = el.innerHTML.split(/<br\s*\/?>/i);
-    el.innerHTML = lines.map((l) => `<span class="line"><span>${l.trim()}</span></span>`).join('');
+    // A space between the lines keeps the words apart for screen readers and copy-paste.
+    el.innerHTML = lines.map((l) => `<span class="line"><span>${l.trim()}</span></span>`).join(' ');
     el.classList.add('split');
   });
 
@@ -753,7 +754,14 @@
   let moves = [], lastKey = 0;
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && codexEl) { closeCodex(); return; }
-    if (codexEl && e.key === 'Tab') { e.preventDefault(); $('[data-codex-close]', codexEl).focus(); return; }
+    if (codexEl && e.key === 'Tab') {
+      // Keep focus inside the codex, cycling through its links and buttons.
+      const f = $$('a, button', codexEl);
+      const i = f.indexOf(document.activeElement);
+      e.preventDefault();
+      f[(i + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+      return;
+    }
     if (!AX[e.key] || e.target.closest('input, textarea, select, [contenteditable]')) return;
     const now = performance.now();
     if (now - lastKey > 900) moves = [];
