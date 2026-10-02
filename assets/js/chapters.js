@@ -1,6 +1,5 @@
 /* KNGHT home: the page read as five chapters.
-   Chapter openers, the chapter rail, the white self-check, the knight-to-sword intermission,
-   stacked offers, the worlds swipe on phones, layer sigils, the knight-move hover and the bottom bar. */
+   Chapter openers, the chapter rail, the white self-check, stacked offers, the worlds swipe on phones, layer sigils, the knight-move hover and the bottom bar. */
 (() => {
   const root = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -27,21 +26,20 @@
   PATHS.law = PATHS.scales;
   const sigil = (k, cls) => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${PATHS[k]}</svg>`;
 
-  /* The five chapters. IV opens with the intermission instead of a band. */
+  /* The five chapters, each opened by a band. */
   const verdictSec = $('.verdict');
   if (verdictSec && !verdictSec.id) verdictSec.id = 'the-verdict';
   const CHAPTERS = [
     { n: 'I', t: 'The worlds', s: 'orb', el: $('#worlds') },
     { n: 'II', t: 'The layers', s: 'shield', el: $('#layers') },
-    { n: 'III', t: 'Score your world', s: 'scales', el: $('#score') },
-    { n: 'IV', t: 'Three ways in', s: 'key', el: $('.vow'), link: '#engage' },
+    { n: 'III', t: 'The self-check', s: 'scales', el: $('#score') },
+    { n: 'IV', t: 'Work with us', s: 'key', el: $('#engage') },
     { n: 'V', t: 'The Verdict', s: 'sword', el: verdictSec }
   ].filter((c) => c.el);
 
   /* ---------- 1. Chapter openers: an outlined numeral, the sigil and the chapter above its title ---------- */
   const bands = [];
   CHAPTERS.forEach((c) => {
-    if (c.n === 'IV') return;
     const band = document.createElement('div');
     band.className = 'chap';
     band.setAttribute('aria-hidden', 'true');
@@ -50,9 +48,6 @@
     c.start = band;
     bands.push(band);
   });
-  const vow = $('.vow');
-  const chap4 = CHAPTERS.find((c) => c.n === 'IV');
-  if (chap4) chap4.start = vow;
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { threshold: 0.35 });
     bands.forEach((b) => io.observe(b));
@@ -76,8 +71,6 @@
   /* ---------- 3. The self-check turns to white as it arrives ---------- */
   const score = $('.score');
 
-  /* ---------- 4. Intermission: strategy first, then the sword ---------- */
-  if (vow && !reduce) vow.classList.add('is-live');
 
   /* ---------- 6. Stacked offers ---------- */
   const offers = $$('.offer');
@@ -173,14 +166,6 @@
       score.style.setProperty('--clip-r', `${((1 - e) * 36).toFixed(1)}px`);
     }
 
-    // Intermission: the knight draws, the sword is drawn, then the line
-    if (vow && vow.classList.contains('is-live')) {
-      const r = vow.getBoundingClientRect();
-      const p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
-      vow.style.setProperty('--kd', clamp(p / 0.32, 0, 1).toFixed(3));
-      vow.style.setProperty('--sd', clamp((p - 0.3) / 0.3, 0, 1).toFixed(3));
-      vow.style.setProperty('--td', clamp((p - 0.58) / 0.24, 0, 1).toFixed(3));
-    }
 
     // Offers: each card settles back as the next one lands on it
     if (!reduce) offers.forEach((o, i) => {

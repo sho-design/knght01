@@ -710,25 +710,6 @@ html.lenis,html.lenis body{height:auto}
 @keyframes segPulseInk{50%{stroke:rgba(0,0,0,.5)}}
 .score :focus-visible{outline-color:#000}
 
-/* Intermission: strategy first, then the sword */
-.vow{--kd:1;--sd:1;--td:1;position:relative;border-top:1px solid var(--rule)}
-.vow__pin{display:flex;align-items:center;min-height:70svh;padding-block:clamp(80px,12vh,140px)}
-.vow.is-live{height:230vh;border-top:0}
-.vow.is-live .vow__pin{position:sticky;top:0;height:100svh;min-height:0;padding-block:0;overflow:hidden}
-.vow__in{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(20px,3vh,32px);width:100%}
-.vow__art{width:min(100%,820px);height:auto;overflow:visible;fill:none;stroke:var(--argent);stroke-linejoin:round;stroke-linecap:round}
-.vow__art *{stroke-width:.5}
-.vow__knight{transform:translateX(calc((1 - var(--kd)) * -36px));opacity:calc(.15 + var(--kd) * .85)}
-.vow__knight path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--kd))}
-.vow__knight circle{fill:var(--argent);stroke:none;opacity:clamp(0,calc((var(--kd) - .9) * 10),1)}
-.vow__sword > :not(.vow__blade){opacity:clamp(0,calc(var(--sd) * 4),1)}
-.vow__blade{transform-box:fill-box;transform-origin:left center;transform:scaleX(var(--sd))}
-.vow__k,.vow__h,.vow__p{opacity:var(--td);transform:translateY(calc((1 - var(--td)) * 24px))}
-.vow__h{font-size:clamp(2.8rem,7vw,6.6rem)}
-.vow__h em{font-style:italic}
-.vow__p{margin:0;max-width:44ch;color:var(--ash);font-size:1.1rem}
-@media (max-width:900px){.vow.is-live{height:190vh}}
-
 /* Stacked offers */
 .offers{display:block;border-top:0}
 .offer{position:sticky;top:calc(var(--nav-h) + 20px + var(--i,0) * 26px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto 1fr auto auto auto;gap:20px clamp(32px,5vw,80px);min-height:min(62vh,540px);margin-bottom:12vh;border:1px solid var(--rule-ink-strong);background:var(--vellum);transform:scale(var(--s,1));transform-origin:50% 0;box-shadow:0 -24px 48px -32px rgba(0,0,0,.35)}
@@ -812,7 +793,7 @@ html.lenis,html.lenis body{height:auto}
 
 /* ===== Magic: runes, decoding, the constellation, the portal, seals, marginalia, the codex, the sword cursor ===== */
 /* Runes carved into the dark */
-.thesis,.chap,.layers,.squire,.vow{position:relative;isolation:isolate}
+.thesis,.chap,.layers,.squire{position:relative;isolation:isolate}
 .runes{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .runes svg{position:absolute;fill:none;stroke:#fff;stroke-width:.7;stroke-linecap:round;stroke-linejoin:round;opacity:.045}
 .runes--lit svg{opacity:.55;filter:drop-shadow(0 0 6px rgba(255,255,255,.55))}
