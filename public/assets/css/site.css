@@ -271,8 +271,9 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 .dial .seg-label{fill:var(--ash);font:500 8px var(--sans);letter-spacing:.14em;text-transform:uppercase;transition:fill .4s}
 .dial .seg-label.is-now{fill:var(--argent)}
 .dial__center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;pointer-events:none}
-.dial__center b{font:300 clamp(4.4rem,8.6vw,7.6rem)/.8 var(--serif);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.03em}
-.dial__center span{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ash)}
+.dial__score{display:flex;flex-direction:column;align-items:center;gap:14px;transition:opacity .5s var(--ease-out),transform .6s var(--ease-out)}
+.dial__score b{font:300 clamp(4.4rem,8.6vw,7.6rem)/.8 var(--serif);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.03em}
+.dial__score span{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ash)}
 
 /* Sound toggle */
 .nav__end{display:flex;align-items:center;gap:clamp(14px,2vw,26px)}
@@ -912,3 +913,28 @@ html.lenis,html.lenis body{height:auto}
 .gsap .rung{translate:none}
 .gsap .footer__word span{transform:none} /* GSAP sets the start offset itself; the CSS one would double it */
 .footer__word{padding-bottom:.08em;margin-bottom:clamp(12px,2vw,28px)} /* clear of the footer line, whatever the serif's baseline */
+
+/* ===== The dial's codex: each question shows its layer's sigil and meaning (chapters.js, section 10) ===== */
+.dial__center{text-align:center;z-index:1}
+.dial__codex{position:absolute;inset:24%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;transform:scale(.96);transition:opacity .45s var(--ease-out),transform .6s var(--ease-out);pointer-events:none}
+.dial.is-codex .dial__score{opacity:0;transform:scale(.9)}
+.dial.is-codex .dial__codex{opacity:1;transform:none}
+.dial__no{font:500 .62rem/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--ash)}
+.dial .dial__sig{width:clamp(26px,2.6vw,36px);height:clamp(26px,2.6vw,36px);overflow:visible;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round}
+.dial__name{font:italic 400 clamp(1.5rem,2.2vw,2rem)/1 var(--serif);letter-spacing:-.01em}
+.dial__def{max-width:21ch;font-size:clamp(.74rem,.92vw,.84rem);line-height:1.38;color:var(--ash);min-height:4.2em}
+.dial .seg-hit{fill:none;stroke:transparent;stroke-width:34;pointer-events:stroke;cursor:help}
+.dial .seg-label{pointer-events:auto;cursor:help}
+.dial .seg-track.is-peeked{stroke:var(--argent);animation:none}
+.dial .seg-label.is-peeked{fill:var(--argent)}
+.dial.is-peek .dial__no{opacity:.5}
+/* codex: the sigil draws itself and the meaning rises */
+.dial__codex.is-rise .dial__sig *{stroke-dasharray:80;stroke-dashoffset:80;animation:sigDraw 1.1s var(--ease-out) forwards}
+.dial__codex.is-rise .dial__name{animation:codexRise .7s var(--ease-out) both .1s}
+@keyframes sigDraw{to{stroke-dashoffset:0}}
+@keyframes codexRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .dial__codex,.dial__score{transition:none}
+  .dial__codex.is-rise *{animation:none!important}
+}
+@media (max-width:900px){.dial__codex{inset:21%;gap:5px}.dial__def{font-size:.7rem;max-width:19ch;min-height:3em}.dial__no{font-size:.56rem}}

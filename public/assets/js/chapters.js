@@ -145,6 +145,89 @@
     if (PATHS[k] && n && !$('.layer__sigil', n)) n.insertAdjacentHTML('beforeend', sigil(k, 'layer__sigil'));
   });
 
+  /* ---------- 10. The dial's codex: each question shows its layer's sigil and meaning ----------
+     The meaning decodes from runes. Hover, focus or tap any segment to read that layer. */
+  const dial = $('[data-dial]');
+  const codex = $('[data-dial-codex]');
+  const qs = $$('#quiz .q');
+  if (dial && codex && qs.length) {
+    const els = { no: $('[data-codex-no]', codex), sigil: $('[data-codex-sigil]', codex), name: $('[data-codex-name]', codex), def: $('[data-codex-def]', codex) };
+    const RUNES = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
+    const N = qs.length;
+    let current = 0, holdUntil = 0, timer = 0, raf = 0, peeking = false;
+
+    const decodeInto = (el, text) => {
+      cancelAnimationFrame(raf);
+      if (reduce) { el.textContent = text; return; }
+      const t0 = performance.now(), dur = 520 + text.length * 9;
+      const tick = (t) => {
+        const p = Math.min(1, (t - t0) / dur), fixed = Math.floor(p * text.length);
+        el.textContent = text.split('').map((ch, k) => (k < fixed || ch === ' ' ? ch : RUNES[(Math.random() * RUNES.length) | 0])).join('');
+        if (p < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    };
+    const render = (i) => {
+      const q = qs[i]; if (!q) return;
+      const name = q.dataset.layer;
+      els.no.textContent = `Layer ${String(i + 1).padStart(2, '0')} / ${String(N).padStart(2, '0')}`;
+      els.sigil.innerHTML = sigil(name.toLowerCase(), 'dial__sig');
+      els.name.textContent = name;
+      dial.classList.remove('is-scoring', 'is-done');
+      dial.classList.add('is-codex');
+      decodeInto(els.def, q.dataset.def);
+      codex.classList.remove('is-rise'); void codex.offsetWidth;
+      codex.classList.add('is-rise');
+    };
+    const showCurrent = () => { clearTimeout(timer); timer = setTimeout(() => render(current), Math.max(0, holdUntil - performance.now())); };
+
+    document.addEventListener('knght:question', (e) => { current = e.detail.i; if (!peeking) showCurrent(); });
+    document.addEventListener('knght:answer', () => {
+      // The answer lands on the score first, then the next layer's meaning arrives.
+      dial.classList.remove('is-codex'); dial.classList.add('is-scoring');
+      holdUntil = performance.now() + (reduce ? 0 : 1400);
+    });
+    document.addEventListener('knght:verdict', () => { clearTimeout(timer); dial.classList.remove('is-codex', 'is-scoring'); dial.classList.add('is-done'); });
+    document.addEventListener('knght:reset', () => { holdUntil = 0; });
+    current = +(dial.dataset.at || 0);
+    render(current);
+
+    // Hover or tap any segment or label to read that layer, then it returns.
+    {
+      const segsG = $('[data-dial-segs]', dial);
+      const tracks = $$('.seg-track', segsG);
+      const labels = $$('.seg-label', segsG);
+      let back = 0;
+      const peek = (i) => {
+        if (dial.classList.contains('is-done')) return;
+        clearTimeout(back); peeking = i !== current;
+        dial.classList.toggle('is-peek', peeking);
+        tracks.forEach((t, k) => t.classList.toggle('is-peeked', peeking && k === i));
+        labels.forEach((t, k) => t.classList.toggle('is-peeked', peeking && k === i));
+        render(i);
+      };
+      const unpeek = (delay) => {
+        clearTimeout(back);
+        back = setTimeout(() => {
+          if (!peeking) return;
+          peeking = false; dial.classList.remove('is-peek');
+          tracks.forEach((t) => t.classList.remove('is-peeked')); labels.forEach((t) => t.classList.remove('is-peeked'));
+          if (!dial.classList.contains('is-done')) render(current);
+        }, delay);
+      };
+      tracks.forEach((t, i) => {
+        const hit = t.cloneNode(); hit.setAttribute('class', 'seg-hit'); hit.style.strokeDashoffset = '';
+        segsG.appendChild(hit);
+        [hit, labels[i]].forEach((el) => {
+          if (!el) return;
+          el.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch') peek(i); });
+          el.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') unpeek(250); });
+          el.addEventListener('click', () => { peek(i); unpeek(3200); });
+        });
+      });
+    }
+  }
+
   /* ---------- 9. A knight roams the world plates on hover ---------- */
   const KNIGHT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 19.4Q5.6 18.9 4.9 17.4Q5.8 17.5 6.4 16.8Q5 16 4.7 14.2Q5.6 14.5 6.3 13.9Q5 12.8 5 10.9Q5.9 11.4 6.6 11Q5.8 9.6 6.1 7.9Q6.9 8.6 7.6 8.4Q7.3 6.8 8.1 5.4Q8.6 6.2 9.5 6.2L10.8 2.4L12.3 4.6C15 5.1 17.5 7.4 18.6 10.6C19 11.8 18.6 13.2 17.3 13.2L15.6 12.7C14.6 12.4 13.8 12.9 13.8 13.9C14 15.9 16 17.4 16.9 19.4ZM5.6 19.4H18.2M4.6 21.5H19.2"/><circle cx="14.6" cy="8.4" r=".6"/></svg>';
   // On hover the knight lands on a random square, then keeps making random legal L moves until the cursor leaves.

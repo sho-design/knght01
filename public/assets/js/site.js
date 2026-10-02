@@ -463,6 +463,9 @@
       back.disabled = i === 0;
       paint();
       if (focus) { const b = $('.opt', qs[i]); if (b) b.focus({ preventScroll: true }); }
+      // The dial's codex (chapters.js) listens for these.
+      dial.dataset.at = i;
+      document.dispatchEvent(new CustomEvent('knght:question', { detail: { i } }));
     };
     const bands = [
       [63, 'Fortified', 'Your world holds. The full Verdict finds the few cracks left and ranks them.'],
@@ -496,6 +499,7 @@
       const i = qs.indexOf(opt.closest('.q'));
       $$('.opt', qs[i]).forEach((o) => o.setAttribute('aria-pressed', String(o === opt)));
       answers[i] = Number(opt.dataset.v);
+      document.dispatchEvent(new CustomEvent('knght:answer', { detail: { i } }));
       Sound.tick();
       paint();
       setTimeout(() => { busy = false; i < qs.length - 1 ? show(i + 1, true) : finish(); }, reduce ? 0 : 420);
