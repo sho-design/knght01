@@ -23,7 +23,10 @@ src/layouts/Base.astro           the shared head, nav and footer for inner pages
 src/components/                  Meter (seven-layer meter), WorkGrid (justified image rows), Cta (closing call to action)
 public/assets/css/site.css       design tokens and all styles
 public/assets/js/                site.js, features.js, chapters.js, magic.js, sigil.js and vendor/lenis.min.js
-public/                          favicons, og.jpg, robots.txt, sitemap.xml, llms.txt, site.webmanifest
+public/                          favicons, og.jpg, robots.txt, llms.txt, site.webmanifest
+src/lib/settings.ts              site settings: the form endpoint and the new-worlds line
+src/pages/sitemap.xml.ts         the sitemap, built from the pages and content files
+src/scripts/motion.js            GSAP scroll animations (the page scripts fall back without it)
 ```
 
 **Add a world:** copy a file in `src/content/worlds/`, change the facts, list only verified work under `built`, and add its images (with the layer each one shows) under `work`. The home page, its layer filter, the layer pages and the category pages pick it up on the next build.
@@ -39,7 +42,7 @@ The home page:
 3. **Thesis**: the stakes paragraph. Its words light up as you scroll.
 4. **Worlds**: a pinned horizontal gallery of the nine worlds. It becomes a vertical stack on phones. Each plate plays its own short film while it is in view. Each card opens that world's page, and the image carries across the page change.
 5. **Seven layers**: a sticky dial with a numeral that rolls from 1 to 7, plus a blade line that fills as you read.
-6. **Score your world**: a seven-question self-check, one question per layer. A segmented dial fills with each answer and the page returns a score out of 70, a verdict band and the weakest layer. "Book the full Verdict" opens an email with the answers filled in. A wax seal is pressed when the result appears. "Download your scorecard" saves a 1080x1350 image of the result. Set `knght:form-endpoint` in the page head to a form service (Formspree, Basin or a CRM webhook) to show an email field with a consent box. Until then nothing is stored or sent.
+6. **Score your world**: a seven-question self-check, one question per layer. A segmented dial fills with each answer and the page returns a score out of 70, a verdict band and the weakest layer. "Book the full Verdict" opens an email with the answers filled in. A wax seal is pressed when the result appears. "Download your scorecard" saves a 1080x1350 image of the result. Set `formEndpoint` in `src/lib/settings.ts`, or `PUBLIC_FORM_ENDPOINT` in Vercel's environment variables, to a form service (Formspree, Basin or a CRM webhook) to show an email field with a consent box. Until then nothing is stored or sent.
 7. **Three ways in**: the one white page in the site. It opens edge to edge as it scrolls in.
 8. **Verdict**: a Seedance 2.5 film in which a spotlight snaps on over an obsidian knight. It plays once when it comes into view. The cursor works as a torch that reveals a guilloche engraving. On touch screens the light drifts by itself.
 9. **Footer**: a full-width wordmark that rises letter by letter and catches a foil glint.
@@ -98,7 +101,7 @@ The media is currently served from Higgsfield's CDN. To self-host it, run `scrip
 - `robots.txt` explicitly allows AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended and others).
 - `llms.txt` describes the studio, the seven layers, the offers and every world, linking out where the world has a site.
 - After launch, submit `https://knght.com/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
-- Update `lastmod` in `sitemap.xml`, and the worlds list in `llms.txt`, whenever a world is added.
+- The sitemap updates itself when a world, layer, category page or article is added. Update the worlds list in `llms.txt` by hand.
 
 ## Before launch
 

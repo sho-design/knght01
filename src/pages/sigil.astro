@@ -1,4 +1,5 @@
 ---
+import { SETTINGS } from '../lib/settings';
 // Your sigil: a crest forged in the browser by assets/js/sigil.js.
 import Base from '../layouts/Base.astro';
 import Cta from '../components/Cta.astro';
@@ -20,7 +21,7 @@ import Cta from '../components/Cta.astro';
           <button type="button" class="link" data-sigil-svg>Download SVG</button>
           <button type="button" class="link" data-sigil-share hidden>Share</button>
         </div>
-        <form class="lead sigil__lead" data-sigil-lead data-endpoint="" hidden novalidate>
+        <form class="lead sigil__lead" data-sigil-lead data-endpoint={SETTINGS.formEndpoint} hidden novalidate>
           <label class="lead__label" for="sigil-email">Send it to your inbox</label>
           <div class="lead__row"><input id="sigil-email" name="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com" required><button type="submit" class="btn btn--sm">Send it</button></div>
           <label class="lead__consent"><input name="consent" type="checkbox" required> Email me my sigil and occasional notes from KNGHT. Unsubscribe any time. <a class="link" href="/privacy/">Privacy</a></label>

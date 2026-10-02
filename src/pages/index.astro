@@ -1,5 +1,6 @@
 ---
 import Motion from '../components/Motion.astro';
+import { SETTINGS } from '../lib/settings';
 // The home page. World cards, the layer filter and the layer list come from the content files.
 import Meter from '../components/Meter.astro';
 import WorkGrid from '../components/WorkGrid.astro';
@@ -20,9 +21,9 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
 <title>KNGHT: Brand Worlds for Regulated Businesses</title>
 <meta name="description" content="Brand worlds for Ontario clinics, medspas, law firms, spirits, coffee and food. Every layer built inside your regulator's rules. Book a free Verdict Call.">
 <meta name="theme-color" content="#000000">
-<!-- Site settings: new worlds open this quarter (leave empty to hide), and a form endpoint for quiz leads (leave empty to skip) -->
-<meta name="knght:intake" content="2">
-<meta name="knght:form-endpoint" content="">
+<!-- Site settings come from src/lib/settings.ts -->
+<meta name="knght:intake" content={SETTINGS.intake}>
+<meta name="knght:form-endpoint" content={SETTINGS.formEndpoint}>
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://knght.com/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
