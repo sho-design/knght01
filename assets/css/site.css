@@ -817,16 +817,6 @@ html.lenis,html.lenis body{height:auto}
 .is-unsealed .wseal__l{transform:translate(-18px,26px) rotate(-28deg);opacity:0}
 .is-unsealed .wseal__r{transform:translate(18px,30px) rotate(24deg);opacity:0}
 
-/* Notes in the margin */
-.mg{display:flex;gap:8px;align-items:flex-start;margin-top:10px;max-width:34ch;font:italic 400 1.02rem/1.35 var(--serif);color:var(--ash);opacity:0;transform:translateY(6px);transition:opacity 1s var(--ease-out),transform 1s var(--ease-out)}
-.mg.is-in{opacity:1;transform:none}
-.mg__arrow{flex:none;width:30px;height:18px;margin-top:2px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round}
-.mg--hero{position:absolute;z-index:2;margin:0;width:min(26ch,22vw);max-width:none;text-shadow:0 1px 10px #000}
-.engage .mg,.score .mg{color:color-mix(in srgb,currentColor 68%,transparent)}
-.offer__facts .mg{font-size:.98rem}
-.mg__target{text-decoration:underline;text-decoration-style:dotted;text-decoration-thickness:1px;text-underline-offset:5px;text-decoration-color:color-mix(in srgb,currentColor 45%,transparent)}
-.hero__title .mg__target{text-decoration:none}
-
 /* The Squire: AI inside the Machinery layer */
 .squire{padding-block:clamp(90px,12vw,170px);border-top:1px solid var(--rule)}
 .squire__grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px clamp(32px,6vw,96px);align-items:start}
@@ -891,5 +881,5 @@ html.lenis,html.lenis body{height:auto}
 @media (max-width:900px){.sigil__grid{grid-template-columns:minmax(0,1fr)}.sigil__figure{position:relative;top:0;order:-1;max-width:420px}}
 
 @media (prefers-reduced-motion:reduce){
-  .wseal__half,.mg,.codex,.codex__list li{transition:none}
+  .wseal__half,.codex,.codex__list li{transition:none}
 }

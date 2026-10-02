@@ -1,6 +1,6 @@
 /* KNGHT home: the quiet magic.
    Runes that wake under the cursor, chapter names that decode,
-   a portal into each world, wax seals that break, and notes in the margin. */
+   a portal into each world and wax seals that break. */
 (() => {
   const root = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -78,7 +78,6 @@
     decodeTargets.forEach((el) => io.observe(el));
   }
 
-  const heroInner = $('.hero__inner');
 
   /* ---------- 12. Portal into a world (a fallback for browsers without page transitions) ---------- */
   const crossDocVT = 'CSSViewTransitionRule' in window;
@@ -118,42 +117,4 @@
     $$('.world').forEach((w) => so.observe(w));
   }
 
-  /* ---------- 6. Notes in the margin: the site explaining its own words ---------- */
-  const NOTES = [
-    { sel: '.hero__title .line:last-child em', note: 'Not "the best studio". Under the Competition Act, a claim like that can mislead if you cannot back it up.', hero: true },
-    { sel: '.thesis__stats li:first-child span', note: 'Built, not "clients". Some of these worlds we run ourselves, so we say built.' },
-    { sel: '.offer--lead .offer__facts li:first-child', note: 'The price is up front, in Canadian dollars, with "and up" in plain sight. No drip pricing.' },
-    { sel: '.squire__head p:not(.eyebrow)', note: 'We name Restoration Medical because AI runs there today. We only show what we built.' }
-  ];
-  NOTES.forEach((n) => {
-    const t = $(n.sel);
-    if (!t) return;
-    if (t.tagName !== 'LI') t.classList.add('mg__target');
-    const aside = document.createElement('span');
-    aside.className = 'mg' + (n.hero ? ' mg--hero' : '');
-    aside.setAttribute('role', 'note');
-    aside.innerHTML = `<svg class="mg__arrow" viewBox="0 0 40 24" aria-hidden="true"><path d="M38 20C26 22 12 18 5 5M5 5l1 7M5 5l7 1"/></svg><span>${n.note}</span>`;
-    if (n.hero) {
-      if (!heroInner || matchMedia('(max-width: 1100px)').matches) return;
-      heroInner.appendChild(aside);
-      const place = () => {
-        const a = t.getBoundingClientRect(), h = heroInner.getBoundingClientRect();
-        aside.style.left = `${a.right - h.left + 28}px`;
-        aside.style.top = `${a.top - h.top + a.height * 0.15}px`;
-      };
-      place();
-      addEventListener('resize', place);
-      if (document.fonts) document.fonts.ready.then(place);
-      setTimeout(place, 1600);
-    } else if (t.tagName === 'LI') {
-      t.appendChild(aside);
-    } else {
-      t.insertAdjacentElement('afterend', aside);
-    }
-  });
-  if ('IntersectionObserver' in window) {
-    const mo = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); mo.unobserve(e.target); } }), { threshold: 0.6 });
-    $$('.mg').forEach((m) => mo.observe(m));
-  } else $$('.mg').forEach((m) => m.classList.add('is-in'));
-  setTimeout(() => $$('.mg--hero').forEach((m) => m.classList.add('is-in')), 2600);
 })();
