@@ -115,7 +115,7 @@
   });
 
   /* ---------- 9. Knight-move hover on the world plates ---------- */
-  const KNIGHT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.8 21c-.2-2.5-.4-5.5-.2-8.5.3-4 1.8-6.9 3.6-8.1l.2-2 1.4 1.5c2.1 1.1 3.6 3.7 4.4 6.7.3 1.1-.2 1.9-1 1.8l-1.8-.4c-1-.1-1.7.3-1.8 1.2.6 2.4 2.8 4.2 3.6 7.8M6.5 21h11"/><circle cx="13.4" cy="7.4" r=".6"/></svg>';
+  const KNIGHT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 19.4Q5.6 18.9 4.9 17.4Q5.8 17.5 6.4 16.8Q5 16 4.7 14.2Q5.6 14.5 6.3 13.9Q5 12.8 5 10.9Q5.9 11.4 6.6 11Q5.8 9.6 6.1 7.9Q6.9 8.6 7.6 8.4Q7.3 6.8 8.1 5.4Q8.6 6.2 9.5 6.2L10.8 2.4L12.3 4.6C15 5.1 17.5 7.4 18.6 10.6C19 11.8 18.6 13.2 17.3 13.2L15.6 12.7C14.6 12.4 13.8 12.9 13.8 13.9C14 15.9 16 17.4 16.9 19.4ZM5.6 19.4H18.2M4.6 21.5H19.2"/><circle cx="14.6" cy="8.4" r=".6"/></svg>';
   $$('.world__plate').forEach((pl) => pl.insertAdjacentHTML('beforeend', `<span class="world__board" aria-hidden="true"></span><span class="world__knight" aria-hidden="true">${KNIGHT}</span>`));
 
   /* ---------- One scroll loop for all of it ---------- */

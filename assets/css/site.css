@@ -524,7 +524,7 @@ html.lenis,html.lenis body{height:auto}
 .tg__pommel{opacity:0;transform-box:fill-box;transform-origin:center;transform:scale(0);transition:opacity .2s,transform .2s}
 .nav__toggle[aria-expanded="true"] .tg__pommel{opacity:1;transform:none;transition:opacity .3s 1.2s,transform .5s var(--ease-out) 1.2s}
 .nav__toggle[aria-expanded="true"] .tg__a{transform:translate(5.5px,4.5px) rotate(90deg) scaleX(.76)}
-.nav__toggle[aria-expanded="true"] .tg__b{transform:translate(-5px,6px) scaleX(.525)}
+.nav__toggle[aria-expanded="true"] .tg__b{transform:translate(-5.35px,6.6px) scaleX(.767)}
 .nav__toggle[aria-expanded="true"] .tg__sword path,.nav__toggle[aria-expanded="true"] .tg__knight{stroke-dashoffset:0;transition:stroke-dashoffset .6s var(--ease-out) .85s}
 .nav__toggle[aria-expanded="true"] .tg__knight{transition-delay:.25s;transition-duration:.7s}
 .nav__toggle[aria-expanded="true"] .tg__eye{opacity:1;transition-delay:.8s}
