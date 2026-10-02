@@ -19,7 +19,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Branding Agency for Regulated Businesses in Toronto | KNGHT</title>
-<meta name="description" content="Brand worlds for Ontario clinics, medspas, law firms, spirits and food, built inside your regulator's rules. Verdict from $3,500. Book a free call.">
+<meta name="description" content="Brand worlds for Ontario clinics, dentists, medspas, law firms, spirits and food, built inside your regulator's rules. Verdict from $3,500. Free call.">
 <meta name="theme-color" content="#000000">
 <!-- Site settings come from src/lib/settings.ts -->
 <meta name="knght:intake" content={SETTINGS.intake}>
@@ -60,7 +60,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
   "logo": "https://knght.com/icon-512.png",
   "image": "https://knght.com/og.jpg",
   "email": "sho@knght.com",
-  "description": "Brand worldbuilding studio for regulated consumer businesses in Ontario: clinics, medspas, law firms, spirits, coffee and food.",
+  "description": "Brand worldbuilding studio for regulated consumer businesses in Ontario: clinics, dental clinics, medspas, law firms, spirits, and food and drink.",
   "areaServed": "Ontario, Canada",
   "address": { "@type": "PostalAddress", "addressLocality": "Toronto", "addressRegion": "ON", "addressCountry": "CA" },
   "founder": { "@type": "Person", "name": "Sergio Ho", "jobTitle": "Founder and creative director", "worksFor": { "@type": "Organization", "name": "KNGHT" } },
@@ -141,11 +141,11 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
         <div class="cats__row" role="group" aria-label="Choose your category">
           <span class="cats__label">Read it for</span>
           <button type="button" class="cat" data-cat="clinic" aria-pressed="false">Clinics</button>
+          <button type="button" class="cat" data-cat="dental" aria-pressed="false">Dental</button>
           <button type="button" class="cat" data-cat="medspa" aria-pressed="false">Medspas</button>
           <button type="button" class="cat" data-cat="law" aria-pressed="false">Law firms</button>
           <button type="button" class="cat" data-cat="spirits" aria-pressed="false">Spirits</button>
-          <button type="button" class="cat" data-cat="coffee" aria-pressed="false">Coffee</button>
-          <button type="button" class="cat" data-cat="food" aria-pressed="false">Food</button>
+                    <button type="button" class="cat" data-cat="food" aria-pressed="false">Food and drink</button>
         </div>
         <p class="cats__rules" data-cat-rules aria-live="polite">Pick your category. The page reads itself against your rules.</p>
       </div>
@@ -173,7 +173,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
           <li><b>1</b><span>Verdict, where every world starts</span></li>
         </ul>
       </div>
-      <p class="thesis__text">Clinics, medspas, law firms, spirits, coffee, food. Categories where <em>one wrong word costs a licence</em> and <em>one weak launch costs a year.</em> So we build the whole world, and every layer of it inside the rules. <span class="thesis__not">We are not an agency that hands you a logo and leaves.</span></p>
+      <p class="thesis__text">Clinics, dentists, medspas, law firms, spirits, food and drink. Categories where <em>one wrong word costs a licence</em> and <em>one weak launch costs a year.</em> So we build the whole world, and every layer of it inside the rules. <span class="thesis__not">We are not an agency that hands you a logo and leaves.</span></p>
     </div>
   </section>
 
@@ -367,11 +367,11 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
               <select id="lead-cat" name="category" aria-label="Your category">
                 <option value="">Your category</option>
                 <option value="clinic">Clinic</option>
+                <option value="dental">Dental</option>
                 <option value="medspa">Medspa</option>
                 <option value="law">Law firm</option>
                 <option value="spirits">Spirits</option>
-                <option value="coffee">Coffee</option>
-                <option value="food">Food</option>
+                <option value="food">Food and drink</option>
                 <option value="other">Something else</option>
               </select>
               <input id="lead-email" name="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com" required>
@@ -424,7 +424,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
       </div>
       <nav class="footer__cols" aria-label="Footer">
         <div><h4>Explore</h4><ul><li><a href="#worlds">Worlds</a></li><li><a href="#engage">Work with us</a></li><li><a href="#layers">The layers</a></li><li><a href="/process/">How it works</a></li><li><a href="/rules/">Rules</a></li></ul></div>
-        <div><h4>For</h4><ul class="footer__two"><li><a href="/for/clinics/">Clinics</a></li><li><a href="/for/medspas/">Medspas</a></li><li><a href="/for/law-firms/">Law firms</a></li><li><a href="/for/spirits/">Spirits</a></li><li><a href="/for/coffee/">Coffee</a></li><li><a href="/for/food/">Food</a></li></ul></div>
+        <div><h4>For</h4><ul class="footer__two"><li><a href="/for/clinics/">Clinics</a></li><li><a href="/for/dental/">Dental</a></li><li><a href="/for/medspas/">Medspas</a></li><li><a href="/for/law-firms/">Law firms</a></li><li><a href="/for/spirits/">Spirits</a></li><li><a href="/for/food-and-drink/">Food and drink</a></li></ul></div>
         <div><h4>Studio</h4><ul><li><a href="/sigil/">Your sigil</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/accessibility/">Accessibility</a></li></ul></div>
       </nav>
     </div>

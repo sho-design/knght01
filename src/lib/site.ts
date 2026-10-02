@@ -16,7 +16,7 @@ export type Category = {
   Artifacts?: string;
 };
 export const CATEGORY = categoriesJson as Record<string, Category>;
-export const CATEGORY_ORDER = ['clinic', 'medspa', 'law', 'spirits', 'coffee', 'food', 'fitness', 'creative'];
+export const CATEGORY_ORDER = ['clinic', 'dental', 'medspa', 'law', 'spirits', 'food', 'fitness', 'creative'];
 
 const byOrder = <T extends { data: { order: number } }>(a: T, b: T) => a.data.order - b.data.order;
 export const getWorlds = async () => (await getCollection('worlds')).sort(byOrder);

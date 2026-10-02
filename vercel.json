@@ -32,5 +32,17 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/for/coffee/",
+      "destination": "/for/food-and-drink/",
+      "permanent": true
+    },
+    {
+      "source": "/for/food/",
+      "destination": "/for/food-and-drink/",
+      "permanent": true
+    }
   ]
 }

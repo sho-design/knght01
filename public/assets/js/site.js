@@ -610,8 +610,8 @@
       { label: 'The layers', sigil: 'shield', all: ['All seven layers', '#layers'], items:
         ['Lore', 'Law', 'Language', 'Map', 'Ground', 'Artifacts', 'Machinery'].map((n) => [n, `layers/${n.toLowerCase()}/`]) },
       { label: 'Who it’s for', sigil: 'banner', items: [
-        ['Clinics', 'for/clinics/'], ['Medspas', 'for/medspas/'], ['Law firms', 'for/law-firms/'],
-        ['Spirits', 'for/spirits/'], ['Coffee', 'for/coffee/'], ['Food', 'for/food/']] },
+        ['Clinics', 'for/clinics/'], ['Dental', 'for/dental/'], ['Medspas', 'for/medspas/'],
+        ['Law firms', 'for/law-firms/'], ['Spirits', 'for/spirits/'], ['Food and drink', 'for/food-and-drink/']] },
       { label: 'How it works', sigil: 'compass', href: 'process/' },
       { label: 'Rules journal', sigil: 'seal', all: ['All articles', 'rules/'], items: [
         ['What a medspa can say about Botox', 'rules/medspa-prescription-drug-ads/'],

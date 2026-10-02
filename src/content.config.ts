@@ -57,6 +57,8 @@ const forPages = defineCollection({
     title: z.string(),
     answer: z.string(),
     worlds: z.array(z.string()),
+    /** Heading over the worlds list, when those worlds are not from this exact category. */
+    worldsLabel: z.string().optional(),
   }),
 });
 

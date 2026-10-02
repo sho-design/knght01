@@ -25,6 +25,32 @@
     "Map": "Service pages patients and AI assistants can answer from, and a Google Business Profile for each location.",
     "Artifacts": "Intake and consent forms, aftercare sheets and signage, each checked before print."
   },
+  "dental": {
+    "short": "dental clinics",
+    "label": "Dental",
+    "rules": [
+      {
+        "title": "RCDSO",
+        "text": "No testimonials, and no statement that can only be verified by someone's personal feelings or views."
+      },
+      {
+        "title": "RCDSO",
+        "text": "Ads about care often done by specialists must say whether the dentist is a general practitioner or a registered specialist."
+      },
+      {
+        "title": "PHIPA",
+        "text": "Ontario's rules for every piece of patient information the world touches."
+      },
+      {
+        "title": "Competition Act",
+        "text": "No false or misleading claims, and pricing that shows the full cost."
+      }
+    ],
+    "Law": "RCDSO advertising rules on testimonials and specialist titles, PHIPA for every patient record, and the Competition Act.",
+    "Language": "No testimonials, no promised results, and a voice that calms patients before the chair.",
+    "Map": "Service pages patients and AI assistants can answer from, and a Google Business Profile for each location.",
+    "Artifacts": "Intake and consent forms, treatment-plan handouts and signage, each checked before print."
+  },
   "medspa": {
     "short": "medspas",
     "label": "Aesthetics",
@@ -95,39 +121,17 @@
     "Map": "A where-to-buy map, an age-gated site and a page for every product.",
     "Artifacts": "Labels, cases, shelf talkers and sell sheets ready for buyers and inspectors."
   },
-  "coffee": {
-    "short": "coffee",
-    "label": "Food and beverage",
+  "food": {
+    "short": "food and drink brands",
+    "label": "Food and drink",
     "rules": [
       {
         "title": "CFIA",
-        "text": "Food labelling for everything sold to take home."
-      },
-      {
-        "title": "Competition Act",
-        "text": "Sourcing and environmental claims now need proof."
-      },
-      {
-        "title": "Public health",
-        "text": "Food premises rules for the room itself."
+        "text": "Labelling for everything sold to take home, including allergens and free-from claims that must hold for every batch."
       },
       {
         "title": "Safe Food for Canadians Regulations",
         "text": "A licence to import food into Canada, with traceability and preventive controls."
-      }
-    ],
-    "Law": "CFIA labelling and import licensing, the Competition Act and its rules on sourcing and green claims.",
-    "Language": "A voice regulars repeat, and sourcing claims you can prove.",
-    "Map": "A Google Business Profile that wins the map pack, and a site that sells between visits.",
-    "Artifacts": "Menus, bags, cups and boards that hold one standard."
-  },
-  "food": {
-    "short": "food",
-    "label": "Allergen-friendly food",
-    "rules": [
-      {
-        "title": "CFIA",
-        "text": "Allergen labelling and free-from claims that must hold for every batch."
       },
       {
         "title": "Health Canada",
@@ -135,13 +139,13 @@
       },
       {
         "title": "Competition Act",
-        "text": "No false or misleading claims, including on price."
+        "text": "No false or misleading claims, including sourcing, green claims and price."
       }
     ],
-    "Law": "CFIA allergen labelling and free-from claims, and Health Canada nutrition and health claims.",
-    "Language": "Indulgent copy that never overstates a health or allergen claim.",
-    "Map": "Product pages, a retailer locator and a shop built for search and AI answers.",
-    "Artifacts": "Labels, ingredient panels and retail packaging checked line by line."
+    "Law": "CFIA labelling and allergen rules, import licensing, Health Canada nutrition and health claims, and the Competition Act on sourcing and green claims.",
+    "Language": "A voice regulars repeat, and copy that never overstates a health, allergen or sourcing claim.",
+    "Map": "Product pages, a retailer locator and a Google Business Profile that wins the map pack.",
+    "Artifacts": "Labels, ingredient panels, menus, bags and cups checked line by line."
   },
   "fitness": {
     "short": "fitness",

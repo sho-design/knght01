@@ -2,9 +2,8 @@
   "order": 2,
   "name": "Black Lotus",
   "em": "Coffee",
-  "cat": "coffee",
+  "cat": "food",
   "cats": [
-    "coffee",
     "food"
   ],
   "line": "A conscious coffee brand rooted in Vietnamese tradition and modern wellness, now importing into Canada from Toronto.",

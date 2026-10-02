@@ -63,7 +63,7 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
   <section class="wsec">
     <div class="wrap">
-      <p class="eyebrow" style="margin-bottom:clamp(28px,4vw,56px)">Worlds built for {d.noun}</p>
+      <p class="eyebrow" style="margin-bottom:clamp(28px,4vw,56px)">{d.worldsLabel ?? `Worlds built for ${d.noun}`}</p>
       <div class="fcards">
         {cards.map((x) => (
           <a class="wnav__card fcard" href={`/worlds/${x.id}/`}>

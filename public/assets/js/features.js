@@ -34,6 +34,11 @@
       rules: 'Read against CPSO advertising rules, Health Canada and PHIPA.',
       law: 'For clinics: CPSO advertising rules, Health Canada drug and device advertising, PHIPA and the Competition Act.',
     },
+    dental: {
+      reg: 'RCDSO',
+      rules: 'Read against RCDSO advertising rules, PHIPA and the Competition Act.',
+      law: 'For dental clinics: RCDSO advertising rules on testimonials and specialist titles, PHIPA and the Competition Act.',
+    },
     medspa: {
       reg: 'CPSO, CNO and Health Canada',
       rules: 'Read against CPSO and CNO rules, Health Canada drug advertising and the Competition Act.',
@@ -49,15 +54,10 @@
       rules: 'Read against AGCO advertising standards, the CRTC alcohol code and CFIA labelling.',
       law: 'For spirits: AGCO liquor advertising standards, the CRTC Code for Broadcast Advertising of Alcoholic Beverages, CFIA labelling and LCBO listing rules.',
     },
-    coffee: {
-      reg: 'CFIA and Competition Act',
-      rules: 'Read against CFIA labelling and the Competition Act, including its rules on green claims.',
-      law: 'For coffee: CFIA food labelling and import licensing, the Competition Act, and its rules on environmental and sourcing claims.',
-    },
     food: {
       reg: 'CFIA and Health Canada',
-      rules: 'Read against CFIA allergen and claim rules, Health Canada and the Competition Act.',
-      law: 'For food: CFIA allergen labelling and free-from claims, Health Canada nutrition and health claims, and the Competition Act.',
+      rules: 'Read against CFIA labelling and allergen rules, Health Canada claims and the Competition Act.',
+      law: 'For food and drink: CFIA labelling, allergen and import rules, Health Canada nutrition and health claims, and the Competition Act on sourcing and green claims.',
     },
   };
   const catBtns = $$('.cats [data-cat]');
@@ -70,6 +70,7 @@
   const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 
   const setCategory = (cat, { persist = true } = {}) => {
+    if (cat === 'coffee') cat = 'food'; // coffee and food are one category now
     const c = cat && Object.hasOwn(CATS, cat) ? cat : null; // only real categories, never inherited names like "constructor"
     root.dataset.cat = c || '';
     catBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cat === c)));

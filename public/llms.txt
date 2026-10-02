@@ -1,6 +1,6 @@
 # KNGHT
 
-> KNGHT is a brand worldbuilding studio in Toronto, Ontario. It builds complete brand worlds for regulated consumer businesses: clinics, medspas, law firms, spirits, coffee and food. A world covers the name, the rules, the voice, the site, the space, the print and the systems that run it, all written inside the rules of the category. KNGHT is a Sergio Ho studio.
+> KNGHT is a brand worldbuilding studio in Toronto, Ontario. It builds complete brand worlds for regulated consumer businesses: clinics, dental clinics, medspas, law firms, spirits, and food and drink. A world covers the name, the rules, the voice, the site, the space, the print and the systems that run it, all written inside the rules of the category. KNGHT is a Sergio Ho studio.
 
 KNGHT works where one wrong word can cost a licence and one weak launch can cost a year. Every world shown was built by Sergio Ho, KNGHT's founder. KNGHT still runs some of them.
 
@@ -47,8 +47,8 @@ Each world is built in this order. No layer is built before Lore.
 - [Brand worlds for medspas](https://knght.com/for/medspas/): the rules, the seven layers read for medspas, and the worlds built for them.
 - [Brand worlds for law firms](https://knght.com/for/law-firms/): the rules, the seven layers read for law firms, and the worlds built for them.
 - [Brand worlds for spirits brands](https://knght.com/for/spirits/): the rules, the seven layers read for spirits brands, and the worlds built for them.
-- [Brand worlds for coffee brands](https://knght.com/for/coffee/): the rules, the seven layers read for coffee brands, and the worlds built for them.
-- [Brand worlds for food brands](https://knght.com/for/food/): the rules, the seven layers read for food brands, and the worlds built for them.
+- [Brand worlds for dental clinics](https://knght.com/for/dental/): RCDSO advertising rules, the seven layers read for dental clinics, and the closest world built.
+- [Brand worlds for food and drink brands](https://knght.com/for/food-and-drink/): the rules, the seven layers read for food and drink brands, and the worlds built for them.
 - [Lore](https://knght.com/layers/lore/): layer 1 of 7, what it is, what we make, what we check it against and examples from the worlds.
 - [Law](https://knght.com/layers/law/): layer 2 of 7, what it is, what we make, what we check it against and examples from the worlds.
 - [Language](https://knght.com/layers/language/): layer 3 of 7, what it is, what we make, what we check it against and examples from the worlds.
@@ -59,6 +59,7 @@ Each world is built in this order. No layer is built before Lore.
 - [How a world gets built](https://knght.com/process/): the call, the Verdict, the Build, launch and the Keep.
 - [Rules](https://knght.com/rules/): short reads on marketing rules for regulated categories.
 - [Can your clinic put patient information into ChatGPT?](https://knght.com/rules/clinics-ai-and-patient-information/): PHIPA and AI tools for Ontario clinics, in plain language.
+- [Real estate teams and the brokerage name](https://knght.com/rules/real-estate-teams-and-the-brokerage-name/): RECO advertising rules for real estate teams under TRESA: brokerage name, team names, sold stories and awards.
 - [What a brand world costs in Ontario](https://knght.com/rules/what-a-brand-world-costs-in-ontario/): published price ranges for branding, websites and retainers in Toronto and the GTA, and how KNGHT prices the Verdict and the Build.
 - [Your sigil](https://knght.com/sigil/): a free tool that forges a black and white crest for a business from its name, category and the one thing it guards.
 - [Book the Verdict Call](https://knght.com/book/): a free 30-minute call. Leave with your three biggest risks, one fix for this week, and a straight answer on fit.
