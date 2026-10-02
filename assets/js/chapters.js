@@ -144,9 +144,37 @@
     if (PATHS[k] && n && !$('.layer__sigil', n)) n.insertAdjacentHTML('beforeend', sigil(k, 'layer__sigil'));
   });
 
-  /* ---------- 9. Knight-move hover on the world plates ---------- */
+  /* ---------- 9. A knight roams the world plates on hover ---------- */
   const KNIGHT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 19.4Q5.6 18.9 4.9 17.4Q5.8 17.5 6.4 16.8Q5 16 4.7 14.2Q5.6 14.5 6.3 13.9Q5 12.8 5 10.9Q5.9 11.4 6.6 11Q5.8 9.6 6.1 7.9Q6.9 8.6 7.6 8.4Q7.3 6.8 8.1 5.4Q8.6 6.2 9.5 6.2L10.8 2.4L12.3 4.6C15 5.1 17.5 7.4 18.6 10.6C19 11.8 18.6 13.2 17.3 13.2L15.6 12.7C14.6 12.4 13.8 12.9 13.8 13.9C14 15.9 16 17.4 16.9 19.4ZM5.6 19.4H18.2M4.6 21.5H19.2"/><circle cx="14.6" cy="8.4" r=".6"/></svg>';
-  $$('.world__plate').forEach((pl) => pl.insertAdjacentHTML('beforeend', `<span class="world__board" aria-hidden="true"></span><span class="world__knight" aria-hidden="true">${KNIGHT}</span>`));
+  // On hover the knight lands on a random square, then keeps making random legal L moves until the cursor leaves.
+  const COLS = 8, ROWS = 10;
+  const MOVES = [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]];
+  const rand = (n) => Math.floor(Math.random() * n);
+  $$('.world__plate').forEach((pl) => {
+    pl.insertAdjacentHTML('beforeend', `<span class="world__knight" aria-hidden="true">${KNIGHT}</span>`);
+    const kn = $('.world__knight', pl);
+    const card = pl.closest('.world') || pl;
+    let pos = null, timer = 0;
+    const place = (c, r) => { pos = [c, r]; kn.style.transform = `translate(${c * 100}%, ${r * 100}%)`; };
+    const hop = () => {
+      const legal = MOVES.map(([dc, dr]) => [pos[0] + dc, pos[1] + dr]).filter(([c, r]) => c >= 0 && c < COLS && r >= 0 && r < ROWS);
+      const [c, r] = legal[rand(legal.length)];
+      kn.classList.remove('is-hop'); void kn.offsetWidth; kn.classList.add('is-hop');
+      place(c, r);
+      timer = setTimeout(hop, 900 + rand(500));
+    };
+    card.addEventListener('pointerenter', () => {
+      if (reduce || !matchMedia('(hover: hover) and (min-width: 901px)').matches) return;
+      kn.classList.add('is-instant');
+      place(1 + rand(COLS - 2), 1 + rand(ROWS - 2));
+      void kn.offsetWidth;
+      kn.classList.remove('is-instant');
+      kn.classList.add('is-on');
+      clearTimeout(timer);
+      timer = setTimeout(hop, 650);
+    });
+    card.addEventListener('pointerleave', () => { clearTimeout(timer); kn.classList.remove('is-on'); });
+  });
 
   /* ---------- One scroll loop for all of it ---------- */
   const nav = $('.nav');

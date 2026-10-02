@@ -753,28 +753,18 @@ html.lenis,html.lenis body{height:auto}
 .layer__work .wwork__grid{padding-bottom:8px}
 .layer__work[open] .wwork__grid{animation:qIn .7s var(--ease-out)}
 
-/* Knight-move hover: a board appears and the knight makes its L */
-.world__board,.world__knight{position:absolute;pointer-events:none;opacity:0}
-.world__board{inset:0;z-index:1;background:repeating-conic-gradient(rgba(255,255,255,.09) 0 25%,transparent 0 50%) 0 0/25% 20%;transition:opacity .6s var(--ease)}
-.world__knight{z-index:2;left:37.5%;top:70%;width:12.5%;height:10%;display:grid;place-items:center;color:#fff}
-.world__knight svg{width:78%;height:auto;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
+/* A knight roams the world plates on hover, making random L moves */
+.world__knight{position:absolute;z-index:2;left:0;top:0;width:12.5%;height:10%;display:grid;place-items:center;color:#fff;pointer-events:none;opacity:0;transition:transform .55s cubic-bezier(.5,0,.2,1),opacity .4s var(--ease)}
+.world__knight.is-instant{transition:none}
+.world__knight.is-on{opacity:1}
+.world__knight svg{width:82%;height:auto;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 6px rgba(0,0,0,.7))}
 .world__knight circle{fill:currentColor;stroke:none}
-@media (hover:hover) and (min-width:901px){
-  .world:hover .world__board{opacity:1}
-  .world:hover .world__knight{animation:kmove 1.15s var(--ease-out) .15s forwards}
-}
-@keyframes kmove{
-  0%{opacity:0;transform:translate(0,30%)}
-  18%{opacity:1;transform:translate(0,0)}
-  52%{opacity:1;transform:translate(0,-200%)}
-  62%{transform:translate(0,-215%)}
-  100%{opacity:1;transform:translate(100%,-200%)}
-}
+.world__knight.is-hop svg{animation:khop .55s cubic-bezier(.5,0,.2,1)}
+@keyframes khop{50%{transform:translateY(-22%) scale(1.12)}}
 
 @media (prefers-reduced-motion:reduce){
   .chap__num{transform:none}
   .js .chap__meta{opacity:1;transform:none}
-  .world:hover .world__knight{animation:none;opacity:1;transform:translate(100%,-200%)}
   .worlds__hint::after{animation:none}
 }
 .layer__work .wwork__item figcaption{left:6px;right:6px;bottom:6px;width:max-content;max-width:calc(100% - 12px);font-size:.58rem;letter-spacing:.1em;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
