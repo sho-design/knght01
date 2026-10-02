@@ -25,7 +25,7 @@
   const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
 
   /* ---------- 1. Runes carved into the dark, woken by the cursor or a finger ---------- */
-  const runeHosts = $$('.thesis, .chap, .layers, .squire');
+  const runeHosts = $$('.thesis, .chap, .layers');
   runeHosts.forEach((host) => {
     const layer = document.createElement('div');
     layer.className = 'runes';
@@ -43,7 +43,7 @@
     host.prepend(layer, lit);
   });
   const wake = (e) => {
-    const host = e.target.closest && e.target.closest('.thesis, .chap, .layers, .squire');
+    const host = e.target.closest && e.target.closest('.thesis, .chap, .layers');
     if (!host) return;
     const r = host.getBoundingClientRect();
     host.style.setProperty('--rx', `${e.clientX - r.left}px`);
@@ -72,7 +72,7 @@
     };
     requestAnimationFrame(tick);
   };
-  const decodeTargets = $$('.chap__meta b, .squire .eyebrow');
+  const decodeTargets = $$('.chap__meta b');
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { decode(e.target); io.unobserve(e.target); } }), { threshold: 0.8 });
     decodeTargets.forEach((el) => io.observe(el));

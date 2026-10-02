@@ -507,6 +507,7 @@ def update_home():
 
     # strip the work drawers before relinking, so the layer regex sees a clean row
     s = re.sub(r'<!--lwork-->.*?<!--/lwork-->', "", s, flags=re.S)
+    s = re.sub(r'<!--lsquire-->.*?<!--/lsquire-->', "", s, flags=re.S)
 
     # links from the codex layer list to each layer page
     for n in NAMES:
@@ -518,6 +519,17 @@ def update_home():
         drawer = (f'<!--lwork--><details class="layer__work"><summary><span>{label}</span><span class="layer__work-n">'
                   f'{len(work_images(n))} pieces</span></summary>{rows(work_images(n), "", target=target)}</details><!--/lwork-->')
         s = s.replace(f'The {n} layer</a></li>', f'The {n} layer</a>{drawer}</li>', 1)
+    # AI inside the Machinery row: the squire, not the knight
+    squire = ('<!--lsquire--><div class="layer__ai" id="ai">'
+              '<p class="layer__ai-h">AI is the squire, <em>not the knight.</em></p>'
+              '<p class="layer__ai-p">AI answers, books, reminds and drafts, so your team gets its hours back. It never makes the call. In use at <a class="link" href="worlds/restoration-medical/">Restoration Medical</a>.</p>'
+              '<ul class="layer__ai-list">'
+              '<li><b>What it does</b><span>Answers common questions, books and reminds, follows up, sorts intake and writes the first draft.</span></li>'
+              '<li><b>What it never does</b><span>Make a claim your regulator has not cleared, give medical or legal advice, or touch health information outside tools set up for it.</span></li>'
+              '<li><b>Who checks it</b><span>A person, every time. AI drafts. Someone on your team signs.</span></li></ul>'
+              '<p class="layer__ai-more"><a class="link" href="rules/clinics-ai-and-patient-information/">Can your clinic put patient information into ChatGPT?</a></p>'
+              '</div><!--/lsquire-->')
+    s = s.replace('The Machinery layer</a></li>', 'The Machinery layer</a>' + squire + '</li>', 1)
     s = re.sub(r'\n*<!--beyond-->.*?<!--/beyond-->\n*', "\n\n", s, flags=re.S)
     open(p, "w", encoding="utf-8").write(s)
 

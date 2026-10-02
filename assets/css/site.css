@@ -775,7 +775,7 @@ html.lenis,html.lenis body{height:auto}
 
 /* ===== Magic: runes, decoding, the constellation, the portal, seals, marginalia, the codex, the sword cursor ===== */
 /* Runes carved into the dark */
-.thesis,.chap,.layers,.squire{position:relative;isolation:isolate}
+.thesis,.chap,.layers{position:relative;isolation:isolate}
 .runes{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .runes svg{position:absolute;fill:none;stroke:#fff;stroke-width:.7;stroke-linecap:round;stroke-linejoin:round;opacity:.045}
 .runes--lit svg{opacity:.55;filter:drop-shadow(0 0 6px rgba(255,255,255,.55))}
@@ -799,19 +799,17 @@ html.lenis,html.lenis body{height:auto}
 .is-unsealed .wseal__l{transform:translate(-18px,26px) rotate(-28deg);opacity:0}
 .is-unsealed .wseal__r{transform:translate(18px,30px) rotate(24deg);opacity:0}
 
-/* The Squire: AI inside the Machinery layer */
-.squire{padding-block:clamp(90px,12vw,170px);border-top:1px solid var(--rule)}
-.squire__grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px clamp(32px,6vw,96px);align-items:start}
-.squire__head{display:flex;flex-direction:column;gap:24px}
-.squire__head h2{font-size:clamp(2.8rem,5.4vw,5.2rem)}
-.squire__head h2 em{font-style:italic}
-.squire__head p{margin:0;color:var(--ash);max-width:40ch;font-size:1.1rem}
-.squire__list{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule-strong)}
-.squire__list li{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:8px 32px;padding:26px 0;border-bottom:1px solid var(--rule)}
-.squire__list b{font:400 clamp(1.5rem,2.2vw,2rem)/1.1 var(--serif)}
-.squire__list span{color:var(--ash)}
-.squire__more{grid-column:2;display:flex;flex-wrap:wrap;gap:12px 28px;margin:0}
-@media (max-width:900px){.squire__grid,.squire__list li{grid-template-columns:minmax(0,1fr)}.squire__more{grid-column:1}}
+/* AI inside the Machinery row */
+.layer__ai{grid-column:2;margin-top:22px;padding:22px 0 4px;border-top:1px solid var(--rule)}
+.layer__ai-h{margin:0;font:400 clamp(1.6rem,2.4vw,2.2rem)/1.1 var(--serif)}
+.layer__ai-h em{font-style:italic}
+.layer__ai-p{margin:10px 0 0;color:var(--ash);max-width:52ch}
+.layer__ai-list{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:12px}
+.layer__ai-list li{display:grid;grid-template-columns:minmax(0,10rem) minmax(0,1fr);gap:4px 20px;padding:0;border:0;font-size:.95rem}
+.layer__ai-list b{font:400 1.2rem/1.2 var(--serif)}
+.layer__ai-list span{color:var(--ash)}
+.layer__ai-more{margin:14px 0 0}
+@media (max-width:600px){.layer__ai-list li{grid-template-columns:minmax(0,1fr)}}
 
 /* The codex: found by the knight's move */
 .codex{position:fixed;inset:0;z-index:190;display:grid;place-items:center;padding:24px;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transition:opacity .5s var(--ease);overflow-y:auto}
