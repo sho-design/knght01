@@ -262,13 +262,14 @@
   $$('[data-world-total]').forEach((el) => { el.textContent = roman[worldCards.length - 1] || String(worldCards.length); });
   $$('[data-world-total-num]').forEach((el) => { el.textContent = String(worldCards.length); });
   const horizontal = () => matchMedia('(min-width: 901px)').matches;
+  const WORLD_PACE = 0.55; // vertical pixels per horizontal pixel: under 1 moves the gallery faster than the scroll
   let travel = 0;
   const sizeWorlds = () => {
     if (!worlds || !track) return;
     if (!horizontal()) { worlds.style.height = ''; travel = 0; track.style.transform = ''; return; }
     const endPad = parseFloat(getComputedStyle(track).paddingLeft) || 0;
     travel = Math.max(0, track.scrollWidth - innerWidth + endPad);
-    worlds.style.height = `${innerHeight + travel}px`;
+    worlds.style.height = `${innerHeight + travel * WORLD_PACE}px`;
   };
 
   /* ---------- Scroll-driven frame ---------- */
@@ -319,7 +320,7 @@
     // Worlds: vertical scroll drives horizontal travel
     if (worlds && track && travel > 0) {
       const r = worlds.getBoundingClientRect();
-      const p = clamp(-r.top / travel, 0, 1);
+      const p = clamp(-r.top / (travel * WORLD_PACE), 0, 1);
       track.style.transform = `translate3d(${-p * travel}px, 0, 0)`;
       if (bar) bar.style.transform = `scaleX(${p})`;
       if (countNow && worldCards.length) {

@@ -1,5 +1,5 @@
 /* KNGHT home: the page read as five chapters.
-   Chapter openers, the chapter rail, the white self-check, stacked offers, the worlds swipe on phones, layer sigils, the knight-move hover and the bottom bar. */
+   Chapter openers, the chapter rail, the white self-check, the offer ladder, the worlds swipe on phones, layer sigils, the knight-move hover and the bottom bar. */
 (() => {
   const root = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -31,9 +31,9 @@
   if (verdictSec && !verdictSec.id) verdictSec.id = 'the-verdict';
   const CHAPTERS = [
     { n: 'I', t: 'The worlds', s: 'orb', el: $('#worlds') },
-    { n: 'II', t: 'The layers', s: 'shield', el: $('#layers') },
-    { n: 'III', t: 'The self-check', s: 'scales', el: $('#score') },
-    { n: 'IV', t: 'Work with us', s: 'key', el: $('#engage') },
+    { n: 'II', t: 'Work with us', s: 'key', el: $('#engage') },
+    { n: 'III', t: 'The layers', s: 'shield', el: $('#layers') },
+    { n: 'IV', t: 'The self-check', s: 'scales', el: $('#score') },
     { n: 'V', t: 'The Verdict', s: 'sword', el: verdictSec }
   ].filter((c) => c.el);
 
@@ -72,9 +72,39 @@
   const score = $('.score');
 
 
-  /* ---------- 6. Stacked offers ---------- */
-  const offers = $$('.offer');
-  offers.forEach((o, i) => o.style.setProperty('--i', i));
+  /* ---------- 6. The offer ladder: steps rise in order, sigils draw, the price counts up, cards lean to the cursor ---------- */
+  const ladder = $('[data-ladder]');
+  if (ladder) {
+    const run = () => {
+      ladder.classList.add('is-in');
+      const n = $('[data-count]', ladder);
+      if (!n || reduce) return;
+      const to = +n.dataset.count, t0 = performance.now(), dur = 1400;
+      const step = (t) => {
+        const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+        n.textContent = Math.round(to * e).toLocaleString('en-CA');
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    if ('IntersectionObserver' in window) {
+      const lo = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { run(); lo.disconnect(); } }, { threshold: 0.25 });
+      lo.observe(ladder);
+    } else run();
+    if (!reduce && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      $$('.rung', ladder).forEach((card) => {
+        card.addEventListener('pointermove', (e) => {
+          const r = card.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+          card.style.setProperty('--tilt-x', `${(-y * 5).toFixed(2)}deg`);
+          card.style.setProperty('--tilt-y', `${(x * 6).toFixed(2)}deg`);
+          card.style.setProperty('--lx', `${((x + 0.5) * 100).toFixed(1)}%`);
+          card.style.setProperty('--ly', `${((y + 0.5) * 100).toFixed(1)}%`);
+        });
+        card.addEventListener('pointerleave', () => { card.style.setProperty('--tilt-x', '0deg'); card.style.setProperty('--tilt-y', '0deg'); });
+      });
+    }
+  }
 
   /* ---------- 5. Worlds swipe on phones ---------- */
   const pin = $('.worlds__pin');
@@ -167,15 +197,6 @@
     }
 
 
-    // Offers: each card settles back as the next one lands on it
-    if (!reduce) offers.forEach((o, i) => {
-      const next = offers[i + 1];
-      if (!next) return;
-      const a = o.getBoundingClientRect(), b = next.getBoundingClientRect();
-      const t = clamp(1 - (b.top - a.top) / a.height, 0, 1);
-      o.style.setProperty('--s', (1 - t * 0.05).toFixed(4));
-      o.style.setProperty('--dim', (t * 0.5).toFixed(3));
-    });
   };
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
   addEventListener('scroll', onScroll, { passive: true });
