@@ -199,10 +199,10 @@
     try {
       const res = await fetch(endpoint, {
         method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ email: email.value, consent: true, category: root.dataset.cat || null, ...lastVerdict }),
+        body: JSON.stringify({ _subject: lastVerdict ? `Scorecard request: ${lastVerdict.total}/70, weakest ${lastVerdict.weak}` : 'Scorecard request', email: email.value, consent: true, category: root.dataset.cat || null, ...lastVerdict }),
       });
       if (!res.ok) throw new Error(res.status);
-      status.textContent = 'Sent. Check your inbox.';
+      status.textContent = 'Sent. We will email your scorecard within one business day.';
       lead.reset();
     } catch (err) {
       status.textContent = 'That did not go through. Download the scorecard instead, or email sho@knght.com.';

@@ -131,9 +131,9 @@
       status.textContent = 'Sending…';
       try {
         const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ email, consent: true, source: 'sigil', name: form.name.value, category: form.cat.value, virtue: form.virtue.value }) });
+          body: JSON.stringify({ _subject: `Sigil request: ${form.name.value || 'unnamed'}`, email, consent: true, source: 'sigil', name: form.name.value, category: form.cat.value, virtue: form.virtue.value }) });
         if (!res.ok) throw new Error(res.status);
-        status.textContent = 'Sent. Check your inbox.';
+        status.textContent = 'Sent. We will email your sigil within one business day.';
         track('sigil_lead', { category: form.cat.value });
       } catch (err) { status.textContent = 'That did not go through. Email sho@knght.com and we will send it.'; }
     });
