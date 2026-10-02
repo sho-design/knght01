@@ -119,7 +119,12 @@
   const endpoint = meta('knght:form-endpoint');
   document.addEventListener('knght:verdict', (e) => {
     lastVerdict = e.detail;
-    if (lead) lead.hidden = !endpoint;
+    if (lead) {
+      lead.hidden = !endpoint;
+      // Show the category the page remembered, so the visitor can see it and change it before sending.
+      const cat = $('#lead-cat', lead);
+      if (cat) cat.value = root.dataset.cat || '';
+    }
     if (seal && ready(seal.dataset.src) && !reduce) {
       if (!seal.src) seal.src = seal.dataset.src;
       seal.currentTime = 0;
@@ -199,7 +204,7 @@
     try {
       const res = await fetch(endpoint, {
         method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ _subject: lastVerdict ? `Scorecard request: ${lastVerdict.total}/70, weakest ${lastVerdict.weak}` : 'Scorecard request', email: email.value, consent: true, category: root.dataset.cat || null, ...lastVerdict }),
+        body: JSON.stringify({ _subject: lastVerdict ? `Scorecard request: ${lastVerdict.total}/70, weakest ${lastVerdict.weak}` : 'Scorecard request', email: email.value, consent: true, ...lastVerdict, category: $('#lead-cat', lead)?.value || null }),
       });
       if (!res.ok) throw new Error(res.status);
       status.textContent = 'Sent. We will email your scorecard within one business day.';

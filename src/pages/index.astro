@@ -364,6 +364,16 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
           <form class="lead" data-lead hidden novalidate>
             <label class="lead__label" for="lead-email">Send the scorecard to your inbox</label>
             <div class="lead__row">
+              <select id="lead-cat" name="category" aria-label="Your category">
+                <option value="">Your category</option>
+                <option value="clinic">Clinic</option>
+                <option value="medspa">Medspa</option>
+                <option value="law">Law firm</option>
+                <option value="spirits">Spirits</option>
+                <option value="coffee">Coffee</option>
+                <option value="food">Food</option>
+                <option value="other">Something else</option>
+              </select>
               <input id="lead-email" name="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com" required>
               <button type="submit" class="btn btn--sm">Send it</button>
             </div>
