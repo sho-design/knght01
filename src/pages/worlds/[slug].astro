@@ -34,6 +34,7 @@ const work = d.work.map(({ alt, src, width, height }) => ({ alt, src, width, hei
       <figure class="whero__plate" style={`view-transition-name: plate-${w.id}`}>
         <img src={`${CDN}/${d.plate}`} alt={d.alt} width="1200" height="1500" />
         {d.film && <video muted playsinline loop autoplay preload="auto" poster={`${CDN}/${d.plate}`} src={d.film} aria-hidden="true"></video>}
+        <figcaption class="plate__note">Mood plate, not client work.{d.work.length > 0 && ' The work is below.'}</figcaption>
       </figure>
       <div class="whero__body">
         <p class="eyebrow">World {ROMAN[i]} · {c.label}</p>
@@ -125,7 +126,7 @@ const work = d.work.map(({ alt, src, width, height }) => ({ alt, src, width, hei
       <h2 class="display" data-split>Every world starts <br>with a <em class="sheen">Verdict.</em></h2>
       <p>Tell us what you are building. We will tell you what is holding it up and what will bring it down.</p>
       <div class="actions">
-        <a class="btn" href="/book/" data-magnetic>Book a Verdict
+        <a class="btn" href="/book/" data-magnetic>Book the free call
           <svg class="arrow" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
         </a>
         <a class="link" href="/#score">Score your world first</a>

@@ -127,7 +127,9 @@
     "Law": "AGCO advertising standards, the CRTC alcohol code, CFIA labelling and LCBO listing requirements.",
     "Language": "Lore and flavour, never strength, excess or social success.",
     "Map": "A where-to-buy map, an age-gated site and a page for every product.",
-    "Artifacts": "Labels, cases, shelf talkers and sell sheets ready for buyers and inspectors."
+    "Ground": "Tastings, the back bar and the store display, built to the same rules as the label.",
+    "Artifacts": "Labels, cases, shelf talkers and sell sheets ready for buyers and inspectors.",
+    "Machinery": "Orders, distributors and stock by store, with the paperwork a listing needs."
   },
   "food": {
     "short": "food and drink brands",
@@ -153,7 +155,9 @@
     "Law": "CFIA labelling and allergen rules, import licensing, Health Canada nutrition and health claims, and the Competition Act on sourcing and green claims.",
     "Language": "A voice regulars repeat, and copy that never overstates a health, allergen or sourcing claim.",
     "Map": "Product pages, a retailer locator and a Google Business Profile that wins the map pack.",
-    "Artifacts": "Labels, ingredient panels, menus, bags and cups checked line by line."
+    "Ground": "The counter, the booth and the shelf display at every retailer.",
+    "Artifacts": "Labels, ingredient panels, menus, bags and cups checked line by line.",
+    "Machinery": "Online and wholesale orders, fulfilment and reporting."
   },
   "fitness": {
     "short": "fitness",

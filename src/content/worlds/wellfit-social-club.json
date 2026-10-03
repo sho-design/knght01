@@ -13,7 +13,7 @@
   ],
   "where": "Toronto, Ontario",
   "url": null,
-  "impact": "Higher local visibility, more bookings, and one brand experience online and in the gym. A clear difference in a saturated market, bringing in new members and keeping them.",
+  "impact": null,
   "plate": "56012ed1-e8d9-41cf-853e-77e2d0d5a243.webp",
   "film": "https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/ca2b8fca-641f-4227-a88b-a10c499ed6ce.mp4",
   "alt": "A kettlebell and boxing gloves on a gym floor in front of a spray-painted wall",
@@ -33,13 +33,6 @@
       "width": 390,
       "height": 659,
       "layer": "Ground"
-    },
-    {
-      "alt": "Wellfit business cards",
-      "src": "/assets/work/wellfit-social-club/2.webp",
-      "width": 390,
-      "height": 367,
-      "layer": "Artifacts"
     },
     {
       "alt": "The Wellfit site on a laptop and phone",

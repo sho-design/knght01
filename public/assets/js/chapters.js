@@ -65,7 +65,7 @@
 
   const cbar = document.createElement('div');
   cbar.className = 'cbar';
-  cbar.innerHTML = `<p class="cbar__chap" aria-live="off"><span class="cbar__n"></span><span class="cbar__t"></span></p><a class="btn btn--sm" href="book/">Book a Verdict</a>`;
+  cbar.innerHTML = `<p class="cbar__chap" aria-live="off"><span class="cbar__n"></span><span class="cbar__t"></span></p><a class="btn btn--sm" href="book/">Book the free call</a>`;
   document.body.appendChild(cbar);
   const cbarN = $('.cbar__n', cbar), cbarT = $('.cbar__t', cbar);
 

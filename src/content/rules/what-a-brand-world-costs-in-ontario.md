@@ -7,14 +7,14 @@ eyebrow: "The numbers"
 layer: null
 for: null
 sources:
-  - title: "852 Tangram: brand identity pricing in Toronto, 2026"
-    url: "https://www.852tangram.org/stories/brand-identity-pricing-toronto-2026-QstuF"
   - title: "Wise Media: how much does branding cost in Canada, 2026"
     url: "https://wisemedia.io/2026/07/21/branding-cost-canada-2026-pricing-guide/"
   - title: "Digital Estate Media: marketing agency cost in Toronto, 2026"
     url: "https://www.digitalestatemedia.com/blog/marketing-agency-cost-toronto-2026"
   - title: "Law Online: law firm marketing costs in Ontario"
     url: "https://lawonline.ca/law-firm-marketing/law-firm-marketing-costs-ontario/"
+  - title: "Clutch: Bob's Your Uncle, Toronto ($50,000+ minimum project size)"
+    url: "https://clutch.co/profile/bobs-your-uncle"
   - title: "Clutch: top branding agencies in Toronto"
     url: "https://clutch.co/ca/agencies/branding/toronto"
 ---
@@ -25,7 +25,7 @@ Boutique studios in Toronto typically charge about $6,500 to $18,000 for an iden
 
 Strategy, identity, website and launch together usually run $25,000 to $80,000 or more. That is the common range for regulated industries and professional services, where the work has to hold up to review.
 
-Mid-size Toronto agencies quote roughly $20,000 to $80,000 for brand programs. Some set minimums of $50,000, and the large networks start near $100,000.
+Mid-size Toronto agencies quote roughly $20,000 to $80,000 for brand programs. Some set minimums of $50,000. On Clutch, Toronto's Bob's Your Uncle lists $50,000 as its minimum project size. The large networks start near $100,000.
 
 Ongoing work is usually sold by channel. Most small and mid-size Toronto businesses pay about $2,000 to $6,000 a month for a retainer, and Toronto law firms often pay $5,000 to $15,000 a month for full-service marketing. Ad spend is billed on top.
 

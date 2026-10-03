@@ -654,7 +654,7 @@
     panel.className = 'mnav';
     panel.hidden = true;
     panel.innerHTML = `<nav aria-label="Menu"><ol class="mnav__list">${MENU.map(group).join('')}</ol></nav>`
-      + `<div class="mnav__foot"><a class="btn" href="${to('book/')}">${cta && /verdict/i.test(cta.textContent) ? cta.textContent.trim() : 'Book a Verdict'}</a><a class="link" href="mailto:sho@knght.com">sho@knght.com</a></div>`;
+      + `<div class="mnav__foot"><a class="btn" href="${to('book/')}">${cta && /call/i.test(cta.textContent) ? cta.textContent.trim() : 'Book the free call'}</a><a class="link" href="mailto:sho@knght.com">sho@knght.com</a></div>`;
     document.body.appendChild(panel);
 
     $$('button.mnav__top', panel).forEach((btn) => btn.addEventListener('click', () => {
@@ -719,7 +719,7 @@
       <h2 class="display codex__h" id="codex-title">The <em>Codex</em></h2>
       <p class="codex__lede">Seven rules we keep. Few people see this page.</p>
       <ol class="codex__list">${CODEX.map((r, i) => `<li style="--i:${i}"><span>${['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'][i]}</span>${r}</li>`).join('')}</ol>
-      <div class="codex__actions"><a class="btn" href="${up}book/">Book a Verdict</a><button type="button" class="link" data-codex-close>Close the codex</button></div>
+      <div class="codex__actions"><a class="btn" href="${up}book/">Book the free call</a><button type="button" class="link" data-codex-close>Close the codex</button></div>
     </div>`;
     document.body.appendChild(codexEl);
     if (lenis) lenis.stop();
