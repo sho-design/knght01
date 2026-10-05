@@ -122,6 +122,19 @@
       n.connect(bp).connect(g).connect(master); n.start(t); n.stop(t + 1.4);
       setTimeout(crackle, 120); setTimeout(crackle, 420);
     };
+    let lastBloom = 0;
+    const bloom = (level = 1) => {
+      if (!on || !ctx) return;
+      const t = ctx.currentTime;
+      if (t - lastBloom < 0.7) return;
+      lastBloom = t;
+      [523.25, 783.99, 1046.5, 1567.98].forEach((f, i) => {
+        const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f;
+        const g = ctx.createGain(); const at = t + i * 0.07; const peak = [0.03, 0.022, 0.016, 0.01][i] * level;
+        g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(peak, at + 0.25); g.gain.exponentialRampToValueAtTime(0.0001, at + 2.2);
+        o.connect(g).connect(master); o.start(at); o.stop(at + 2.3);
+      });
+    };
     const enable = async () => {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return false;
@@ -154,7 +167,7 @@
       if (document.hidden) ctx.suspend().catch(() => {});
       else if (on) ctx.resume().catch(() => {});
     });
-    return { enable, disable, shing, tick, sweep, room, ignite, get on() { return on; } };
+    return { enable, disable, shing, tick, sweep, room, ignite, bloom, get on() { return on; } };
   })();
 
   const soundBtn = $('[data-sound]');
@@ -1020,6 +1033,43 @@
       requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);
+  })();
+
+  /* ---------- Colour belongs to the clients: KNGHT stays black and white, each world blooms ---------- */
+  (() => {
+    const hover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    // Homepage and category cards: colour on hover, or as a card reaches the centre on touch screens.
+    const cards = $$('.world, .fcard, .wnext__link');
+    cards.forEach((card) => {
+      if (hover) card.addEventListener('pointerenter', () => Sound.bloom(0.8));
+    });
+    if (!hover && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('is-bloom', e.isIntersecting)), { rootMargin: '-35% 0px -35% 0px' });
+      cards.forEach((c) => io.observe(c));
+    }
+    // A world page: the plate blooms as you arrive.
+    const plate = $('.whero__plate');
+    if (plate) {
+      if (reduce) plate.classList.add('is-bloom');
+      else setTimeout(() => { plate.classList.add('is-bloom'); Sound.bloom(1); }, 700);
+    }
+    // The work: colour sweeps across each row as it comes into view.
+    $$('.wwork__item').forEach((fig) => {
+      const img = $('img', fig);
+      if (!img) return;
+      const c = img.cloneNode();
+      c.removeAttribute('alt'); c.alt = ''; c.setAttribute('aria-hidden', 'true');
+      c.className = 'wwork__color';
+      fig.appendChild(c);
+    });
+    if (reduce || !('IntersectionObserver' in window)) { $$('.wwork__item').forEach((f) => f.classList.add('is-bloom')); return; }
+    const rio = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      $$('.wwork__item', e.target).forEach((f, i) => setTimeout(() => f.classList.add('is-bloom'), 650 + i * 200));
+      Sound.bloom(0.6);
+      rio.unobserve(e.target);
+    }), { rootMargin: '0px 0px -25% 0px' });
+    $$('.wwork__row').forEach((r) => rio.observe(r));
   })();
 
   /* ---------- Year ---------- */

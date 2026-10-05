@@ -972,3 +972,21 @@ html.has-hall body{background:transparent}
 .cat.steel,.wfilter__chip.steel{box-shadow:0 0 calc(var(--ga) * 18px) rgba(255,255,255,calc(var(--ga) * .22)),inset 0 0 0 1px rgba(255,255,255,calc(var(--ga) * .45))}
 @media (prefers-reduced-motion: reduce){.hall__etch,.hall__words{display:none}}
 @media print{.hall,.hall-floor{display:none}}
+
+/* ---------- Colour belongs to the clients ---------- */
+.world__plate img,.world__plate video{transition:transform 1.6s var(--ease-out),filter 1.4s var(--ease-out),opacity 1.2s}
+@media (hover:hover){
+  .world:hover .world__plate img,.world:hover .world__plate video{filter:grayscale(0) contrast(1.02) brightness(1)}
+  .fcard:hover img{filter:grayscale(0) brightness(1)}
+  .wnext__link:hover .wnext__plate{filter:grayscale(0) brightness(1)}
+}
+.world.is-bloom .world__plate img,.world.is-bloom .world__plate video,.fcard.is-bloom img{filter:grayscale(0) contrast(1.02) brightness(1)}
+.wnext__link.is-bloom .wnext__plate{filter:grayscale(0) brightness(.95);opacity:1}
+.whero__plate img,.whero__plate video{transition:filter 2.6s cubic-bezier(.3,.6,.2,1)}
+.whero__plate.is-bloom img,.whero__plate.is-bloom video{filter:grayscale(0) contrast(1.02)}
+.wwork__item{position:relative}
+.wwork__item img.wwork__color{filter:none}
+.wwork__color{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;clip-path:inset(0 100% 0 0);transition:clip-path 1.6s cubic-bezier(.65,0,.2,1),transform 1.2s var(--ease-out);pointer-events:none}
+.wwork__item.is-bloom .wwork__color{clip-path:inset(0 0 0 0)}
+.wwork__item:hover .wwork__color{transform:scale(1.03)}
+@media (prefers-reduced-motion: reduce){.whero__plate img,.whero__plate video,.wwork__color{transition:none}}
