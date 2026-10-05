@@ -3,6 +3,8 @@
 // Inline scripts are allowed by their SHA-256 hash, so editing one updates the policy on the next build.
 // The form service is read from the built pages (src/lib/settings.ts), so setting an endpoint allows it automatically.
 // frame-ancestors cannot live in a <meta> tag; it is sent as a header from vercel.json.
+// It also stamps each /assets/ stylesheet and script with a fingerprint of its contents (?v=...).
+// Vercel serves /assets/ as cached for a year, so a changed file needs a new address or browsers keep the old one.
 import { createHash } from 'node:crypto';
 import { readFile, writeFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -44,6 +46,22 @@ export default function csp() {
           for (const m of html.matchAll(/(?:knght:form-endpoint" content|data-endpoint)="(https:\/\/[^"]+)"/g)) {
             try { formOrigins.add(new URL(m[1]).origin); } catch {}
           }
+        }
+        const root = fileURLToPath(dir), stamps = new Map();
+        const stamp = async (path) => {
+          if (!stamps.has(path)) {
+            try { stamps.set(path, createHash('sha256').update(await readFile(join(root, path))).digest('hex').slice(0, 10)); }
+            catch { stamps.set(path, null); }
+          }
+          return stamps.get(path);
+        };
+        for (const page of pages) {
+          let html = page[1];
+          for (const m of new Set([...html.matchAll(/(?:href|src)="(\/assets\/[^"?]+\.(?:css|js))"/g)].map((m) => m[1]))) {
+            const v = await stamp(m);
+            if (v) html = html.replaceAll(`"${m}"`, `"${m}?v=${v}"`);
+          }
+          page[1] = html;
         }
         for (const [file, html] of pages) {
           const hashes = new Set();
