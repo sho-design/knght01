@@ -44,5 +44,11 @@
       "destination": "/for/food-and-drink/",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/film/:file",
+      "destination": "https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/:file"
+    }
   ]
 }

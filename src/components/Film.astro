@@ -14,13 +14,14 @@ const ANG = [0, -64, 28, -150, 112, -28, 200]; // where each badge sits on its r
 const rad = (d: number) => (d * Math.PI) / 180;
 const WR = 372;
 // Six shots, one per scene. The footage is black and white, made for this film.
+// /film/ is served by the site itself (a rewrite in vercel.json to the footage host).
 const SHOTS: string[] = [
-  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_b85a1201-2279-46b8-8766-aaaa5177b012.mp4',
-  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_35fb5372-40b6-41c2-9242-18346ab55bbf.mp4',
-  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_9ae1e329-b34b-41f3-8a23-f2ca41422e00.mp4',
-  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_39607bdc-1fdc-4703-8742-0b50166271d0.mp4',
-  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_8e75bc25-715d-4c33-aadb-8d5cd2f01f22.mp4',
-  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_a493cae1-d882-4331-b381-8c1d97afb7cf.mp4',
+  '/film/hf_20261005_072020_b85a1201-2279-46b8-8766-aaaa5177b012.mp4',
+  '/film/hf_20261005_072020_35fb5372-40b6-41c2-9242-18346ab55bbf.mp4',
+  '/film/hf_20261005_072020_9ae1e329-b34b-41f3-8a23-f2ca41422e00.mp4',
+  '/film/hf_20261005_072020_39607bdc-1fdc-4703-8742-0b50166271d0.mp4',
+  '/film/hf_20261005_072020_8e75bc25-715d-4c33-aadb-8d5cd2f01f22.mp4',
+  '/film/hf_20261005_072020_a493cae1-d882-4331-b381-8c1d97afb7cf.mp4',
 ];
 const scenes = [
   { eb: 'What we do', h: ['Every', 'business', 'is a <em>world.</em>'], p: 'Not a logo. A whole place your customers step into, online and in person.' },
