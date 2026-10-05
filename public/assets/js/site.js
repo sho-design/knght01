@@ -700,6 +700,7 @@
     'We say what we can prove.',
     'Strategy first, then the sword.',
     'AI is the squire, not the knight.',
+    'We took the I out of knight and made it a blade.',
     'We only show work we built.',
     'If we cannot help, we say so.'
   ];
@@ -775,6 +776,9 @@
     ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => markEl.addEventListener(ev, stop));
     markEl.addEventListener('click', (e) => { if (held) { e.preventDefault(); held = false; } });
     markEl.addEventListener('contextmenu', (e) => e.preventDefault());
+    // Drawing the I out of the name rings the blade, once per visit to the mark.
+    let rung = 0;
+    markEl.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'mouse' || Date.now() - rung < 1500) return; rung = Date.now(); setTimeout(() => { if (markEl.matches(':hover')) Sound.shing && Sound.shing(0.35); }, 120); });
   }
 
   /* ---------- Back to top (with a ring that fills as you read) ---------- */
@@ -864,7 +868,7 @@
       'Lore first. Then the sword', 'Restraint is a luxury', 'Clarity is a kindness', 'Keep your word in public',
       'Consent is part of the craft', 'Quiet confidence outlasts loud claims', 'Your reputation arrives before you do',
       'Built inside the rules', 'Proof on file. Pride on show', 'Make the rule your edge', 'A world is more than a logo',
-      'If we cannot help, we say so', 'AI is the squire, not the knight', 'The college reads your ads too',
+      'If we cannot help, we say so', 'AI is the squire, not the knight', 'The I became the blade', 'The college reads your ads too',
       'One wrong word can cost a licence', 'Patience is a strategy', 'Sell the care, not the cure',
       'Say less. Mean all of it', 'Every sign is a signature', 'Systems keep promises when people are busy',
       'The price is the price', 'Real people. Real consent', 'Strong brands do not shout', 'Earn the second visit',

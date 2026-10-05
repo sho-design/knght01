@@ -89,6 +89,24 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 .mark{display:inline-flex;flex-direction:column;align-items:flex-start;gap:5px;font:600 1.35rem/1 var(--serif);letter-spacing:.34em;text-decoration:none}
 .mark svg{order:2;display:block;width:0;min-width:calc(100% - .34em);height:auto}
 .mark svg *{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+/* The missing I: on hover the blade is drawn up out of the name, and it reads KNIGHT for a moment */
+.mark{position:relative}
+.mark__word{display:block;white-space:nowrap}
+.mark__i{display:inline-block;width:0;overflow:visible;white-space:nowrap}
+.mark__i b{display:inline-block;font:inherit;clip-path:inset(0 0 100% 0);transform:translateY(.5em);transition:clip-path .55s var(--ease) .12s,transform .55s var(--ease) .12s}
+.mark__r{display:inline-block;transition:transform .5s var(--ease)}
+.mark svg{transition:clip-path .45s var(--ease),opacity .45s}
+.mark__say{position:absolute;left:0;bottom:-1px;font:500 .5rem/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;white-space:nowrap;color:var(--ash);-webkit-text-fill-color:var(--ash);opacity:0;transform:translateY(3px);transition:opacity .4s,transform .4s;pointer-events:none}
+@media (hover:hover) and (pointer:fine){
+  .mark:hover .mark__word,.mark:focus-visible .mark__word{color:#fff;-webkit-text-fill-color:#fff}
+  .mark:hover .mark__r,.mark:focus-visible .mark__r{transform:translateX(.82em)}
+  .mark:hover .mark__i b,.mark:focus-visible .mark__i b{clip-path:inset(0 0 0 0);transform:none}
+  .mark:hover svg,.mark:focus-visible svg{clip-path:inset(0 100% 0 0);opacity:0}
+  .mark:hover .mark__say,.mark:focus-visible .mark__say{opacity:1;transform:none;transition-delay:.55s}
+  .mark.is-holding .mark__i b{animation:iGlow .9s linear forwards}
+}
+@keyframes iGlow{to{text-shadow:0 0 14px #fff,0 0 4px #fff}}
+@media (prefers-reduced-motion: reduce){.mark__i b,.mark__r,.mark svg,.mark__say{transition:none}}
 .nav ul{display:flex;gap:clamp(20px,3vw,40px);list-style:none;margin:0;padding:0}
 .nav ul a{position:relative;display:inline-block;text-decoration:none;color:var(--ash);font-size:.92rem;overflow:hidden;transition:color .3s}
 .nav ul a:hover,.nav ul a[aria-current="true"]{color:var(--argent)}
