@@ -3,6 +3,7 @@
 import Base from '../../layouts/Base.astro';
 import Meter from '../../components/Meter.astro';
 import WorkGrid from '../../components/WorkGrid.astro';
+import { SIGILS } from '../../lib/sigils';
 import { CDN, CATEGORY, LAYER_NAMES, ROMAN, getWorlds, getLayers, getForPages, worldLayers, type World } from '../../lib/site';
 
 export async function getStaticPaths() {
@@ -71,8 +72,8 @@ const work = d.work.map(({ alt, src, width, height }) => ({ alt, src, width, hei
         </div>
         <ol class="chapters">
           {layers.map((l, n) => d.built[l.data.name]
-            ? <li class="chapter" data-reveal><span class="chapter__n">{n + 1}</span><h3><a class="link" href={`/layers/${l.id}/`}>{l.data.name}</a></h3><p>{d.built[l.data.name]}</p></li>
-            : <li class="chapter chapter--off" data-reveal><span class="chapter__n">{n + 1}</span><h3><a href={`/layers/${l.id}/`}>{l.data.name}</a></h3><p>Not in this world’s scope.</p></li>)}
+            ? <li class="chapter chapter--work" data-reveal><span class="chapter__n">{n + 1}</span><h3 class="chapter__layer"><svg class="chapter__sig" viewBox="0 0 24 24" aria-hidden="true" set:html={SIGILS[l.id] || ''} /><a href={`/layers/${l.id}/`}>{l.data.name}</a></h3><p class="chapter__work">{d.built[l.data.name]}</p></li>
+            : <li class="chapter chapter--work chapter--off" data-reveal><span class="chapter__n">{n + 1}</span><h3 class="chapter__layer"><svg class="chapter__sig" viewBox="0 0 24 24" aria-hidden="true" set:html={SIGILS[l.id] || ''} /><a href={`/layers/${l.id}/`}>{l.data.name}</a></h3><p class="chapter__work">Not built.</p></li>)}
         </ol>
       </div>
     </section>

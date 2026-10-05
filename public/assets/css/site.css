@@ -671,6 +671,15 @@ html.lenis,html.lenis body{height:auto}
 .article__note{color:var(--ash) !important;font-size:.95rem !important;border-left:1px solid var(--rule-strong);padding-left:16px}
 .article__h{margin:36px 0 12px;font:500 .78rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
 .article__sources{margin:0 0 28px;padding-left:18px;color:var(--ash);line-height:1.8}
+/* World pages: the work leads, the layer labels it */
+.chapter--work{gap:10px 20px}
+.chapter--work .chapter__n{grid-row:span 2;font-size:2rem;padding-top:2px}
+.chapter h3.chapter__layer{display:flex;align-items:center;gap:10px;margin:0;font:500 .74rem/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--ash)}
+.chapter__layer a{color:inherit;text-decoration:none;transition:color .3s}
+.chapter__layer a:hover,.chapter__layer a:focus-visible{color:var(--argent)}
+.chapter__sig{flex:none;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.chapter p.chapter__work{margin:0;max-width:30ch;color:var(--argent);font:400 clamp(1.45rem,2.2vw,2.1rem)/1.22 var(--serif)}
+.chapter--off p.chapter__work{font-style:italic}
 .chapter--off > *{opacity:.38}
 .chapter--off h3 a{text-decoration:none;color:inherit}
 .chapter--off h3 a:hover{opacity:.8}
