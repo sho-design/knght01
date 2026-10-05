@@ -188,12 +188,12 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
   <section class="worlds" id="worlds" aria-labelledby="worlds-title">
     <div class="worlds__pin">
       <div class="worlds__head wrap" style="width:100%">
-        <p class="eyebrow">Worlds built by KNGHT&rsquo;s founder</p>
+        <span></span>
         <p class="worlds__count" aria-hidden="true"><b>I</b> / <span data-world-total>IX</span></p>
       </div>
       <div class="worlds__track">
         <div class="worlds__intro">
-          <h2 class="display" id="worlds-title" data-split>Worlds</h2>
+          <h2 class="sr-only" id="worlds-title">The worlds</h2>
           <p data-reveal>Every world here was built by Sergio Ho, KNGHT&rsquo;s founder. Some we run. All were built inside the rules. Covers are mood plates. The work is inside each world.</p>
           <div class="wfilter" role="group" aria-label="Show worlds by layer"><button type="button" class="wfilter__chip" aria-pressed="true" data-layer="">All</button>{layers.filter((l) => worlds.some((w) => w.data.built[l.data.name])).map((l) => <button type="button" class="wfilter__chip" aria-pressed="false" data-layer={l.id}>{l.data.name}</button>)}</div>
         </div>
@@ -281,7 +281,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
     <div class="wrap">
       <div class="layers__aside">
         <p class="eyebrow">The method</p>
-        <h2 class="display" id="layers-title" data-split>Seven layers, <br><em>built in order</em></h2>
+        <h2 class="display" id="layers-title" data-split>The seven layers, <br><em>up close</em></h2>
         <p data-reveal>A world is more than a logo. Each layer holds up the next, and every one is written inside the rules of your category.</p>
         <div class="layers__dial" aria-hidden="true">
           <div class="layers__big"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
