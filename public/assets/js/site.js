@@ -781,6 +781,35 @@
     markEl.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'mouse' || Date.now() - rung < 1500) return; rung = Date.now(); setTimeout(() => { if (markEl.matches(':hover')) Sound.shing && Sound.shing(0.35); }, 120); });
   }
 
+  /* ---------- Layer pages: seal each rule as it arrives, and turn outward to the next layer ---------- */
+  (() => {
+    const lists = $$('.wrules--sealed');
+    if (lists.length && 'IntersectionObserver' in window && !reduce) {
+      const io = new IntersectionObserver((es) => es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        $$('li', e.target).forEach((li, k) => setTimeout(() => { li.classList.add('is-sealed'); Sound.tick && Sound.tick(); }, 500 + k * 260));
+      }), { rootMargin: '0px 0px -25% 0px' });
+      lists.forEach((l) => io.observe(l));
+    } else lists.forEach((l) => $$('li', l).forEach((li) => li.classList.add('is-sealed')));
+    if (reduce) return;
+    $$('[data-turn]').forEach((a) => a.addEventListener('click', (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+      e.preventDefault();
+      const r = a.getBoundingClientRect();
+      const g = document.createElement('div');
+      g.className = 'lgate';
+      g.style.left = (e.clientX || r.left + r.width / 2) + 'px';
+      g.style.top = (e.clientY || r.top + r.height / 2) + 'px';
+      document.body.appendChild(g);
+      const s = (Math.hypot(innerWidth, innerHeight) / 10) * 1.2;
+      Sound.shing && Sound.shing(0.4);
+      requestAnimationFrame(() => requestAnimationFrame(() => { g.style.transform = `scale(${s})`; }));
+      setTimeout(() => { location.href = a.href; }, 620);
+    }));
+    addEventListener('pageshow', (e) => { if (e.persisted) $$('.lgate').forEach((g) => g.remove()); });
+  })();
+
   /* ---------- Back to top (with a ring that fills as you read) ---------- */
   const topBtn = document.createElement('button');
   topBtn.type = 'button';

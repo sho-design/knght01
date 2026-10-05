@@ -1,0 +1,45 @@
+---
+// "You are here": the seven layers as rings around the core, with this page's layer lit.
+// Layers built before it glow, layers after it wait in the dark. Every chip links to its layer.
+import { SIGILS } from '../lib/sigils';
+interface Props { layers: any[]; current: number }
+const { layers, current } = Astro.props;
+const RING = (k: number) => 64 + k * 50; // the same rings as the film
+const ANG = [0, -64, 28, -150, 112, -28, 200];
+const rad = (d: number) => (d * Math.PI) / 180;
+const cur = layers[current];
+---
+<figure class="lring" aria-label={`${cur.data.name} is layer ${current + 1} of 7. ${cur.data.reads ? `It reads from ${cur.data.reads} and feeds` : 'It comes first and feeds'} ${cur.data.feeds}.`}>
+  <svg viewBox="-500 -500 1000 1000" class="lring__svg" aria-hidden="true">
+    <defs><radialGradient id="lringGlow"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".5" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+    <circle r="470" fill="url(#lringGlow)" class="lring__halo" />
+    {layers.slice(1).map((_, i) => {
+      const k = i + 1;
+      return k === current ? <circle class="lring__ring is-here" r={RING(k)} pathLength="1" /> : <circle class={`lring__ring ${k < current ? 'is-before' : 'is-after'}`} r={RING(k)} />;
+    })}
+    <g class={`lring__core ${current === 0 ? 'is-here' : 'is-before'}`}>
+      <circle r="58" class="lring__corec" />
+      <g transform="translate(-24 -24) scale(2)" class="lring__sig" set:html={SIGILS[layers[0].id]} />
+    </g>
+    <g class="lring__orbit">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="240s" repeatCount="indefinite" />
+      {layers.slice(1).map((l, i) => {
+        const k = i + 1, R = RING(k), a = ANG[k], here = k === current;
+        return (
+          <a href={`/layers/${l.id}/`} tabindex="-1" class={`lring__chip ${k < current ? 'is-before' : here ? 'is-here' : 'is-after'}`}>
+            <g transform={`translate(${(Math.cos(rad(a)) * R).toFixed(1)} ${(Math.sin(rad(a)) * R).toFixed(1)})`}>
+              <g>
+                <animateTransform attributeName="transform" type="rotate" from="0" to="-360" dur="240s" repeatCount="indefinite" />
+                <circle r={here ? 34 : 21} class="lring__chipc" />
+                <g transform={here ? 'translate(-19.2 -19.2) scale(1.6)' : 'translate(-12 -12)'} class="lring__sig" set:html={SIGILS[l.id] || ''} />
+                <text y={here ? 66 : 44} class="lring__name">{l.data.name}</text>
+              </g>
+            </g>
+          </a>
+        );
+      })}
+    </g>
+    {current === 0 && <text y="100" class="lring__name lring__name--core">Lore</text>}
+  </svg>
+  <figcaption class="lring__cap">{cur.data.reads ? <span>Reads from <b>{cur.data.reads}</b></span> : <span><b>Comes first</b></span>}<span>Feeds <b>{cur.data.feeds}</b></span></figcaption>
+</figure>
