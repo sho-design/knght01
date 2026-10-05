@@ -925,9 +925,10 @@
     };
 
     const layers = $$('.hall-field__d', hall).map((el) => ({ el, f: +el.dataset.f }));
+    const field = $('.hall-field', hall);
     const here = location.pathname.split('/').filter(Boolean);
     const thisWorld = here[0] === 'worlds' ? here[1] : null;
-    let portals = [], sayings = [], startY = 0;
+    let portals = [], sayings = [], startY = 1e9;
     const measure = document.createElement('canvas').getContext('2d');
     const build = () => {
       const docH = Math.max(document.documentElement.scrollHeight, innerHeight);
@@ -1135,7 +1136,9 @@
       setVar('--lr', flick.toFixed(4));
       layers.forEach((l) => { l.el.style.transform = `translate3d(0,${(-scrollY * l.f).toFixed(1)}px,0)`; });
       const vh2 = innerHeight / 2;
-      hall.classList.toggle('field-on', scrollY + innerHeight * 0.65 > startY);
+      // A hard edge: nothing from the field is drawn above the end of the hero (the worlds, on the homepage).
+      const edge = Math.max(0, Math.min(innerHeight, startY - scrollY));
+      if (field) field.style.clipPath = `inset(${edge.toFixed(0)}px 0 0 0)`;
       sayings.forEach((s2) => {
         const off = (scrollY + vh2 - s2.y) * (1 - s2.f);
         if (Math.abs(s2.y - scrollY - vh2) < innerHeight * 1.2) s2.el.style.transform = `translate3d(0,${off.toFixed(1)}px,0)`;
@@ -1144,7 +1147,7 @@
         const off = (scrollY + vh2 - p.y) * (1 - p.f);
         p.a.style.transform = `translate3d(0,${off.toFixed(1)}px,0)`;
         const d = Math.hypot(p.x - scrollX - x, p.y + off - scrollY - y);
-        const v = Math.max(0, Math.min(1, 1 - (d - 40) / 170)) * ig * (scrollY + innerHeight * 0.65 > startY ? 1 : 0);
+        const v = Math.max(0, Math.min(1, 1 - (d - 40) / 170)) * ig * (p.y + off > startY ? 1 : 0);
         p.a.style.opacity = (v * 0.8).toFixed(3);
         p.a.style.pointerEvents = v > 0.3 && !p.blocked ? 'auto' : 'none';
         p.a.classList.toggle('is-near', v > 0.75);
