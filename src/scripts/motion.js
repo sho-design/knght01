@@ -4,6 +4,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+import reel from './reel.js';
 
 const root = document.documentElement;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -54,6 +55,9 @@ if (!reduce) {
       if (media) tl.to(media, { yPercent: 18, scale: 1.12, opacity: 0.15, ease: 'none' }, 0);
       if (inner) tl.to(inner, { y: () => -innerHeight * 0.08, ease: 'none' }, 0);
     }
+
+    /* The reel: what KNGHT does, before the worlds. Its pin is made first, so the worlds pin measures after it. */
+    reel(gsap);
 
     /* Worlds: vertical scroll drives the gallery sideways, with a little inertia. */
     const worlds = $('.worlds'), track = $('.worlds__track');

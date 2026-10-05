@@ -1,6 +1,7 @@
 ---
 import Motion from '../components/Motion.astro';
 import NavPanels from '../components/NavPanels.astro';
+import Reel from '../components/Reel.astro';
 import { SETTINGS } from '../lib/settings';
 // The home page. World cards, the layer filter and the layer list come from the content files.
 import Meter from '../components/Meter.astro';
@@ -179,6 +180,9 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
       <p class="thesis__text">Clinics, dentists, medspas, law firms, spirits, food and drink. Categories where <em>one wrong word costs a licence</em> and <em>one weak launch costs a year.</em> So we build the whole world, and every layer of it inside the rules. <span class="thesis__not">We are not an agency that hands you a logo and leaves.</span></p>
     </div>
   </section>
+
+  <!-- The reel: what KNGHT does, before the proof -->
+  <Reel />
 
   <!-- II. Worlds -->
   <section class="worlds" id="worlds" aria-labelledby="worlds-title">

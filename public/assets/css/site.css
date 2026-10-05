@@ -1059,3 +1059,59 @@ html.has-hall body{background:transparent}
 
 .hall-say{transition:opacity .45s}
 .hall-say.is-blocked,.hall-portal.is-blocked{opacity:0!important}
+
+/* ---------- The reel: what KNGHT does, in six scenes ---------- */
+.reel{position:relative;border-top:1px solid var(--rule)}
+.reel__pin{position:relative;min-height:100svh;display:flex;align-items:center;padding-block:clamp(70px,9vh,110px) clamp(40px,6vh,80px);overflow:hidden}
+.reel__grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,72px);align-items:center;width:100%}
+.reel__caps{position:relative}
+.reel__cap+.reel__cap{margin-top:clamp(28px,4vh,48px)}
+.reel__h{margin:14px 0 18px;font-size:clamp(2.1rem,3.5vw,3.7rem);line-height:1.04}
+.reel__h em{font-style:italic}
+.reel__p{margin:0;max-width:40ch;color:var(--ash);font-size:clamp(1rem,1.15vw,1.15rem);line-height:1.6}
+.reel__p b{color:var(--argent);font-weight:500}
+.reel__no{font-family:var(--serif);font-style:italic;letter-spacing:0;margin-right:4px;color:var(--argent)}
+.reel__count,.reel__hint{display:none}
+.reel__stage{position:relative;width:min(100%,82vh);aspect-ratio:1;justify-self:center}
+.reel__svg{display:block;width:100%;height:100%;overflow:visible}
+.reel__svg *{vector-effect:non-scaling-stroke}
+.reel__ring{fill:none;stroke:rgba(255,255,255,.3);stroke-width:1.1}
+.reel__bound{fill:none;stroke:rgba(255,255,255,.45);stroke-width:1.1;stroke-dasharray:2 7}
+.reel__lawtext{fill:rgba(255,255,255,.6);font:500 13px var(--sans);letter-spacing:.34em}
+.reel__chip{fill:#060606;stroke:rgba(255,255,255,.6);stroke-width:1.1;transition:fill .3s,stroke .3s}
+.reel__sig{fill:none;stroke:#fff;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.reel__name{fill:#fff;font:400 26px var(--serif);text-anchor:middle}
+.reel__name--core{font-size:30px;font-style:italic}
+.reel__tag{fill:rgba(255,255,255,.55);font:500 12.5px var(--sans);letter-spacing:.22em;text-transform:uppercase;text-anchor:middle}
+.reel__corec{fill:#0b0b0b;stroke:#fff;stroke-width:1.4}
+.reel__pulse{fill:none;stroke:#fff;stroke-width:1;opacity:0}
+.reel__spoke{stroke:rgba(255,255,255,.2);stroke-width:1}
+.reel__worlds{display:none}
+.reel__wa{cursor:pointer}
+.reel__wa:hover .reel__chip,.reel__wa:focus-visible .reel__chip{fill:#161616;stroke:#fff}
+/* With motion: one pinned stage, the captions trade places */
+.gsap .reel__pin{height:100svh;padding-block:clamp(70px,9vh,100px) clamp(30px,5vh,60px)}
+.gsap .reel__caps{display:grid;align-items:center}
+.gsap .reel__cap{grid-area:1/1;margin:0}
+.gsap .reel__worlds{display:inline}
+.gsap .reel__count{display:block;margin:28px 0 0;font:500 .72rem/1 var(--sans);letter-spacing:.3em;color:var(--ash-2)}
+.gsap .reel__count b{color:var(--argent);font-weight:500}
+.gsap .reel__hint{display:flex;align-items:center;gap:12px;position:absolute;left:50%;bottom:22px;transform:translateX(-50%);margin:0;font:500 .66rem/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;color:var(--ash-2)}
+.reel__hint span{display:block;width:1px;height:28px;background:linear-gradient(var(--argent),transparent);animation:reelHint 2s ease-in-out infinite}
+@keyframes reelHint{0%,100%{transform:scaleY(.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+@media (max-width:900px){
+  .reel__grid{grid-template-columns:1fr;gap:18px}
+  .reel__stage{order:-1;width:min(92vw,52svh)}
+  .reel__h{font-size:clamp(1.9rem,7.6vw,2.6rem);margin:10px 0 12px}
+  .reel__p{font-size:1rem}
+  .gsap .reel__pin{padding-block:calc(var(--nav-h) + 8px) 24px;align-items:flex-start}
+  .gsap .reel__caps{align-items:start}
+  .gsap .reel__count{margin-top:14px}
+  .gsap .reel__hint{display:none}
+}
+
+.in-reel .totop{opacity:0;pointer-events:none;transform:translateY(12px)}
+/* Without motion: the diagram stays beside the six lines as you read them */
+html:not(.gsap) .reel__grid{align-items:start}
+html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
+@media (max-width:900px){html:not(.gsap) .reel__stage{position:static}}
