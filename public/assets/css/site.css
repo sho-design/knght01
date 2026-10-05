@@ -939,3 +939,18 @@ html.lenis,html.lenis body{height:auto}
   .dial__codex.is-rise *{animation:none!important}
 }
 @media (max-width:900px){.dial__codex{inset:21%;gap:5px}.dial__def{font-size:.7rem;max-width:19ch;min-height:3em}.dial__no{font-size:.56rem}}
+
+/* ---------- The hall: one light, layered blacks, an engraving the light finds ---------- */
+:root{--hall-r:clamp(260px,32vw,520px)}
+/* The floor sits behind the page: the light pools on it, so text and buttons are never dimmed */
+.hall-floor{position:fixed;inset:0;z-index:-1;pointer-events:none;--lx:50vw;--ly:32vh;--lr:1;background:radial-gradient(circle calc(var(--hall-r) * 1.5 * var(--lr)) at var(--lx) var(--ly),#1c1c1c 0%,#0e0e0e 34%,#050505 70%,#000 100%)}
+html.has-hall body{background:transparent}
+/* In front: a faint glow and the engraving, added as light only */
+.hall{position:fixed;inset:0;z-index:70;pointer-events:none;--lx:50vw;--ly:32vh;--lr:1;--sy:0px}
+.hall__glow{position:absolute;inset:0;mix-blend-mode:screen;background:radial-gradient(circle calc(var(--hall-r) * var(--lr)) at var(--lx) var(--ly),rgba(255,255,255,.06) 0%,rgba(255,255,255,.02) 45%,rgba(255,255,255,0) 100%)}
+.hall__etch{position:absolute;inset:0;mix-blend-mode:screen;opacity:.26;background-repeat:repeat;background-position:0 var(--sy);-webkit-mask-image:radial-gradient(circle calc(var(--hall-r) * .62 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.45) 45%,transparent 100%);mask-image:radial-gradient(circle calc(var(--hall-r) * .62 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.45) 45%,transparent 100%);transition:opacity 1.2s var(--ease)}
+.hall[data-tone="light"] .hall__etch,.hall[data-tone="light"] .hall__glow{opacity:0}
+/* Each dark room is lit from above, a thin layer of light over the floor */
+.has-hall .thesis,.has-hall .layers,.has-hall .chap,.has-hall .footer{background:radial-gradient(ellipse 90% 60% at 50% 0%,rgba(255,255,255,.045) 0%,rgba(255,255,255,.015) 40%,rgba(255,255,255,0) 75%)}
+@media (prefers-reduced-motion: reduce){.hall__etch{display:none}}
+@media print{.hall,.hall-floor{display:none}}

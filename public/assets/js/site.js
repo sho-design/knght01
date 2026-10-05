@@ -13,7 +13,7 @@
 
   /* ---------- Sound: synthesised in the browser, off until the visitor asks ---------- */
   const Sound = (() => {
-    let ctx = null, master = null, droneNodes = [], on = false;
+    let ctx = null, master = null, droneNodes = [], on = false, droneLp = null, sweepGain = null, crackleTimer = 0;
     const noiseBuffer = (c, seconds) => {
       const b = c.createBuffer(1, c.sampleRate * seconds, c.sampleRate);
       const d = b.getChannelData(0);
@@ -24,6 +24,7 @@
       const t = ctx.currentTime;
       const bus = ctx.createGain(); bus.gain.value = 0;
       const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.6;
+      droneLp = lp;
       const lfo = ctx.createOscillator(); lfo.frequency.value = 0.06;
       const lfoGain = ctx.createGain(); lfoGain.gain.value = 160;
       lfo.connect(lfoGain).connect(lp.frequency);
@@ -68,6 +69,49 @@
       const g = ctx.createGain(); g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
       o.connect(g).connect(master); o.start(t); o.stop(t + 0.14);
     };
+    /* The hall: a torch that crackles, a soft rush when the light moves, a new tone in each room. */
+    const startTorch = () => {
+      const fire = ctx.createBufferSource(); fire.buffer = noiseBuffer(ctx, 3); fire.loop = true;
+      const fb = ctx.createBiquadFilter(); fb.type = 'bandpass'; fb.frequency.value = 520; fb.Q.value = 0.7;
+      const fg = ctx.createGain(); fg.gain.value = 0.018;
+      fire.connect(fb).connect(fg).connect(master); fire.start();
+      const rush = ctx.createBufferSource(); rush.buffer = noiseBuffer(ctx, 2); rush.loop = true;
+      const rb = ctx.createBiquadFilter(); rb.type = 'bandpass'; rb.frequency.value = 1400; rb.Q.value = 0.4;
+      sweepGain = ctx.createGain(); sweepGain.gain.value = 0;
+      rush.connect(rb).connect(sweepGain).connect(master); rush.start();
+      droneNodes.push(fire, rush);
+    };
+    const crackle = () => {
+      if (!on || !ctx) return;
+      const t = ctx.currentTime;
+      const pops = 1 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < pops; i++) {
+        const at = t + i * (0.02 + Math.random() * 0.06);
+        const n = ctx.createBufferSource(); n.buffer = noiseBuffer(ctx, 0.05);
+        const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1800 + Math.random() * 2400;
+        const g = ctx.createGain(); g.gain.setValueAtTime(0.02 + Math.random() * 0.04, at); g.gain.exponentialRampToValueAtTime(0.0001, at + 0.04);
+        n.connect(hp).connect(g).connect(master); n.start(at); n.stop(at + 0.05);
+      }
+      document.dispatchEvent(new CustomEvent('knght:crackle'));
+    };
+    const crackleLoop = () => {
+      clearTimeout(crackleTimer);
+      if (!on) return;
+      crackle();
+      crackleTimer = setTimeout(crackleLoop, 500 + Math.random() * 2600);
+    };
+    const sweep = (speed) => {
+      if (!on || !sweepGain) return;
+      sweepGain.gain.setTargetAtTime(Math.min(0.05, speed * 0.0009), ctx.currentTime, 0.12);
+    };
+    const room = (tone) => {
+      if (!on || !ctx || !droneLp) return;
+      const t = ctx.currentTime;
+      droneLp.frequency.setTargetAtTime(tone === 'light' ? 900 : 360, t, 0.8);
+      const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = tone === 'light' ? 98 : 49;
+      const g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.1, t + 0.4); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+      o.connect(g).connect(master); o.start(t); o.stop(t + 2.3);
+    };
     const enable = async () => {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return false;
@@ -75,6 +119,7 @@
         ctx = new AC();
         master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
         startDrone();
+        startTorch();
       }
       try { await ctx.resume(); } catch (e) { return false; }
       on = true;
@@ -82,10 +127,12 @@
       master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
       master.gain.linearRampToValueAtTime(0.8, ctx.currentTime + 0.4);
       shing();
+      crackleTimer = setTimeout(crackleLoop, 900);
       return true;
     };
     const disable = () => {
       on = false;
+      clearTimeout(crackleTimer);
       if (!ctx) return;
       master.gain.cancelScheduledValues(ctx.currentTime);
       master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
@@ -97,7 +144,7 @@
       if (document.hidden) ctx.suspend().catch(() => {});
       else if (on) ctx.resume().catch(() => {});
     });
-    return { enable, disable, shing, tick, get on() { return on; } };
+    return { enable, disable, shing, tick, sweep, room, get on() { return on; } };
   })();
 
   const soundBtn = $('[data-sound]');
@@ -824,6 +871,92 @@
     const set = () => { clock.textContent = `${fmt.format(new Date())} ET`; };
     set(); setInterval(set, 30000);
   }
+
+  /* ---------- The hall: one light you carry, an engraving it finds, a tone for each room ---------- */
+  (() => {
+    if (!document.body) return;
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const hall = document.createElement('div');
+    hall.className = 'hall';
+    hall.setAttribute('aria-hidden', 'true');
+    hall.innerHTML = '<div class="hall__etch"></div><div class="hall__glow"></div>';
+    document.body.appendChild(hall);
+    const floor = document.createElement('div');
+    floor.className = 'hall-floor';
+    floor.setAttribute('aria-hidden', 'true');
+    document.body.prepend(floor);
+    const setVar = (k, v) => { hall.style.setProperty(k, v); floor.style.setProperty(k, v); };
+    root.classList.add('has-hall');
+
+    // The engraving: a banknote rosette and fine hatching, drawn once as a tile.
+    const rosette = (cx, cy, R, r, d, turns, steps) => {
+      let path = '';
+      for (let i = 0; i <= steps; i++) {
+        const t = (i / steps) * Math.PI * 2 * turns;
+        const x = cx + (R - r) * Math.cos(t) + d * Math.cos(((R - r) / r) * t);
+        const y = cy + (R - r) * Math.sin(t) - d * Math.sin(((R - r) / r) * t);
+        path += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+      }
+      return `<path d="${path}"/>`;
+    };
+    const T = 640;
+    let art = '';
+    art += rosette(T / 2, T / 2, 180, 47, 96, 47, 2400);
+    art += rosette(T / 2, T / 2, 120, 31, 40, 31, 1400);
+    art += rosette(T / 2, T / 2, 64, 17, 30, 17, 900);
+    for (let k = 1; k < 12; k++) art += `<circle cx="${T / 2}" cy="${T / 2}" r="${k * 4}"/>`;
+    for (let k = 0; k < 9; k++) art += `<circle cx="${T / 2}" cy="${T / 2}" r="${206 + k * 5}"/>`;
+    let hatch = '';
+    for (let x = -T; x < T * 2; x += 7) hatch += `M${x} 0L${x + T} ${T}`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${T}" height="${T}" viewBox="0 0 ${T} ${T}"><g fill="none" stroke="#fff" stroke-width=".55" opacity=".9">${art}</g><path d="${hatch}" stroke="#fff" stroke-width=".35" opacity=".28"/></svg>`;
+    $('.hall__etch', hall).style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+
+    // Light sections (the offer, the self-check) dim the shade; each room shifts the sound.
+    let tone = 'dark';
+    const rooms = $$('main > section, .chap, .footer');
+    if ('IntersectionObserver' in window && rooms.length) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const next = /\b(engage|score)\b/.test(e.target.className) ? 'light' : 'dark';
+          hall.dataset.tone = next;
+          if (next !== tone) { tone = next; Sound.room(next); }
+          else if (e.target.matches('.chap')) Sound.room(next);
+        });
+      }, { rootMargin: '-45% 0px -45% 0px' });
+      rooms.forEach((r) => io.observe(r));
+    }
+
+    let tx = innerWidth * 0.5, ty = innerHeight * 0.32, x = tx, y = ty, lastX = x, lastY = y, flare = 0;
+    if (reduce) {
+      setVar('--lx', '50%'); setVar('--ly', '30%');
+      return;
+    }
+    if (fine) addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; }, { passive: true });
+    document.addEventListener('knght:crackle', () => { flare = 1; });
+    const start = performance.now();
+    const frame = (now) => {
+      const t = (now - start) / 1000;
+      if (!fine) {
+        // No cursor: the light drifts with the reading position.
+        tx = innerWidth * (0.5 + Math.sin(t * 0.23) * 0.18);
+        ty = innerHeight * (0.34 + Math.sin(t * 0.17 + 1.3) * 0.08);
+      }
+      x += (tx - x) * 0.09; y += (ty - y) * 0.09;
+      const speed = Math.hypot(x - lastX, y - lastY);
+      lastX = x; lastY = y;
+      flare *= 0.9;
+      // A candle never holds still.
+      const flick = 1 + Math.sin(t * 7.3) * 0.012 + Math.sin(t * 13.1 + 2) * 0.008 + Math.sin(t * 2.1) * 0.02 + flare * 0.06;
+      setVar('--lx', x.toFixed(1) + 'px');
+      setVar('--ly', y.toFixed(1) + 'px');
+      setVar('--lr', flick.toFixed(4));
+      hall.style.setProperty('--sy', (-(scrollY * 0.35) % 640).toFixed(1) + 'px');
+      if (fine) Sound.sweep(speed);
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  })();
 
   /* ---------- Year ---------- */
   $$('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
