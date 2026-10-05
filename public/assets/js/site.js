@@ -13,7 +13,7 @@
 
   /* ---------- Sound: synthesised in the browser, off until the visitor asks ---------- */
   const Sound = (() => {
-    let ctx = null, master = null, droneNodes = [], on = false, droneLp = null, sweepGain = null, crackleTimer = 0;
+    let ctx = null, master = null, droneNodes = [], on = false;
     const noiseBuffer = (c, seconds) => {
       const b = c.createBuffer(1, c.sampleRate * seconds, c.sampleRate);
       const d = b.getChannelData(0);
@@ -24,7 +24,6 @@
       const t = ctx.currentTime;
       const bus = ctx.createGain(); bus.gain.value = 0;
       const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.6;
-      droneLp = lp;
       const lfo = ctx.createOscillator(); lfo.frequency.value = 0.06;
       const lfoGain = ctx.createGain(); lfoGain.gain.value = 160;
       lfo.connect(lfoGain).connect(lp.frequency);
@@ -69,72 +68,6 @@
       const g = ctx.createGain(); g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
       o.connect(g).connect(master); o.start(t); o.stop(t + 0.14);
     };
-    /* The hall: a torch that crackles, a soft rush when the light moves, a new tone in each room. */
-    const startTorch = () => {
-      const fire = ctx.createBufferSource(); fire.buffer = noiseBuffer(ctx, 3); fire.loop = true;
-      const fb = ctx.createBiquadFilter(); fb.type = 'bandpass'; fb.frequency.value = 520; fb.Q.value = 0.7;
-      const fg = ctx.createGain(); fg.gain.value = 0.018;
-      fire.connect(fb).connect(fg).connect(master); fire.start();
-      const rush = ctx.createBufferSource(); rush.buffer = noiseBuffer(ctx, 2); rush.loop = true;
-      const rb = ctx.createBiquadFilter(); rb.type = 'bandpass'; rb.frequency.value = 1400; rb.Q.value = 0.4;
-      sweepGain = ctx.createGain(); sweepGain.gain.value = 0;
-      rush.connect(rb).connect(sweepGain).connect(master); rush.start();
-      droneNodes.push(fire, rush);
-    };
-    const crackle = () => {
-      if (!on || !ctx) return;
-      const t = ctx.currentTime;
-      const pops = 1 + Math.floor(Math.random() * 3);
-      for (let i = 0; i < pops; i++) {
-        const at = t + i * (0.02 + Math.random() * 0.06);
-        const n = ctx.createBufferSource(); n.buffer = noiseBuffer(ctx, 0.05);
-        const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1800 + Math.random() * 2400;
-        const g = ctx.createGain(); g.gain.setValueAtTime(0.02 + Math.random() * 0.04, at); g.gain.exponentialRampToValueAtTime(0.0001, at + 0.04);
-        n.connect(hp).connect(g).connect(master); n.start(at); n.stop(at + 0.05);
-      }
-      document.dispatchEvent(new CustomEvent('knght:crackle'));
-    };
-    const crackleLoop = () => {
-      clearTimeout(crackleTimer);
-      if (!on) return;
-      crackle();
-      crackleTimer = setTimeout(crackleLoop, 500 + Math.random() * 2600);
-    };
-    const sweep = (speed) => {
-      if (!on || !sweepGain) return;
-      sweepGain.gain.setTargetAtTime(Math.min(0.05, speed * 0.0009), ctx.currentTime, 0.12);
-    };
-    const room = (tone) => {
-      if (!on || !ctx || !droneLp) return;
-      const t = ctx.currentTime;
-      droneLp.frequency.setTargetAtTime(tone === 'light' ? 900 : 360, t, 0.8);
-      const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = tone === 'light' ? 98 : 49;
-      const g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.1, t + 0.4); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
-      o.connect(g).connect(master); o.start(t); o.stop(t + 2.3);
-    };
-    const ignite = () => {
-      if (!on || !ctx) return;
-      const t = ctx.currentTime;
-      const n = ctx.createBufferSource(); n.buffer = noiseBuffer(ctx, 1.4);
-      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 0.8;
-      bp.frequency.setValueAtTime(300, t); bp.frequency.exponentialRampToValueAtTime(1600, t + 0.5);
-      const g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.14, t + 0.18); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.3);
-      n.connect(bp).connect(g).connect(master); n.start(t); n.stop(t + 1.4);
-      setTimeout(crackle, 120); setTimeout(crackle, 420);
-    };
-    let lastBloom = 0;
-    const bloom = (level = 1) => {
-      if (!on || !ctx) return;
-      const t = ctx.currentTime;
-      if (t - lastBloom < 0.7) return;
-      lastBloom = t;
-      [523.25, 783.99, 1046.5, 1567.98].forEach((f, i) => {
-        const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f;
-        const g = ctx.createGain(); const at = t + i * 0.07; const peak = [0.03, 0.022, 0.016, 0.01][i] * level;
-        g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(peak, at + 0.25); g.gain.exponentialRampToValueAtTime(0.0001, at + 2.2);
-        o.connect(g).connect(master); o.start(at); o.stop(at + 2.3);
-      });
-    };
     const enable = async () => {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return false;
@@ -142,7 +75,6 @@
         ctx = new AC();
         master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
         startDrone();
-        startTorch();
       }
       try { await ctx.resume(); } catch (e) { return false; }
       on = true;
@@ -150,12 +82,10 @@
       master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
       master.gain.linearRampToValueAtTime(0.8, ctx.currentTime + 0.4);
       shing();
-      crackleTimer = setTimeout(crackleLoop, 900);
       return true;
     };
     const disable = () => {
       on = false;
-      clearTimeout(crackleTimer);
       if (!ctx) return;
       master.gain.cancelScheduledValues(ctx.currentTime);
       master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
@@ -167,7 +97,7 @@
       if (document.hidden) ctx.suspend().catch(() => {});
       else if (on) ctx.resume().catch(() => {});
     });
-    return { enable, disable, shing, tick, sweep, room, ignite, bloom, get on() { return on; } };
+    return { enable, disable, shing, tick, get on() { return on; } };
   })();
 
   const soundBtn = $('[data-sound]');
@@ -895,7 +825,7 @@
     set(); setInterval(set, 30000);
   }
 
-  /* ---------- The hall: one light you carry, an engraving it finds, a tone for each room ---------- */
+  /* ---------- The hall: one light you carry, an engraving it finds, the room it is in ---------- */
   (() => {
     if (!document.body) return;
     const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -942,8 +872,7 @@
     const words = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${W}" viewBox="0 0 ${W} ${W}"><g fill="#fff" font-family="Georgia,'Times New Roman',serif" font-size="15" letter-spacing="4.5" text-anchor="middle">${LINES.map((l, i) => `<text x="${spots[i][0]}" y="${spots[i][1]}">${esc(l.toUpperCase())}</text><path d="M${spots[i][0] - 30} ${spots[i][1] + 14}h60" stroke="#fff" stroke-width=".6"/>`).join('')}</g></svg>`;
     $('.hall__words', floor).style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(words)}")`;
 
-    // Light sections (the offer, the self-check) dim the shade; each room shifts the sound.
-    let tone = 'dark';
+    // Light sections (the offer, the self-check) hide the engraving.
     const rooms = $$('main > section, .chap, .footer');
     if ('IntersectionObserver' in window && rooms.length) {
       const io = new IntersectionObserver((entries) => {
@@ -951,8 +880,6 @@
           if (!e.isIntersecting) return;
           const next = /\b(engage|score)\b/.test(e.target.className) ? 'light' : 'dark';
           hall.dataset.tone = next;
-          if (next !== tone) { tone = next; Sound.room(next); }
-          else if (e.target.matches('.chap')) Sound.room(next);
         });
       }, { rootMargin: '-45% 0px -45% 0px' });
       rooms.forEach((r) => io.observe(r));
@@ -964,7 +891,6 @@
       return;
     }
     if (fine) addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; }, { passive: true });
-    document.addEventListener('knght:crackle', () => { flare = 1; });
 
     // The torch: on a first visit the hall waits in the dark until the visitor moves.
     let lit = true, ig = 1;
@@ -980,7 +906,6 @@
         root.classList.add('hall-igniting');
         setTimeout(() => root.classList.remove('hall-igniting'), 1600);
         try { sessionStorage.setItem('knght-lit', '1'); } catch (e) {}
-        Sound.ignite && Sound.ignite();
         ['pointermove', 'pointerdown', 'wheel', 'keydown', 'touchstart'].forEach((ev) => removeEventListener(ev, onFirst));
       };
       let moved = 0;
@@ -1010,8 +935,6 @@
         ty = innerHeight * (0.34 + Math.sin(t * 0.17 + 1.3) * 0.08);
       }
       x += (tx - x) * 0.09; y += (ty - y) * 0.09;
-      const speed = Math.hypot(x - lastX, y - lastY);
-      lastX = x; lastY = y;
       flare *= 0.93;
       ig += ((lit ? 1 : 0.12) - ig) * (lit ? 0.045 : 0.2);
       // A candle never holds still.
@@ -1021,7 +944,6 @@
       setVar('--lr', flick.toFixed(4));
       setVar('--sy', (-(scrollY * 0.35) % 640).toFixed(1) + 'px');
       floor.style.setProperty('--wy', (-(scrollY * 0.35) % 1280).toFixed(1) + 'px');
-      if (fine) Sound.sweep(speed);
       steel.forEach((el) => {
         const r = el.getBoundingClientRect();
         const gx = ((x - r.left) / Math.max(r.width, 1)) * 100;
@@ -1040,9 +962,6 @@
     const hover = matchMedia('(hover: hover) and (pointer: fine)').matches;
     // Homepage and category cards: colour on hover, or as a card reaches the centre on touch screens.
     const cards = $$('.world, .fcard, .wnext__link');
-    cards.forEach((card) => {
-      if (hover) card.addEventListener('pointerenter', () => Sound.bloom(0.8));
-    });
     if (!hover && 'IntersectionObserver' in window) {
       const io = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('is-bloom', e.isIntersecting)), { rootMargin: '-35% 0px -35% 0px' });
       cards.forEach((c) => io.observe(c));
@@ -1051,7 +970,7 @@
     const plate = $('.whero__plate');
     if (plate) {
       if (reduce) plate.classList.add('is-bloom');
-      else setTimeout(() => { plate.classList.add('is-bloom'); Sound.bloom(1); }, 700);
+      else setTimeout(() => plate.classList.add('is-bloom'), 700);
     }
     // The work: colour sweeps across each row as it comes into view.
     $$('.wwork__item').forEach((fig) => {
@@ -1066,7 +985,6 @@
     const rio = new IntersectionObserver((es) => es.forEach((e) => {
       if (!e.isIntersecting) return;
       $$('.wwork__item', e.target).forEach((f, i) => setTimeout(() => f.classList.add('is-bloom'), 650 + i * 200));
-      Sound.bloom(0.6);
       rio.unobserve(e.target);
     }), { rootMargin: '0px 0px -25% 0px' });
     $$('.wwork__row').forEach((r) => rio.observe(r));
