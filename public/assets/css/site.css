@@ -1115,3 +1115,54 @@ html.has-hall body{background:transparent}
 html:not(.gsap) .reel__grid{align-items:start}
 html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
 @media (max-width:900px){html:not(.gsap) .reel__stage{position:static}}
+
+/* ---------- The film: what KNGHT does, in six scenes of footage and motion graphics ---------- */
+.film{position:relative;border-top:1px solid var(--rule)}
+.film__stage{position:relative;overflow:hidden;background:#000;isolation:isolate;padding:clamp(70px,10vh,120px) var(--gutter)}
+.film__plates,.film__ui,.film__shade{display:none}
+.film__gfx{display:block;width:min(100%,560px);margin:0 auto 40px;overflow:visible}
+.film__scene+.film__scene{margin-top:36px}
+.film__h{margin:12px 0 16px;font-size:clamp(2.2rem,4.6vw,5rem);line-height:1}
+.film__h em{font-style:italic}
+.film__line{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}
+.film__in{display:inline-block}
+.film__p{margin:0;max-width:38ch;color:#c4c4c4;font-size:clamp(1rem,1.15vw,1.15rem);line-height:1.6}
+.film__steps{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:12px}
+.film__steps li{display:flex;align-items:baseline;gap:14px}
+.film__steps b{font:400 clamp(1.4rem,2.1vw,2rem)/1 var(--serif)}
+.film__steps span{color:#c4c4c4;font-size:.98rem}
+.film__cta{margin-top:28px}
+/* With motion: a full-screen film */
+.gsap .film__stage{height:100svh;min-height:560px;padding:0}
+.gsap .film__plates,.gsap .film__shade{display:block}
+.gsap .film__ui{display:flex}
+.film__plates{position:absolute;inset:0;z-index:0}
+.film__plate{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.08) brightness(.82);opacity:0;transform:scale(1.04);transition:opacity 1.4s ease}
+.film__plate.is-on{opacity:1}
+.film__shade{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.86) 0%,rgba(0,0,0,.6) 34%,rgba(0,0,0,.12) 62%,rgba(0,0,0,.3) 100%),radial-gradient(ellipse at 50% 50%,transparent 45%,rgba(0,0,0,.65) 100%)}
+.gsap .film__gfx{position:absolute;z-index:2;right:3vw;top:50%;margin:0;width:min(80vh,50vw);height:auto;aspect-ratio:1;transform:translateY(-50%)}
+.gsap .film__type{position:absolute;z-index:3;left:var(--gutter);top:50%;transform:translateY(-50%);width:min(44vw,640px);display:grid}
+.gsap .film__scene{grid-area:1/1;margin:0}
+.film__ui{position:absolute;z-index:4;left:var(--gutter);right:var(--gutter);bottom:clamp(18px,4vh,36px);align-items:center;gap:18px}
+.film__play{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid rgba(255,255,255,.45);border-radius:50%;background:rgba(0,0,0,.45);color:#fff;cursor:pointer;transition:border-color .3s,background .3s}
+.film__play:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+.film__play svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+.film__play .i-play{fill:currentColor;stroke:none}
+.film.is-playing .i-play,.film:not(.is-playing) .i-pause{display:none}
+.film__bar{position:relative;flex:1;height:2px;background:rgba(255,255,255,.18)}
+.film__fill{position:absolute;inset:0;background:#fff;transform:scaleX(0);transform-origin:left}
+.film__tick{position:absolute;top:50%;left:calc(var(--p) * 100%);width:26px;height:26px;margin:-13px 0 0 -13px;padding:0;border:0;background:none;cursor:pointer}
+.film__tick::before{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:#000;border:1px solid rgba(255,255,255,.5);transition:background .3s,border-color .3s}
+.film__tick.is-on::before{background:#fff;border-color:#fff}
+.film__tick span{position:absolute;left:50%;bottom:calc(100% + 4px);transform:translateX(-50%);white-space:nowrap;font:500 .62rem/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.6);opacity:0;transition:opacity .3s}
+.film__tick:hover span,.film__tick:focus-visible span,.film__tick.is-on:last-of-type span{opacity:1}
+.film__replay{display:none;flex:none;padding:0;border:0;background:none;color:#fff;font:500 .72rem/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;cursor:pointer;border-bottom:1px solid currentColor;padding-bottom:4px}
+.film.is-ended .film__replay{display:inline-block}
+@media (max-width:900px){
+  .gsap .film__gfx{left:50%;right:auto;top:calc(var(--nav-h) + 1svh);width:min(84vw,40svh);transform:translateX(-50%)}
+  .gsap .film__type{left:20px;right:20px;width:auto;top:auto;bottom:86px;transform:none}
+  .film__h{font-size:clamp(2rem,8.6vw,2.7rem)}
+  .film__shade{background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,.2) 38%,rgba(0,0,0,.82) 62%,#000 100%)}
+  .film__tick span{display:none}
+  .film__ui{gap:14px}
+}

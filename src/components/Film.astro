@@ -1,0 +1,125 @@
+---
+// The film: what KNGHT does, in six scenes of footage and motion graphics (src/scripts/film.js).
+// It plays by itself when it comes into view. Without motion it reads as a still diagram with the six lines.
+import { getWorlds, getLayers } from '../lib/site';
+import { SIGILS, WORLD_SIGILS } from '../lib/sigils';
+const worlds = await getWorlds();
+const layers = await getLayers();
+const TAG: Record<string, string> = {
+  lore: 'The story', law: 'The rules', language: 'The voice', map: 'The site and search',
+  ground: 'The space', artifacts: 'What people hold', machinery: 'The systems',
+};
+const RING = (k: number) => 64 + k * 50; // Law 114 ... Machinery 364
+const ANG = [0, -64, 28, -150, 112, -28, 200]; // where each badge sits on its ring
+const rad = (d: number) => (d * Math.PI) / 180;
+const WR = 372;
+// Six shots, one per scene. The footage is black and white, made for this film.
+const SHOTS: string[] = [
+  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_b85a1201-2279-46b8-8766-aaaa5177b012.mp4',
+  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_35fb5372-40b6-41c2-9242-18346ab55bbf.mp4',
+  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_9ae1e329-b34b-41f3-8a23-f2ca41422e00.mp4',
+  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_39607bdc-1fdc-4703-8742-0b50166271d0.mp4',
+  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_8e75bc25-715d-4c33-aadb-8d5cd2f01f22.mp4',
+  'https://d8j0ntlcm91z4.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/hf_20261005_072020_a493cae1-d882-4331-b381-8c1d97afb7cf.mp4',
+];
+const scenes = [
+  { eb: 'What we do', h: ['Every', 'business', 'is a <em>world.</em>'], p: 'Not a logo. A whole place your customers step into, online and in person.' },
+  { eb: 'The layers', h: ['A world', 'is built in', '<em>seven layers.</em>'], p: 'From the story at its core to the systems that keep it running.' },
+  { eb: 'The order', h: ['Built in order.', '<em>Lore first.</em>'], p: 'Each layer holds up the next. Skip one and the rest wobble.' },
+  { eb: 'The rules', h: ['All of it', 'inside', '<em>your rules.</em>'], p: 'Every word, sign and system is checked against <span data-reel-reg>your regulator</span>.' },
+  { eb: 'The work', h: ['Most worlds', 'are missing', '<em>layers.</em>'], p: '' },
+  { eb: 'The worlds', h: ['Nine worlds,', '<em>built so far.</em>'], p: 'Clinics, law, spirits, food and more. Step inside.' },
+];
+const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work', 'Nine worlds'];
+---
+<section class="film" id="reel" aria-labelledby="film-title">
+  <h2 class="sr-only" id="film-title">What KNGHT does, in six scenes</h2>
+  <div class="film__stage">
+    <div class="film__plates" aria-hidden="true">
+      {SHOTS.map((src, i) => <video class="film__plate" muted playsinline preload="none" data-src={src} data-i={i}></video>)}
+    </div>
+    <div class="film__shade" aria-hidden="true"></div>
+    <svg class="reel__svg film__gfx" viewBox="-500 -500 1000 1000" aria-hidden="true" data-role="img" aria-label="A world drawn as seven rings around a core: Lore at the centre, then Law, Language, Map, Ground, Artifacts and Machinery, all inside a boundary of your regulator's rules.">
+      <defs>
+        <radialGradient id="reelGlow"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".45" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+        <path id="reelArc" d="M 0 -452 A 452 452 0 1 1 -0.1 -452" />
+      </defs>
+      <circle class="reel__halo" r="480" fill="url(#reelGlow)" />
+      <g class="reel__world">
+        <g class="reel__law">
+          <circle class="reel__bound" r="430" />
+          <text class="reel__lawtext"><textPath href="#reelArc" data-reel-path>CHECKED AGAINST YOUR REGULATOR · EVERY WORD · EVERY SIGN · EVERY SYSTEM · CHECKED AGAINST YOUR REGULATOR · EVERY WORD · EVERY SIGN · EVERY SYSTEM ·</textPath></text>
+        </g>
+        <g class="reel__core">
+          <circle class="reel__pulse" r="58" />
+          <circle class="reel__corec" r="58" />
+          <g transform="translate(-24 -24) scale(2)" class="reel__sig" set:html={SIGILS.lore} />
+          <text class="reel__name reel__name--core" y="94">Lore</text>
+        </g>
+        {layers.slice(1).map((l, i) => {
+          const k = i + 1, R = RING(k), a = ANG[k];
+          return (
+            <g class="reel__layer" data-k={k}>
+              <circle class="reel__ring" r={R} />
+              <g class="reel__orbit" data-speed={(k % 2 ? 1 : -1) * (60 + k * 18)}>
+                <g transform={`translate(${(Math.cos(rad(a)) * R).toFixed(1)} ${(Math.sin(rad(a)) * R).toFixed(1)})`}>
+                  <g class="reel__badge">
+                    <circle class="reel__chip" r="25" />
+                    <g transform="translate(-14.4 -14.4) scale(1.2)" class="reel__sig" set:html={SIGILS[l.id] || ''} />
+                    <text class="reel__name" y="48">{l.data.name}</text>
+                    <text class="reel__tag" y="70">{TAG[l.id]}</text>
+                  </g>
+                </g>
+              </g>
+            </g>
+          );
+        })}
+      </g>
+      <g class="reel__worlds">
+        {worlds.map((w, i) => {
+          const a = rad(-90 + (i * 360) / worlds.length);
+          const x = Math.cos(a) * WR, y = Math.sin(a) * WR;
+          return (
+            <g class="reel__wl" data-i={i}>
+              <line class="reel__spoke" x1="0" y1="0" x2={x.toFixed(1)} y2={y.toFixed(1)} />
+              <a href={`/worlds/${w.id}/`} tabindex="-1" class="reel__wa">
+                <g transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}>
+                  <g class="reel__wb">
+                    <circle class="reel__chip" r="40" />
+                    <g transform="translate(-21.6 -21.6) scale(1.8)" class="reel__sig" set:html={WORLD_SIGILS[w.id] || ''} />
+                    <text class="reel__name" y={y > 0 ? 70 : -56}>{w.data.name}</text>
+                  </g>
+                </g>
+              </a>
+            </g>
+          );
+        })}
+      </g>
+    </svg>
+    <div class="film__type">
+      {scenes.map((c, i) => (
+        <div class="film__scene" data-scene={i}>
+          <p class="eyebrow"><span class="reel__no">{String(i + 1).padStart(2, '0')}</span> {c.eb}</p>
+          <p class="film__h display">{c.h.map((line) => <span class="film__line"><span class="film__in" set:html={line} /></span>)}</p>
+          {c.p && <p class="film__p" set:html={c.p} />}
+          {i === 4 && (
+            <ol class="film__steps">
+              <li><b>The Verdict</b><span>finds them</span></li>
+              <li><b>The Build</b><span>fills them</span></li>
+              <li><b>The Keep</b><span>keeps them running</span></li>
+            </ol>
+          )}
+          {i === 5 && <a class="btn film__cta" href="/book/" data-magnetic>Book the free call <svg class="arrow" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></a>}
+        </div>
+      ))}
+    </div>
+    <div class="film__ui">
+      <button type="button" class="film__play" data-film-play aria-label="Pause the film"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14"/><path class="i-play" d="M7 4.5v15l12-7.5z"/></svg></button>
+      <div class="film__bar">
+        <div class="film__fill" data-film-fill></div>
+        {LABELS.map((l, i) => <button type="button" class="film__tick" data-film-tick={i} style={`--p:${([0, 8, 17, 25, 33, 42][i] / 52).toFixed(4)}`} aria-label={`Scene ${i + 1}: ${l}`}><span>{l}</span></button>)}
+      </div>
+      <button type="button" class="film__replay" data-film-replay>Watch again</button>
+    </div>
+  </div>
+</section>
