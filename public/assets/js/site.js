@@ -920,7 +920,7 @@
     }
 
     // Steel catches the light: marks, numerals, sigils and chips glint as the light passes.
-    const STEEL = '.mark, .chap__num, .footer__word .sheen, .layer__sigil, .rung__sigil, .cat, .wfilter__chip, .sound';
+    const STEEL = '.mark, .chap__num, .footer__word .sheen, .layer__sigil, .rung__sigil, .cat, .wfilter__chip, .sound, .nring__sig';
     const steel = new Set();
     if ('IntersectionObserver' in window) {
       const sio = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? steel.add(e.target) : steel.delete(e.target))));
@@ -988,6 +988,91 @@
       rio.unobserve(e.target);
     }), { rootMargin: '0px 0px -25% 0px' });
     $$('.wwork__row').forEach((r) => rio.observe(r));
+  })();
+
+  /* ---------- Desktop nav: a line of light under the link, and two panels ---------- */
+  (() => {
+    const nav = $('.nav'), ul = nav && $('nav ul', nav);
+    if (!ul) return;
+    const links = $$('a', ul);
+    const line = document.createElement('span');
+    line.className = 'nav__line'; line.setAttribute('aria-hidden', 'true');
+    ul.appendChild(line);
+    let hovering = null;
+    const current = () => links.find((a) => { const v = a.getAttribute('aria-current'); return v && v !== 'false'; });
+    const moveTo = (a) => {
+      if (!a) { line.style.opacity = '0'; return; }
+      line.style.setProperty('--lx', a.offsetLeft + 'px');
+      line.style.setProperty('--lw', a.offsetWidth + 'px');
+      line.style.opacity = '1';
+    };
+    links.forEach((a) => {
+      a.addEventListener('pointerenter', () => { hovering = a; moveTo(a); });
+      a.addEventListener('focus', () => { hovering = a; moveTo(a); });
+      a.addEventListener('blur', () => { hovering = null; moveTo(current()); });
+    });
+    ul.addEventListener('pointerleave', () => { hovering = null; moveTo(current()); });
+    new MutationObserver(() => { if (!hovering) moveTo(current()); }).observe(ul, { subtree: true, attributes: true, attributeFilter: ['aria-current'] });
+    moveTo(current());
+
+    const desk = matchMedia('(min-width: 901px) and (hover: hover)');
+    const panels = { worlds: $('#np-worlds', nav), layers: $('#np-layers', nav) };
+    let open = null, timer = 0, openY = 0;
+    const hide = (k) => {
+      const el = panels[k]; if (!el) return;
+      el.classList.remove('is-open'); el.inert = true;
+      if (open === k) open = null;
+    };
+    const show = (k) => {
+      clearTimeout(timer);
+      if (!desk.matches || !panels[k]) return;
+      if (open && open !== k) hide(open);
+      open = k; openY = scrollY;
+      panels[k].classList.add('is-open'); panels[k].inert = false;
+    };
+    const later = () => { clearTimeout(timer); timer = setTimeout(() => { if (open) hide(open); }, 240); };
+    links.forEach((a) => {
+      const href = a.getAttribute('href') || '';
+      const k = /#worlds$/.test(href) ? 'worlds' : /#layers$/.test(href) ? 'layers' : null;
+      if (k && panels[k]) {
+        a.setAttribute('aria-controls', panels[k].id);
+        a.addEventListener('pointerenter', () => show(k));
+        a.addEventListener('focus', () => show(k));
+        a.addEventListener('click', () => hide(k));
+      } else {
+        a.addEventListener('pointerenter', () => { if (open) hide(open); });
+        a.addEventListener('focus', () => { if (open) hide(open); });
+      }
+    });
+    Object.values(panels).forEach((p) => {
+      if (!p) return;
+      p.addEventListener('focusout', (e) => { if (!p.contains(e.relatedTarget) && !links.includes(e.relatedTarget)) later(); });
+      $$('a', p).forEach((a) => a.addEventListener('click', () => hide(p.dataset.npanel)));
+    });
+    // A panel stays open while the pointer is anywhere in the header; leaving it closes the panel.
+    nav.addEventListener('pointerenter', () => clearTimeout(timer));
+    nav.addEventListener('pointerleave', later);
+    // The brand mark and the buttons on the right close it too.
+    $$('.mark, .nav__end a, .nav__end button', nav).forEach((el) => el.addEventListener('pointerenter', () => { if (open) hide(open); }));
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || !open) return;
+      const id = panels[open].id; hide(open);
+      const a = links.find((x) => x.getAttribute('aria-controls') === id); if (a) a.focus();
+    });
+    addEventListener('scroll', () => { if (open && Math.abs(scrollY - openY) > 60) hide(open); }, { passive: true });
+
+    // The ring: hover a sigil and its layer speaks
+    const lp = panels.layers;
+    if (lp) {
+      const n = $('[data-nl-n]', lp), nm = $('[data-nl-name]', lp), ln = $('[data-nl-line]', lp), lk = $('[data-nl-link]', lp);
+      const sigs = $$('.nring__sig', lp);
+      const say = (s) => {
+        sigs.forEach((x) => x.classList.toggle('is-on', x === s));
+        n.textContent = `Layer ${s.dataset.n} of 7`; nm.textContent = s.dataset.name; ln.textContent = s.dataset.line;
+        lk.href = s.getAttribute('href'); lk.textContent = `Open the ${s.dataset.name} layer`;
+      };
+      sigs.forEach((s) => { s.addEventListener('pointerenter', () => say(s)); s.addEventListener('focus', () => say(s)); });
+    }
   })();
 
   /* ---------- Year ---------- */

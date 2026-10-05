@@ -1,0 +1,46 @@
+---
+// Desktop nav panels: "Worlds" opens the nine worlds in grey (each blooms on hover),
+// "The layers" opens the seven sigils in a ring. Phones use the menu instead.
+import { getWorlds, getLayers, CATEGORY, CDN, ROMAN } from '../lib/site';
+import { SIGILS } from '../lib/sigils';
+const worlds = await getWorlds();
+const layers = await getLayers();
+const R = 128;
+---
+<div class="npanel" id="np-worlds" data-npanel="worlds" inert>
+  <div class="wrap npanel__in">
+    <div class="npanel__head"><p class="eyebrow">The worlds</p><a class="link" href="/#worlds">See all nine</a></div>
+    <ul class="nworlds">{worlds.map((w, k) => (
+      <li style={`--i:${k}`}><a class="nworld" href={`/worlds/${w.id}/`}>
+        <span class="nworld__plate"><img src={`${CDN}/${w.data.plate}`} alt="" loading="lazy" decoding="async" width="240" height="300" /></span>
+        <span class="nworld__n">{ROMAN[k]}</span>
+        <span class="nworld__name">{w.data.name} <em>{w.data.em}</em></span>
+        <span class="nworld__cat">{CATEGORY[w.data.cat].label}</span>
+      </a></li>
+    ))}</ul>
+  </div>
+</div>
+<div class="npanel" id="np-layers" data-npanel="layers" inert>
+  <div class="wrap npanel__in nlayers">
+    <div class="nring" style={`--r:${R}px`}>
+      <ul>{layers.map((l, k) => {
+        const a = (k / layers.length) * Math.PI * 2 - Math.PI / 2;
+        return (
+          <li style={`--x:${(Math.cos(a) * R).toFixed(1)}px;--y:${(Math.sin(a) * R).toFixed(1)}px;--i:${k}`}>
+            <a class="nring__sig" href={`/layers/${l.id}/`} data-name={l.data.name} data-line={l.data.line} data-n={k + 1}>
+              <svg viewBox="0 0 24 24" aria-hidden="true" set:html={SIGILS[l.id] || ''}></svg>
+              <span class="nring__label">{l.data.name}</span>
+            </a>
+          </li>
+        );
+      })}</ul>
+      <svg class="nring__circle" viewBox="0 0 300 300" aria-hidden="true"><circle cx="150" cy="150" r={R} /><circle cx="150" cy="150" r={R - 34} /></svg>
+    </div>
+    <div class="nlayers__text" aria-live="polite">
+      <p class="eyebrow" data-nl-n>Seven layers</p>
+      <p class="nlayers__name" data-nl-name>Built in order.</p>
+      <p class="nlayers__line" data-nl-line>Lore comes first. Every layer after it is written inside the rules of your category.</p>
+      <a class="link" href="/#layers" data-nl-link>See all seven</a>
+    </div>
+  </div>
+</div>

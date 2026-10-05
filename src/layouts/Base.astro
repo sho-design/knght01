@@ -1,5 +1,6 @@
 ---
 import Motion from '../components/Motion.astro';
+import NavPanels from '../components/NavPanels.astro';
 // The page shell shared by every inner page: head, nav, footer and the site scripts.
 interface Props {
   title: string;
@@ -70,6 +71,7 @@ const url = `https://knght.com/${path}`;
       <a class="btn btn--sm" href="/book/" data-magnetic>Book the free call</a>
     </div>
   </div>
+  <NavPanels />
 </header>
 
 <main id="main">
