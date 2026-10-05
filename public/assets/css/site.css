@@ -990,10 +990,3 @@ html.has-hall body{background:transparent}
 .wwork__item.is-bloom .wwork__color{clip-path:inset(0 0 0 0)}
 .wwork__item:hover .wwork__color{transform:scale(1.03)}
 @media (prefers-reduced-motion: reduce){.whero__plate img,.whero__plate video,.wwork__color{transition:none}}
-
-/* ---------- The sword: one steel blade that walks the page ---------- */
-.sword3d{position:fixed;inset:0;width:100vw;height:100vh;z-index:1;pointer-events:none;opacity:0;transition:opacity .6s}
-/* The closing section's words and button sit above the sword, so the button rests on the stone */
-.has-sword .verdict{isolation:auto}
-.has-sword .verdict .wrap{position:relative;z-index:3}
-@media print{.sword3d{display:none}}
