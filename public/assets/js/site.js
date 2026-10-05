@@ -927,7 +927,7 @@
     const layers = $$('.hall-field__d', hall).map((el) => ({ el, f: +el.dataset.f }));
     const here = location.pathname.split('/').filter(Boolean);
     const thisWorld = here[0] === 'worlds' ? here[1] : null;
-    let portals = [];
+    let portals = [], sayings = [], startY = 0;
     const measure = document.createElement('canvas').getContext('2d');
     const build = () => {
       const docH = Math.max(document.documentElement.scrollHeight, innerHeight);
@@ -948,13 +948,18 @@
       });
       // The white rooms, and the pinned rooms whose contents move while you scroll (the hero, the worlds gallery).
       $$('.engage,.score,.worlds,.hero').forEach((el) => { const r = el.getBoundingClientRect(); avoid.push([-1e5, r.top + sy - 60, 1e5, r.bottom + sy + 60]); });
-      const hits = (b, pad, list) => list.some((a) => b[0] - pad < a[2] && b[2] + pad > a[0] && b[1] - pad < a[3] && b[3] + pad > a[1]);
+      const hits = (b, px, py, list) => list.some((a) => b[0] - px < a[2] && b[2] + px > a[0] && b[1] - py < a[3] && b[3] + py > a[1]);
+      // The field never touches a hero. On the homepage it begins with the worlds.
+      const startEl = $('#worlds') || $('main > :first-child');
+      if (startEl) { const r = startEl.getBoundingClientRect(); startY = ($('#worlds') ? r.top : r.bottom) + sy; }
+      avoid.push([-1e5, -1e5, 1e5, startY + 40]);
       const placed = [];
-      const find = (w, h, pad, minY, tries = 90) => {
+      // padY covers how far an item drifts against the page as it scrolls past.
+      const find = (w, h, padX, padY, minY, tries = 260) => {
         for (let i = 0; i < tries; i++) {
           const x0 = rnd(84, Math.max(85, vw - w - 130)), y0 = rnd(minY, Math.max(minY + 1, docH - h - 60));
           const box = [x0, y0, x0 + w, y0 + h];
-          if (!hits(box, pad, avoid) && !hits(box, pad * 2.2, placed)) { placed.push(box); return box; }
+          if (!hits(box, padX, padY, avoid) && !hits(box, padX * 2, padY * 1.6, placed)) { placed.push(box); return box; }
         }
         return null;
       };
@@ -969,25 +974,30 @@
         const div = document.createElement('div');
         div.className = 'hall-engr';
         div.innerHTML = e.html;
-        div.style.cssText = `left:${rnd(-s * 0.3, vw - s * 0.7).toFixed(0)}px;top:${rnd(0, docH * l.f + vh - s).toFixed(0)}px;width:${s.toFixed(0)}px;height:${s.toFixed(0)}px;opacity:${(rnd(0.35, 1) * (0.45 + l.f * 0.55)).toFixed(2)};transform:rotate(${rnd(0, 360).toFixed(0)}deg)${l.f < 0.6 ? ';filter:blur(.6px)' : ''}`;
+        const top0 = (startY - vh * 0.5) * l.f + vh * 0.5;
+        div.style.cssText = `left:${rnd(-s * 0.3, vw - s * 0.7).toFixed(0)}px;top:${rnd(top0, docH * l.f + vh - s).toFixed(0)}px;width:${s.toFixed(0)}px;height:${s.toFixed(0)}px;opacity:${(rnd(0.35, 1) * (0.45 + l.f * 0.55)).toFixed(2)};transform:rotate(${rnd(0, 360).toFixed(0)}deg)${l.f < 0.6 ? ';filter:blur(.6px)' : ''}`;
         l.el.appendChild(div);
       }
 
       // Sayings: each used once, scattered, at different sizes, never across the text.
       const front = layers[layers.length - 1].el;
       const n = Math.max(3, Math.min(SAYINGS.length, Math.round(docH / (vh * 1.05))));
+      sayings = [];
       shuffle(SAYINGS).slice(0, n).forEach((line) => {
         const size = Math.round(rnd(10, 24));
         const txt = line.toUpperCase();
         measure.font = `500 ${size}px Georgia, serif`;
         const w = measure.measureText(txt).width + txt.length * size * 0.34 + 4, h = size * 1.9;
-        const box = find(w, h, 36, vh * 0.25);
+        const f = rnd(0.86, 0.95);
+        const box = find(w, h, 22, (1 - f) * vh * 0.4 + 10, startY);
         if (!box) return;
         const el = document.createElement('p');
         el.className = 'hall-say';
         el.textContent = txt;
-        el.style.cssText = `left:${box[0].toFixed(0)}px;top:${box[1].toFixed(0)}px;font-size:${size}px;opacity:${rnd(0.45, 0.95).toFixed(2)}`;
+        el.style.cssText = `left:${box[0].toFixed(0)}px;top:${box[1].toFixed(0)}px;font-size:${size}px;opacity:${rnd(0.16, 0.38).toFixed(2)}`;
         front.appendChild(el);
+        // Each saying drifts at its own speed; it lines up with its clear spot as it crosses the middle of the screen.
+        sayings.push({ el, y: (box[1] + box[3]) / 2, f });
       });
 
       // Portals: a few world sigils hidden in the dark. Find one and it takes you there.
@@ -996,7 +1006,8 @@
       const pick = shuffle(WORLDS.filter((w) => w[0] !== thisWorld)).slice(0, $('.hero') ? 3 : 2);
       portals = [];
       pick.forEach(([slug, name, d]) => {
-        const box = find(56, 56, 34, vh * 0.6, 400);
+        const f = rnd(0.9, 0.95);
+        const box = find(56, 56, 22, (1 - f) * vh * 0.4 + 12, startY + vh * 0.2, 700);
         if (!box) return;
         const a = document.createElement('a');
         a.className = 'hall-portal';
@@ -1020,9 +1031,30 @@
           setTimeout(() => { location.href = a.href; }, 1150);
         });
         portalsEl.appendChild(a);
-        portals.push({ a, x: box[0] + 28, y: box[1] + 28, found: false });
+        portals.push({ a, x: box[0] + 28, y: box[1] + 28, f, found: false });
       });
     };
+    // Live guard: the page shifts after it loads, so a saying or portal that ends up over content steps back.
+    const CONTENT = 'h1,h2,h3,h4,h5,p,a,button,li,img,video,figure,input,select,textarea,label,dt,dd,blockquote,.btn,.dial,.rung,.chap__num';
+    const blocked = (el) => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return null;
+      for (let i = 0; i <= 4; i++) {
+        const px = r.left + (r.width * i) / 4, py = r.top + r.height / 2;
+        if (px < 0 || px > innerWidth) continue;
+        for (const hit of document.elementsFromPoint(px, py)) {
+          if (hit === el || el.contains(hit) || hit.closest('.hall,.hall-floor,.hall-portals')) continue;
+          if (hit.closest(CONTENT)) return true;
+        }
+      }
+      return false;
+    };
+    setInterval(() => {
+      if (document.hidden) return;
+      sayings.forEach((s2) => { const b = blocked(s2.el); if (b !== null) s2.el.classList.toggle('is-blocked', b); });
+      portals.forEach((p) => { const b = blocked(p.a); if (b !== null) { p.blocked = b; p.a.classList.toggle('is-blocked', b); } });
+    }, 220);
+
     let lastH = 0, buildT = 0;
     const rebuild = () => { clearTimeout(buildT); buildT = setTimeout(() => { lastH = document.documentElement.scrollHeight; build(); }, 400); };
     if (document.readyState === 'complete') rebuild(); else addEventListener('load', rebuild, { once: true });
@@ -1102,11 +1134,19 @@
       setVar('--ly', y.toFixed(1) + 'px');
       setVar('--lr', flick.toFixed(4));
       layers.forEach((l) => { l.el.style.transform = `translate3d(0,${(-scrollY * l.f).toFixed(1)}px,0)`; });
+      const vh2 = innerHeight / 2;
+      hall.classList.toggle('field-on', scrollY + innerHeight * 0.65 > startY);
+      sayings.forEach((s2) => {
+        const off = (scrollY + vh2 - s2.y) * (1 - s2.f);
+        if (Math.abs(s2.y - scrollY - vh2) < innerHeight * 1.2) s2.el.style.transform = `translate3d(0,${off.toFixed(1)}px,0)`;
+      });
       portals.forEach((p) => {
-        const d = Math.hypot(p.x - scrollX - x, p.y - scrollY - y);
-        const v = Math.max(0, Math.min(1, 1 - (d - 40) / 170)) * ig;
-        p.a.style.opacity = v.toFixed(3);
-        p.a.style.pointerEvents = v > 0.3 ? 'auto' : 'none';
+        const off = (scrollY + vh2 - p.y) * (1 - p.f);
+        p.a.style.transform = `translate3d(0,${off.toFixed(1)}px,0)`;
+        const d = Math.hypot(p.x - scrollX - x, p.y + off - scrollY - y);
+        const v = Math.max(0, Math.min(1, 1 - (d - 40) / 170)) * ig * (scrollY + innerHeight * 0.65 > startY ? 1 : 0);
+        p.a.style.opacity = (v * 0.8).toFixed(3);
+        p.a.style.pointerEvents = v > 0.3 && !p.blocked ? 'auto' : 'none';
         p.a.classList.toggle('is-near', v > 0.75);
         if (v > 0.75 && !p.found) { p.found = true; p.a.classList.add('is-found'); }
       });

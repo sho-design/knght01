@@ -1032,12 +1032,13 @@ html.has-hall body{background:transparent}
 @media (prefers-reduced-motion: reduce){.npanel,.npanel.is-open,.nworlds li,.nring li,.nring__circle circle,.nav__line{transition:none}}
 
 /* ---------- The field: engravings, sayings and portals the light finds ---------- */
-.hall-field{position:absolute;inset:0;overflow:hidden;mix-blend-mode:screen;-webkit-mask-image:radial-gradient(circle calc(var(--hall-r) * .72 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.55) 42%,transparent 100%);mask-image:radial-gradient(circle calc(var(--hall-r) * .72 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.55) 42%,transparent 100%);transition:opacity 1.2s var(--ease)}
+.hall-field{position:absolute;inset:0;overflow:hidden;mix-blend-mode:screen;opacity:0;-webkit-mask-image:radial-gradient(circle calc(var(--hall-r) * .72 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.55) 42%,transparent 100%);mask-image:radial-gradient(circle calc(var(--hall-r) * .72 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.55) 42%,transparent 100%);transition:opacity 1.2s var(--ease)}
+.hall.field-on .hall-field{opacity:1}
 .hall[data-tone="light"] .hall-field{opacity:0}
 .hall-field__d{position:absolute;left:0;top:0;width:100%;will-change:transform}
 .hall-engr{position:absolute;pointer-events:none}
-.hall-engr svg{display:block;width:100%;height:100%;opacity:.4}
-.hall-say{position:absolute;margin:0;white-space:nowrap;font-family:Georgia,'Times New Roman',serif;font-weight:500;letter-spacing:.34em;line-height:1.9;color:#fff}
+.hall-engr svg{display:block;width:100%;height:100%;opacity:.2}
+.hall-say{position:absolute;will-change:transform;margin:0;white-space:nowrap;font-family:Georgia,'Times New Roman',serif;font-weight:500;letter-spacing:.34em;line-height:1.9;color:#fff}
 .hall-portals{position:absolute;left:0;top:0;width:100%;z-index:69;pointer-events:none}
 .hall-portal{position:absolute;width:56px;height:56px;display:grid;place-items:center;color:#fff;opacity:0;pointer-events:none;text-decoration:none;cursor:pointer}
 .hall-portal svg{position:relative;width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(255,255,255,.55));transition:transform .5s var(--ease-out)}
@@ -1056,3 +1057,6 @@ html.has-hall body{background:transparent}
 .hall-gate p{margin:0;font:500 .78rem/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;opacity:0;transition:opacity .6s .45s}
 .hall-gate.is-open p{opacity:.85}
 @media (prefers-reduced-motion: reduce){.hall-field,.hall-portals{display:none}}
+
+.hall-say{transition:opacity .45s}
+.hall-say.is-blocked,.hall-portal.is-blocked{opacity:0!important}
