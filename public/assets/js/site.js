@@ -1120,6 +1120,7 @@
     }
     const start = performance.now();
     const frame = (now) => {
+      requestAnimationFrame(frame); // keep the light alive even if one step below fails
       const t = (now - start) / 1000;
       if (!fine) {
         // No cursor: the light drifts with the reading position.
@@ -1161,7 +1162,6 @@
         el.style.setProperty('--gx', Math.max(-60, Math.min(160, gx)).toFixed(1) + '%');
         el.style.setProperty('--ga', ga.toFixed(3));
       });
-      requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);
   })();

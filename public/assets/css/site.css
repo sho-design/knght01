@@ -1032,7 +1032,7 @@ html.has-hall body{background:transparent}
 @media (prefers-reduced-motion: reduce){.npanel,.npanel.is-open,.nworlds li,.nring li,.nring__circle circle,.nav__line{transition:none}}
 
 /* ---------- The field: engravings, sayings and portals the light finds ---------- */
-.hall-field{position:absolute;inset:0;overflow:hidden;mix-blend-mode:screen;-webkit-mask-image:radial-gradient(circle calc(var(--hall-r) * .72 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.55) 42%,transparent 100%);mask-image:radial-gradient(circle calc(var(--hall-r) * .72 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.55) 42%,transparent 100%);transition:opacity 1.2s var(--ease)}
+.hall-field{position:absolute;inset:0;overflow:hidden;mix-blend-mode:screen;clip-path:inset(100% 0 0 0);-webkit-mask-image:radial-gradient(circle calc(var(--hall-r) * .72 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.55) 42%,transparent 100%);mask-image:radial-gradient(circle calc(var(--hall-r) * .72 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.55) 42%,transparent 100%);transition:opacity 1.2s var(--ease)}
 .hall[data-tone="light"] .hall-field{opacity:0}
 .hall-field__d{position:absolute;left:0;top:0;width:100%;will-change:transform}
 .hall-engr{position:absolute;pointer-events:none}
