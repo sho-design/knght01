@@ -57,7 +57,7 @@ if (!reduce) {
     }
 
     /* The film: what KNGHT does, before the worlds. It runs on its own clock. */
-    film(gsap);
+    try { film(gsap); } catch (e) { document.documentElement.classList.add('film-failed'); console.error('KNGHT film:', e); }
 
     /* Worlds: vertical scroll drives the gallery sideways, with a little inertia. */
     const worlds = $('.worlds'), track = $('.worlds__track');
