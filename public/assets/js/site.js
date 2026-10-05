@@ -112,6 +112,16 @@
       const g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.1, t + 0.4); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
       o.connect(g).connect(master); o.start(t); o.stop(t + 2.3);
     };
+    const ignite = () => {
+      if (!on || !ctx) return;
+      const t = ctx.currentTime;
+      const n = ctx.createBufferSource(); n.buffer = noiseBuffer(ctx, 1.4);
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 0.8;
+      bp.frequency.setValueAtTime(300, t); bp.frequency.exponentialRampToValueAtTime(1600, t + 0.5);
+      const g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.14, t + 0.18); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.3);
+      n.connect(bp).connect(g).connect(master); n.start(t); n.stop(t + 1.4);
+      setTimeout(crackle, 120); setTimeout(crackle, 420);
+    };
     const enable = async () => {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return false;
@@ -144,7 +154,7 @@
       if (document.hidden) ctx.suspend().catch(() => {});
       else if (on) ctx.resume().catch(() => {});
     });
-    return { enable, disable, shing, tick, sweep, room, get on() { return on; } };
+    return { enable, disable, shing, tick, sweep, room, ignite, get on() { return on; } };
   })();
 
   const soundBtn = $('[data-sound]');
@@ -879,10 +889,11 @@
     const hall = document.createElement('div');
     hall.className = 'hall';
     hall.setAttribute('aria-hidden', 'true');
-    hall.innerHTML = '<div class="hall__etch"></div><div class="hall__glow"></div>';
+    hall.innerHTML = '<div class="hall__etch"></div><div class="hall__glow"></div><div class="hall__veil"></div><p class="hall__hint"></p>';
     document.body.appendChild(hall);
     const floor = document.createElement('div');
     floor.className = 'hall-floor';
+    floor.innerHTML = '<div class="hall__words"></div>';
     floor.setAttribute('aria-hidden', 'true');
     document.body.prepend(floor);
     const setVar = (k, v) => { hall.style.setProperty(k, v); floor.style.setProperty(k, v); };
@@ -910,6 +921,13 @@
     for (let x = -T; x < T * 2; x += 7) hatch += `M${x} 0L${x + T} ${T}`;
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${T}" height="${T}" viewBox="0 0 ${T} ${T}"><g fill="none" stroke="#fff" stroke-width=".55" opacity=".9">${art}</g><path d="${hatch}" stroke="#fff" stroke-width=".35" opacity=".28"/></svg>`;
     $('.hall__etch', hall).style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+    // The light finds words: the codex, etched small between the rosettes.
+    const LINES = ['No layer is built before Lore', 'Every word is checked against your regulator', 'We say what we can prove', 'Strategy first, then the sword', 'AI is the squire, not the knight', 'We only show work we built', 'If we cannot help, we say so'];
+    const W = 1280;
+    const spots = [[640, 132], [320, 470], [960, 560], [640, 800], [300, 1080], [980, 1160], [640, 1250]];
+    const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const words = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${W}" viewBox="0 0 ${W} ${W}"><g fill="#fff" font-family="Georgia,'Times New Roman',serif" font-size="15" letter-spacing="4.5" text-anchor="middle">${LINES.map((l, i) => `<text x="${spots[i][0]}" y="${spots[i][1]}">${esc(l.toUpperCase())}</text><path d="M${spots[i][0] - 30} ${spots[i][1] + 14}h60" stroke="#fff" stroke-width=".6"/>`).join('')}</g></svg>`;
+    $('.hall__words', floor).style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(words)}")`;
 
     // Light sections (the offer, the self-check) dim the shade; each room shifts the sound.
     let tone = 'dark';
@@ -934,6 +952,42 @@
     }
     if (fine) addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; }, { passive: true });
     document.addEventListener('knght:crackle', () => { flare = 1; });
+
+    // The torch: on a first visit the hall waits in the dark until the visitor moves.
+    let lit = true, ig = 1;
+    try { lit = sessionStorage.getItem('knght-lit') === '1'; } catch (e) {}
+    if (!lit) {
+      ig = 0.12;
+      root.classList.add('hall-unlit');
+      $('.hall__hint', hall).textContent = fine ? 'Move to light the hall' : 'Touch to light the hall';
+      const ignite = () => {
+        if (lit || !root.classList.contains('is-loaded')) return;
+        lit = true; flare = 2.2;
+        root.classList.remove('hall-unlit');
+        root.classList.add('hall-igniting');
+        setTimeout(() => root.classList.remove('hall-igniting'), 1600);
+        try { sessionStorage.setItem('knght-lit', '1'); } catch (e) {}
+        Sound.ignite && Sound.ignite();
+        ['pointermove', 'pointerdown', 'wheel', 'keydown', 'touchstart'].forEach((ev) => removeEventListener(ev, onFirst));
+      };
+      let moved = 0;
+      const onFirst = (e) => {
+        if (e.type === 'pointermove') { moved += Math.abs(e.movementX || 0) + Math.abs(e.movementY || 0); if (moved < 24) return; }
+        ignite();
+      };
+      ['pointermove', 'pointerdown', 'wheel', 'keydown', 'touchstart'].forEach((ev) => addEventListener(ev, onFirst, { passive: true }));
+      // Never leave anyone in the dark.
+      const failsafe = () => (root.classList.contains('is-loaded') ? setTimeout(ignite, 4500) : setTimeout(failsafe, 300));
+      failsafe();
+    }
+
+    // Steel catches the light: marks, numerals, sigils and chips glint as the light passes.
+    const STEEL = '.mark, .chap__num, .footer__word .sheen, .layer__sigil, .rung__sigil, .cat, .wfilter__chip, .sound';
+    const steel = new Set();
+    if ('IntersectionObserver' in window) {
+      const sio = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? steel.add(e.target) : steel.delete(e.target))));
+      $$(STEEL).forEach((el) => { el.classList.add('steel'); sio.observe(el); });
+    }
     const start = performance.now();
     const frame = (now) => {
       const t = (now - start) / 1000;
@@ -945,14 +999,24 @@
       x += (tx - x) * 0.09; y += (ty - y) * 0.09;
       const speed = Math.hypot(x - lastX, y - lastY);
       lastX = x; lastY = y;
-      flare *= 0.9;
+      flare *= 0.93;
+      ig += ((lit ? 1 : 0.12) - ig) * (lit ? 0.045 : 0.2);
       // A candle never holds still.
-      const flick = 1 + Math.sin(t * 7.3) * 0.012 + Math.sin(t * 13.1 + 2) * 0.008 + Math.sin(t * 2.1) * 0.02 + flare * 0.06;
+      const flick = (1 + Math.sin(t * 7.3) * 0.012 + Math.sin(t * 13.1 + 2) * 0.008 + Math.sin(t * 2.1) * 0.02 + flare * 0.06) * ig;
       setVar('--lx', x.toFixed(1) + 'px');
       setVar('--ly', y.toFixed(1) + 'px');
       setVar('--lr', flick.toFixed(4));
-      hall.style.setProperty('--sy', (-(scrollY * 0.35) % 640).toFixed(1) + 'px');
+      setVar('--sy', (-(scrollY * 0.35) % 640).toFixed(1) + 'px');
+      floor.style.setProperty('--wy', (-(scrollY * 0.35) % 1280).toFixed(1) + 'px');
       if (fine) Sound.sweep(speed);
+      steel.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const gx = ((x - r.left) / Math.max(r.width, 1)) * 100;
+        const d = Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2));
+        const ga = Math.max(0, 1 - d / 520) * ig;
+        el.style.setProperty('--gx', Math.max(-60, Math.min(160, gx)).toFixed(1) + '%');
+        el.style.setProperty('--ga', ga.toFixed(3));
+      });
       requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);

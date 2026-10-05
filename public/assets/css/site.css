@@ -952,5 +952,23 @@ html.has-hall body{background:transparent}
 .hall[data-tone="light"] .hall__etch,.hall[data-tone="light"] .hall__glow{opacity:0}
 /* Each dark room is lit from above, a thin layer of light over the floor */
 .has-hall .thesis,.has-hall .layers,.has-hall .chap,.has-hall .footer{background:radial-gradient(ellipse 90% 60% at 50% 0%,rgba(255,255,255,.045) 0%,rgba(255,255,255,.015) 40%,rgba(255,255,255,0) 75%)}
-@media (prefers-reduced-motion: reduce){.hall__etch{display:none}}
+/* The light finds words */
+.hall__words{position:absolute;inset:0;opacity:.62;background-repeat:repeat;background-position:0 var(--wy,0px);-webkit-mask-image:radial-gradient(circle calc(var(--hall-r) * .75 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.7) 45%,transparent 100%);mask-image:radial-gradient(circle calc(var(--hall-r) * .75 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.7) 45%,transparent 100%)}
+/* The torch: a first visit starts in the dark */
+.hall__veil{position:absolute;inset:0;background:#000;opacity:0;transition:opacity 1.6s cubic-bezier(.2,.7,.2,1)}
+.hall__hint{position:absolute;left:50%;bottom:clamp(28px,6vh,64px);transform:translateX(-50%);margin:0;font:500 .72rem/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;color:#cfcfcf;opacity:0;transition:opacity .8s;white-space:nowrap}
+.hall-unlit .hall__veil{opacity:.8}
+.hall-unlit.is-loaded .hall__hint{opacity:.85;animation:hintPulse 2.4s ease-in-out infinite}
+@keyframes hintPulse{0%,100%{opacity:.4}50%{opacity:.9}}
+.hall-unlit .nav{opacity:.25;transition:opacity 1.6s}
+.nav{transition:transform .6s var(--ease),background .4s,border-color .4s,opacity 1.6s}
+/* Steel catches the light */
+.steel{--ga:0;--gx:50%}
+.mark.steel{color:transparent;-webkit-background-clip:text;background-clip:text;background-image:linear-gradient(100deg,#bdbdbd 0%,#e6e6e6 calc(var(--gx) - 30%),#fff var(--gx),#e6e6e6 calc(var(--gx) + 30%),#a9a9a9 100%)}
+.mark.steel svg{color:#fff;filter:drop-shadow(0 0 calc(var(--ga) * 6px) rgba(255,255,255,calc(var(--ga) * .9)))}
+.has-hall .footer__word .sheen{animation:none;background-size:100% 100%;background-image:linear-gradient(100deg,#9c9c9c 0%,#dcdcdc calc(var(--gx) - 22%),#fff var(--gx),#dcdcdc calc(var(--gx) + 22%),#8f8f8f 100%)}
+.chap__num.steel{-webkit-text-stroke-color:rgba(255,255,255,calc(.32 + var(--ga) * .6))}
+.layer__sigil.steel,.rung__sigil.steel{filter:drop-shadow(0 0 calc(var(--ga) * 7px) rgba(255,255,255,calc(var(--ga) * .85)))}
+.cat.steel,.wfilter__chip.steel{box-shadow:0 0 calc(var(--ga) * 18px) rgba(255,255,255,calc(var(--ga) * .22)),inset 0 0 0 1px rgba(255,255,255,calc(var(--ga) * .45))}
+@media (prefers-reduced-motion: reduce){.hall__etch,.hall__words{display:none}}
 @media print{.hall,.hall-floor{display:none}}
