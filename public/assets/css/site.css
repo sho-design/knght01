@@ -948,12 +948,10 @@ html.has-hall body{background:transparent}
 /* In front: a faint glow and the engraving, added as light only */
 .hall{position:fixed;inset:0;z-index:70;pointer-events:none;--lx:50vw;--ly:32vh;--lr:1;--sy:0px}
 .hall__glow{position:absolute;inset:0;mix-blend-mode:screen;background:radial-gradient(circle calc(var(--hall-r) * var(--lr)) at var(--lx) var(--ly),rgba(255,255,255,.06) 0%,rgba(255,255,255,.02) 45%,rgba(255,255,255,0) 100%)}
-.hall__etch{position:absolute;inset:0;mix-blend-mode:screen;opacity:.26;background-repeat:repeat;background-position:0 var(--sy);-webkit-mask-image:radial-gradient(circle calc(var(--hall-r) * .62 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.45) 45%,transparent 100%);mask-image:radial-gradient(circle calc(var(--hall-r) * .62 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.45) 45%,transparent 100%);transition:opacity 1.2s var(--ease)}
-.hall[data-tone="light"] .hall__etch,.hall[data-tone="light"] .hall__glow{opacity:0}
+.hall[data-tone="light"] .hall__glow{opacity:0}
 /* Each dark room is lit from above, a thin layer of light over the floor */
 .has-hall .thesis,.has-hall .layers,.has-hall .chap,.has-hall .footer{background:radial-gradient(ellipse 90% 60% at 50% 0%,rgba(255,255,255,.045) 0%,rgba(255,255,255,.015) 40%,rgba(255,255,255,0) 75%)}
 /* The light finds words */
-.hall__words{position:absolute;inset:0;opacity:.62;background-repeat:repeat;background-position:0 var(--wy,0px);-webkit-mask-image:radial-gradient(circle calc(var(--hall-r) * .75 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.7) 45%,transparent 100%);mask-image:radial-gradient(circle calc(var(--hall-r) * .75 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.7) 45%,transparent 100%)}
 /* The torch: a first visit starts in the dark */
 .hall__veil{position:absolute;inset:0;background:#000;opacity:0;transition:opacity 1.6s cubic-bezier(.2,.7,.2,1)}
 .hall__hint{position:absolute;left:50%;bottom:clamp(28px,6vh,64px);transform:translateX(-50%);margin:0;font:500 .72rem/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;color:#cfcfcf;opacity:0;transition:opacity .8s;white-space:nowrap}
@@ -970,7 +968,7 @@ html.has-hall body{background:transparent}
 .chap__num.steel{-webkit-text-stroke-color:rgba(255,255,255,calc(.32 + var(--ga) * .6))}
 .layer__sigil.steel,.rung__sigil.steel{filter:drop-shadow(0 0 calc(var(--ga) * 7px) rgba(255,255,255,calc(var(--ga) * .85)))}
 .cat.steel,.wfilter__chip.steel{box-shadow:0 0 calc(var(--ga) * 18px) rgba(255,255,255,calc(var(--ga) * .22)),inset 0 0 0 1px rgba(255,255,255,calc(var(--ga) * .45))}
-@media (prefers-reduced-motion: reduce){.hall__etch,.hall__words{display:none}}
+
 @media print{.hall,.hall-floor{display:none}}
 
 /* ---------- Colour belongs to the clients ---------- */
@@ -1032,3 +1030,29 @@ html.has-hall body{background:transparent}
 .nring__sig.steel{box-shadow:0 0 calc(var(--ga) * 18px) rgba(255,255,255,calc(var(--ga) * .25))}
 @media (max-width:900px),(hover:none){.npanel,.nav__line{display:none}}
 @media (prefers-reduced-motion: reduce){.npanel,.npanel.is-open,.nworlds li,.nring li,.nring__circle circle,.nav__line{transition:none}}
+
+/* ---------- The field: engravings, sayings and portals the light finds ---------- */
+.hall-field{position:absolute;inset:0;overflow:hidden;mix-blend-mode:screen;-webkit-mask-image:radial-gradient(circle calc(var(--hall-r) * .72 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.55) 42%,transparent 100%);mask-image:radial-gradient(circle calc(var(--hall-r) * .72 * var(--lr)) at var(--lx) var(--ly),#000 0%,rgba(0,0,0,.55) 42%,transparent 100%);transition:opacity 1.2s var(--ease)}
+.hall[data-tone="light"] .hall-field{opacity:0}
+.hall-field__d{position:absolute;left:0;top:0;width:100%;will-change:transform}
+.hall-engr{position:absolute;pointer-events:none}
+.hall-engr svg{display:block;width:100%;height:100%;opacity:.4}
+.hall-say{position:absolute;margin:0;white-space:nowrap;font-family:Georgia,'Times New Roman',serif;font-weight:500;letter-spacing:.34em;line-height:1.9;color:#fff}
+.hall-portals{position:absolute;left:0;top:0;width:100%;z-index:69;pointer-events:none}
+.hall-portal{position:absolute;width:56px;height:56px;display:grid;place-items:center;color:#fff;opacity:0;pointer-events:none;text-decoration:none;cursor:pointer}
+.hall-portal svg{position:relative;width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(255,255,255,.55));transition:transform .5s var(--ease-out)}
+.hall-portal__ring{position:absolute;inset:0;border:1px solid rgba(255,255,255,.3);border-radius:50%;transform:scale(.72);transition:transform .6s var(--ease-out),border-color .4s,box-shadow .4s}
+.hall-portal.is-near .hall-portal__ring{transform:scale(1);border-color:rgba(255,255,255,.7)}
+.hall-portal:hover .hall-portal__ring{transform:scale(1.2);box-shadow:0 0 28px rgba(255,255,255,.28)}
+.hall-portal:hover svg{transform:scale(1.14) rotate(-6deg)}
+.hall-portal.is-found .hall-portal__ring{animation:portalPulse 1.6s var(--ease-out) 1}
+@keyframes portalPulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}100%{box-shadow:0 0 0 28px rgba(255,255,255,0)}}
+.hall-portal__label{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);white-space:nowrap;font:500 .62rem/1 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:#ddd;opacity:0;transition:opacity .4s}
+.hall-portal.is-near .hall-portal__label{opacity:.9}
+.hall-gate{position:fixed;inset:0;z-index:200;display:grid;place-items:center;align-content:center;gap:20px;background:#000;color:#fff;pointer-events:none;clip-path:circle(0 at var(--gx,50%) var(--gy,50%));transition:clip-path 1s cubic-bezier(.7,0,.2,1)}
+.hall-gate.is-open{clip-path:circle(150% at var(--gx,50%) var(--gy,50%))}
+.hall-gate svg{width:96px;height:96px;fill:none;stroke:#fff;stroke-width:.9;stroke-linecap:round;stroke-linejoin:round;transform:scale(.4);opacity:0;transition:transform 1s var(--ease-out) .15s,opacity .6s .15s}
+.hall-gate.is-open svg{transform:scale(1);opacity:1}
+.hall-gate p{margin:0;font:500 .78rem/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;opacity:0;transition:opacity .6s .45s}
+.hall-gate.is-open p{opacity:.85}
+@media (prefers-reduced-motion: reduce){.hall-field,.hall-portals{display:none}}

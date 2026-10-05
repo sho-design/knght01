@@ -832,45 +832,204 @@
     const hall = document.createElement('div');
     hall.className = 'hall';
     hall.setAttribute('aria-hidden', 'true');
-    hall.innerHTML = '<div class="hall__etch"></div><div class="hall__glow"></div><div class="hall__veil"></div><p class="hall__hint"></p>';
+    hall.innerHTML = '<div class="hall-field"><div class="hall-field__d" data-f="0.55"></div><div class="hall-field__d" data-f="0.78"></div><div class="hall-field__d" data-f="1"></div></div><div class="hall__glow"></div><div class="hall__veil"></div><p class="hall__hint"></p>';
     document.body.appendChild(hall);
     const floor = document.createElement('div');
     floor.className = 'hall-floor';
-    floor.innerHTML = '<div class="hall__words"></div>';
     floor.setAttribute('aria-hidden', 'true');
     document.body.prepend(floor);
+    const portalsEl = document.createElement('div');
+    portalsEl.className = 'hall-portals';
+    document.body.appendChild(portalsEl);
     const setVar = (k, v) => { hall.style.setProperty(k, v); floor.style.setProperty(k, v); };
     root.classList.add('has-hall');
+    // Arriving through a portal: the world opens out of its sigil.
+    try {
+      const came = JSON.parse(sessionStorage.getItem('knght-portal') || 'null');
+      sessionStorage.removeItem('knght-portal');
+      if (came && location.pathname.includes(`/worlds/${came.slug}/`) && !reduce) {
+        const gate = document.createElement('div');
+        gate.className = 'hall-gate is-open';
+        gate.innerHTML = `<svg viewBox="0 0 24 24">${came.d}</svg><p>${came.name.replace(/</g, '&lt;')}</p>`;
+        document.body.appendChild(gate);
+        setTimeout(() => { gate.style.transitionDuration = '1.1s'; gate.classList.remove('is-open'); }, 700);
+        setTimeout(() => gate.remove(), 2000);
+      }
+    } catch (e) {}
 
-    // The engraving: a banknote rosette and fine hatching, drawn once as a tile.
-    const rosette = (cx, cy, R, r, d, turns, steps) => {
+    /* The field: engravings scattered at random each visit, at three depths, never in a pattern you can learn. */
+    const SAYINGS = [
+      'We say what we can prove', 'The rule is a frame, not a cage', 'Trust is built in the fine print',
+      'A claim you cannot prove is a liability', 'Know your regulator before your font', 'Every word is a promise',
+      'Lore first. Then the sword', 'Restraint is a luxury', 'Clarity is a kindness', 'Keep your word in public',
+      'Consent is part of the craft', 'Quiet confidence outlasts loud claims', 'Your reputation arrives before you do',
+      'Built inside the rules', 'Proof on file. Pride on show', 'Make the rule your edge', 'A world is more than a logo',
+      'If we cannot help, we say so', 'AI is the squire, not the knight', 'The college reads your ads too',
+      'One wrong word can cost a licence', 'Patience is a strategy', 'Sell the care, not the cure',
+      'Say less. Mean all of it', 'Every sign is a signature', 'Systems keep promises when people are busy',
+      'The price is the price', 'Real people. Real consent', 'Strong brands do not shout', 'Earn the second visit',
+      'Small print. Large trust', 'Your name is your seal', 'Beauty that holds up to review', 'Before the launch, the law',
+      'Good work survives scrutiny', 'Honour is an asset', 'Build it once. Build it right', 'Fewer claims. Better proof',
+      'The quiet brand is heard', 'What you leave out matters', 'Every layer holds up the next', 'Strategy first, then the sword',
+      'We only show work we built', 'Craft is a kind of courage', 'Know what you stand against',
+    ];
+    const WORLDS = [
+      ['restoration-medical', 'Restoration Medical', '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M7.5 12h9"/><path d="M5.2 17.6c2-1.4 4.3-2.1 6.8-2.1s4.8.7 6.8 2.1"/>'],
+      ['black-lotus-coffee', 'Black Lotus Coffee', '<path d="M12 4c2.2 2.6 2.2 6.6 0 9.2-2.2-2.6-2.2-6.6 0-9.2z"/><path d="M12 13.2c-1.6-2.8-4.6-4.2-7.6-3.8.4 3 2.8 5.4 7.6 3.8zM12 13.2c1.6-2.8 4.6-4.2 7.6-3.8-.4 3-2.8 5.4-7.6 3.8z"/><path d="M5 17.5h14M8 20.5h8"/>'],
+      ['castleblack-spirits', 'Castleblack Spirits', '<path d="M7 21V8h2V5.5h2V8h2V5.5h2V8h2v13z"/><path d="M10.5 21v-3.5a1.5 1.5 0 0 1 3 0V21M10.5 12h3"/>'],
+      ['lisa-dang-immigration-law', 'Lisa Dang Immigration Law', '<path d="M5 21V10a7 7 0 0 1 14 0v11"/><path d="M9 21v-9a3 3 0 0 1 6 0v9"/><path d="M3 21h18"/>'],
+      ['lorelyns', 'Lorelyns Gourmet Desserts', '<path d="M6 11h12l-1.6 9H7.6z"/><path d="M6 11a6 4.5 0 0 1 12 0"/><path d="M12 6.5V4M9.5 15.5h5"/>'],
+      ['rum-raiders-ring', 'Rum Raiders Ring', '<circle cx="12" cy="5" r="2"/><path d="M12 7v13M8 10h8"/><path d="M4.5 13.5c0 4 3.4 6.5 7.5 6.5s7.5-2.5 7.5-6.5M4.5 13.5 3 15.5M19.5 13.5 21 15.5"/>'],
+      ['toronto-beauty', 'Toronto Beauty', '<ellipse cx="12" cy="9.5" rx="5.5" ry="6.5"/><path d="M12 16v5M9 21h6"/><path d="M9.5 7.5c.8-1.2 2-1.8 3.3-1.6"/>'],
+      ['wellfit-social-club', 'Wellfit Social Club', '<path d="M8.6 10.2V8.5a3.4 3.4 0 0 1 6.8 0v1.7"/><circle cx="12" cy="15" r="5.6"/><path d="M10 15h4"/>'],
+      ['art-colouring', 'Art Colouring', '<path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.6 0 2-1.2 1.4-2.2-.7-1.2.1-2.6 1.6-2.6H18a2.5 2.5 0 0 0 2.5-2.5A8.5 8.5 0 0 0 12 3.5z"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10" r="1"/>'],
+    ];
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const shuffle = (arr) => { const c = arr.slice(); for (let i = c.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [c[i], c[j]] = [c[j], c[i]]; } return c; };
+    const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const rosette = (c, R, r, d, turns, steps) => {
       let path = '';
       for (let i = 0; i <= steps; i++) {
         const t = (i / steps) * Math.PI * 2 * turns;
-        const x = cx + (R - r) * Math.cos(t) + d * Math.cos(((R - r) / r) * t);
-        const y = cy + (R - r) * Math.sin(t) - d * Math.sin(((R - r) / r) * t);
-        path += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+        const px = c + (R - r) * Math.cos(t) + d * Math.cos(((R - r) / r) * t);
+        const py = c + (R - r) * Math.sin(t) - d * Math.sin(((R - r) / r) * t);
+        path += (i ? 'L' : 'M') + px.toFixed(1) + ' ' + py.toFixed(1);
       }
-      return `<path d="${path}"/>`;
+      return path;
     };
-    const T = 640;
-    let art = '';
-    art += rosette(T / 2, T / 2, 180, 47, 96, 47, 2400);
-    art += rosette(T / 2, T / 2, 120, 31, 40, 31, 1400);
-    art += rosette(T / 2, T / 2, 64, 17, 30, 17, 900);
-    for (let k = 1; k < 12; k++) art += `<circle cx="${T / 2}" cy="${T / 2}" r="${k * 4}"/>`;
-    for (let k = 0; k < 9; k++) art += `<circle cx="${T / 2}" cy="${T / 2}" r="${206 + k * 5}"/>`;
-    let hatch = '';
-    for (let x = -T; x < T * 2; x += 7) hatch += `M${x} 0L${x + T} ${T}`;
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${T}" height="${T}" viewBox="0 0 ${T} ${T}"><g fill="none" stroke="#fff" stroke-width=".55" opacity=".9">${art}</g><path d="${hatch}" stroke="#fff" stroke-width=".35" opacity=".28"/></svg>`;
-    $('.hall__etch', hall).style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
-    // The light finds words: the codex, etched small between the rosettes.
-    const LINES = ['No layer is built before Lore', 'Every word is checked against your regulator', 'We say what we can prove', 'Strategy first, then the sword', 'AI is the squire, not the knight', 'We only show work we built', 'If we cannot help, we say so'];
-    const W = 1280;
-    const spots = [[640, 132], [320, 470], [960, 560], [640, 800], [300, 1080], [980, 1160], [640, 1250]];
-    const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-    const words = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${W}" viewBox="0 0 ${W} ${W}"><g fill="#fff" font-family="Georgia,'Times New Roman',serif" font-size="15" letter-spacing="4.5" text-anchor="middle">${LINES.map((l, i) => `<text x="${spots[i][0]}" y="${spots[i][1]}">${esc(l.toUpperCase())}</text><path d="M${spots[i][0] - 30} ${spots[i][1] + 14}h60" stroke="#fff" stroke-width=".6"/>`).join('')}</g></svg>`;
-    $('.hall__words', floor).style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(words)}")`;
+    const engraving = () => {
+      // A banknote rosette, a seal of rings or a patch of hatching: never the same twice.
+      const kind = Math.random();
+      const size = Math.round(rnd(90, 560));
+      const c = size / 2;
+      const sw = rnd(0.35, 0.95).toFixed(2);
+      if (kind < 0.62) {
+        const R = c * rnd(0.6, 0.92), r = R * [0.18, 0.21, 0.24, 0.27, 0.31][Math.floor(Math.random() * 5)], d = r * rnd(0.6, 2.2);
+        const turns = Math.round(rnd(9, 47));
+        let g = `<path d="${rosette(c, R, r, d, turns, Math.round(Math.min(2400, size * 4)))}"/>`;
+        if (Math.random() < 0.6) g += `<path d="${rosette(c, R * 0.55, r * 0.6, d * 0.5, Math.round(turns * 0.7), Math.round(size * 2))}"/>`;
+        if (Math.random() < 0.5) for (let k = 0; k < Math.round(rnd(3, 9)); k++) g += `<circle cx="${c}" cy="${c}" r="${(R + 8 + k * rnd(3, 6)).toFixed(1)}"/>`;
+        return { size, html: `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><g fill="none" stroke="#fff" stroke-width="${sw}">${g}</g></svg>` };
+      }
+      if (kind < 0.8) {
+        let g = '';
+        const n = Math.round(rnd(6, 22));
+        for (let k = 1; k <= n; k++) g += `<circle cx="${c}" cy="${c}" r="${((c - 2) * k / n).toFixed(1)}"/>`;
+        return { size, html: `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><g fill="none" stroke="#fff" stroke-width="${sw}">${g}</g></svg>` };
+      }
+      const gap = rnd(5, 11), ang = Math.random() < 0.5 ? 1 : -1;
+      let h = '';
+      for (let x0 = -size; x0 < size * 2; x0 += gap) h += `M${x0.toFixed(1)} 0L${(x0 + ang * size).toFixed(1)} ${size}`;
+      const id = 'h' + Math.random().toString(36).slice(2, 8);
+      return { size, html: `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><defs><radialGradient id="${id}g"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="${id}"><rect width="${size}" height="${size}" fill="url(#${id}g)"/></mask></defs><path d="${h}" stroke="#fff" stroke-width="${(sw * 0.7).toFixed(2)}" mask="url(#${id})"/></svg>` };
+    };
+
+    const layers = $$('.hall-field__d', hall).map((el) => ({ el, f: +el.dataset.f }));
+    const here = location.pathname.split('/').filter(Boolean);
+    const thisWorld = here[0] === 'worlds' ? here[1] : null;
+    let portals = [];
+    const measure = document.createElement('canvas').getContext('2d');
+    const build = () => {
+      const docH = Math.max(document.documentElement.scrollHeight, innerHeight);
+      const vw = document.documentElement.clientWidth, vh = innerHeight, sx = scrollX, sy = scrollY;
+      // Where words must not go: anything a visitor reads, clicks or looks at, and the white rooms.
+      const avoid = [];
+      $$('h1,h2,h3,h4,h5,p,a,button,li,img,video,figure,input,select,textarea,label,dt,dd,blockquote,.btn,.cat,.footer__word,.chap__num,.dial,.rung').forEach((el) => {
+        if (el.closest('.hall,.hall-portals,.nav,.mnav,.loader,.codex')) return;
+        const r = el.getBoundingClientRect();
+        if (r.width < 2 || r.height < 2) return;
+        avoid.push([r.left + sx, r.top + sy, r.right + sx, r.bottom + sy]);
+      });
+      // Anything that sticks while you scroll covers its whole track, so keep that track clear.
+      $$('main *, footer *').forEach((el) => {
+        if (getComputedStyle(el).position !== 'sticky') return;
+        const r = el.getBoundingClientRect(), pr = (el.parentElement || el).getBoundingClientRect();
+        avoid.push([r.left + sx, pr.top + sy, r.right + sx, pr.bottom + sy]);
+      });
+      // The white rooms, and the pinned rooms whose contents move while you scroll (the hero, the worlds gallery).
+      $$('.engage,.score,.worlds,.hero').forEach((el) => { const r = el.getBoundingClientRect(); avoid.push([-1e5, r.top + sy - 60, 1e5, r.bottom + sy + 60]); });
+      const hits = (b, pad, list) => list.some((a) => b[0] - pad < a[2] && b[2] + pad > a[0] && b[1] - pad < a[3] && b[3] + pad > a[1]);
+      const placed = [];
+      const find = (w, h, pad, minY, tries = 90) => {
+        for (let i = 0; i < tries; i++) {
+          const x0 = rnd(84, Math.max(85, vw - w - 130)), y0 = rnd(minY, Math.max(minY + 1, docH - h - 60));
+          const box = [x0, y0, x0 + w, y0 + h];
+          if (!hits(box, pad, avoid) && !hits(box, pad * 2.2, placed)) { placed.push(box); return box; }
+        }
+        return null;
+      };
+      layers.forEach((l) => { l.el.innerHTML = ''; l.el.style.height = (docH * l.f + vh) + 'px'; });
+
+      // Engravings: spread through every depth, smaller and fainter the deeper they sit.
+      const count = Math.round(docH / 420);
+      for (let i = 0; i < count; i++) {
+        const l = layers[Math.floor(Math.random() * layers.length)];
+        const e = engraving();
+        const s = e.size * (0.55 + l.f * 0.5);
+        const div = document.createElement('div');
+        div.className = 'hall-engr';
+        div.innerHTML = e.html;
+        div.style.cssText = `left:${rnd(-s * 0.3, vw - s * 0.7).toFixed(0)}px;top:${rnd(0, docH * l.f + vh - s).toFixed(0)}px;width:${s.toFixed(0)}px;height:${s.toFixed(0)}px;opacity:${(rnd(0.35, 1) * (0.45 + l.f * 0.55)).toFixed(2)};transform:rotate(${rnd(0, 360).toFixed(0)}deg)${l.f < 0.6 ? ';filter:blur(.6px)' : ''}`;
+        l.el.appendChild(div);
+      }
+
+      // Sayings: each used once, scattered, at different sizes, never across the text.
+      const front = layers[layers.length - 1].el;
+      const n = Math.max(3, Math.min(SAYINGS.length, Math.round(docH / (vh * 1.05))));
+      shuffle(SAYINGS).slice(0, n).forEach((line) => {
+        const size = Math.round(rnd(10, 24));
+        const txt = line.toUpperCase();
+        measure.font = `500 ${size}px Georgia, serif`;
+        const w = measure.measureText(txt).width + txt.length * size * 0.34 + 4, h = size * 1.9;
+        const box = find(w, h, 36, vh * 0.25);
+        if (!box) return;
+        const el = document.createElement('p');
+        el.className = 'hall-say';
+        el.textContent = txt;
+        el.style.cssText = `left:${box[0].toFixed(0)}px;top:${box[1].toFixed(0)}px;font-size:${size}px;opacity:${rnd(0.45, 0.95).toFixed(2)}`;
+        front.appendChild(el);
+      });
+
+      // Portals: a few world sigils hidden in the dark. Find one and it takes you there.
+      portalsEl.innerHTML = '';
+      portalsEl.style.height = docH + 'px';
+      const pick = shuffle(WORLDS.filter((w) => w[0] !== thisWorld)).slice(0, $('.hero') ? 3 : 2);
+      portals = [];
+      pick.forEach(([slug, name, d]) => {
+        const box = find(56, 56, 34, vh * 0.6, 400);
+        if (!box) return;
+        const a = document.createElement('a');
+        a.className = 'hall-portal';
+        a.href = `/worlds/${slug}/`;
+        a.tabIndex = -1;
+        a.setAttribute('aria-hidden', 'true');
+        a.innerHTML = `<span class="hall-portal__ring"></span><svg viewBox="0 0 24 24">${d}</svg><span class="hall-portal__label">${esc(name)}</span>`;
+        a.style.left = box[0].toFixed(0) + 'px'; a.style.top = box[1].toFixed(0) + 'px';
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (reduce) { location.href = a.href; return; }
+          const r = a.getBoundingClientRect();
+          const gate = document.createElement('div');
+          gate.className = 'hall-gate';
+          gate.style.setProperty('--gx', (r.left + r.width / 2) + 'px');
+          gate.style.setProperty('--gy', (r.top + r.height / 2) + 'px');
+          gate.innerHTML = `<svg viewBox="0 0 24 24">${d}</svg><p>${esc(name)}</p>`;
+          document.body.appendChild(gate);
+          requestAnimationFrame(() => gate.classList.add('is-open'));
+          try { sessionStorage.setItem('knght-portal', JSON.stringify({ slug, name, d })); } catch (err) {}
+          setTimeout(() => { location.href = a.href; }, 1150);
+        });
+        portalsEl.appendChild(a);
+        portals.push({ a, x: box[0] + 28, y: box[1] + 28, found: false });
+      });
+    };
+    let lastH = 0, buildT = 0;
+    const rebuild = () => { clearTimeout(buildT); buildT = setTimeout(() => { lastH = document.documentElement.scrollHeight; build(); }, 400); };
+    if (document.readyState === 'complete') rebuild(); else addEventListener('load', rebuild, { once: true });
+    setTimeout(rebuild, 60);
+    let lastW = innerWidth;
+    addEventListener('resize', () => { if (Math.abs(innerWidth - lastW) > 40) { lastW = innerWidth; rebuild(); } });
+    if ('ResizeObserver' in window) new ResizeObserver(() => { if (Math.abs(document.documentElement.scrollHeight - lastH) > 300) rebuild(); }).observe(document.body);
 
     // Light sections (the offer, the self-check) hide the engraving.
     const rooms = $$('main > section, .chap, .footer');
@@ -942,8 +1101,15 @@
       setVar('--lx', x.toFixed(1) + 'px');
       setVar('--ly', y.toFixed(1) + 'px');
       setVar('--lr', flick.toFixed(4));
-      setVar('--sy', (-(scrollY * 0.35) % 640).toFixed(1) + 'px');
-      floor.style.setProperty('--wy', (-(scrollY * 0.35) % 1280).toFixed(1) + 'px');
+      layers.forEach((l) => { l.el.style.transform = `translate3d(0,${(-scrollY * l.f).toFixed(1)}px,0)`; });
+      portals.forEach((p) => {
+        const d = Math.hypot(p.x - scrollX - x, p.y - scrollY - y);
+        const v = Math.max(0, Math.min(1, 1 - (d - 40) / 170)) * ig;
+        p.a.style.opacity = v.toFixed(3);
+        p.a.style.pointerEvents = v > 0.3 ? 'auto' : 'none';
+        p.a.classList.toggle('is-near', v > 0.75);
+        if (v > 0.75 && !p.found) { p.found = true; p.a.classList.add('is-found'); }
+      });
       steel.forEach((el) => {
         const r = el.getBoundingClientRect();
         const gx = ((x - r.left) / Math.max(r.width, 1)) * 100;
