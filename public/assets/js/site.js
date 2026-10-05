@@ -929,6 +929,9 @@
     const here = location.pathname.split('/').filter(Boolean);
     const thisWorld = here[0] === 'worlds' ? here[1] : null;
     let portals = [], sayings = [], startY = 1e9;
+    // Where the field may begin, measured live: the top of the worlds on the homepage, else the end of the hero.
+    const startEl = $('#worlds') || $('main > :first-child');
+    const startTop = () => { const r = startEl.getBoundingClientRect(); return $('#worlds') ? r.top : r.bottom; };
     const measure = document.createElement('canvas').getContext('2d');
     const build = () => {
       const docH = Math.max(document.documentElement.scrollHeight, innerHeight);
@@ -951,8 +954,7 @@
       $$('.engage,.score,.worlds,.hero').forEach((el) => { const r = el.getBoundingClientRect(); avoid.push([-1e5, r.top + sy - 60, 1e5, r.bottom + sy + 60]); });
       const hits = (b, px, py, list) => list.some((a) => b[0] - px < a[2] && b[2] + px > a[0] && b[1] - py < a[3] && b[3] + py > a[1]);
       // The field never touches a hero. On the homepage it begins with the worlds.
-      const startEl = $('#worlds') || $('main > :first-child');
-      if (startEl) { const r = startEl.getBoundingClientRect(); startY = ($('#worlds') ? r.top : r.bottom) + sy; }
+      if (startEl) startY = startTop() + sy;
       avoid.push([-1e5, -1e5, 1e5, startY + 40]);
       const placed = [];
       // padY covers how far an item drifts against the page as it scrolls past.
@@ -1138,7 +1140,8 @@
       layers.forEach((l) => { l.el.style.transform = `translate3d(0,${(-scrollY * l.f).toFixed(1)}px,0)`; });
       const vh2 = innerHeight / 2;
       // A hard edge: nothing from the field is drawn above the end of the hero (the worlds, on the homepage).
-      const edge = Math.max(0, Math.min(innerHeight, startY - scrollY));
+      // Measured every frame, so a page that settles taller after loading (fonts, pins) can never pull it up over the film.
+      const edge = Math.max(0, Math.min(innerHeight, startEl ? startTop() : startY - scrollY));
       if (field) field.style.clipPath = `inset(${edge.toFixed(0)}px 0 0 0)`;
       sayings.forEach((s2) => {
         const off = (scrollY + vh2 - s2.y) * (1 - s2.f);
@@ -1148,7 +1151,7 @@
         const off = (scrollY + vh2 - p.y) * (1 - p.f);
         p.a.style.transform = `translate3d(0,${off.toFixed(1)}px,0)`;
         const d = Math.hypot(p.x - scrollX - x, p.y + off - scrollY - y);
-        const v = Math.max(0, Math.min(1, 1 - (d - 40) / 170)) * ig * (p.y + off > startY ? 1 : 0);
+        const v = Math.max(0, Math.min(1, 1 - (d - 40) / 170)) * ig * (p.y + off - scrollY > edge ? 1 : 0);
         p.a.style.opacity = (v * 0.8).toFixed(3);
         p.a.style.pointerEvents = v > 0.3 && !p.blocked ? 'auto' : 'none';
         p.a.classList.toggle('is-near', v > 0.75);
