@@ -135,6 +135,49 @@
         o.connect(g).connect(master); o.start(at); o.stop(at + 2.3);
       });
     };
+    /* The sword: heat, the hammer, the quench, the etching tool, the stone */
+    const burst = (dur, type, f0, f1, gain, q = 0.7, at = 0) => {
+      const t = ctx.currentTime + at;
+      const n = ctx.createBufferSource(); n.buffer = noiseBuffer(ctx, dur + 0.1);
+      const f = ctx.createBiquadFilter(); f.type = type; f.Q.value = q;
+      f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      const g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + Math.min(0.06, dur / 4)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      n.connect(f).connect(g).connect(master); n.start(t); n.stop(t + dur + 0.1);
+      return g;
+    };
+    const roar = (dur = 1.6) => {
+      if (!on || !ctx) return;
+      const t = ctx.currentTime;
+      const n = ctx.createBufferSource(); n.buffer = noiseBuffer(ctx, dur + 0.6);
+      const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.setValueAtTime(180, t); f.frequency.exponentialRampToValueAtTime(1100, t + dur);
+      const g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.09, t + dur * 0.7); g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.5);
+      n.connect(f).connect(g).connect(master); n.start(t); n.stop(t + dur + 0.6);
+    };
+    const clang = (level = 1) => {
+      if (!on || !ctx) return;
+      const t = ctx.currentTime;
+      [[1, 0.09, 1.4], [2.76, 0.06, 0.9], [5.4, 0.04, 0.55], [8.93, 0.025, 0.3]].forEach(([r, peak, dec]) => {
+        const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = 410 * r;
+        const g = ctx.createGain(); g.gain.setValueAtTime(peak * level, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dec);
+        o.connect(g).connect(master); o.start(t); o.stop(t + dec + 0.05);
+      });
+      burst(0.08, 'highpass', 2500, 6000, 0.12 * level, 0.5);
+    };
+    const hiss = () => { if (on && ctx) burst(1.8, 'highpass', 5200, 2600, 0.06, 0.4); };
+    const scrape = (dur = 1.8) => {
+      if (!on || !ctx) return;
+      const steps = Math.round(dur / 0.11);
+      for (let i = 0; i < steps; i++) burst(0.09, 'bandpass', 3200 + Math.random() * 1600, 2200, 0.025 + Math.random() * 0.02, 2.5, i * 0.11);
+    };
+    const thud = () => {
+      if (!on || !ctx) return;
+      const t = ctx.currentTime;
+      const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(90, t); o.frequency.exponentialRampToValueAtTime(38, t + 0.45);
+      const g = ctx.createGain(); g.gain.setValueAtTime(0.28, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
+      o.connect(g).connect(master); o.start(t); o.stop(t + 0.65);
+      burst(0.5, 'lowpass', 900, 120, 0.12, 0.6);
+      burst(0.9, 'bandpass', 700, 300, 0.035, 1.2, 0.05);
+    };
     const enable = async () => {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return false;
@@ -167,7 +210,7 @@
       if (document.hidden) ctx.suspend().catch(() => {});
       else if (on) ctx.resume().catch(() => {});
     });
-    return { enable, disable, shing, tick, sweep, room, ignite, bloom, get on() { return on; } };
+    return { enable, disable, shing, tick, sweep, room, ignite, bloom, roar, clang, hiss, scrape, thud, get on() { return on; } };
   })();
 
   const soundBtn = $('[data-sound]');
