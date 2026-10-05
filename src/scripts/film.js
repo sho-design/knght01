@@ -141,6 +141,11 @@ export default function film(gsap) {
   const RATE = 0.75; // six-second shots, stretched over each eight-second scene
   let scene = -1, playing = false, visible = false, userPaused = false;
   const load = (i) => { const v = plates[i]; if (v && !v.src && v.dataset.src) { v.src = v.dataset.src; v.preload = 'auto'; } };
+  // If a shot cannot load, say so (for us), and keep the film running on its graphics alone.
+  plates.forEach((v, i) => {
+    v.addEventListener('error', () => { console.warn(`KNGHT film: shot ${i + 1} did not load`, v.currentSrc || v.dataset.src, v.error && v.error.code); sec.dataset.missing = ((sec.dataset.missing || '') + ' ' + (i + 1)).trim(); });
+    v.addEventListener('loadeddata', () => { sec.dataset.loaded = ((sec.dataset.loaded || '') + ' ' + (i + 1)).trim(); });
+  });
   const sceneAt = (t) => { let i = 0; START.forEach((s, k) => { if (t >= s) i = k; }); return i; };
   const syncPlate = (force) => {
     const t = tl.time(), i = sceneAt(t);
