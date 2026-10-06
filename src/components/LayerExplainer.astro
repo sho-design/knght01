@@ -7,13 +7,13 @@ interface Props { id: string; name: string }
 const { id, name } = Astro.props;
 const d = (s: number, o?: number, extra = '') => `--d:${s}s;${o !== undefined ? `--o:${o}s;` : ''}${extra}`;
 const BEATS: Record<string, string[]> = {
-  lore: ['Everything you know about the business, scattered.', 'Pulled into one line the whole team can say.', 'Then a name and a mark that carry it.'],
-  law: ['A claim a regulator would flag.', 'Struck, with the rule beside it.', 'Rewritten to say only what you can prove.'],
-  language: ['One voice, written down.', 'Carried to every channel.', 'So a post, an email and a sign sound like one place.'],
-  map: ['Someone nearby searches.', 'You come up, and you are the clear choice.', 'One tap to a booked time.'],
-  ground: ['The space, drawn as a path.', 'Signs that guide without a word from staff.', 'From the door to the chair, no doubt.'],
-  artifacts: ['The dieline, to the millimetre.', 'Every word and every code checked against the label rules.', 'Then it lands in a customer’s hand.'],
-  machinery: ['The systems behind the front door.', 'An enquiry is booked and reminded on its own.', 'Then asked for a review. The loop closes.'],
+  lore: ['It starts with what you already know, in pieces.', 'We turn it into one line the whole team can repeat.', 'Then a name and a mark to carry it.'],
+  law: ['Here is a claim a regulator would flag.', 'We cross it out and note the rule it breaks.', 'Then rewrite it to say only what you can back up.'],
+  language: ['First we write the voice down.', 'Then we use it on every channel.', 'A post, an email and a sign end up sounding like the same business.'],
+  map: ['Someone nearby searches.', 'Your listing shows up and stands out.', 'Booking takes one tap.'],
+  ground: ['We plan the space as a route.', 'Signs show people where to go, so staff don’t have to.', 'Nobody has to wonder where to go next.'],
+  artifacts: ['The box starts as a flat dieline, drawn to size.', 'Every line and the barcode get checked against the labelling rules.', 'Then it gets folded, filled and sold.'],
+  machinery: ['This is what happens after someone gets in touch.', 'They get booked and reminded automatically.', 'Afterwards they’re asked for a review, and it starts again.'],
 };
 const AT = [0.2, 3.0, 6.0];
 const beats = BEATS[id] || [];
@@ -155,7 +155,7 @@ const words = [
             <text x={tx} y={ty} class={`lx-s ${al} x-in`} style={d(1.0 + k * 0.2)}>{t}</text>
           </>))}
           <circle r="6" class="lx-fill lx-runner"><animateMotion dur="6s" begin="indefinite" fill="freeze" data-at="2.4"><mpath href="#lxLoop" /></animateMotion></circle>
-          <text x="400" y="218" class="lx-h x-in" style={d(8.4)}>While you sleep.</text>
+          <text x="400" y="218" class="lx-h x-in" style={d(8.4)}>No one has to chase it.</text>
         </>)}
       </svg>
       <ol class="lx__beats">{beats.map((b, k) => <li class={k === beats.length - 1 ? 'is-last' : ''} style={`--d:${AT[k]}s;--o:${AT[k + 1] ?? 99}s`}>{b}</li>)}</ol>

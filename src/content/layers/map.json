@@ -1,9 +1,9 @@
 {
   "order": 4,
   "name": "Map",
-  "line": "Site, search and AI visibility. Where people find your world and how they enter it.",
+  "line": "Where people find you online, and how they book or buy.",
   "question": "Can people find you, and can they get in?",
-  "what": "Website, search, AI visibility and the front door: where people find your world and how they enter it.",
+  "what": "Your website, search and AI visibility, plus the front door where people book or buy.",
   "wrong": "Search, maps and AI assistants send people to a competitor, or the site looks right and never books.",
   "make": [
     "The website",

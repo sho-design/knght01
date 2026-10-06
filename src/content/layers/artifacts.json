@@ -1,9 +1,9 @@
 {
   "order": 6,
   "name": "Artifacts",
-  "line": "Print, labels, packaging and forms. Everything a customer holds.",
+  "line": "Print, labels, packaging and forms: anything a customer can pick up.",
   "question": "Is everything a customer holds on brand and compliant?",
-  "what": "Print, labels, packaging, menus and forms. Everything a customer can pick up.",
+  "what": "Print, labels, packaging, menus and forms: anything a customer can pick up.",
   "wrong": "A label gets rejected, a menu contradicts the website, and every reprint costs money.",
   "make": [
     "Labels and packaging",

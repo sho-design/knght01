@@ -3,7 +3,7 @@
   "name": "Lore",
   "line": "Who you are, who you stand against, and what you are called. The brief and the codex every other layer reads from.",
   "question": "Who are you, who are you for, and who are you against?",
-  "what": "The brief, the position and the name. The story every other layer reads from, written down so nobody has to guess.",
+  "what": "The brief, the positioning and the name, written down so the whole team works from the same story.",
   "wrong": "Every later decision gets argued from scratch, and the brand drifts toward whoever touched it last.",
   "make": [
     "The brief",

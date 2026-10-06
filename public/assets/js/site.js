@@ -915,19 +915,11 @@
 
     /* The field: engravings scattered at random each visit, at three depths, never in a pattern you can learn. */
     const SAYINGS = [
-      'We say what we can prove', 'The rule is a frame, not a cage', 'Trust is built in the fine print',
-      'A claim you cannot prove is a liability', 'Know your regulator before your font', 'Every word is a promise',
-      'Lore first. Then the sword', 'Restraint is a luxury', 'Clarity is a kindness', 'Keep your word in public',
-      'Consent is part of the craft', 'Quiet confidence outlasts loud claims', 'Your reputation arrives before you do',
-      'Built inside the rules', 'Proof on file. Pride on show', 'Make the rule your edge', 'A world is more than a logo',
-      'If we cannot help, we say so', 'AI is the squire, not the knight', 'The I became the blade', 'The college reads your ads too',
-      'One wrong word can cost a licence', 'Patience is a strategy', 'Sell the care, not the cure',
-      'Say less. Mean all of it', 'Every sign is a signature', 'Systems keep promises when people are busy',
-      'The price is the price', 'Real people. Real consent', 'Strong brands do not shout', 'Earn the second visit',
-      'Small print. Large trust', 'Your name is your seal', 'Beauty that holds up to review', 'Before the launch, the law',
-      'Good work survives scrutiny', 'Honour is an asset', 'Build it once. Build it right', 'Fewer claims. Better proof',
-      'The quiet brand is heard', 'What you leave out matters', 'Every layer holds up the next', 'Strategy first, then the sword',
-      'We only show work we built', 'Craft is a kind of courage', 'Know what you stand against',
+      'We say what we can prove', 'Know your regulator before your font', 'The college reads your ads too',
+      'Lore first. Then the sword', 'If we cannot help, we say so', 'AI is the squire, not the knight',
+      'The I became the blade', 'Light the KNGHT', 'The price is the price', 'Sell the care, not the cure',
+      'Every sign is a signature', 'Systems keep promises when people are busy', 'Earn the second visit',
+      'What you leave out matters', 'We only show work we built', 'Check the label before the print run',
     ];
     const WORLDS = [
       ['restoration-medical', 'Restoration Medical', '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M7.5 12h9"/><path d="M5.2 17.6c2-1.4 4.3-2.1 6.8-2.1s4.8.7 6.8 2.1"/>'],

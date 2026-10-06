@@ -151,10 +151,10 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
           <button type="button" class="cat" data-cat="spirits" aria-pressed="false">Spirits</button>
                     <button type="button" class="cat" data-cat="food" aria-pressed="false">Food and drink</button>
         </div>
-        <p class="cats__rules" data-cat-rules aria-live="polite">Pick your category. The page reads itself against your rules.</p>
+        <p class="cats__rules" data-cat-rules aria-live="polite">Pick your category and the page will show the rules that apply to you.</p>
       </div>
       <div class="hero__foot" data-hero-fade>
-        <p class="hero__lede"><strong>A brand world is the whole business, built as one:</strong> the name, the voice, the site, the space, the print and the systems. All of it inside your Ontario regulator&rsquo;s rules. Agency-grade, without the $50,000 minimum.</p>
+        <p class="hero__lede"><strong>We build the whole business as one brand:</strong> the name, the voice, the website, the space, the print and the booking systems. Everything is checked against your Ontario regulator&rsquo;s rules. You get agency-level work without the $50,000 minimum.</p>
         <div class="actions">
           <a class="btn" href="/book/" data-magnetic>Book the free call
             <svg class="arrow" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -177,7 +177,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
           <li><b>1</b><span>Verdict, where every world starts</span></li>
         </ul>
       </div>
-      <p class="thesis__text">Clinics, dentists, medspas, law firms, spirits, food and drink. Categories where <em>one wrong word costs a licence</em> and <em>one weak launch costs a year.</em> So we build the whole world, and every layer of it inside the rules. <span class="thesis__not">We are not an agency that hands you a logo and leaves.</span></p>
+      <p class="thesis__text">Clinics, dentists, medspas, law firms, spirits, food and drink. In these fields, <em>a careless ad claim can end up in front of your regulator,</em> and a launch that misses can set you back a year. So we build all of it, and check it against the rules. <span class="thesis__not">We don&rsquo;t hand over a logo and disappear.</span></p>
     </div>
   </section>
 
@@ -194,7 +194,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
       <div class="worlds__track">
         <div class="worlds__intro">
           <h2 class="sr-only" id="worlds-title">The worlds</h2>
-          <p data-reveal>Every world here was built by Sergio Ho, KNGHT&rsquo;s founder. Some we run. All were built inside the rules. Covers are mood plates. The work is inside each world.</p>
+          <p data-reveal>Sergio Ho, KNGHT&rsquo;s founder, built every one of these, and a few are businesses we run ourselves. The cover images only set the mood. Open a world to see the actual work.</p>
           <div class="wfilter" role="group" aria-label="Show worlds by layer"><button type="button" class="wfilter__chip" aria-pressed="true" data-layer="">All</button>{layers.filter((l) => worlds.some((w) => w.data.built[l.data.name])).map((l) => <button type="button" class="wfilter__chip" aria-pressed="false" data-layer={l.id}>{l.data.name}</button>)}</div>
         </div>
 
@@ -225,14 +225,14 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
     <div class="wrap">
       <div class="engage__head">
         <h2 class="display" id="engage-title" data-split>Three <br><em>ways in</em></h2>
-        <p data-reveal><b class="engage__pos">Agency-grade brand worlds, without the $50,000 minimum.</b> Start with what you have. Build what is missing. Keep it alive after launch. <a class="link" href="/rules/what-a-brand-world-costs-in-ontario/">What a brand world costs in Ontario</a><span class="engage__intake" data-intake hidden></span></p>
+        <p data-reveal><b class="engage__pos">Agency-grade brand worlds, without the $50,000 minimum.</b> You can start with what you already have. We fill in what&rsquo;s missing and look after it once it launches. <a class="link" href="/rules/what-a-brand-world-costs-in-ontario/">What a brand world costs in Ontario</a><span class="engage__intake" data-intake hidden></span></p>
       </div>
       <ol class="ladder" data-ladder>
         <li class="rung rung--lead">
           <span class="rung__flag">Start here</span>
           <div class="rung__top"><span class="rung__n">I</span><svg class="rung__sigil" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M7.5 21h9M4 6.5h16"/><path d="M6.5 6.5L3.5 13h6zM17.5 6.5l-3 6.5h6z"/><path d="M3.5 13a3 2 0 0 0 6 0M14.5 13a3 2 0 0 0 6 0"/></svg></div>
           <h3 class="rung__name">The <em>Verdict</em></h3>
-          <p class="rung__line">Where you stand, scored.</p>
+          <p class="rung__line">A scored review of where you stand.</p>
           <p class="rung__big"><span class="rung__cur">$</span><b data-count="3500">3,500</b><span class="rung__unit">CAD and up</span></p>
           <ul class="rung__facts">
             <li>Every layer scored against your buyer and your regulator</li>
@@ -247,13 +247,13 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
           <span class="rung__tag">Your Verdict fee counts here</span>
           <div class="rung__top"><span class="rung__n">II</span><svg class="rung__sigil" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 21V9.5h2.5V6.5h2.5v3h1.5v-3h2v3h1.5v-3h2.5v3h2.5V21z"/><path d="M10 21v-4.5a2 2 0 0 1 4 0V21"/></svg></div>
           <h3 class="rung__name">The <em>Build</em></h3>
-          <p class="rung__line">The world, built.</p>
+          <p class="rung__line">The complete build.</p>
           <p class="rung__big"><span class="rung__cur">$</span><b>25,000</b><span class="rung__unit">CAD for a full world</span></p>
           <ul class="rung__facts">
             <li>A complete world, or only the layers you are missing</li>
             <li>Single layers from $7,500</li>
             <li>Lore always comes first</li>
-            <li>Delivered ready to launch, not ready for another round</li>
+            <li>Handed over ready to launch</li>
           </ul>
           <div class="rung__cta"><a class="link" href="/book/">Talk about a Build</a></div>
         </li>
@@ -262,7 +262,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
           <span class="rung__tag">After launch</span>
           <div class="rung__top"><span class="rung__n">III</span><svg class="rung__sigil" viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="12" r="4.2"/><circle cx="7" cy="12" r="1.4"/><path d="M11.2 12H21M17.5 12v3.2M20.5 12v2.4"/></svg></div>
           <h3 class="rung__name">The <em>Keep</em></h3>
-          <p class="rung__line">The world, kept.</p>
+          <p class="rung__line">We keep it running after launch.</p>
           <p class="rung__big"><span class="rung__cur">$</span><b>4,500</b><span class="rung__unit">CAD a month and up</span></p>
           <ul class="rung__facts">
             <li>Content, signage and campaigns</li>
@@ -282,7 +282,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
       <div class="layers__aside">
         <p class="eyebrow">The method</p>
         <h2 class="display" id="layers-title" data-split>The seven layers, <br><em>up close</em></h2>
-        <p data-reveal>A world is more than a logo. Each layer holds up the next, and every one is written inside the rules of your category.</p>
+        <p data-reveal>Each layer depends on the one before it, and each one is checked against your category&rsquo;s rules.</p>
         <div class="layers__dial" aria-hidden="true">
           <div class="layers__big"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
           <div class="layers__now"><b>Lore</b><span>Layer 1 of 7</span></div>
@@ -310,7 +310,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
       <div class="score__head">
         <p class="eyebrow">The Verdict, in two minutes</p>
         <h2 class="display" id="score-title" data-split>Score <br><em>your world</em></h2>
-        <p data-reveal>Seven questions, one for each layer. Answer honestly. You get a score out of 70 and the layer most likely to bring you down.</p>
+        <p data-reveal>Seven questions, one per layer. You&rsquo;ll get a score out of 70 and see which layer is weakest.</p>
       </div>
 
       <div class="score__body">
@@ -412,7 +412,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
     <canvas class="verdict__engrave" aria-hidden="true"></canvas>
     <div class="wrap">
       <h2 class="display" id="verdict-title" data-split>Every world starts <br>with a <em class="sheen">Verdict.</em></h2>
-      <p data-reveal>Tell us what you are building. We will tell you what is holding it up and what will bring it down.</p>
+      <p data-reveal>Tell us what you&rsquo;re building and we&rsquo;ll show you what to fix first.</p>
       <a class="btn" href="/book/" data-magnetic>Book the free call
         <svg class="arrow" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
       </a>
