@@ -32,8 +32,8 @@ const words = [
           {words.map(([w, x, y], k) => <text x={x} y={y} class="lx-s x-in x-go" style={d(0.3 + k * 0.22, 2.6 + k * 0.08, `--tx:${400 - x}px;--ty:${205 - y}px`)}>{w}</text>)}
           <circle cx="400" cy="205" r="5" class="lx-dot x-pop x-out" style={d(3.0, 3.6)} />
           <text x="400" y="216" class="lx-h lx-h--l x-in x-out" style={d(3.6, 6.0)}>Worlds built inside the rules.</text>
-                    <g transform="translate(290 218) scale(.3667)"><circle cx="30" cy="60" r="16" pathLength="1" vector-effect="non-scaling-stroke" class="lx-line x-draw" style={d(6.4, undefined, '--t:.5s')} /><path d="M46 60 H120 M120 30 V90 M136 51 L530 51 L594 60 L530 69 L136 69 Z" pathLength="1" vector-effect="non-scaling-stroke" class="lx-line x-draw" style={d(6.7, undefined, '--t:1.2s')} /></g>
-          <text x="406" y="200" class="lx-h lx-h--xl x-in" style={d(7.2)}>KNGHT</text>
+                    <g transform="translate(250 206.06) scale(0.5000)"><circle cx="30" cy="60" r="16" pathLength="1" class="lx-line x-draw" style={d(6.4, undefined, '--t:.5s;stroke-width:5')} /><path d="M46 60 H120 M120 30 V90 M136 51 L530 51 L594 60 L530 69 L136 69 Z" pathLength="1" class="lx-line x-draw" style={d(6.7, undefined, '--t:1.2s;stroke-width:5')} /></g>
+          <text x="250" y="200" textLength="300" lengthAdjust="spacing" class="lx-logo x-in" style={d(7.2, undefined, 'font-size:65.2px')}>KNGHT</text>
           <text x="400" y="300" class="lx-h lx-h--s x-in" style={d(7.8)}>Worlds built inside the rules.</text>
         </>)}
         {id === 'law' && (<>
@@ -97,8 +97,7 @@ const words = [
             <text x="222" y="400" class="lx-tiny x-in" style={d(1.5)}>Front</text>
             <text x="327" y="400" class="lx-tiny x-in" style={d(1.5)}>Side</text>
             <text x="432" y="400" class="lx-tiny x-in" style={d(1.5)}>Back</text>
-            <g class="x-in" style={d(1.7)}><g transform="translate(176 199) scale(.1533)"><circle cx="30" cy="60" r="16" vector-effect="non-scaling-stroke" class="lx-line" /><path d="M46 60 H120 M120 30 V90 M136 51 L530 51 L594 60 L530 69 L136 69 Z" vector-effect="non-scaling-stroke" class="lx-line" /></g></g>
-            <text x="226" y="190" class="lx-brand x-in" style={d(1.9)}>KNGHT</text>
+            <g class="x-in" style={d(1.8)}><text x="172" y="190" textLength="100" lengthAdjust="spacing" class="lx-logo" style="font-size:21.7px">KNGHT</text><g transform="translate(172 192.01) scale(0.1667)"><circle cx="30" cy="60" r="16" class="lx-line" style="stroke-width:5" /><path d="M46 60 H120 M120 30 V90 M136 51 L530 51 L594 60 L530 69 L136 69 Z" class="lx-line" style="stroke-width:5" /></g></g>
             <text x="222" y="236" class="lx-tiny lx-tiny--w x-in" style={d(2.1)}>Hall candle</text>
             <text x="222" y="250" class="lx-tiny lx-tiny--w lx-it x-in" style={d(2.2)}>Bougie du hall</text>
             <text x="222" y="306" class="lx-tiny lx-tiny--w lx-nc x-in" style={d(2.3)}>200 g</text>
@@ -121,13 +120,32 @@ const words = [
               <text x="566" y={140 + k * 36} class="lx-li x-in" style={d(3.3 + k * 0.4)}>{t}</text>
             </>))}
           </g>
-          <path d="M330 170 L420 130 L560 170 L470 210 Z M330 170 V310 L470 350 V210 M470 350 L560 310 V170" pathLength="1" class="lx-line x-draw" style={d(6.0, undefined, '--t:1.4s')} />
-          <g class="x-in" style={d(7.0)}>
-            <g transform="matrix(1 .2857 0 1 0 0)"><g transform="translate(360 137) scale(.1333)"><circle cx="30" cy="60" r="16" vector-effect="non-scaling-stroke" class="lx-line" /><path d="M46 60 H120 M120 30 V90 M136 51 L530 51 L594 60 L530 69 L136 69 Z" vector-effect="non-scaling-stroke" class="lx-line" /></g></g>
-            <text x="402" y="136" transform="matrix(1 .2857 0 1 0 0)" class="lx-brand">KNGHT</text>
-            <text x="400" y="164" transform="matrix(1 .2857 0 1 0 0)" class="lx-tiny lx-tiny--w">Hall candle</text>
-            <text x="400" y="176" transform="matrix(1 .2857 0 1 0 0)" class="lx-tiny lx-tiny--w lx-it">Bougie du hall</text>
-            <text x="400" y="203" transform="matrix(1 .2857 0 1 0 0)" class="lx-tiny lx-tiny--w lx-nc">200 g</text>
+          <g transform="translate(-150 0)">
+            <path d="M330 170 L420 130 L560 170 L470 210 Z M330 170 V310 L470 350 V210 M470 350 L560 310 V170" pathLength="1" class="lx-line x-draw" style={d(6.0, undefined, '--t:1.2s')} />
+            <g class="x-in" style={d(6.8)}><g transform="matrix(1 .2857 0 1 0 0)">
+              <text x="350" y="118" textLength="100" lengthAdjust="spacing" class="lx-logo" style="font-size:21.7px">KNGHT</text><g transform="translate(350 120.01) scale(0.1667)"><circle cx="30" cy="60" r="16" class="lx-line" style="stroke-width:5" /><path d="M46 60 H120 M120 30 V90 M136 51 L530 51 L594 60 L530 69 L136 69 Z" class="lx-line" style="stroke-width:5" /></g>
+              <text x="400" y="156" class="lx-tiny lx-tiny--w">Hall candle</text>
+              <text x="400" y="168" class="lx-tiny lx-tiny--w lx-it">Bougie du hall</text>
+              <text x="400" y="205" class="lx-tiny lx-tiny--w lx-nc">200 g</text>
+            </g></g>
+            <text x="400" y="390" class="lx-tiny x-in" style={d(6.8)}>Front</text>
+          </g>
+          <g transform="translate(150 0)">
+            <path d="M330 170 L420 130 L560 170 L470 210 Z M330 170 V310 L470 350 V210 M470 350 L560 310 V170" pathLength="1" class="lx-line x-draw" style={d(6.6, undefined, '--t:1.2s')} />
+            <g class="x-in" style={d(7.4)}><g transform="matrix(1 .2857 0 1 0 0)">
+              <text x="340" y="92" class="lx-tiny lx-tiny--w lx-nc lx-start">Smoke, steel, cedar</text>
+              <text x="340" y="103" class="lx-tiny lx-tiny--w lx-it lx-start">Fumée, acier, cèdre</text>
+              <text x="340" y="118" class="lx-tiny lx-start">Caution</text>
+              <text x="340" y="129" class="lx-tiny lx-it lx-start">Mise en garde</text>
+              <path d="M340 139 H458 M340 146 H450 M340 153 H455" class="lx-line lx-faint" />
+              <text x="340" y="166" class="lx-tiny lx-nc lx-start">KNGHT, Toronto ON</text>
+            </g></g>
+            <g transform="matrix(1 .2857 0 1 0 0)"><g transform="translate(110.8 -11.4) scale(.7)"><g class="x-pop" style={d(7.9)}>
+              <rect x="406" y="262" width="96" height="50" rx="2" class="lx-patch" />
+              <path d="M416.0 268h0.8v31h-0.8zM417.6 268h0.8v31h-0.8zM419.2 268h0.8v31h-0.8zM420.8 268h3.2v31h-3.2zM425.6 268h1.6v26h-1.6zM428.8 268h0.8v26h-0.8zM430.4 268h0.8v26h-0.8zM433.6 268h1.6v26h-1.6zM436.8 268h1.6v26h-1.6zM440.0 268h0.8v26h-0.8zM441.6 268h0.8v26h-0.8zM444.8 268h1.6v26h-1.6zM448.0 268h1.6v26h-1.6zM451.2 268h0.8v26h-0.8zM452.8 268h0.8v31h-0.8zM454.4 268h0.8v31h-0.8zM456.0 268h1.6v26h-1.6zM459.2 268h1.6v26h-1.6zM461.6 268h1.6v26h-1.6zM464.0 268h1.6v26h-1.6zM467.2 268h0.8v26h-0.8zM471.2 268h0.8v26h-0.8zM472.8 268h0.8v26h-0.8zM474.4 268h2.4v26h-2.4zM478.4 268h0.8v26h-0.8zM480.8 268h2.4v26h-2.4zM484.0 268h1.6v31h-1.6zM486.4 268h1.6v31h-1.6zM489.6 268h0.8v31h-0.8zM491.2 268h0.8v31h-0.8z" class="lx-bars" />
+              <text x="454" y="307" class="lx-code">6 14141 12345 2</text>
+            </g></g></g>
+            <text x="400" y="390" class="lx-tiny x-in" style={d(7.4)}>Back</text>
           </g>
         </>)}
         {id === 'machinery' && (<>
