@@ -1329,3 +1329,4 @@ html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
 .lx .lx-end{text-anchor:end}
 .lx-nc{text-transform:none;letter-spacing:.06em}
 .lx-logo{fill:#fff;font-family:var(--serif);font-weight:600}
+.cta-note{margin:14px 0 0;font-size:.82rem;letter-spacing:.04em;opacity:.72}

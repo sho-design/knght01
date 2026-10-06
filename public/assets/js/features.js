@@ -74,7 +74,7 @@
     const c = cat && Object.hasOwn(CATS, cat) ? cat : null; // only real categories, never inherited names like "constructor"
     root.dataset.cat = c || '';
     catBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cat === c)));
-    if (rulesEl) rulesEl.textContent = c ? CATS[c].rules : 'Pick your category. The page reads itself against your rules.';
+    if (rulesEl) rulesEl.textContent = c ? CATS[c].rules : 'Pick your category and the page will show the rules that apply to you.';
     if (lawEl) { lawEl.hidden = !c; lawEl.textContent = c ? CATS[c].law : ''; }
     if (regEl) regEl.textContent = c ? CATS[c].reg : "your regulator's";
     if (track && cards.length) {
