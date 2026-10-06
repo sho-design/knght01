@@ -54,6 +54,100 @@
   const hash = (str) => { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
   const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+  /* Tinctures in black and white: heraldry's own hatching code (Petra Sancta).
+     Dots are gold, vertical lines red, horizontal blue, bend lines green, sinister lines purple, crosshatch black. */
+  const TINCT = {
+    argent: { n: 'argent', p: '' },
+    or: { n: 'or', p: '<circle cx="3" cy="3" r=".85" fill="#fff"/>' },
+    gules: { n: 'gules', p: '<path d="M3 0V6"/>' },
+    azure: { n: 'azure', p: '<path d="M0 3H6"/>' },
+    vert: { n: 'vert', p: '<path d="M0 6L6 0M-1.5 1.5L1.5-1.5M4.5 7.5L7.5 4.5"/>' },
+    purpure: { n: 'purpure', p: '<path d="M0 0L6 6M4.5-1.5L7.5 1.5M-1.5 4.5L1.5 7.5"/>' },
+    sable: { n: 'sable', p: '<path d="M3 0V6M0 3H6"/>' },
+  };
+  const FIELDS = ['argent', 'argent', 'or', 'azure', 'gules', 'vert', 'purpure', 'sable'];
+  const pattern = (id, t) => `<pattern id="${id}" width="6" height="6" patternUnits="userSpaceOnUse"><g stroke="#fff" stroke-width=".8" opacity=".42">${TINCT[t].p}</g></pattern>`;
+
+  /* The name cipher: every letter of the name becomes five marks, a dot for 0 and a dash for 1, set around the inner border. */
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const ruler = document.createElementNS(SVGNS, 'svg');
+  ruler.setAttribute('width', '0'); ruler.setAttribute('height', '0'); ruler.style.position = 'absolute'; ruler.setAttribute('aria-hidden', 'true');
+  const rulerPath = document.createElementNS(SVGNS, 'path');
+  ruler.appendChild(rulerPath); document.body.appendChild(ruler);
+  const cipher = (name, d) => {
+    const letters = (name.toUpperCase().match(/[A-Z0-9]/g) || []).slice(0, 28);
+    if (!letters.length) return '';
+    rulerPath.setAttribute('d', d);
+    rulerPath.setAttribute('transform', '');
+    const L = rulerPath.getTotalLength();
+    const units = letters.length * 7;
+    const step = L / units;
+    let out = '';
+    letters.forEach((ch, k) => {
+      const v = /[0-9]/.test(ch) ? 27 + (+ch % 5) : ch.charCodeAt(0) - 64;
+      for (let b = 0; b < 5; b++) {
+        const bit = (v >> (4 - b)) & 1;
+        const at = (k * 7 + b + 1) * step;
+        const p = rulerPath.getPointAtLength(at), q = rulerPath.getPointAtLength(Math.min(L, at + 0.5));
+        const a = Math.atan2(q.y - p.y, q.x - p.x);
+        if (bit) {
+          const dx = Math.cos(a) * 2.6, dy = Math.sin(a) * 2.6;
+          out += `M${(p.x - dx).toFixed(1)} ${(p.y - dy).toFixed(1)}L${(p.x + dx).toFixed(1)} ${(p.y + dy).toFixed(1)}`;
+        } else {
+          out += `M${p.x.toFixed(1)} ${p.y.toFixed(1)}h.01`;
+        }
+      }
+    });
+    return `<path d="${out}" stroke-width="1.5" stroke-linecap="round"/>`;
+  };
+  // The inner border, as real coordinates (a scaled copy of the shield), so the cipher can walk it.
+    const inset = (d, k) => {
+    // Scale every coordinate pair about (200, 214). Arc radii scale too; flags stay.
+    const tokens = d.match(/[A-Za-z]|-?\d*\.?\d+/g);
+    let out = '', cmd = '', idx = 0, axis = 0;
+    const sx = (v) => (200 + (v - 200) * k).toFixed(1), sy = (v) => (214 + (v - 214) * k).toFixed(1);
+    tokens.forEach((t) => {
+      if (/[A-Za-z]/.test(t)) { cmd = t; idx = 0; out += t; return; }
+      const v = parseFloat(t);
+      if (cmd === 'H') out += sx(v) + ' ';
+      else if (cmd === 'V') out += sy(v) + ' ';
+      else if (cmd === 'A') { const n = idx % 7; out += (n < 2 ? (v * k).toFixed(1) : n < 5 ? t : n === 5 ? sx(v) : sy(v)) + ' '; }
+      else { out += (idx % 2 === 0 ? sx(v) : sy(v)) + ' '; }
+      idx++;
+    });
+    return out.trim();
+  };
+
+  /* Earned heraldry: the seven marks come from the visitor's score on the self-check. */
+  const earned = () => { try { const v = JSON.parse(localStorage.getItem('knght-verdict') || 'null'); return v && Array.isArray(v.layers) && v.layers.length === 7 ? v : null; } catch (e) { return null; } };
+  const marks = (v) => {
+    if (!v) return '';
+    const w = 15, x0 = 200 - w * 3;
+    return v.layers.map((l, k) => {
+      const x = x0 + k * w, y = 330;
+      const lz = `M${x} ${y - 5}L${x + 5} ${y}L${x} ${y + 5}L${x - 5} ${y}Z`;
+      return l.score >= 10 ? `<path d="${lz}" fill="#fff" stroke-width="1"><title>${esc(l.name)}: held</title></path>`
+        : l.score >= 5 ? `<path d="${lz}" fill="#000" stroke-width="1"><title>${esc(l.name)}: partly held</title></path><circle cx="${x}" cy="${y}" r="1.3" fill="#fff" stroke="none"/>`
+        : `<path d="${lz}" fill="#000" stroke-width="1" opacity=".55"><title>${esc(l.name)}: not yet held</title></path>`;
+    }).join('');
+  };
+
+  /* The scannable crest: a seal plate under the motto that any phone camera reads. */
+  const site = () => {
+    const raw = (form.site && form.site.value || '').trim();
+    if (!raw) return '';
+    const u = raw.replace(/^https?:\/\//i, '').replace(/\s+/g, '');
+    return /^[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(u) ? 'https://' + u : '';
+  };
+  const qrPlate = (url) => {
+    if (!url || typeof window.qrcode !== 'function') return '';
+    const q = window.qrcode(0, 'M'); q.addData(url); q.make();
+    const n = q.getModuleCount(), size = 96, pad = 4, m = (size - pad * 2) / n, x0 = 152, y0 = 556;
+    let d = '';
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += `M${(x0 + pad + c * m).toFixed(2)} ${(y0 + pad + r * m).toFixed(2)}h${m.toFixed(2)}v${m.toFixed(2)}h-${m.toFixed(2)}z`;
+    return `<rect x="${x0}" y="${y0}" width="${size}" height="${size}" rx="3" fill="#fff" stroke="none"/><path d="${d}" fill="#000" stroke="none"/>`;
+  };
+
   const draw = () => {
     const name = (form.name.value || '').trim().slice(0, 40);
     const cat = form.cat.value || 'other';
@@ -62,38 +156,74 @@
     const SHIELD = shield.d;
     const h = hash(name.toLowerCase() + '|' + cat);
     const div = DIVISIONS[h % DIVISIONS.length];
+    const field = FIELDS[(h >>> 4) % FIELDS.length];
+    const pool = Object.keys(TINCT).filter((t) => t !== field && t !== 'argent');
+    const second = pool[(h >>> 9) % pool.length];
     const initial = (name.match(/[A-Za-z0-9]/) || ['K'])[0].toUpperCase();
     const label = (name || 'Your business').toUpperCase();
     const fs = label.length > 22 ? 15 : label.length > 14 ? 18 : 21;
     const fit = label.length > 12 ? ' textLength="250" lengthAdjust="spacingAndGlyphs"' : '';
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 560" role="img" aria-label="Sigil for ${esc(name || 'your business')}">
+    const v = earned();
+    const url = site();
+    const H = url ? 664 : 560;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 ${H}" role="img" aria-label="Sigil for ${esc(name || 'your business')}">
   <defs>
-    <pattern id="sg-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V7" stroke="#fff" stroke-width="1.1" opacity=".55"/></pattern>
+    ${pattern('sg-f', field === 'argent' ? 'or' : field)}${pattern('sg-d', div.d ? second : 'or')}
     <clipPath id="sg-clip"><path d="${SHIELD}"/></clipPath>
   </defs>
-  <rect width="400" height="560" fill="#000"/>
+  <rect width="400" height="${H}" fill="#000"/>
   <g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="200" cy="36" r="22" stroke-width="1.4"/>
     <text x="200" y="45" text-anchor="middle" fill="#fff" stroke="none" font-family="Cormorant Garamond, Georgia, serif" font-size="26" font-style="italic">${esc(initial)}</text>
     <path d="M178 36H96M222 36H304" stroke-width="1" opacity=".6"/>
-    ${div.d ? `<path d="${div.d}" fill="url(#sg-hatch)" stroke="none" clip-path="url(#sg-clip)"/>` : ''}
+    ${field !== 'argent' ? `<path d="${SHIELD}" fill="url(#sg-f)" stroke="none"/>` : ''}
+    ${div.d ? `<path d="${div.d}" fill="#000" stroke="none" clip-path="url(#sg-clip)"/><path d="${div.d}" fill="url(#sg-d)" stroke="none" clip-path="url(#sg-clip)"/>` : ''}
     <path d="${SHIELD}" stroke-width="2.2"/>
-    <path d="${SHIELD}" transform="translate(200 214) scale(.91) translate(-200 -214)" stroke-width="1" opacity=".7"/>
-    <g transform="translate(128 150) scale(6)" stroke-width=".42">${CHARGE[cat] || CHARGE.other}</g>
-    <g transform="translate(96 96) scale(1.6)" stroke-width=".9">${virtue.d}</g>
-    <g transform="translate(266 96) scale(1.6)" stroke-width=".9">${virtue.d}</g>
+    <path d="${inset(SHIELD, .91)}" stroke-width="1" opacity=".7"/>
+    ${cipher(name, inset(SHIELD, .955))}
+    <g transform="translate(128 150) scale(6)"><g stroke="#000" stroke-width="1.9">${CHARGE[cat] || CHARGE.other}</g><g stroke-width=".42">${CHARGE[cat] || CHARGE.other}</g></g>
+    <g transform="translate(96 96) scale(1.6)"><g stroke="#000" stroke-width="3.4">${virtue.d}</g><g stroke-width=".9">${virtue.d}</g></g>
+    <g transform="translate(266 96) scale(1.6)"><g stroke="#000" stroke-width="3.4">${virtue.d}</g><g stroke-width=".9">${virtue.d}</g></g>
+    ${marks(v)}
     <path d="M40 456C80 446 120 470 200 470S320 446 360 456L346 476L360 496C320 486 280 506 200 506S80 486 40 496L54 476Z" fill="#000" stroke-width="1.6"/>
     <text x="200" y="${494 - (21 - fs) / 2}" text-anchor="middle" fill="#fff" stroke="none" font-family="Cormorant Garamond, Georgia, serif" font-size="${fs}" letter-spacing="2"${fit}>${esc(label)}</text>
     <text x="200" y="536" text-anchor="middle" fill="#fff" stroke="none" opacity=".7" font-family="Cormorant Garamond, Georgia, serif" font-size="15" font-style="italic" letter-spacing="2">${virtue.motto}</text>
+    ${qrPlate(url)}
   </g>
 </svg>`;
     stage.innerHTML = svg;
     const blazon = $('[data-sigil-blazon]');
-    if (blazon) blazon.textContent = `${/^[AEIOU]/.test(shield.n) ? 'An' : 'A'} ${shield.n}, ${div.n.toLowerCase()}, with the ${form.cat.selectedOptions[0].textContent.toLowerCase()} charge and two marks of ${virtue.word.toLowerCase()}. Motto: ${virtue.motto}.`;
+    if (blazon) {
+      const tinct = div.d ? `${TINCT[field].n} and ${TINCT[second].n}, ${div.n.toLowerCase()}` : TINCT[field].n;
+      const held = v ? v.layers.filter((l) => l.score >= 10).length : 0;
+      blazon.textContent = `${/^[AEIOU]/.test(shield.n) ? 'An' : 'A'} ${shield.n}, ${tinct}, with the ${form.cat.selectedOptions[0].textContent.toLowerCase()} charge and two marks of ${virtue.word.toLowerCase()}. ${name ? 'The border spells your name in the KNGHT cipher. ' : ''}${v ? `Seven marks from your score of ${v.total}/70: ${held} held. ` : ''}${url ? 'The seal plate opens your website. ' : ''}Motto: ${virtue.motto}.`;
+    }
+    const earn = $('[data-sigil-earn]');
+    if (earn) earn.hidden = !!v;
     return svg;
   };
 
   form.addEventListener('input', draw);
+
+  /* Foil: the crest catches the light like a stamped card, following the cursor, or the phone's tilt. */
+  const foil = $('[data-sigil-foil]');
+  if (foil && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const set = (fx, fy) => {
+      foil.style.setProperty('--fx', (fx * 100).toFixed(1) + '%');
+      foil.style.setProperty('--fy', (fy * 100).toFixed(1) + '%');
+      foil.style.setProperty('--rx', ((0.5 - fy) * 10).toFixed(2) + 'deg');
+      foil.style.setProperty('--ry', ((fx - 0.5) * 12).toFixed(2) + 'deg');
+    };
+    foil.addEventListener('pointermove', (e) => { const r = foil.getBoundingClientRect(); foil.classList.add('is-lit'); set((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height); });
+    foil.addEventListener('pointerleave', () => { foil.classList.remove('is-lit'); set(0.5, 0.5); });
+    const tilt = (e) => { if (e.gamma == null) return; foil.classList.add('is-lit'); set(Math.max(0, Math.min(1, 0.5 + e.gamma / 50)), Math.max(0, Math.min(1, 0.5 + (e.beta - 40) / 50))); };
+    const tiltBtn = $('[data-sigil-tilt]');
+    if ('DeviceOrientationEvent' in window && matchMedia('(pointer: coarse)').matches) {
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        if (tiltBtn) { tiltBtn.hidden = false; tiltBtn.addEventListener('click', async () => { try { if (await DeviceOrientationEvent.requestPermission() === 'granted') { addEventListener('deviceorientation', tilt); tiltBtn.hidden = true; } } catch (err) {} }); }
+      } else addEventListener('deviceorientation', tilt);
+    }
+  }
   form.addEventListener('submit', (e) => e.preventDefault());
   draw();
 
@@ -104,14 +234,16 @@
     const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
     img.onload = () => {
       const c = document.createElement('canvas');
-      c.width = 1080; c.height = 1350;
+      const vbH = +(svg.match(/viewBox="0 0 400 (\d+)"/) || [0, 560])[1];
+      c.width = 1080; c.height = vbH > 560 ? 1560 : 1350;
       const x = c.getContext('2d');
       x.fillStyle = '#000'; x.fillRect(0, 0, c.width, c.height);
-      x.drawImage(img, 154, 70, 772, 1081);
+      const dw = vbH > 560 ? 788 : 772, dh = dw * vbH / 400;
+      x.drawImage(img, (1080 - dw) / 2, 60, dw, dh);
       x.fillStyle = 'rgba(255,255,255,.55)';
       x.font = '28px Georgia, serif';
       x.textAlign = 'center';
-      x.fillText('Forged at knght.com/sigil', 540, 1290);
+      x.fillText('Forged at knght.com/sigil', 540, c.height - 50);
       URL.revokeObjectURL(url);
       c.toBlob((b) => (b ? resolve(b) : reject(new Error('png'))), 'image/png');
     };

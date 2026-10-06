@@ -15,7 +15,9 @@ import Cta from '../components/Cta.astro';
           <label class="sigil__field"><span>Business name</span><input name="name" type="text" maxlength="40" placeholder="Your business" required></label>
           <label class="sigil__field"><span>Category</span><select name="cat"><option value="clinic">Clinic</option><option value="dental">Dental</option><option value="medspa">Medspa</option><option value="law">Law firm</option><option value="spirits">Spirits</option><option value="food">Food and drink</option><option value="other">Something else</option></select></label>
           <fieldset class="sigil__field sigil__virtues"><legend>What you guard</legend><label class="sigil__virtue"><input type="radio" name="virtue" value="trust" checked><span>Trust</span></label><label class="sigil__virtue"><input type="radio" name="virtue" value="craft"><span>Craft</span></label><label class="sigil__virtue"><input type="radio" name="virtue" value="care"><span>Care</span></label><label class="sigil__virtue"><input type="radio" name="virtue" value="heritage"><span>Heritage</span></label></fieldset>
+          <label class="sigil__field"><span>Website <em>(optional, makes the crest scannable)</em></span><input name="site" type="text" inputmode="url" maxlength="80" placeholder="yourbusiness.com" autocapitalize="off" spellcheck="false"></label>
         </form>
+        <p class="sigil__earn" data-sigil-earn><a class="link" href="/#score">Score your world</a> to earn the seven marks on your shield, one for each layer you hold.</p>
         <div class="sigil__actions">
           <button type="button" class="btn" data-sigil-png>Download PNG</button>
           <button type="button" class="link" data-sigil-svg>Download SVG</button>
@@ -27,15 +29,17 @@ import Cta from '../components/Cta.astro';
           <label class="lead__consent"><input name="consent" type="checkbox" required> Email me my sigil and occasional notes from KNGHT. Unsubscribe any time. <a class="link" href="/privacy/">Privacy</a></label>
           <p class="lead__status" data-sigil-status aria-live="polite"></p>
         </form>
-        <p class="sigil__note">Drawn in your browser. Nothing you type leaves it unless you ask for your sigil by email.</p>
+        <p class="sigil__note">Drawn in your browser. Nothing you type leaves it unless you ask for your sigil by email. The border spells your name in the KNGHT cipher, so no two sigils are alike.</p>
       </div>
       <figure class="sigil__figure">
-        <div class="sigil__stage" data-sigil-stage></div>
+        <div class="sigil__foil" data-sigil-foil><div class="sigil__stage" data-sigil-stage></div></div>
+        <button type="button" class="link sigil__tilt" data-sigil-tilt hidden>Tilt to catch the light</button>
         <figcaption class="sigil__blazon" data-sigil-blazon></figcaption>
       </figure>
     </div>
   </section>
 
   <Cta line="A sigil is the mark. The Verdict reads the whole world behind it. Fixed fee from $3,500 CAD, credited to your Build within 60 days." />
+  <script is:inline slot="scripts" src="/assets/js/vendor/qrcode.js" defer></script>
   <script is:inline slot="scripts" src="/assets/js/sigil.js" defer></script>
 </Base>

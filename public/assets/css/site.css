@@ -1360,3 +1360,16 @@ html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
 .footer ul.social{display:flex;flex-direction:row;flex-wrap:wrap;gap:10px;grid-template-columns:none;margin:22px 0}
 .footer ul.social li{margin:0;padding:0}
 .mnav__foot .social{flex-basis:100%;margin:6px 0 0}
+/* Sigil: foil, earned marks prompt, website field */
+.sigil__field em{font-style:normal;text-transform:none;letter-spacing:0;color:var(--ash-2)}
+.sigil__earn{margin:14px 0 0;font-size:.88rem;color:var(--ash)}
+.sigil__foil{--fx:50%;--fy:50%;--rx:0deg;--ry:0deg;position:relative;perspective:900px;transform-style:preserve-3d}
+.sigil__foil .sigil__stage{transform:rotateX(var(--rx)) rotateY(var(--ry));transition:transform .25s ease-out}
+.sigil__foil::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:0;transition:opacity .4s;
+  background:radial-gradient(circle at var(--fx) var(--fy),rgba(255,255,255,.55),rgba(255,255,255,0) 38%),
+  linear-gradient(115deg,transparent calc(var(--fx) - 22%),rgba(255,255,255,.35) calc(var(--fx) - 6%),rgba(255,255,255,.08) var(--fx),rgba(255,255,255,.3) calc(var(--fx) + 8%),transparent calc(var(--fx) + 24%))}
+.sigil__foil.is-lit::after{opacity:1}
+.sigil__tilt{margin-top:12px}
+.sigil__stage svg{max-height:calc(100svh - var(--nav-h) - 110px);width:auto;max-width:100%;margin:0 auto}
+.sigil__tilt[hidden]{display:none}
+@media (max-width:900px){.sigil__stage svg{max-height:none;width:100%}}

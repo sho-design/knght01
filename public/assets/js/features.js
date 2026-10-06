@@ -120,6 +120,8 @@
   const endpoint = meta('knght:form-endpoint');
   document.addEventListener('knght:verdict', (e) => {
     lastVerdict = e.detail;
+    // Remembered so the sigil page can grant the marks this score has earned.
+    store.set('knght-verdict', JSON.stringify({ total: e.detail.total, layers: e.detail.layers }));
     if (lead) {
       lead.hidden = !endpoint;
       // Show the category the page remembered, so the visitor can see it and change it before sending.
