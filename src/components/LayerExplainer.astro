@@ -12,7 +12,7 @@ const BEATS: Record<string, string[]> = {
   language: ['One voice, written down.', 'Carried to every channel.', 'So a post, an email and a sign sound like one place.'],
   map: ['Someone nearby searches.', 'You come up, and you are the clear choice.', 'One tap to a booked time.'],
   ground: ['The space, drawn as a path.', 'Signs that guide without a word from staff.', 'From the door to the chair, no doubt.'],
-  artifacts: ['The dieline, to the millimetre.', 'Every word checked against the label rules.', 'Then it lands in a customer’s hand.'],
+  artifacts: ['The dieline, to the millimetre.', 'Every word and every code checked against the label rules.', 'Then it lands in a customer’s hand.'],
   machinery: ['The systems behind the front door.', 'An enquiry is booked and reminded on its own.', 'Then asked for a review. The loop closes.'],
 };
 const AT = [0.2, 3.0, 6.0];
@@ -31,11 +31,11 @@ const words = [
         {id === 'lore' && (<>
           {words.map(([w, x, y], k) => <text x={x} y={y} class="lx-s x-in x-go" style={d(0.3 + k * 0.22, 2.6 + k * 0.08, `--tx:${400 - x}px;--ty:${205 - y}px`)}>{w}</text>)}
           <circle cx="400" cy="205" r="5" class="lx-dot x-pop x-out" style={d(3.0, 3.6)} />
-          <text x="400" y="216" class="lx-h lx-h--l x-in x-out" style={d(3.6, 6.0)}>For people who were told to live with it.</text>
+          <text x="400" y="216" class="lx-h lx-h--l x-in x-out" style={d(3.6, 6.0)}>For hands that work for a living.</text>
           <circle cx="400" cy="150" r="40" pathLength="1" class="lx-line x-draw" style={d(6.4)} />
-          <path d="M386 168 V134 L400 148 L414 134 V168" pathLength="1" class="lx-line x-draw" style={d(6.8)} />
-          <text x="400" y="250" class="lx-h lx-h--xl x-in" style={d(7.2)}>ELDER</text>
-          <text x="400" y="292" class="lx-h lx-h--s x-in" style={d(7.8)}>For people who were told to live with it.</text>
+          <path d="M388 134 V166 M412 134 V166 M388 150 H412" pathLength="1" class="lx-line x-draw" style={d(6.8)} />
+          <text x="400" y="250" class="lx-h lx-h--xl x-in" style={d(7.2)}>HALDEN</text>
+          <text x="400" y="292" class="lx-h lx-h--s x-in" style={d(7.8)}>For hands that work for a living.</text>
         </>)}
         {id === 'law' && (<>
           <rect x="140" y="62" width="520" height="270" rx="6" pathLength="1" class="lx-line x-draw" style={d(0.2)} />
@@ -92,17 +92,44 @@ const words = [
         </>)}
         {id === 'artifacts' && (<>
           <g class="x-out" style={d(0, 5.8)}>
-            <path d="M320 60 H480 V130 H560 V320 H480 V390 H320 V320 H240 V130 H320 Z M320 130 H480 M320 320 H480 M320 130 V320 M480 130 V320" pathLength="1" class="lx-line x-draw" style={d(0.2, undefined, '--t:1.6s')} />
-            <text x="400" y="190" class="lx-h lx-h--l x-in" style={d(1.6)}>ELDER</text>
-            <path d="M344 232 H456 M344 246 H440 M344 260 H450" class="lx-line lx-faint x-in" style={d(2.0)} />
-            <text x="400" y="296" class="lx-s x-in" style={d(2.3)}>50 ml</text>
-            {(['Net quantity, in metric', 'English and French', 'Ingredients, in order'] as const).map((t, k) => (<>
-              <path d={`M592 ${178 + k * 40} l6 6 l12 -13`} pathLength="1" class="lx-line lx-bold x-draw" style={d(3.4 + k * 0.5, undefined, '--t:.3s')} />
-              <text x="620" y={190 + k * 40} class="lx-s lx-start x-in" style={d(3.5 + k * 0.5)}>{t}</text>
+            <path d="M82 140 L82 130 L90 100 H144 L152 130 V90 Q152 70 172 70 H272 Q292 70 292 90 V130 L300 100 H354 L362 130 H502 V320 H362 L354 350 H300 L292 320 V360 Q292 380 272 380 H172 Q152 380 152 360 V320 L144 350 H90 L82 320 V310 L60 300 V150 Z" pathLength="1" class="lx-line x-draw" style={d(0.2, undefined, '--t:1.6s')} />
+            <path d="M82 140 V310 M152 130 V320 M292 130 V320 M362 130 V320 M82 130 H152 M152 130 H292 M292 130 H362 M82 320 H152 M152 320 H292 M292 320 H362" class="lx-line lx-fold x-in" style={d(1.4)} />
+            <text x="117" y="400" class="lx-tiny x-in" style={d(1.5)}>Side</text>
+            <text x="222" y="400" class="lx-tiny x-in" style={d(1.5)}>Front</text>
+            <text x="327" y="400" class="lx-tiny x-in" style={d(1.5)}>Side</text>
+            <text x="432" y="400" class="lx-tiny x-in" style={d(1.5)}>Back</text>
+            <g class="x-in" style={d(1.7)}><circle cx="222" cy="162" r="15" class="lx-line" /><path d="M215 154 V170 M229 154 V170 M215 162 H229" class="lx-line" /></g>
+            <text x="222" y="210" class="lx-brand x-in" style={d(1.9)}>HALDEN</text>
+            <text x="222" y="232" class="lx-tiny lx-tiny--w x-in" style={d(2.1)}>Hand balm</text>
+            <text x="222" y="246" class="lx-tiny lx-tiny--w lx-it x-in" style={d(2.2)}>Baume pour les mains</text>
+            <text x="222" y="306" class="lx-tiny lx-tiny--w lx-nc x-in" style={d(2.3)}>50 mL</text>
+            <g class="x-in" style={d(2.3)}><text transform="rotate(-90 327 225)" x="327" y="229" class="lx-tiny lx-tiny--w">For hands that work for a living</text></g>
+            <g class="x-in" style={d(2.5)}>
+              <text x="374" y="150" class="lx-tiny lx-tiny--w lx-start">Ingredients</text>
+              <text x="374" y="162" class="lx-tiny lx-tiny--w lx-it lx-start">Ingrédients</text>
+              <path d="M374 176 H490 M374 186 H480 M374 196 H486 M374 206 H458" class="lx-line lx-faint" />
+              <text x="374" y="228" class="lx-tiny lx-start">Halden Goods</text>
+              <text x="374" y="240" class="lx-tiny lx-start">Toronto ON</text>
+            </g>
+            <g transform="translate(-12 -6)"><g class="x-pop" style={d(2.8)}>
+              <rect x="406" y="262" width="96" height="50" rx="2" class="lx-patch" />
+              <path d="M416.0 268h0.8v31h-0.8zM417.6 268h0.8v31h-0.8zM419.2 268h0.8v31h-0.8zM420.8 268h3.2v31h-3.2zM425.6 268h1.6v26h-1.6zM428.8 268h0.8v26h-0.8zM430.4 268h0.8v26h-0.8zM433.6 268h1.6v26h-1.6zM436.8 268h1.6v26h-1.6zM440.0 268h0.8v26h-0.8zM441.6 268h0.8v26h-0.8zM444.8 268h1.6v26h-1.6zM448.0 268h1.6v26h-1.6zM451.2 268h0.8v26h-0.8zM452.8 268h0.8v31h-0.8zM454.4 268h0.8v31h-0.8zM456.0 268h1.6v26h-1.6zM459.2 268h1.6v26h-1.6zM461.6 268h1.6v26h-1.6zM464.0 268h1.6v26h-1.6zM467.2 268h0.8v26h-0.8zM471.2 268h0.8v26h-0.8zM472.8 268h0.8v26h-0.8zM474.4 268h2.4v26h-2.4zM478.4 268h0.8v26h-0.8zM480.8 268h2.4v26h-2.4zM484.0 268h1.6v31h-1.6zM486.4 268h1.6v31h-1.6zM489.6 268h0.8v31h-0.8zM491.2 268h0.8v31h-0.8z" class="lx-bars" />
+              <text x="454" y="307" class="lx-code">6 14141 12345 2</text>
+            </g></g>
+            {(['Name on the front panel', 'Net quantity, metric, lower front', 'English and French', 'Dealer name and address', 'GS1 barcode, back, lower right'] as const).map((t, k) => (<>
+              <path d={`M540 ${142 + k * 38} l6 6 l12 -13`} pathLength="1" class="lx-line lx-bold x-draw" style={d(3.2 + k * 0.45, undefined, '--t:.3s')} />
+              <text x="566" y={150 + k * 38} class="lx-li x-in" style={d(3.3 + k * 0.45)}>{t}</text>
             </>))}
           </g>
           <path d="M330 170 L420 130 L560 170 L470 210 Z M330 170 V310 L470 350 V210 M470 350 L560 310 V170" pathLength="1" class="lx-line x-draw" style={d(6.0, undefined, '--t:1.4s')} />
-          <g class="x-in" style={d(7.0)}><text x="400" y="146" transform="matrix(1 .2857 0 1 0 0)" class="lx-h">ELDER</text></g>
+          <g class="x-in" style={d(7.0)}>
+            <circle cx="0" cy="0" r="10" transform="matrix(1 .2857 0 1 400 220)" class="lx-line" />
+            <path d="M-4.5 -5.5 V5.5 M4.5 -5.5 V5.5 M-4.5 0 H4.5" transform="matrix(1 .2857 0 1 400 220)" class="lx-line" />
+            <text x="400" y="138" transform="matrix(1 .2857 0 1 0 0)" class="lx-brand">HALDEN</text>
+            <text x="400" y="153" transform="matrix(1 .2857 0 1 0 0)" class="lx-tiny lx-tiny--w">Hand balm</text>
+            <text x="400" y="165" transform="matrix(1 .2857 0 1 0 0)" class="lx-tiny lx-tiny--w lx-it">Baume pour les mains</text>
+            <text x="400" y="203" transform="matrix(1 .2857 0 1 0 0)" class="lx-tiny lx-tiny--w lx-nc">50 mL</text>
+          </g>
         </>)}
         {id === 'machinery' && (<>
           <path id="lxLoop" d="M400 70 A140 140 0 1 1 399.9 70" pathLength="1" class="lx-line x-draw" style={d(0.2, undefined, '--t:1.4s')} />

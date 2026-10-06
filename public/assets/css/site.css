@@ -1315,3 +1315,16 @@ html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
 @keyframes lxFlash{0%{fill:#000}20%{fill:#fff;filter:drop-shadow(0 0 10px #fff)}100%{fill:#fff}}
 @keyframes lxType{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 @media (max-width:700px){.lx{padding:14px 8px 20px}.lx__head{flex-direction:column;gap:8px}.lx__svg{width:118%;margin-left:-9%}}
+.lx-fold{stroke:rgba(255,255,255,.3);stroke-width:1;stroke-dasharray:4 4}
+.lx-tiny{fill:var(--ash);font:500 9px var(--sans);letter-spacing:.14em;text-transform:uppercase;text-anchor:middle}
+.lx-tiny--w{fill:#e8e8e8}
+.lx-it{font-style:italic;text-transform:none;letter-spacing:.04em;font-size:10px}
+.lx-brand{fill:#fff;font:400 19px var(--serif);letter-spacing:.28em;text-anchor:middle}
+.lx-brand--l{font-size:24px}
+.lx-li{fill:#e0e0e0;font:400 14px var(--sans)}
+.lx-patch{fill:#fff}
+.lx-bars{fill:#000}
+.lx-code{fill:#000;font:500 6px var(--sans);letter-spacing:.08em;text-anchor:middle}
+.lx .lx-start{text-anchor:start}
+.lx .lx-end{text-anchor:end}
+.lx-nc{text-transform:none;letter-spacing:.06em}
