@@ -866,6 +866,9 @@ html.lenis,html.lenis body{height:auto}
 .sigil__actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px}
 .sigil__actions .link{background:none;border:0;font:inherit;font-weight:500;cursor:pointer}
 .sigil__note{margin:0;font-size:.84rem;color:var(--ash-2)}
+.sigil__vstatus{margin:-6px 0 0;font-size:.84rem;color:var(--ash)}
+.sigil__vstatus:empty{display:none}
+.sigil__actions .link:disabled{opacity:.5;cursor:progress}
 .sigil__figure{margin:0;position:sticky;top:calc(var(--nav-h) + 24px)}
 .sigil__stage{border:1px solid var(--rule);background:#000}
 .sigil__stage svg{display:block;width:100%;height:auto}

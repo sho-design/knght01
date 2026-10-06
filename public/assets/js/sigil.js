@@ -172,25 +172,25 @@
     ${pattern('sg-f', field === 'argent' ? 'or' : field)}${pattern('sg-d', div.d ? second : 'or')}
     <clipPath id="sg-clip"><path d="${SHIELD}"/></clipPath>
   </defs>
-  <rect width="400" height="${H}" fill="#000"/>
+  <rect data-l="bg" width="400" height="${H}" fill="#000"/>
   <g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="200" cy="36" r="22" stroke-width="1.4"/>
+    <g data-l="top"><circle cx="200" cy="36" r="22" stroke-width="1.4"/>
     <text x="200" y="45" text-anchor="middle" fill="#fff" stroke="none" font-family="Cormorant Garamond, Georgia, serif" font-size="26" font-style="italic">${esc(initial)}</text>
-    <path d="M178 36H96M222 36H304" stroke-width="1" opacity=".6"/>
-    ${field !== 'argent' ? `<path d="${SHIELD}" fill="url(#sg-f)" stroke="none"/>` : ''}
-    ${div.d ? `<path d="${div.d}" fill="#000" stroke="none" clip-path="url(#sg-clip)"/><path d="${div.d}" fill="url(#sg-d)" stroke="none" clip-path="url(#sg-clip)"/>` : ''}
-    <path d="${SHIELD}" stroke-width="2.2"/>
-    <path d="${inset(SHIELD, .91)}" stroke-width="1" opacity=".7"/>
-    ${cipher(name, inset(SHIELD, .955))}
-    <g transform="translate(128 150) scale(6)"><g stroke="#000" stroke-width="1.9">${CHARGE[cat] || CHARGE.other}</g><g stroke-width=".42">${CHARGE[cat] || CHARGE.other}</g></g>
-    <g transform="translate(96 96) scale(1.6)"><g stroke="#000" stroke-width="3.4">${virtue.d}</g><g stroke-width=".9">${virtue.d}</g></g>
-    <g transform="translate(266 96) scale(1.6)"><g stroke="#000" stroke-width="3.4">${virtue.d}</g><g stroke-width=".9">${virtue.d}</g></g>
-    ${marks(v)}
-    <path d="M40 456C80 446 120 470 200 470S320 446 360 456L346 476L360 496C320 486 280 506 200 506S80 486 40 496L54 476Z" fill="#000" stroke-width="1.6"/>
+    <path d="M178 36H96M222 36H304" stroke-width="1" opacity=".6"/></g>
+    <g data-l="field">${field !== 'argent' ? `<path d="${SHIELD}" fill="url(#sg-f)" stroke="none"/>` : ''}
+    ${div.d ? `<path d="${div.d}" fill="#000" stroke="none" clip-path="url(#sg-clip)"/><path d="${div.d}" fill="url(#sg-d)" stroke="none" clip-path="url(#sg-clip)"/>` : ''}</g>
+    <g data-l="frame"><path d="${SHIELD}" stroke-width="2.2"/>
+    <path d="${inset(SHIELD, .91)}" stroke-width="1" opacity=".7"/></g>
+    <g data-l="cipher">${cipher(name, inset(SHIELD, .955))}</g>
+    <g data-l="charge" transform="translate(128 150) scale(6)"><g stroke="#000" stroke-width="1.9">${CHARGE[cat] || CHARGE.other}</g><g stroke-width=".42">${CHARGE[cat] || CHARGE.other}</g></g>
+    <g data-l="virtue"><g transform="translate(96 96) scale(1.6)"><g stroke="#000" stroke-width="3.4">${virtue.d}</g><g stroke-width=".9">${virtue.d}</g></g>
+    <g transform="translate(266 96) scale(1.6)"><g stroke="#000" stroke-width="3.4">${virtue.d}</g><g stroke-width=".9">${virtue.d}</g></g></g>
+    <g data-l="marks">${marks(v)}</g>
+    <g data-l="ribbon"><path d="M40 456C80 446 120 470 200 470S320 446 360 456L346 476L360 496C320 486 280 506 200 506S80 486 40 496L54 476Z" fill="#000" stroke-width="1.6"/>
     <path id="sg-band" d="M40 ${476 + b} C80 ${466 + b} 120 ${488 + b} 200 ${488 + b} S320 ${466 + b} 360 ${476 + b}" stroke="none"/>
-    <text fill="#fff" stroke="none" font-family="Cormorant Garamond, Georgia, serif" font-size="${fs}" letter-spacing="2"><textPath href="#sg-band" startOffset="50%" text-anchor="middle"${fit}>${esc(label)}</textPath></text>
-    <text x="200" y="536" text-anchor="middle" fill="#fff" stroke="none" opacity=".7" font-family="Cormorant Garamond, Georgia, serif" font-size="15" font-style="italic" letter-spacing="2">${virtue.motto}</text>
-    ${qrPlate(url)}
+    <text fill="#fff" stroke="none" font-family="Cormorant Garamond, Georgia, serif" font-size="${fs}" letter-spacing="2"><textPath href="#sg-band" startOffset="50%" text-anchor="middle"${fit}>${esc(label)}</textPath></text></g>
+    <g data-l="motto"><text x="200" y="536" text-anchor="middle" fill="#fff" stroke="none" opacity=".7" font-family="Cormorant Garamond, Georgia, serif" font-size="15" font-style="italic" letter-spacing="2">${virtue.motto}</text></g>
+    <g data-l="plate">${qrPlate(url)}</g>
   </g>
 </svg>`;
     stage.innerHTML = svg;
@@ -281,6 +281,217 @@
         await navigator.share(navigator.canShare && navigator.canShare({ files: [file] }) ? { ...data, files: [file] } : data);
         track('sigil_share', { category: form.cat.value });
       } catch (err) { /* cancelled */ }
+    });
+  }
+
+  /* The forging, as a 9:16 video. Each part of the crest is drawn onto a canvas in turn and the browser's own recorder saves it. Nothing is uploaded. */
+  const vidBtn = $('[data-sigil-video]'), vidStatus = $('[data-sigil-vstatus]');
+  // H.264 first: it's what Instagram, TikTok and every phone expect.
+  const VTYPES = ['video/mp4;codecs=avc1.640028', 'video/mp4;codecs=avc1.4d0028', 'video/mp4;codecs=avc1.42E028', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+  const canCodec = typeof window.VideoEncoder === 'function' && typeof window.VideoFrame === 'function';
+  const canStream = !!(window.MediaRecorder && HTMLCanvasElement.prototype.captureStream && VTYPES.some((t) => MediaRecorder.isTypeSupported(t)));
+  const canRecord = canCodec || canStream;
+  if (vidBtn && canRecord) {
+    vidBtn.hidden = false;
+    const LAYERS = ['top', 'field', 'frame', 'cipher', 'charge', 'virtue', 'marks', 'ribbon', 'motto', 'plate'];
+    const loadImg = (svg) => new Promise((resolve, reject) => {
+      const img = new Image(), u = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+      img.onload = () => { URL.revokeObjectURL(u); resolve(img); };
+      img.onerror = reject; img.src = u;
+    });
+    // One transparent image per part of the crest, plus the whole crest for the foil mask.
+    const layerImages = async (svg) => {
+      const doc = new DOMParser().parseFromString(svg, 'image/svg+xml');
+      const one = (keep) => {
+        const d = doc.cloneNode(true);
+        d.querySelectorAll('[data-l]').forEach((el) => { if (!keep.includes(el.getAttribute('data-l'))) el.remove(); });
+        return new XMLSerializer().serializeToString(d);
+      };
+      const out = {};
+      await Promise.all(LAYERS.concat('all').map(async (l) => { out[l] = await loadImg(one(l === 'all' ? LAYERS : [l])); }));
+      return out;
+    };
+    const clamp = (v) => Math.max(0, Math.min(1, v));
+    const ease = (v) => 1 - Math.pow(1 - clamp(v), 3);
+    const span = (t, a, b) => ease((t - a) / (b - a));
+    const T = 7.5;
+
+    const prepare = async () => {
+      const svg = draw();
+      const vbH = +(svg.match(/viewBox="0 0 400 (\d+)"/) || [0, 560])[1];
+      const L = await layerImages(svg);
+      const c = document.createElement('canvas'); c.width = 1080; c.height = 1920;
+      const x = c.getContext('2d');
+      const S = SIZES.story, room = S.bottom - S.top;
+      const dw = Math.min(S.maxW, room * 400 / vbH), k = dw / 400, dh = dw * vbH / 400;
+      const ox = (1080 - dw) / 2, oy = S.top + (room - dh) / 2;
+      const P = (sx, sy) => [ox + sx * k, oy + sy * k];
+      const shieldPath = new Path2D((svg.match(/<g data-l="frame"><path d="([^"]+)"/) || [0, 'M0 0'])[1]);
+      const [cx, cy] = P(200, 214);
+      const foil = document.createElement('canvas'); foil.width = 1080; foil.height = 1920;
+      const f = foil.getContext('2d');
+
+      const layer = (img, alpha, dy = 0, scale = 1, about = [cx, cy]) => {
+        if (alpha <= 0) return;
+        x.save(); x.globalAlpha = alpha;
+        x.translate(about[0], about[1] + dy * k); x.scale(scale, scale); x.translate(-about[0], -about[1]);
+        x.drawImage(img, ox, oy, dw, dh); x.restore();
+      };
+      // A clock-hand sweep from the top of the shield: the border and the cipher are traced on.
+      const sweep = (img, p) => {
+        if (p <= 0) return;
+        if (p >= 1) return layer(img, 1);
+        x.save(); x.beginPath(); x.moveTo(cx, cy);
+        x.arc(cx, cy, 2000, -Math.PI / 2, -Math.PI / 2 + p * Math.PI * 2); x.closePath(); x.clip();
+        layer(img, 1); x.restore();
+        const a = -Math.PI / 2 + p * Math.PI * 2; // the spark at the tip of the hand
+        const g = x.createLinearGradient(cx, cy, cx + Math.cos(a) * 700, cy + Math.sin(a) * 700);
+        g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(255,255,255,.35)');
+        x.save(); x.translate(ox, oy); x.scale(k, k); x.clip(shieldPath); x.setTransform(1, 0, 0, 1, 0, 0); // the hand stays inside the shield
+        x.strokeStyle = g; x.lineWidth = 2; x.beginPath(); x.moveTo(cx, cy); x.lineTo(cx + Math.cos(a) * 700, cy + Math.sin(a) * 700); x.stroke(); x.restore();
+      };
+      const frame = (t) => {
+        x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1;
+        x.fillStyle = '#000'; x.fillRect(0, 0, 1080, 1920);
+        layer(L.top, span(t, .1, .9), 12 * (1 - span(t, .1, .9)));
+        // the field fills from the top down
+        const fp = span(t, 1.1, 2.3);
+        if (fp > 0) { x.save(); x.beginPath(); x.rect(0, 0, 1080, oy + dh * .9 * fp); x.clip(); layer(L.field, fp); x.restore(); }
+        sweep(L.frame, span(t, .3, 1.9));
+        sweep(L.cipher, span(t, 1.7, 2.9));
+        // the charge strikes
+        const cp = span(t, 2.7, 3.2);
+        layer(L.charge, cp, 0, 1.35 - .35 * cp, P(200, 222));
+        const flash = t > 2.9 ? Math.max(0, 1 - (t - 2.9) / .6) * (t < 3.0 ? (t - 2.9) / .1 : 1) : 0;
+        if (flash > 0) {
+          const [hx, hy] = P(200, 222), g = x.createRadialGradient(hx, hy, 0, hx, hy, 420);
+          g.addColorStop(0, `rgba(255,255,255,${.55 * flash})`); g.addColorStop(1, 'rgba(255,255,255,0)');
+          x.fillStyle = g; x.fillRect(0, 0, 1080, 1920);
+        }
+        layer(L.virtue, span(t, 3.1, 3.6));
+        layer(L.marks, span(t, 3.3, 3.8));
+        const rp = span(t, 3.5, 4.3);
+        layer(L.ribbon, rp, 26 * (1 - rp));
+        layer(L.motto, span(t, 4.0, 4.6));
+        layer(L.plate, span(t, 4.3, 4.9));
+        // a band of light passes over the finished crest
+        const fl = (t - 4.8) / 1.3;
+        if (fl > 0 && fl < 1) {
+          f.globalCompositeOperation = 'source-over'; f.clearRect(0, 0, 1080, 1920);
+          f.drawImage(L.all, ox, oy, dw, dh);
+          f.globalCompositeOperation = 'source-in';
+          const bx = -600 + fl * 2300, g = f.createLinearGradient(bx, 0, bx + 520, 520);
+          g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(.5, 'rgba(255,255,255,1)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+          f.fillStyle = g; f.fillRect(0, 0, 1080, 1920);
+          x.save(); x.globalCompositeOperation = 'lighter'; x.globalAlpha = .9; x.drawImage(foil, 0, 0); x.restore();
+        }
+        const ep = span(t, 6.0, 6.7);
+        if (ep > 0) {
+          x.save(); x.globalAlpha = ep; x.fillStyle = 'rgba(255,255,255,.6)';
+          x.font = '30px Georgia, serif'; x.textAlign = 'center';
+          x.fillText('Forged at knght.com/sigil', 540, S.note + 14 * (1 - ep)); x.restore();
+        }
+      };
+
+      return { c, frame };
+    };
+    const status = (txt) => { if (vidStatus) vidStatus.textContent = txt; };
+
+    // Exact path: every frame is drawn at its own moment and encoded as H.264, so nothing drops, even on a slow phone.
+    const CODECS = [['avc1.640028', 'avc'], ['avc1.4d0028', 'avc'], ['avc1.42E028', 'avc'], ['vp09.00.40.08', 'vp9']]; // VP9 only where H.264 is missing
+    let muxerReady = null;
+    const loadMuxer = () => muxerReady || (muxerReady = new Promise((resolve, reject) => {
+      if (window.Mp4Muxer) return resolve();
+      const sc = document.createElement('script');
+      sc.src = '/assets/js/vendor/mp4-muxer-5.2.2.js'; sc.onload = resolve; sc.onerror = () => { muxerReady = null; reject(new Error('muxer')); };
+      document.head.appendChild(sc);
+    }));
+    const viaCodec = async ({ c, frame }) => {
+      let cfg = null, kind = 'avc';
+      for (const [codec, k] of CODECS) {
+        const want = { codec, width: 1080, height: 1920, bitrate: 8000000, framerate: 30 };
+        if (k === 'avc') want.avc = { format: 'avc' };
+        try { if ((await VideoEncoder.isConfigSupported(want)).supported) { cfg = want; kind = k; break; } } catch (err) {}
+      }
+      if (!cfg) return null;
+      await loadMuxer();
+      const muxer = new Mp4Muxer.Muxer({ target: new Mp4Muxer.ArrayBufferTarget(), video: { codec: kind, width: 1080, height: 1920 }, fastStart: 'in-memory' });
+      let failed = null;
+      const enc = new VideoEncoder({ output: (chunk, meta) => muxer.addVideoChunk(chunk, meta), error: (e) => { failed = e; } });
+      enc.configure(cfg);
+      const N = Math.round(T * 30), us = 1e6 / 30;
+      for (let i = 0; i < N && !failed; i++) {
+        frame(i / 30);
+        const vf = new VideoFrame(c, { timestamp: Math.round(i * us), duration: Math.round(us) });
+        enc.encode(vf, { keyFrame: i % 60 === 0 }); vf.close();
+        if (i % 6 === 0) status(`Forging your video. ${Math.round(i / N * 100)}%`);
+        while (enc.encodeQueueSize > 6 && !failed) await new Promise((r) => setTimeout(r, 4));
+      }
+      await enc.flush(); enc.close();
+      if (failed) throw failed;
+      muxer.finalize();
+      return new File([muxer.target.buffer], `${slug()}-sigil.mp4`, { type: 'video/mp4' });
+    };
+
+    // Fallback: play it in real time and let the browser's recorder capture the canvas.
+    const viaStream = async ({ c, frame }) => {
+      frame(0);
+      const type = VTYPES.find((t) => MediaRecorder.isTypeSupported(t));
+      const stream = c.captureStream(30);
+      const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 10000000 });
+      const chunks = [];
+      rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+      const done = new Promise((resolve) => { rec.onstop = resolve; });
+      rec.start(250);
+      const t0 = performance.now();
+      await new Promise((resolve) => {
+        const tick = () => {
+          const t = (performance.now() - t0) / 1000;
+          frame(Math.min(t, T));
+          status(`Forging your video. ${Math.max(0, Math.ceil(T - t))}s. Keep this tab open.`);
+          if (t < T + .15) requestAnimationFrame(tick); else resolve();
+        };
+        requestAnimationFrame(tick);
+      });
+      rec.stop(); await done;
+      stream.getTracks().forEach((tr) => tr.stop());
+      const ext = /mp4/.test(type) ? 'mp4' : 'webm';
+      return new File(chunks, `${slug()}-sigil.${ext}`, { type: type.split(';')[0] });
+    };
+
+    const record = async () => {
+      status('Forging your video.');
+      const scene = await prepare();
+      if (canCodec) { try { const f = await viaCodec(scene); if (f) return f; } catch (err) { /* fall through to the recorder */ } }
+      if (!canStream) throw new Error('no recorder');
+      return viaStream(scene);
+    };
+
+    let made = null, busy = false;
+    const touch = matchMedia('(pointer: coarse)').matches;
+    const deliver = async () => {
+      if (touch && navigator.canShare && navigator.canShare({ files: [made] })) {
+        try { await navigator.share({ files: [made] }); return; } catch (err) { if (err && err.name === 'AbortError') return; }
+      }
+      save(made, made.name);
+    };
+    const reset = () => { if (busy) return; made = null; vidBtn.textContent = 'Make a video'; if (vidStatus) vidStatus.textContent = ''; };
+    form.addEventListener('input', reset); form.addEventListener('change', reset);
+    vidBtn.addEventListener('click', async () => {
+      if (busy) return;
+      if (made) { deliver(); return; }
+      busy = true; vidBtn.disabled = true;
+      try {
+        made = await record();
+        track('sigil_download', { format: 'video', category: form.cat.value });
+        vidBtn.textContent = 'Save video';
+        if (vidStatus) vidStatus.textContent = `Ready. A 9:16 ${made.name.endsWith('mp4') ? 'MP4' : 'WebM'} for Stories and Reels.`;
+        if (!touch) save(made, made.name);
+      } catch (err) {
+        made = null;
+        if (vidStatus) vidStatus.textContent = 'This browser could not record the video. Try the Story image instead.';
+      }
+      busy = false; vidBtn.disabled = false;
     });
   }
 
