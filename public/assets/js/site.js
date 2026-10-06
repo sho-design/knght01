@@ -600,6 +600,7 @@
       compass: '<circle cx="12" cy="12" r="9"/><path d="M12 5.5l2 6.5-2 6.5-2-6.5z"/><path d="M12 1.5v2M12 20.5v2M1.5 12h2M20.5 12h2"/>',
       seal: '<path d="M5 3h11.5a2.5 2.5 0 0 1 2.5 2.5V8M5 3a2 2 0 0 0-2 2v1h2M5 3v15"/><path d="M8 7.5h7M8 10.5h5"/><circle cx="15" cy="17" r="4.2"/><path d="M15 15.2l.6 1.2 1.3.2-.95.9.22 1.3-1.17-.62-1.17.62.22-1.3-.95-.9 1.3-.2z"/>',
       crest: '<path d="M5 4.5h14V11c0 4.6-3.3 7.6-7 9.4-3.7-1.8-7-4.8-7-9.4z"/><path d="M12 7.5v8M8.5 10.5h7"/>',
+      quill: '<path d="M20 3C13.5 4.2 8.6 9.4 6.6 16.4L5.4 21"/><path d="M6.8 15.6c3.4.2 6.8-1.2 9-3.6M9.4 10.8c2.4.1 4.6-.7 6.2-2"/>',
       scales: '<path d="M12 3v18M7.5 21h9M4 6.5h16"/><path d="M6.5 6.5L3.5 13h6zM17.5 6.5l-3 6.5h6z"/><path d="M3.5 13a3 2 0 0 0 6 0M14.5 13a3 2 0 0 0 6 0"/>'
     };
     const sigil = (k) => `<svg class="mnav__sigil" viewBox="0 0 24 24" aria-hidden="true">${SIGILS[k]}</svg>`;
@@ -622,6 +623,7 @@
         ['Selling spirits without the buzz', 'rules/alcohol-ads-strength-and-success/'],
         ['Why lawyers can’t say “specialist”', 'rules/lawyers-and-the-word-specialist/']] },
       { label: 'Score your world', sigil: 'scales', href: '#score' },
+      { label: 'Claim checker', sigil: 'quill', href: 'check/' },
       { label: 'Your sigil', sigil: 'crest', href: 'sigil/' }
     ];
     const link = ([label, p], cls, n) => `<li><a class="${cls}" href="${to(p)}"${here(p) ? ' aria-current="page"' : ''}>${n ? `<span class="mnav__num">${n}</span>` : ''}${label}</a></li>`;
@@ -656,6 +658,9 @@
     panel.innerHTML = `<nav aria-label="Menu"><ol class="mnav__list">${MENU.map(group).join('')}</ol></nav>`
       + `<div class="mnav__foot"><a class="btn" href="${to('book/')}">${cta && /call/i.test(cta.textContent) ? cta.textContent.trim() : 'Book the free call'}</a><a class="link" href="mailto:sho@knght.com">sho@knght.com</a></div>`;
     document.body.appendChild(panel);
+    // The same social icons as the footer, when any are set.
+    const soc = $('.footer .social');
+    if (soc) $('.mnav__foot', panel).appendChild(soc.cloneNode(true));
 
     $$('button.mnav__top', panel).forEach((btn) => btn.addEventListener('click', () => {
       const item = btn.parentElement, open = !item.classList.contains('is-open');
