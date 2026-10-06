@@ -230,22 +230,29 @@
   draw();
 
   const slug = () => ((form.name.value || 'sigil').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'sigil');
-  const toPng = () => new Promise((resolve, reject) => {
+  // Two Instagram sizes: feed 4:5 (1080x1350) and Story 9:16 (1080x1920). The crest scales to fit, plate or not.
+  const SIZES = {
+    feed: { h: 1350, top: 60, bottom: 1220, maxW: 780, note: 1300 },
+    story: { h: 1920, top: 220, bottom: 1610, maxW: 1060, note: 1700 }, // clear of the Story header and reply bar
+  };
+  const toPng = (size = 'feed') => new Promise((resolve, reject) => {
+    const S = SIZES[size] || SIZES.feed;
     const svg = draw();
     const img = new Image();
     const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
     img.onload = () => {
       const c = document.createElement('canvas');
       const vbH = +(svg.match(/viewBox="0 0 400 (\d+)"/) || [0, 560])[1];
-      c.width = 1080; c.height = vbH > 560 ? 1560 : 1350;
+      c.width = 1080; c.height = S.h;
       const x = c.getContext('2d');
       x.fillStyle = '#000'; x.fillRect(0, 0, c.width, c.height);
-      const dw = vbH > 560 ? 788 : 772, dh = dw * vbH / 400;
-      x.drawImage(img, (1080 - dw) / 2, 60, dw, dh);
+      const room = S.bottom - S.top;
+      const dw = Math.min(S.maxW, room * 400 / vbH), dh = dw * vbH / 400;
+      x.drawImage(img, (1080 - dw) / 2, S.top + (room - dh) / 2, dw, dh);
       x.fillStyle = 'rgba(255,255,255,.55)';
       x.font = '28px Georgia, serif';
       x.textAlign = 'center';
-      x.fillText('Forged at knght.com/sigil', 540, c.height - 50);
+      x.fillText('Forged at knght.com/sigil', 540, S.note);
       URL.revokeObjectURL(url);
       c.toBlob((b) => (b ? resolve(b) : reject(new Error('png'))), 'image/png');
     };
@@ -260,6 +267,8 @@
   };
   const track = (event, extra) => { if (window.KNGHT_TRACK) window.KNGHT_TRACK(event, extra); };
 
+  const storyBtn = $('[data-sigil-story]');
+  if (storyBtn) storyBtn.addEventListener('click', async () => { save(await toPng('story'), `${slug()}-sigil-story.png`); track('sigil_download', { format: 'story', category: form.cat.value }); });
   const pngBtn = $('[data-sigil-png]'), svgBtn = $('[data-sigil-svg]'), shareBtn = $('[data-sigil-share]');
   if (pngBtn) pngBtn.addEventListener('click', async () => { save(await toPng(), `${slug()}-sigil.png`); track('sigil_download', { format: 'png', category: form.cat.value }); });
   if (svgBtn) svgBtn.addEventListener('click', () => { save(new Blob([draw()], { type: 'image/svg+xml' }), `${slug()}-sigil.svg`); track('sigil_download', { format: 'svg', category: form.cat.value }); });
