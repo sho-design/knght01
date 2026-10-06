@@ -162,6 +162,7 @@
     const initial = (name.match(/[A-Za-z0-9]/) || ['K'])[0].toUpperCase();
     const label = (name || 'Your business').toUpperCase();
     const fs = label.length > 22 ? 15 : label.length > 14 ? 18 : 21;
+    const b = Math.round(fs * .34); // drop the baseline so the letters sit centred on the ribbon's middle curve
     const fit = label.length > 12 ? ' textLength="250" lengthAdjust="spacingAndGlyphs"' : '';
     const v = earned();
     const url = site();
@@ -186,7 +187,8 @@
     <g transform="translate(266 96) scale(1.6)"><g stroke="#000" stroke-width="3.4">${virtue.d}</g><g stroke-width=".9">${virtue.d}</g></g>
     ${marks(v)}
     <path d="M40 456C80 446 120 470 200 470S320 446 360 456L346 476L360 496C320 486 280 506 200 506S80 486 40 496L54 476Z" fill="#000" stroke-width="1.6"/>
-    <text x="200" y="${494 - (21 - fs) / 2}" text-anchor="middle" fill="#fff" stroke="none" font-family="Cormorant Garamond, Georgia, serif" font-size="${fs}" letter-spacing="2"${fit}>${esc(label)}</text>
+    <path id="sg-band" d="M40 ${476 + b} C80 ${466 + b} 120 ${488 + b} 200 ${488 + b} S320 ${466 + b} 360 ${476 + b}" stroke="none"/>
+    <text fill="#fff" stroke="none" font-family="Cormorant Garamond, Georgia, serif" font-size="${fs}" letter-spacing="2"><textPath href="#sg-band" startOffset="50%" text-anchor="middle"${fit}>${esc(label)}</textPath></text>
     <text x="200" y="536" text-anchor="middle" fill="#fff" stroke="none" opacity=".7" font-family="Cormorant Garamond, Georgia, serif" font-size="15" font-style="italic" letter-spacing="2">${virtue.motto}</text>
     ${qrPlate(url)}
   </g>
