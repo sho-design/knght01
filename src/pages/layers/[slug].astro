@@ -52,6 +52,7 @@ const ld = [{ '@context': 'https://schema.org', '@type': 'Service', name: `${nam
 
   <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">What we check it against</p>
     <ul class="wrules wrules--sealed" data-reveal>{checks.map((c) => <li><b><i class="seal" aria-hidden="true"></i>{c.b}</b>{c.s && <span>{c.s}</span>}</li>)}</ul>
+    {name === 'Law' && <p class="wrules__more"><a class="link" href="/check/">Check one of your own lines</a></p>}
   </div></section>
 
   {examples.length > 0 && (

@@ -58,6 +58,7 @@ Each world is built in this order. No layer is built before Lore.
 - [Machinery](https://knght.com/layers/machinery/): layer 7 of 7, what it is, what we make, what we check it against and examples from the worlds.
 - [How a world gets built](https://knght.com/process/): the call, the Verdict, the Build, launch and the Keep.
 - [Rules](https://knght.com/rules/): short reads on marketing rules for regulated categories.
+- [Claim checker](https://knght.com/check/): paste an ad, label or headline and see which words Ontario regulators (CPSO, RCDSO, Law Society, AGCO, CFIA) or the Competition Act are likely to question, with a safer way to say it. Free, runs in the browser.
 - [Can your clinic put patient information into ChatGPT?](https://knght.com/rules/clinics-ai-and-patient-information/): PHIPA and AI tools for Ontario clinics, in plain language.
 - [Real estate teams and the brokerage name](https://knght.com/rules/real-estate-teams-and-the-brokerage-name/): RECO advertising rules for real estate teams under TRESA: brokerage name, team names, sold stories and awards.
 - [What a brand world costs in Ontario](https://knght.com/rules/what-a-brand-world-costs-in-ontario/): published price ranges for branding, websites and retainers in Toronto and the GTA, and how KNGHT prices the Verdict and the Build.

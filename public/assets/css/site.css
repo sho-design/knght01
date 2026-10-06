@@ -1330,3 +1330,26 @@ html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
 .lx-nc{text-transform:none;letter-spacing:.06em}
 .lx-logo{fill:#fff;font-family:var(--serif);font-weight:600}
 .cta-note{margin:14px 0 0;font-size:.82rem;letter-spacing:.04em;opacity:.72}
+/* ---------- The claim checker ---------- */
+.ck{margin-top:36px;max-width:860px}
+.ck__cats{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:18px}
+.ck__lbl{margin-right:6px;font:500 .7rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
+.ck__text{display:block;width:100%;min-height:140px;padding:18px 20px;border:1px solid var(--rule-strong);border-radius:8px;background:rgba(255,255,255,.03);color:var(--argent);font:400 clamp(1.05rem,1.4vw,1.2rem)/1.55 var(--sans);resize:vertical}
+.ck__text:focus{outline:none;border-color:var(--argent)}
+.ck__actions{display:flex;align-items:center;gap:24px;margin-top:18px}
+.ck__sum{margin:0 0 22px;font:italic 400 clamp(1.4rem,2.4vw,2rem)/1.25 var(--serif);color:var(--argent)}
+.ck__marked{max-width:860px;margin:0 0 34px;padding:24px 26px;border:1px solid var(--rule);border-radius:8px;font:400 clamp(1.1rem,1.5vw,1.3rem)/1.7 var(--serif);color:#d8d8d8;white-space:pre-wrap}
+.ck__hit{background:none;color:#fff}
+.ck__hit s{text-decoration-thickness:2px;text-decoration-color:#fff}
+.ck__hit sup{margin-left:2px;font:600 .62rem/1 var(--sans);color:var(--ash)}
+.ck__list{list-style:none;margin:0;padding:0;max-width:860px;border-top:1px solid var(--rule-strong)}
+.ck__item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding:22px 0;border-bottom:1px solid var(--rule)}
+.ck__n{font:italic 300 2rem/1 var(--serif);color:var(--ash)}
+.ck__item p{margin:0 0 8px;color:var(--ash);max-width:62ch}
+.ck__t{color:var(--argent)!important;font-size:1.05rem}
+.ck__t b{font:400 1.3rem/1.2 var(--serif)}
+.ck__fix{color:var(--argent)!important}
+.ck__fix span{font:500 .7rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--ash);margin-right:6px}
+.ck__src{font-size:.82rem}
+.ck__note{max-width:70ch;margin:24px 0 0;font-size:.85rem;color:var(--ash)}
+.ck-out.is-clean .ck__marked{border-style:dashed}

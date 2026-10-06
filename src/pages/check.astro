@@ -1,0 +1,61 @@
+---
+// The claim checker: a first read of a line of marketing against the rules of its category (public/assets/js/check.js).
+import Base from '../layouts/Base.astro';
+import Cta from '../components/Cta.astro';
+import { SETTINGS } from '../lib/settings';
+const CATS = [['clinic', 'Clinics'], ['dental', 'Dental'], ['medspa', 'Medspas'], ['law', 'Law firms'], ['spirits', 'Spirits'], ['food', 'Food and drink']];
+const ld = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'KNGHT claim checker', applicationCategory: 'BusinessApplication', operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'CAD' },
+  description: 'Paste an ad, a label line or a web headline and see which words an Ontario regulator or a platform is likely to question.' }];
+---
+<Base title="Free ad claim checker for Ontario regulated businesses | KNGHT" description="Paste an ad, label or headline. See which words CPSO, RCDSO, the Law Society, AGCO or CFIA rules are likely to question, and a safer way to say it. Free." path="check/" ld={ld}>
+  <Fragment slot="scripts"><script is:inline src="/assets/js/check.js" defer></script></Fragment>
+  <section class="whero ck-hero">
+    <div class="wrap">
+      <p class="eyebrow">The claim checker</p>
+      <h1 class="display book__title" style="margin-top:24px">Will this line <br><em>pass review?</em></h1>
+      <p class="for__answer">Paste an ad, a label line or a website headline and pick your category. You&rsquo;ll see the words a regulator or an ad platform is most likely to question, why, and a safer way to say it. It runs in your browser, and nothing is sent anywhere.</p>
+      <form class="ck" data-check novalidate>
+        <div class="ck__cats" role="group" aria-label="Your category"><span class="ck__lbl">Your category</span>{CATS.map(([v, l]) => <button type="button" class="cat" data-check-cat={v} aria-pressed="false">{l}</button>)}</div>
+        <label class="sr-only" for="check-text">Your marketing line</label>
+        <textarea id="check-text" class="ck__text" rows="4" maxlength="2000" placeholder="Paste an ad, a post, a label line or a headline here"></textarea>
+        <div class="ck__actions">
+          <button type="submit" class="btn">Check it</button>
+          <button type="button" class="link" data-check-example>Try an example</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="wsec ck-out" data-check-out hidden aria-live="polite">
+    <div class="wrap">
+      <p class="eyebrow">The read</p>
+      <p class="ck__sum" data-check-sum></p>
+      <p class="ck__marked" data-check-marked></p>
+      <ol class="ck__list" data-check-list></ol>
+      <p class="ck__note">A first read, not legal advice. A flag means look again, not that a line breaks the law, and a clean read is not a clearance. Rules change, and your own college or regulator has the final word.</p>
+      {SETTINGS.formEndpoint && (
+        <form class="lead ck__lead" data-check-lead data-endpoint={SETTINGS.formEndpoint} novalidate>
+          <label class="lead__label" for="ck-email">Want a person to read it? Send it to Sergio</label>
+          <div class="lead__row">
+            <input id="ck-email" name="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com" required>
+            <button type="submit" class="btn btn--sm">Send it</button>
+          </div>
+          <label class="lead__consent"><input id="ck-consent" type="checkbox" required> Send my line to KNGHT for a reply, and occasional notes. Unsubscribe any time. <a class="link" href="/privacy/">Privacy</a></label>
+          <p class="lead__status" data-check-status aria-live="polite"></p>
+        </form>
+      )}
+    </div>
+  </section>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">What it reads for</p>
+    <ul class="wrules">
+      <li><b>Every category</b><span>Guarantees, superlatives, environmental claims, from-prices and urgency, under the Competition Act.</span></li>
+      <li><b>Clinics, dental, medspas</b><span>Promises of no pain or a cure, safety absolutes, testimonials, discounts, protected titles and prescription drugs by name.</span></li>
+      <li><b>Law firms</b><span>Specialist and expert, promises of results and contingency terms, under the Law Society&rsquo;s marketing rules.</span></li>
+      <li><b>Spirits</b><span>Strength, social or personal success, young audiences, health benefits and driving, under AGCO standards and the CRTC code.</span></li>
+      <li><b>Food and drink</b><span>Nutrient and health claims, and natural, organic, local and made in Canada, under CFIA and Health Canada rules.</span></li>
+    </ul>
+  </div></section>
+
+  <Cta line="The checker reads one line. A Verdict reads all seven layers against your regulator, from $3,500 CAD, in 5 business days." />
+</Base>
