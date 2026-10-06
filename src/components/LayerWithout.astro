@@ -1,0 +1,101 @@
+---
+// "Without it": the same layer, skipped. Ten seconds of what goes wrong, under the Without it section.
+// Same film system as LayerExplainer (classes, timing, player in site.js). Only Law and Artifacts have one so far.
+// Everything here is an illustration, not a client.
+interface Props { id: string; name: string }
+const { id, name } = Astro.props;
+const d = (s: number, o?: number, extra = '') => `--d:${s}s;${o !== undefined ? `--o:${o}s;` : ''}${extra}`;
+const BEATS: Record<string, string[]> = {
+  law: ['The ad goes out. Nobody checked the claim.', 'Someone reports it to the regulator.', 'The ad comes down. The month goes to letters, not bookings.'],
+  artifacts: ['Five thousand boxes go to print. Nobody checked the label.', 'At the shelf, the barcode won’t scan and the French is missing.', 'The stock gets pulled. The launch waits for a reprint.'],
+};
+const AT = [0.2, 3.2, 6.2];
+const beats = BEATS[id] || [];
+const X = (x: number, y: number) => `M${x} ${y} l12 12 M${x + 12} ${y} l-12 12`;
+const BARS = 'M416.0 268h0.8v31h-0.8zM417.6 268h0.8v31h-0.8zM419.2 268h0.8v31h-0.8zM420.8 268h3.2v31h-3.2zM425.6 268h1.6v26h-1.6zM428.8 268h0.8v26h-0.8zM430.4 268h0.8v26h-0.8zM433.6 268h1.6v26h-1.6zM436.8 268h1.6v26h-1.6zM440.0 268h0.8v26h-0.8zM441.6 268h0.8v26h-0.8zM444.8 268h1.6v26h-1.6zM448.0 268h1.6v26h-1.6zM451.2 268h0.8v26h-0.8zM452.8 268h0.8v31h-0.8zM454.4 268h0.8v31h-0.8zM456.0 268h1.6v26h-1.6zM459.2 268h1.6v26h-1.6zM461.6 268h1.6v26h-1.6zM464.0 268h1.6v26h-1.6zM467.2 268h0.8v26h-0.8zM471.2 268h0.8v26h-0.8zM472.8 268h0.8v26h-0.8zM474.4 268h2.4v26h-2.4zM478.4 268h0.8v26h-0.8zM480.8 268h2.4v26h-2.4zM484.0 268h1.6v31h-1.6zM486.4 268h1.6v31h-1.6zM489.6 268h0.8v31h-0.8zM491.2 268h0.8v31h-0.8z';
+---
+{beats.length > 0 && (
+<div class="wrap lxw">
+  <div class="lx__head"><p class="eyebrow">{name}, skipped</p><span class="lx__tag">Illustration, not a client</span></div>
+  <div class={`lx lx--without lx--${id}-without`} data-lx>
+    <svg viewBox="0 0 800 420" class="lx__svg" role="img" aria-label={beats.join(' ')}>
+      {id === 'law' && (<>
+        {/* The ad, live on a phone */}
+        <rect x="90" y="30" width="190" height="360" rx="24" pathLength="1" class="lx-line x-draw" style={d(0.2)} />
+        <path d="M160 46 H210" class="lx-line lx-faint x-in" style={d(0.5)} />
+        <g class="x-in x-dim" style={d(0.6, 6.4)}>
+          <text x="108" y="80" class="lx-tiny lx-start">Sponsored</text>
+          <rect x="106" y="90" width="158" height="104" rx="4" class="lx-line lx-faint" />
+          <path d="M150 160 L172 136 L190 152 L204 140 L226 160" class="lx-line lx-faint" />
+          <text x="185" y="228" class="lx-h" style="font-size:19px">Painless.</text>
+          <text x="185" y="252" class="lx-h" style="font-size:17px">Guaranteed results.</text>
+          <rect x="130" y="270" width="110" height="30" rx="15" class="lx-fill" /><text x="185" y="290" class="lx-s lx-ink">Book now</text>
+        </g>
+        <text x="185" y="342" class="lx-s x-in x-out" style={d(1.2, 1.9)}>Seen by 1,204</text>
+        <text x="185" y="342" class="lx-s x-in x-out" style={d(1.9, 2.6)}>Seen by 8,960</text>
+        <text x="185" y="342" class="lx-s lx-s--w x-in x-out" style={d(2.6, 6.4)}>Seen by 21,480</text>
+        {/* Someone flags it, and the report travels */}
+        <path d="M246 86 V58 M246 58 H264 L258 65 L264 72 H246" class="lx-line lx-bold x-pop" style={d(3.2)} />
+        <path id="lxwLaw" d="M284 104 C380 40 510 40 586 112" pathLength="1" class="lx-line lx-faint lx-dash x-draw" style={d(3.4, undefined, '--t:.8s')} />
+        <g class="x-out" style={d(0, 5.6)}><g class="lx-runner" style="--rs:3.7s">
+          <rect x="-11" y="-8" width="22" height="16" rx="1.5" class="lx-ink-bg" /><path d="M-11 -8 L0 1 L11 -8" class="lx-line" />
+          <animateMotion dur="1.4s" begin="indefinite" fill="freeze" data-at="3.7"><mpath href="#lxwLaw" /></animateMotion>
+        </g></g>
+        {/* The regulator */}
+        <path d="M560 150 L630 112 L700 150 Z M560 150 H700 V162 H560 Z M580 162 V272 M612 162 V272 M648 162 V272 M680 162 V272 M552 272 H708 V286 H552 Z" pathLength="1" class="lx-line x-draw" style={d(3.0, undefined, '--t:1s')} />
+        <text x="630" y="312" class="lx-s x-in" style={d(3.6)}>Regulator</text>
+        <text x="630" y="338" class="lx-s lx-note x-in x-out" style={d(5.1, 6.2)}>Complaint received</text>
+        {/* The notice comes back, the ad comes down */}
+        <rect x="340" y="150" width="150" height="196" rx="3" pathLength="1" class="lx-line x-draw" style={d(6.2, undefined, '--t:.8s')} />
+        <g class="x-in" style={d(6.6)}>
+          <text x="415" y="182" class="lx-s lx-s--w">Notice</text>
+          <path d="M360 204 H470 M360 220 H462 M360 236 H468 M360 252 H440" class="lx-line lx-faint" />
+        </g>
+        <g class="x-pop" style={d(7.2)}><circle cx="452" cy="306" r="24" class="lx-line" /><circle cx="452" cy="306" r="19" class="lx-line lx-faint" /><text x="452" y="309" class="lx-tiny lx-tiny--w">Review</text></g>
+        <path d="M106 90 L264 300 M264 90 L106 300" pathLength="1" class="lx-strike x-draw" style={d(6.8, undefined, '--t:.6s')} />
+        <text x="185" y="342" class="lx-s lx-s--w x-in" style={d(7.2)}>Ad removed</text>
+        <text x="630" y="372" class="lx-h lx-h--s x-in" style={d(7.8)}>Weeks of letters.</text>
+        <text x="630" y="398" class="lx-h lx-h--s x-in" style={d(8.1)}>No new bookings.</text>
+      </>)}
+      {id === 'artifacts' && (<>
+        {/* One box, printed five thousand times, label never checked */}
+        <g class="x-out" style={d(0, 6.0)}>
+          <g transform="translate(-220 -10)">
+            <path d="M330 170 L420 130 L560 170 L470 210 Z M330 170 V310 L470 350 V210 M470 350 L560 310 V170" pathLength="1" class="lx-line x-draw" style={d(0.2, undefined, '--t:1.2s')} />
+            <g class="x-in" style={d(1.0)}><g transform="matrix(1 .2857 0 1 0 0)">
+              <text x="350" y="118" textLength="100" lengthAdjust="spacing" class="lx-logo" style="font-size:21.7px">KNGHT</text>
+              <g transform="translate(350 120.01) scale(0.1667)"><circle cx="30" cy="60" r="16" class="lx-line" style="stroke-width:5" /><path d="M46 60 H120 M120 30 V90 M136 51 L530 51 L594 60 L530 69 L136 69 Z" class="lx-line" style="stroke-width:5" /></g>
+              <text x="400" y="160" class="lx-tiny lx-tiny--w">Hall candle</text>
+              <text x="400" y="205" class="lx-tiny lx-tiny--w lx-nc">200 g</text>
+            </g></g>
+          </g>
+          <text x="225" y="384" class="lx-s x-in" style={d(1.6)}>Printed</text>
+          <text x="225" y="408" class="lx-s lx-s--w x-type" style={d(1.9, undefined, '--t:.8s')}>5,000</text>
+        </g>
+        {/* At the shelf: the scan and the label read */}
+        <rect x="470" y="50" width="300" height="270" rx="6" pathLength="1" class="lx-line x-draw" style={d(3.0, undefined, '--t:.9s')} />
+        <text x="490" y="78" class="lx-s lx-start x-in" style={d(3.2)}>At the shelf</text>
+        <g transform="translate(-119.6 -323.2) scale(1.6)"><g class="x-pop" style={d(3.4)}>
+          <rect x="406" y="262" width="96" height="50" rx="2" class="lx-patch" />
+          <path d={BARS} class="lx-bars" />
+          <text x="454" y="307" class="lx-code">6 14141 12345 2</text>
+        </g></g>
+        <g class="x-in x-out" style={d(3.8, 4.9)}><rect x="522" y="96" width="166" height="2" class="lx-fill lx-glow x-scan" style={d(3.8)} /></g>
+        <text x="620" y="208" class="lx-s lx-s--w x-pop" style={d(4.9)}>No read</text>
+        <path d={X(494, 228)} class="lx-line lx-bold x-in" style={d(5.2)} /><text x="518" y="240" class="lx-li lx-start x-in" style={d(5.25)}>Barcode won’t scan</text>
+        <path d={X(494, 258)} class="lx-line lx-bold x-in" style={d(5.6)} /><text x="518" y="270" class="lx-li lx-start x-in" style={d(5.65)}>French: missing</text>
+        <path d={X(494, 288)} class="lx-line lx-bold x-in" style={d(6.0)} /><text x="518" y="300" class="lx-li lx-start x-in" style={d(6.05)}>Caution: English only</text>
+        {/* The stock comes back */}
+        {[0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => (
+          <g class="x-pop" style={d(6.2 + (r * 3 + c) * 0.08)}><rect x={118 + c * 72} y={92 + r * 64} width="60" height="46" rx="2" class="lx-line" /><path d={`M${130 + c * 72} ${108 + r * 64} H${166 + c * 72}`} class="lx-line lx-faint" /></g>
+        )))}
+        <path d="M108 84 L338 290 M338 84 L108 290" pathLength="1" class="lx-strike x-draw" style={d(7.2, undefined, '--t:.6s')} />
+        <text x="225" y="330" class="lx-s lx-s--w x-in" style={d(7.5)}>Pulled from the shelf</text>
+        <text x="400" y="392" class="lx-h lx-h--s x-in" style={d(8.0)}>The reprint costs more than the check.</text>
+      </>)}
+    </svg>
+    <ol class="lx__beats">{beats.map((b, k) => <li class={k === beats.length - 1 ? 'is-last' : ''} style={`--d:${AT[k]}s;--o:${AT[k + 1] ?? 99}s`}>{b}</li>)}</ol>
+    <button type="button" class="lx__again" data-lx-again>Watch again</button>
+  </div>
+</div>
+)}

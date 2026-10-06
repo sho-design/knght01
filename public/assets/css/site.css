@@ -1287,7 +1287,7 @@ html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
 .lx-start{text-anchor:start}
 .lx-end{text-anchor:end}
 .lx-runner{opacity:0}
-.lx.is-on .lx-runner{animation:lxShow .2s linear 2.4s both}
+.lx.is-on .lx-runner{animation:lxShow .2s linear var(--rs,2.4s) both}
 @keyframes lxShow{from{opacity:0}to{opacity:1}}
 .lx__beats{list-style:none;margin:18px auto 0;padding:0;display:grid;max-width:640px;text-align:center;font:italic 400 clamp(1.15rem,1.8vw,1.45rem)/1.35 var(--serif);color:var(--argent)}
 .lx__beats li{grid-area:1/1}
@@ -1336,6 +1336,15 @@ html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
 .lx .lx-end{text-anchor:end}
 .lx-nc{text-transform:none;letter-spacing:.06em}
 .lx-logo{fill:#fff;font-family:var(--serif);font-weight:600}
+/* "Without it" films: the layer, skipped */
+.lxw{margin-top:clamp(28px,4vw,48px)}
+.lx-dash{stroke-dasharray:none}
+.lx.is-ready .lx-dash.x-draw{stroke-dasharray:1}
+.lx-s--w{fill:#fff}
+.lx-ink-bg{fill:#000;stroke:#fff;stroke-width:1.4}
+.lx:not(.is-ready) .x-scan{opacity:0}
+.lx.is-ready .x-scan{animation:lxScan .5s ease-in-out var(--d) 2 alternate both}
+@keyframes lxScan{from{transform:translateY(0)}to{transform:translateY(80px)}}
 .cta-note{margin:14px 0 0;font-size:.82rem;letter-spacing:.04em;opacity:.72}
 /* ---------- The claim checker ---------- */
 .ck{margin-top:36px;max-width:860px}

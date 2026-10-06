@@ -5,6 +5,7 @@ import Cta from '../../components/Cta.astro';
 import WorkGrid from '../../components/WorkGrid.astro';
 import LayerRing from '../../components/LayerRing.astro';
 import LayerExplainer from '../../components/LayerExplainer.astro';
+import LayerWithout from '../../components/LayerWithout.astro';
 import { SIGILS } from '../../lib/sigils';
 import { CATEGORY, CATEGORY_ORDER, getLayers, getWorlds, workImages } from '../../lib/site';
 
@@ -44,7 +45,9 @@ const ld = [{ '@context': 'https://schema.org', '@type': 'Service', name: `${nam
 
   <LayerExplainer id={l.id} name={name} />
 
-  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">Without it</p><div class="wsec__text" data-reveal><p>{d.wrong}</p></div></div></section>
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">Without it</p><div class="wsec__text" data-reveal><p>{d.wrong}</p></div></div>
+    <LayerWithout id={l.id} name={name} />
+  </section>
 
   <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">What we make</p>
     <ul class="wrules" data-reveal>{d.make.map((m: string) => <li><b>{m}</b></li>)}</ul>
