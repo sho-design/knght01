@@ -209,6 +209,7 @@
       });
       if (!res.ok) throw new Error(res.status);
       status.textContent = 'Sent. We will email your scorecard within one business day.';
+      if (window.KNGHT_TRACK) window.KNGHT_TRACK('generate_lead', { lead_source: 'scorecard', category: $('#lead-cat', lead)?.value || '(none)', score: lastVerdict ? lastVerdict.total : null, weakest_layer: lastVerdict ? lastVerdict.weak : null });
       lead.reset();
     } catch (err) {
       status.textContent = 'That did not go through. Download the scorecard instead, or email sho@knght.com.';
