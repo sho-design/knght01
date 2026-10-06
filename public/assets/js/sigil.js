@@ -119,7 +119,8 @@
   };
 
   /* Earned heraldry: the seven marks come from the visitor's score on the self-check. */
-  const earned = () => { try { const v = JSON.parse(localStorage.getItem('knght-verdict') || 'null'); return v && Array.isArray(v.layers) && v.layers.length === 7 ? v : null; } catch (e) { return null; } };
+  let linked = null; // marks carried in by a forge link
+  const earned = () => { if (linked) return linked; try { const v = JSON.parse(localStorage.getItem('knght-verdict') || 'null'); return v && Array.isArray(v.layers) && v.layers.length === 7 ? v : null; } catch (e) { return null; } };
   const marks = (v) => {
     if (!v) return '';
     const w = 15, x0 = 200 - w * 3;
@@ -227,9 +228,58 @@
     }
   }
   form.addEventListener('submit', (e) => e.preventDefault());
-  draw();
+
+  /* The forge link. Heraldry's blazon is a crest written as words, so any herald can redraw it. Ours is written into the link
+     after the #, so the link re-forges the same sigil on any device. The part after # never reaches a server. */
+  const ORDER = ['Lore', 'Law', 'Language', 'Map', 'Ground', 'Artifacts', 'Machinery'];
+  const params = () => {
+    const p = new URLSearchParams();
+    p.set('n', form.name.value.trim()); p.set('c', form.cat.value); p.set('v', form.virtue.value || 'trust');
+    const w = site(); if (w) p.set('w', w.replace(/^https:\/\//, ''));
+    const v = earned();
+    if (v) p.set('m', ORDER.map((n) => { const l = v.layers.find((x) => String(x.name).toLowerCase() === n.toLowerCase()); return l ? (l.score >= 10 ? 2 : l.score >= 5 ? 1 : 0) : 0; }).join(''));
+    return p;
+  };
+  const forgeLink = () => `${location.origin}/sigil/#${params().toString()}`;
+  // Crockford's alphabet: no I, L, O or U, so the number reads back without mix-ups.
+  const sigilNo = () => { let h = hash(params().toString()), n = ''; for (let i = 0; i < 7; i++) { n += '0123456789ABCDEFGHJKMNPQRSTVWXYZ'[h & 31]; h >>>= 5; } return `${n.slice(0, 4)}-${n.slice(4)}`; };
+  (() => {
+    const h = new URLSearchParams(location.hash.slice(1));
+    if (!h.has('n')) return;
+    form.name.value = (h.get('n') || '').slice(0, 40);
+    const c = h.get('c'); if (c && [...form.cat.options].some((o) => o.value === c)) form.cat.value = c;
+    const vr = [...form.querySelectorAll('input[name="virtue"]')].find((r) => r.value === h.get('v')); if (vr) vr.checked = true;
+    if (form.site) form.site.value = (h.get('w') || '').slice(0, 80);
+    const m = h.get('m') || '';
+    if (/^[012]{7}$/.test(m)) { const layers = ORDER.map((name, i) => ({ name, score: +m[i] * 5 })); linked = { total: layers.reduce((a, l) => a + l.score, 0), layers }; }
+    if (window.KNGHT_TRACK) window.KNGHT_TRACK('sigil_link_open', { category: form.cat.value });
+  })();
+  // Editing a linked sigil makes it yours: the marks fall back to your own score.
+  form.addEventListener('input', () => { linked = null; }, true);
+  const noEl = $('[data-sigil-no]');
+  const showNo = () => { if (noEl) noEl.textContent = sigilNo(); };
+  form.addEventListener('input', showNo); form.addEventListener('change', showNo);
+  draw(); showNo();
 
   const slug = () => ((form.name.value || 'sigil').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'sigil');
+  const LAYERS = ['top', 'field', 'frame', 'cipher', 'charge', 'virtue', 'marks', 'ribbon', 'motto', 'plate'];
+  const loadImg = (svg) => new Promise((resolve, reject) => {
+    const img = new Image(), u = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+    img.onload = () => { URL.revokeObjectURL(u); resolve(img); };
+    img.onerror = reject; img.src = u;
+  });
+  // The sigil with only some of its parts, as SVG text.
+  const only = (svg, keep) => {
+    const d = new DOMParser().parseFromString(svg, 'image/svg+xml');
+    d.querySelectorAll('[data-l]').forEach((el) => { if (!keep.includes(el.getAttribute('data-l'))) el.remove(); });
+    return new XMLSerializer().serializeToString(d);
+  };
+  // One transparent image per part of the crest, plus the whole crest.
+  const layerImages = async (svg) => {
+    const out = {};
+    await Promise.all(LAYERS.concat('all').map(async (l) => { out[l] = await loadImg(only(svg, l === 'all' ? LAYERS : [l])); }));
+    return out;
+  };
   // Two Instagram sizes: feed 4:5 (1080x1350) and Story 9:16 (1080x1920). The crest scales to fit, plate or not.
   const SIZES = {
     feed: { h: 1350, top: 60, bottom: 1220, maxW: 780, note: 1300 },
@@ -293,24 +343,6 @@
   const canRecord = canCodec || canStream;
   if (vidBtn && canRecord) {
     vidBtn.hidden = false;
-    const LAYERS = ['top', 'field', 'frame', 'cipher', 'charge', 'virtue', 'marks', 'ribbon', 'motto', 'plate'];
-    const loadImg = (svg) => new Promise((resolve, reject) => {
-      const img = new Image(), u = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
-      img.onload = () => { URL.revokeObjectURL(u); resolve(img); };
-      img.onerror = reject; img.src = u;
-    });
-    // One transparent image per part of the crest, plus the whole crest for the foil mask.
-    const layerImages = async (svg) => {
-      const doc = new DOMParser().parseFromString(svg, 'image/svg+xml');
-      const one = (keep) => {
-        const d = doc.cloneNode(true);
-        d.querySelectorAll('[data-l]').forEach((el) => { if (!keep.includes(el.getAttribute('data-l'))) el.remove(); });
-        return new XMLSerializer().serializeToString(d);
-      };
-      const out = {};
-      await Promise.all(LAYERS.concat('all').map(async (l) => { out[l] = await loadImg(one(l === 'all' ? LAYERS : [l])); }));
-      return out;
-    };
     const clamp = (v) => Math.max(0, Math.min(1, v));
     const ease = (v) => 1 - Math.pow(1 - clamp(v), 3);
     const span = (t, a, b) => ease((t - a) / (b - a));
@@ -494,6 +526,112 @@
       busy = false; vidBtn.disabled = false;
     });
   }
+
+  /* Livery: the house colours carried onto everything else. One zip with the sigil cut for each place a business shows itself. */
+  const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  const crc32 = (u8) => { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  // A stored (uncompressed) zip. The PNGs are compressed already, so nothing is lost.
+  const zip = async (files) => {
+    const enc = new TextEncoder(), parts = [], central = [];
+    const d = new Date(), time = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1), date = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+    let offset = 0;
+    for (const f of files) {
+      const data = new Uint8Array(await f.blob.arrayBuffer()), name = enc.encode(f.name), crc = crc32(data);
+      const h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(10, time, true); h.setUint16(12, date, true);
+      h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true);
+      parts.push(h, name, data);
+      const c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(12, time, true); c.setUint16(14, date, true);
+      c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, name.length, true); c.setUint32(42, offset, true);
+      central.push(c, name);
+      offset += 30 + name.length + data.length;
+    }
+    const size = central.reduce((a, p) => a + p.byteLength, 0), e = new DataView(new ArrayBuffer(22));
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, size, true); e.setUint32(16, offset, true);
+    return new Blob([...parts, ...central, e], { type: 'application/zip' });
+  };
+  const BOX = { x: 64, y: 42, w: 272, h: 388 }; // the bounds every one of the 28 shields fits inside, in sigil units
+  const SERIF = '"Cormorant Garamond", Georgia, serif';
+  const paint = (w, h, fn) => new Promise((resolve, reject) => {
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const x = c.getContext('2d'); x.fillStyle = '#000'; x.fillRect(0, 0, w, h); fn(x);
+    c.toBlob((b) => (b ? resolve(b) : reject(new Error('png'))), 'image/png');
+  });
+  const fitShield = (x, img, vbH, bx, by, bw, bh) => {
+    const k = Math.min(bw / BOX.w, bh / BOX.h);
+    x.drawImage(img, bx + (bw - BOX.w * k) / 2 - BOX.x * k, by + (bh - BOX.h * k) / 2 - BOX.y * k, 400 * k, vbH * k);
+  };
+  const fitText = (x, text, font, size, max) => { let s = size; do { x.font = font.replace('{s}', s); s -= 2; } while (x.measureText(text).width > max && s > 18); };
+  const livery = async () => {
+    const svg = draw();
+    const vbH = +(svg.match(/viewBox="0 0 400 (\d+)"/) || [0, 560])[1];
+    const shield = await loadImg(only(svg, ['field', 'frame', 'cipher', 'charge', 'virtue', 'marks']));
+    // The icon has to read at 32 pixels: no hatching, and every line three times heavier.
+    const icon = await loadImg(only(svg, ['frame', 'charge']).replace(/stroke-width="([\d.]+)"/g, (m, w) => `stroke-width="${(+w * 3).toFixed(2)}"`));
+    try { await document.fonts.load(`500 40px ${SERIF}`); await document.fonts.load(`italic 400 40px ${SERIF}`); } catch (err) {}
+    const name = (form.name.value.trim() || 'Your business').toUpperCase();
+    const motto = (VIRTUE[form.virtue.value] || VIRTUE.trust).motto;
+    const url = site().replace(/^https:\/\//, '');
+    const s = slug(), files = [];
+    files.push({ name: `${s}-profile.png`, blob: await paint(1080, 1080, (x) => fitShield(x, shield, vbH, 240, 220, 600, 640)) });
+    files.push({ name: `${s}-icon.png`, blob: await paint(512, 512, (x) => fitShield(x, icon, vbH, 96, 64, 320, 384)) });
+    files.push({ name: `${s}-banner-linkedin.png`, blob: await paint(1584, 396, (x) => {
+      fitShield(x, shield, vbH, 1290, 40, 240, 316);
+      x.fillStyle = '#fff'; x.textAlign = 'right'; if ('letterSpacing' in x) x.letterSpacing = '6px';
+      fitText(x, name, `500 {s}px ${SERIF}`, 66, 660); x.fillText(name, 1230, 205);
+      x.fillStyle = 'rgba(255,255,255,.6)'; x.font = `italic 400 30px ${SERIF}`; x.fillText(motto, 1230, 255);
+      x.fillStyle = 'rgba(255,255,255,.35)'; x.fillRect(1230 - 120, 150, 120, 1);
+    }) });
+    files.push({ name: `${s}-email-signature.png`, blob: await paint(1200, 300, (x) => {
+      fitShield(x, shield, vbH, 40, 30, 170, 240);
+      x.fillStyle = '#fff'; x.textAlign = 'left'; if ('letterSpacing' in x) x.letterSpacing = '4px';
+      fitText(x, name, `500 {s}px ${SERIF}`, 54, 880); x.fillText(name, 250, 132);
+      x.fillStyle = 'rgba(255,255,255,.6)'; x.font = `italic 400 30px ${SERIF}`; x.fillText(motto, 250, 182);
+      if (url) { x.fillStyle = 'rgba(255,255,255,.45)'; if ('letterSpacing' in x) x.letterSpacing = '1px'; x.font = '26px Georgia, serif'; x.fillText(url, 250, 236); }
+    }) });
+    files.push({ name: `${s}-feed.png`, blob: await toPng('feed') });
+    files.push({ name: `${s}-story.png`, blob: await toPng('story') });
+    files.push({ name: `${s}-sigil.svg`, blob: new Blob([draw()], { type: 'image/svg+xml' }) });
+    const readme = [
+      `The livery of ${form.name.value.trim() || 'your business'}. Forged at knght.com/sigil`,
+      `Sigil No. ${sigilNo()}`,
+      '',
+      ...[
+        ['profile.png', 'Profile picture. Square, and safe for round crops.'],
+        ['icon.png', 'App icon or favicon, 512 by 512.'],
+        ['banner-linkedin.png', 'LinkedIn header, 1584 by 396.'],
+        ['email-signature.png', 'Email signature. Set it at 600 by 150.'],
+        ['feed.png', 'Instagram feed post, 4:5.'],
+        ['story.png', 'Instagram Story, 9:16.'],
+        ['sigil.svg', 'The master. Scales to any size, for print and signage.'],
+      ].map(([f, what]) => `${`${s}-${f}`.padEnd(s.length + 24)}${what}`),
+      '',
+      'Re-forge this exact sigil on any device:',
+      forgeLink(),
+      '',
+    ].join('\r\n');
+    files.push({ name: 'README.txt', blob: new Blob([readme], { type: 'text/plain' }) });
+    return zip(files);
+  };
+  const liveryBtn = $('[data-sigil-livery]');
+  if (liveryBtn) liveryBtn.addEventListener('click', async () => {
+    if (liveryBtn.disabled) return;
+    liveryBtn.disabled = true;
+    try { save(await livery(), `${slug()}-livery.zip`); track('sigil_download', { format: 'livery', category: form.cat.value }); } catch (err) {}
+    liveryBtn.disabled = false;
+  });
+
+  const copyBtn = $('[data-sigil-copy]');
+  if (copyBtn) copyBtn.addEventListener('click', async () => {
+    const url = forgeLink(), was = copyBtn.textContent;
+    track('sigil_link_copy', { category: form.cat.value });
+    try {
+      if (matchMedia('(pointer: coarse)').matches && navigator.share) { await navigator.share({ title: `Sigil No. ${sigilNo()}`, url }); return; }
+      await navigator.clipboard.writeText(url);
+      copyBtn.textContent = 'Link copied'; setTimeout(() => { copyBtn.textContent = was; }, 2200);
+    } catch (err) { if (!err || err.name !== 'AbortError') window.prompt('Copy your forge link', url); }
+  });
 
   /* Optional: send the sigil by email when a form endpoint is set */
   const lead = $('[data-sigil-lead]');
