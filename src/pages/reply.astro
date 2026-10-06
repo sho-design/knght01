@@ -1,0 +1,61 @@
+---
+// The reply scribe: drafts a reply to a public review that thanks, takes it offline and gives nothing away (public/assets/js/reply.js).
+import Base from '../layouts/Base.astro';
+import Cta from '../components/Cta.astro';
+const CATS = [['clinic', 'Clinics'], ['dental', 'Dental'], ['medspa', 'Medspas'], ['law', 'Law firms'], ['spirits', 'Spirits'], ['food', 'Food and drink'], ['other', 'Something else']];
+const ld = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'KNGHT reply scribe', applicationCategory: 'BusinessApplication', operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'CAD' },
+  description: 'Paste a Google review and get a reply that thanks the reviewer, takes it offline and never confirms they were a patient or a client.' }];
+---
+<Base title="Free review reply writer for clinics and law firms | KNGHT" description="Paste a Google review, pick the stars and your category. Get a reply that thanks them, takes it offline and never confirms they were a patient or client. Free, runs in your browser." path="reply/" ld={ld}>
+  <Fragment slot="scripts"><script is:inline src="/assets/js/reply.js" defer></script></Fragment>
+  <section class="whero ck-hero">
+    <div class="wrap">
+      <p class="eyebrow">The reply scribe</p>
+      <h1 class="display book__title" style="margin-top:24px">Answer every review. <br><em>Give nothing away.</em></h1>
+      <p class="for__answer">Paste a Google review, pick the stars and your category. The scribe drafts a reply that thanks them, takes it offline and never confirms they were a patient or a client. It runs in your browser, and nothing is sent anywhere.</p>
+      <form class="ck rp" data-reply novalidate>
+        <div class="ck__cats" role="group" aria-label="Your category"><span class="ck__lbl">Your category</span>{CATS.map(([v, l]) => <button type="button" class="cat" data-reply-cat={v} aria-pressed="false">{l}</button>)}</div>
+        <div class="ck__cats rp__stars" role="group" aria-label="Their rating"><span class="ck__lbl">Their rating</span>{[1, 2, 3, 4, 5].map((n) => <button type="button" class="rp__star" data-reply-star={n} aria-pressed="false" aria-label={`${n} star${n > 1 ? 's' : ''}`}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9z"/></svg></button>)}</div>
+        <label class="sr-only" for="reply-review">Their review</label>
+        <textarea id="reply-review" class="ck__text" rows="4" maxlength="3000" placeholder="Paste their review here (optional, it helps the draft answer what they said)"></textarea>
+        <div class="rp__row">
+          <label class="rp__field"><span>Sign it as</span><input name="sign" type="text" maxlength="60" placeholder="The team at Wellfit" autocomplete="off"></label>
+          <label class="rp__field"><span>Where they can reach you</span><input name="reach" type="text" maxlength="80" placeholder="hello@yourclinic.ca, or the front desk" autocomplete="off"></label>
+        </div>
+        <div class="ck__actions">
+          <button type="submit" class="btn">Draft the reply</button>
+          <button type="button" class="link" data-reply-example>Try an example</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="wsec rp-out" data-reply-out hidden>
+    <div class="wrap">
+      <p class="eyebrow">The draft</p>
+      <div class="rp__ink" data-reply-ink aria-live="polite"></div>
+      <label class="rp__label" for="reply-edit">Make it yours. Anything risky you type gets struck through.</label>
+      <textarea id="reply-edit" class="ck__text rp__edit" rows="6" maxlength="3000"></textarea>
+      <div class="ck__marked rp__marked" data-reply-marked hidden></div>
+      <ol class="ck__list rp__flags" data-reply-flags></ol>
+      <div class="ck__actions">
+        <button type="button" class="btn" data-reply-copy>Copy the reply</button>
+        <button type="button" class="link" data-reply-again>Another version</button>
+      </div>
+      <p class="eyebrow rp__why-h">What it leaves out, and why</p>
+      <ul class="wrules rp__why" data-reply-why></ul>
+      <p class="ck__note">A first draft, not legal advice. Your college, regulator or privacy officer has the final word, and some colleges publish their own guidance on answering reviews.</p>
+    </div>
+  </section>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">What it never does</p>
+    <ul class="wrules">
+      <li><b>Confirm who they are</b><span>For clinics and law firms, even saying someone was a patient or a client can give away private information. The draft never does.</span></li>
+      <li><b>Repeat the details</b><span>No treatment, matter, date or bill goes back into public, even if the reviewer posted it first.</span></li>
+      <li><b>Argue</b><span>The reply is written for the next person reading it, not to win the last word.</span></li>
+      <li><b>Trade for a better review</b><span>It never offers anything in exchange for changing or removing a review. Google doesn&rsquo;t allow it.</span></li>
+    </ul>
+  </div></section>
+
+  <Cta line="The scribe answers one review. A Build sets up the whole system: asking for reviews, answering them and keeping the record clean." />
+</Base>

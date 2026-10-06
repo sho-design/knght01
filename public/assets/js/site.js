@@ -623,15 +623,15 @@
         ['Selling spirits without the buzz', 'rules/alcohol-ads-strength-and-success/'],
         ['Why lawyers can’t say “specialist”', 'rules/lawyers-and-the-word-specialist/']] },
       { label: 'Score your world', sigil: 'scales', href: '#score' },
-      { label: 'Claim checker', sigil: 'quill', href: 'check/' },
-      { label: 'Your sigil', sigil: 'crest', href: 'sigil/' }
+      { label: 'Free tools', sigil: 'quill', items: [
+        ['Claim checker', 'check/'], ['Reply scribe', 'reply/'], ['Your sigil', 'sigil/']] }
     ];
     const link = ([label, p], cls, n) => `<li><a class="${cls}" href="${to(p)}"${here(p) ? ' aria-current="page"' : ''}>${n ? `<span class="mnav__num">${n}</span>` : ''}${label}</a></li>`;
     const group = (m, i) => {
       const head = `${sigil(m.sigil)}<span class="mnav__label">${m.label}</span>`;
       if (!m.items) return `<li class="mnav__item" style="--i:${i}"><a class="mnav__top" href="${to(m.href)}"${here(m.href) ? ' aria-current="page"' : ''}>${head}</a></li>`;
       const open = m.items.concat(m.all ? [m.all] : []).some(([, p]) => here(p));
-      const subs = (m.all ? [link(m.all, 'mnav__all')] : []).concat(m.items.map((it, k) => link(it, '', m.sigil === 'seal' || m.sigil === 'banner' ? '' : ROMAN[k])));
+      const subs = (m.all ? [link(m.all, 'mnav__all')] : []).concat(m.items.map((it, k) => link(it, '', m.sigil === 'seal' || m.sigil === 'banner' || m.sigil === 'quill' ? '' : ROMAN[k])));
       return `<li class="mnav__item${open ? ' is-open' : ''}" style="--i:${i}"><button type="button" class="mnav__top" aria-expanded="${open}" aria-controls="mnav-sub-${i}">${head}<span class="mnav__plus" aria-hidden="true"></span></button>`
         + `<div class="mnav__sub" id="mnav-sub-${i}"><ul>${subs.join('')}</ul></div></li>`;
     };
@@ -991,7 +991,7 @@
       const vw = document.documentElement.clientWidth, vh = innerHeight, sx = scrollX, sy = scrollY;
       // Where words must not go: anything a visitor reads, clicks or looks at, and the white rooms.
       const avoid = [];
-      $$('h1,h2,h3,h4,h5,p,a,button,li,img,video,figure,input,select,textarea,label,dt,dd,blockquote,.btn,.cat,.footer__word,.chap__num,.dial,.rung').forEach((el) => {
+      $$('h1,h2,h3,h4,h5,p,a,button,li,img,video,figure,input,select,textarea,label,dt,dd,blockquote,.btn,.cat,.ck__marked,.rp__ink,.footer__word,.chap__num,.dial,.rung').forEach((el) => {
         if (el.closest('.hall,.hall-portals,.nav,.mnav,.loader,.codex')) return;
         const r = el.getBoundingClientRect();
         if (r.width < 2 || r.height < 2) return;
