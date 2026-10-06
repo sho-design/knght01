@@ -3,6 +3,8 @@ import Motion from '../components/Motion.astro';
 import NavPanels from '../components/NavPanels.astro';
 import Film from '../components/Film.astro';
 import { SETTINGS } from '../lib/settings';
+import Social from '../components/Social.astro';
+const sameAs = Object.values(SETTINGS.social).filter((u) => u && /^https:\/\//.test(u));
 // The home page. World cards, the layer filter and the layer list come from the content files.
 import Meter from '../components/Meter.astro';
 import WorkGrid from '../components/WorkGrid.astro';
@@ -74,6 +76,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
   ]
 }
 </script>
+{sameAs.length > 0 && <script is:inline type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", "@type": "Organization", "name": "KNGHT", "url": "https://knght.com/", "sameAs": sameAs })} />}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -431,6 +434,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
       <div class="footer__lead">
         <p class="footer__tag">Brand worlds for businesses that can&rsquo;t afford to get it wrong.</p>
         <p class="footer__contact"><a href="mailto:sho@knght.com">sho@knght.com</a><span>Toronto, Ontario</span></p>
+        <Social />
       </div>
       <nav class="footer__cols" aria-label="Footer">
         <div><h4>Explore</h4><ul><li><a href="#worlds">Worlds</a></li><li><a href="#engage">Work with us</a></li><li><a href="#layers">The layers</a></li><li><a href="/process/">How it works</a></li><li><a href="/rules/">Rules</a></li></ul></div>

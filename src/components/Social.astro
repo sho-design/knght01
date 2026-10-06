@@ -1,0 +1,18 @@
+---
+// KNGHT's social profiles, from SETTINGS.social. Only filled-in profiles appear.
+import { SETTINGS } from '../lib/settings';
+const ICONS: Record<string, [string, string]> = {
+  youtube: ['YouTube', '<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor" stroke="none"/>'],
+  instagram: ['Instagram', '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".9" fill="currentColor" stroke="none"/>'],
+  facebook: ['Facebook', '<path d="M13.5 21v-7.5H16l.4-3H13.5V8.7c0-.9.3-1.5 1.5-1.5h1.5V4.5c-.3 0-1.2-.1-2.2-.1-2.2 0-3.8 1.4-3.8 3.9v2.2H8v3h2.5V21"/>'],
+  linkedin: ['LinkedIn', '<rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M8 10.5V17M8 7.2v.1M11.5 17v-6.5M11.5 13.2c0-1.6 1-2.7 2.4-2.7s2.1 1 2.1 2.7V17"/>'],
+};
+const links = Object.entries(SETTINGS.social).filter(([, url]) => url && /^https:\/\//.test(url));
+---
+{links.length > 0 && (
+  <ul class="social" aria-label="KNGHT on social media">
+    {links.map(([k, url]) => (
+      <li><a href={url} rel="noopener me" target="_blank" aria-label={`KNGHT on ${ICONS[k][0]}`}><svg viewBox="0 0 24 24" aria-hidden="true" set:html={ICONS[k][1]} /></a></li>
+    ))}
+  </ul>
+)}
