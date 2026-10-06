@@ -810,6 +810,29 @@
     addEventListener('pageshow', (e) => { if (e.persisted) $$('.lgate').forEach((g) => g.remove()); });
   })();
 
+  /* ---------- Layer explainers: play once when they come into view, and again on request ---------- */
+  (() => {
+    const films = $$('[data-lx]');
+    if (!films.length || reduce || !('IntersectionObserver' in window)) return;
+    films.forEach((el) => {
+      let done = 0;
+      const svg = $('svg', el);
+      const play = () => {
+        el.classList.remove('is-ready', 'is-on', 'is-done');
+        void el.offsetWidth;
+        el.classList.add('is-ready', 'is-on');
+        if (svg && svg.setCurrentTime) { try { svg.setCurrentTime(0); } catch (e) {} }
+        $$('animateMotion[data-at]', el).forEach((m) => { try { m.endElement(); m.beginElementAt(+m.dataset.at); } catch (e) {} });
+        clearTimeout(done); done = setTimeout(() => el.classList.add('is-done'), 9600);
+      };
+      el.classList.add('is-ready');
+      const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); play(); } }, { threshold: 0.45 });
+      io.observe(el);
+      const again = $('[data-lx-again]', el);
+      if (again) again.addEventListener('click', play);
+    });
+  })();
+
   /* ---------- Back to top (with a ring that fills as you read) ---------- */
   const topBtn = document.createElement('button');
   topBtn.type = 'button';
@@ -984,7 +1007,7 @@
         avoid.push([r.left + sx, pr.top + sy, r.right + sx, pr.bottom + sy]);
       });
       // The white rooms, and the pinned rooms whose contents move while you scroll (the hero, the worlds gallery).
-      $$('.engage,.score,.worlds,.hero').forEach((el) => { const r = el.getBoundingClientRect(); avoid.push([-1e5, r.top + sy - 60, 1e5, r.bottom + sy + 60]); });
+      $$('.engage,.score,.worlds,.hero,.lx,.lring').forEach((el) => { const r = el.getBoundingClientRect(); avoid.push([-1e5, r.top + sy - 60, 1e5, r.bottom + sy + 60]); });
       const hits = (b, px, py, list) => list.some((a) => b[0] - px < a[2] && b[2] + px > a[0] && b[1] - py < a[3] && b[3] + py > a[1]);
       // The field never touches a hero. On the homepage it begins with the worlds.
       if (startEl) startY = startTop() + sy;

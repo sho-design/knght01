@@ -1,0 +1,122 @@
+---
+// Ten seconds per layer: one idea, drawn in line, played when it comes into view (site.js).
+// Classes: x-in (rise in), x-out (leave), x-draw (stroke draws on), x-pop (seal or node lands), x-type (typed), x-go (gathers to a point).
+// --d is when it arrives, --o when it leaves. Without motion or script, the last frame shows.
+// Everything here is an illustration of the craft, not a client.
+interface Props { id: string; name: string }
+const { id, name } = Astro.props;
+const d = (s: number, o?: number, extra = '') => `--d:${s}s;${o !== undefined ? `--o:${o}s;` : ''}${extra}`;
+const BEATS: Record<string, string[]> = {
+  lore: ['Everything you know about the business, scattered.', 'Pulled into one line the whole team can say.', 'Then a name and a mark that carry it.'],
+  law: ['A claim a regulator would flag.', 'Struck, with the rule beside it.', 'Rewritten to say only what you can prove.'],
+  language: ['One voice, written down.', 'Carried to every channel.', 'So a post, an email and a sign sound like one place.'],
+  map: ['Someone nearby searches.', 'You come up, and you are the clear choice.', 'One tap to a booked time.'],
+  ground: ['The space, drawn as a path.', 'Signs that guide without a word from staff.', 'From the door to the chair, no doubt.'],
+  artifacts: ['The dieline, to the millimetre.', 'Every word checked against the label rules.', 'Then it lands in a customer’s hand.'],
+  machinery: ['The systems behind the front door.', 'An enquiry is booked and reminded on its own.', 'Then asked for a review. The loop closes.'],
+};
+const AT = [0.2, 3.0, 6.0];
+const beats = BEATS[id] || [];
+const words = [
+  ['what we believe', 150, 90], ['who we serve', 590, 70], ['how we sound', 360, 48], ['who we stand against', 630, 190],
+  ['why now', 120, 250], ['what we promise', 560, 330], ['what we never say', 230, 350],
+] as const;
+---
+{beats.length > 0 && (
+<section class="wsec lx-sec" aria-label={`${name}, in ten seconds`}>
+  <div class="wrap">
+    <div class="lx__head"><p class="eyebrow">{name}, in ten seconds</p><span class="lx__tag">Illustration, not a client</span></div>
+    <div class={`lx lx--${id}`} data-lx>
+      <svg viewBox="0 0 800 420" class="lx__svg" role="img" aria-label={beats.join(' ')}>
+        {id === 'lore' && (<>
+          {words.map(([w, x, y], k) => <text x={x} y={y} class="lx-s x-in x-go" style={d(0.3 + k * 0.22, 2.6 + k * 0.08, `--tx:${400 - x}px;--ty:${205 - y}px`)}>{w}</text>)}
+          <circle cx="400" cy="205" r="5" class="lx-dot x-pop x-out" style={d(3.0, 3.6)} />
+          <text x="400" y="216" class="lx-h lx-h--l x-in x-out" style={d(3.6, 6.0)}>For people who were told to live with it.</text>
+          <circle cx="400" cy="150" r="40" pathLength="1" class="lx-line x-draw" style={d(6.4)} />
+          <path d="M386 168 V134 L400 148 L414 134 V168" pathLength="1" class="lx-line x-draw" style={d(6.8)} />
+          <text x="400" y="250" class="lx-h lx-h--xl x-in" style={d(7.2)}>ELDER</text>
+          <text x="400" y="292" class="lx-h lx-h--s x-in" style={d(7.8)}>For people who were told to live with it.</text>
+        </>)}
+        {id === 'law' && (<>
+          <rect x="140" y="62" width="520" height="270" rx="6" pathLength="1" class="lx-line x-draw" style={d(0.2)} />
+          <text x="172" y="100" class="lx-s lx-s--l lx-start x-in" style={d(0.6)}>Ad, before</text>
+          <text x="172" y="160" class="lx-h lx-h--l lx-start x-in x-dim" style={d(0.9, 3.4)}>Painless. Guaranteed results.</text>
+          <path d="M166 152 L596 146" pathLength="1" class="lx-strike x-draw" style={d(3.0, undefined, '--t:.5s')} />
+          <text x="172" y="196" class="lx-s lx-note lx-start x-in" style={d(3.6)}>The rule: no guarantee of outcome, no promise of no pain.</text>
+          <text x="172" y="250" class="lx-h lx-h--l lx-start x-in" style={d(6.0)}>Gentle by design.</text>
+          <text x="172" y="292" class="lx-h lx-h--l lx-start x-in" style={d(6.4)}>Results vary by person.</text>
+          <g class="x-pop" style={d(7.4)}><circle cx="590" cy="270" r="30" class="lx-line" /><circle cx="590" cy="270" r="23" class="lx-line lx-faint" /></g>
+          <path d="M577 270 L587 280 L604 260" pathLength="1" class="lx-line lx-bold x-draw" style={d(7.8, undefined, '--t:.4s')} />
+        </>)}
+        {id === 'language' && (<>
+          <text x="400" y="34" class="lx-s x-in" style={d(0.1)}>The voice</text>
+          <text x="400" y="82" class="lx-h lx-h--l x-in" style={d(0.4)}>Plain. Warm. Certain.</text>
+          {[150, 400, 650].map((x, k) => <path d={`M400 104 C400 150 ${x} 140 ${x} 190`} pathLength="1" class="lx-line lx-faint x-draw" style={d(3.0 + k * 0.2)} />)}
+          {[60, 310, 560].map((x, k) => <rect x={x} y="190" width="180" height="150" rx="6" pathLength="1" class="lx-line x-draw" style={d(3.4 + k * 0.2)} />)}
+          {(['A post', 'An email', 'A sign'] as const).map((t, k) => <text x={150 + k * 250} y="220" class="lx-s x-in" style={d(3.8 + k * 0.2)}>{t}</text>)}
+          {([['Open late Thursdays.', 'Come as you are.'], ['Your visit is set.', 'Here is what to bring.'], ['Please take a seat.', 'We will come to you.']] as const).map(([a, b], k) => (<>
+            <text x={150 + k * 250} y="268" class="lx-h lx-h--s x-in" style={d(6.0 + k * 0.4)}>{a}</text>
+            <text x={150 + k * 250} y="296" class="lx-h lx-h--s x-in" style={d(6.2 + k * 0.4)}>{b}</text>
+          </>))}
+        </>)}
+        {id === 'map' && (<>
+          <rect x="160" y="30" width="480" height="50" rx="25" pathLength="1" class="lx-line x-draw" style={d(0.2)} />
+          <circle cx="192" cy="53" r="9" class="lx-line x-in" style={d(0.5)} /><path d="M199 60 L207 68" class="lx-line x-in" style={d(0.5)} />
+          <text x="222" y="62" class="lx-s lx-s--l lx-start x-type" style={d(0.8, undefined, '--t:1.4s')}>dentist near me</text>
+          <g class="x-in x-out" style={d(2.2, 5.6)}>
+            <rect x="160" y="108" width="480" height="40" rx="4" class="lx-line lx-faint" /><path d="M180 128 H420" class="lx-line lx-faint" />
+            <rect x="160" y="208" width="480" height="40" rx="4" class="lx-line lx-faint" /><path d="M180 228 H380" class="lx-line lx-faint" />
+          </g>
+          <g class="x-in x-out" style={d(2.6, 5.6)}>
+            <rect x="160" y="158" width="480" height="40" rx="4" class="lx-line" />
+            <text x="180" y="184" class="lx-h lx-h--s lx-start">Your clinic</text><text x="620" y="184" class="lx-s lx-end">Open now · Book online</text>
+          </g>
+          <rect x="156" y="154" width="488" height="48" rx="6" pathLength="1" class="lx-line lx-bold x-draw x-out" style={d(3.4, 5.6, '--t:.6s')} />
+          <rect x="200" y="100" width="400" height="290" rx="6" pathLength="1" class="lx-line x-draw" style={d(6.0)} />
+          <path d="M200 128 H600 M224 160 H470 M224 182 H420" class="lx-line lx-faint x-in" style={d(6.3)} />
+          <g class="x-pop" style={d(6.7)}><rect x="320" y="222" width="160" height="44" rx="22" class="lx-fill" /><text x="400" y="250" class="lx-s lx-ink">Book a visit</text></g>
+          <circle cx="440" cy="250" r="16" class="lx-line lx-bold x-pop x-out" style={d(7.2, 7.6)} />
+          <text x="400" y="330" class="lx-h lx-h--l x-in" style={d(7.7)}>Tuesday, 10:30. Booked.</text>
+        </>)}
+        {id === 'ground' && (<>
+          <rect x="120" y="50" width="560" height="310" pathLength="1" class="lx-line x-draw" style={d(0.2)} />
+          <path d="M320 50 V220 M320 220 H680 M520 220 V360" pathLength="1" class="lx-line x-draw" style={d(0.8)} />
+          <path d="M156 360 A26 26 0 0 1 204 360" class="lx-line lx-bold x-in" style={d(1.2)} />
+          {([['Entrance', 180, 392], ['Reception', 220, 140], ['Waiting', 500, 140], ['Room 2', 640, 345]] as const).map(([t, x, y], k) => <text x={x} y={y} class="lx-s x-in" style={d(1.4 + k * 0.2)}>{t}</text>)}
+          <path d="M180 350 L220 230 L420 190 L420 290 L600 270" pathLength="1" class="lx-line lx-path x-draw" style={d(3.0, undefined, '--t:4s')} />
+          {([[220, 230, 'Welcome', 3.6, 238, 262, 'lx-start'], [420, 190, 'Take a seat', 4.8, 436, 178, 'lx-start'], [420, 290, 'This way', 5.8, 436, 322, 'lx-start']] as const).map(([x, y, t, s, tx, ty, al]) => (<>
+            <g class="x-pop" style={d(s)}><rect x={x - 7} y={y - 7} width="14" height="14" transform={`rotate(45 ${x} ${y})`} class="lx-fill" /></g>
+            <text x={tx} y={ty} class={`lx-s ${al} x-in`} style={d(s + 0.2)}>{t}</text>
+          </>))}
+          <circle cx="600" cy="270" r="16" class="lx-line lx-bold lx-glow x-pop" style={d(7.2)} />
+        </>)}
+        {id === 'artifacts' && (<>
+          <g class="x-out" style={d(0, 5.8)}>
+            <path d="M320 60 H480 V130 H560 V320 H480 V390 H320 V320 H240 V130 H320 Z M320 130 H480 M320 320 H480 M320 130 V320 M480 130 V320" pathLength="1" class="lx-line x-draw" style={d(0.2, undefined, '--t:1.6s')} />
+            <text x="400" y="190" class="lx-h lx-h--l x-in" style={d(1.6)}>ELDER</text>
+            <path d="M344 232 H456 M344 246 H440 M344 260 H450" class="lx-line lx-faint x-in" style={d(2.0)} />
+            <text x="400" y="296" class="lx-s x-in" style={d(2.3)}>50 ml</text>
+            {(['Net quantity, in metric', 'English and French', 'Ingredients, in order'] as const).map((t, k) => (<>
+              <path d={`M592 ${178 + k * 40} l6 6 l12 -13`} pathLength="1" class="lx-line lx-bold x-draw" style={d(3.4 + k * 0.5, undefined, '--t:.3s')} />
+              <text x="620" y={190 + k * 40} class="lx-s lx-start x-in" style={d(3.5 + k * 0.5)}>{t}</text>
+            </>))}
+          </g>
+          <path d="M330 170 L420 130 L560 170 L470 210 Z M330 170 V310 L470 350 V210 M470 350 L560 310 V170" pathLength="1" class="lx-line x-draw" style={d(6.0, undefined, '--t:1.4s')} />
+          <g class="x-in" style={d(7.0)}><text x="400" y="146" transform="matrix(1 .2857 0 1 0 0)" class="lx-h">ELDER</text></g>
+        </>)}
+        {id === 'machinery' && (<>
+          <path id="lxLoop" d="M400 70 A140 140 0 1 1 399.9 70" pathLength="1" class="lx-line x-draw" style={d(0.2, undefined, '--t:1.4s')} />
+          {([[400, 70, 'Enquiry, 11pm', 400, 46, '', 2.4], [540, 210, 'Booked', 560, 215, 'lx-start', 3.9], [400, 350, 'Reminder sent', 400, 384, '', 5.4], [260, 210, 'Review asked', 240, 215, 'lx-end', 6.9]] as const).map(([x, y, t, tx, ty, al, s], k) => (<>
+            <circle cx={x} cy={y} r="10" class="lx-node x-pop x-flash" style={d(0.8 + k * 0.2, s)} />
+            <text x={tx} y={ty} class={`lx-s ${al} x-in`} style={d(1.0 + k * 0.2)}>{t}</text>
+          </>))}
+          <circle r="6" class="lx-fill lx-runner"><animateMotion dur="6s" begin="indefinite" fill="freeze" data-at="2.4"><mpath href="#lxLoop" /></animateMotion></circle>
+          <text x="400" y="218" class="lx-h x-in" style={d(8.4)}>While you sleep.</text>
+        </>)}
+      </svg>
+      <ol class="lx__beats">{beats.map((b, k) => <li class={k === beats.length - 1 ? 'is-last' : ''} style={`--d:${AT[k]}s;--o:${AT[k + 1] ?? 99}s`}>{b}</li>)}</ol>
+      <button type="button" class="lx__again" data-lx-again>Watch again</button>
+    </div>
+  </div>
+</section>
+)}

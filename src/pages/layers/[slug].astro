@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Cta from '../../components/Cta.astro';
 import WorkGrid from '../../components/WorkGrid.astro';
 import LayerRing from '../../components/LayerRing.astro';
+import LayerExplainer from '../../components/LayerExplainer.astro';
 import { SIGILS } from '../../lib/sigils';
 import { CATEGORY, CATEGORY_ORDER, getLayers, getWorlds, workImages } from '../../lib/site';
 
@@ -40,6 +41,8 @@ const ld = [{ '@context': 'https://schema.org', '@type': 'Service', name: `${nam
       </div>
     </div>
   </section>
+
+  <LayerExplainer id={l.id} name={name} />
 
   <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">Without it</p><div class="wsec__text" data-reveal><p>{d.wrong}</p></div></div></section>
 
