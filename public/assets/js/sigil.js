@@ -21,7 +21,28 @@
     care: { motto: 'CURA', word: 'Care', d: '<path d="M9 4h6M10.5 4V2.5h3V4"/><path d="M7.5 7h9v11h-9z"/><path d="M7.5 7l1.5-3h6l1.5 3M12 10v5M6 21h12"/>' },
     heritage: { motto: 'MEMORIA', word: 'Heritage', d: '<path d="M4.5 21V9.5h2.5V6.5h2.5v3h1.5v-3h2v3h1.5v-3h2.5v3h2.5V21z"/><path d="M10 21v-4.5a2 2 0 0 1 4 0V21"/>' }
   };
-  const SHIELD = 'M70 70H330V230C330 330 268 388 200 424C132 388 70 330 70 230Z';
+  /* The shield is built from both choices: what you guard sets the chief (the top edge),
+     the category sets the base. Four chiefs by seven bases: 28 shields, so two businesses
+     that guard different things never share an outline. */
+  const CHIEF = {
+    trust: { n: 'a straight chief', d: 'M70 70H330' },
+    craft: { n: 'a dished chief', d: 'M70 62Q200 96 330 62' },
+    care: { n: 'an arched chief', d: 'M70 84Q200 46 330 84' },
+    heritage: { n: 'a peaked chief', d: 'M70 76L112 76L122 66L200 54L278 66L288 76L330 76' },
+  };
+  const BASE = {
+    clinic: { n: 'Heater', d: 'V230C330 330 268 388 200 424C132 388 70 330 70 230Z' },
+    dental: { n: 'Spanish', d: 'V300A130 124 0 0 1 70 300Z' },
+    medspa: { n: 'Accolade', d: 'V232C330 352 236 366 200 424C164 366 70 352 70 232Z' },
+    law: { n: 'French', d: 'V364Q330 392 302 392H230Q208 392 200 420Q192 392 170 392H98Q70 392 70 364Z' },
+    spirits: { n: 'Swallowtail', d: 'V410L200 374L70 410Z' },
+    food: { n: 'Iberian', d: 'V330Q330 398 266 398Q206 398 200 424Q194 398 134 398Q70 398 70 330Z' },
+    other: { n: 'Kite', d: 'V200L200 424L70 200Z' },
+  };
+  const shieldFor = (cat, virtue) => {
+    const c = CHIEF[virtue] || CHIEF.trust, b = BASE[cat] || BASE.other;
+    return { d: c.d + b.d, n: `${b.n} shield with ${c.n}` };
+  };
   const DIVISIONS = [
     { n: 'Plain', d: '' },
     { n: 'Per pale', d: 'M200 0H400V560H200Z' },
@@ -37,6 +58,8 @@
     const name = (form.name.value || '').trim().slice(0, 40);
     const cat = form.cat.value || 'other';
     const virtue = VIRTUE[form.virtue.value] || VIRTUE.trust;
+    const shield = shieldFor(cat, form.virtue.value);
+    const SHIELD = shield.d;
     const h = hash(name.toLowerCase() + '|' + cat);
     const div = DIVISIONS[h % DIVISIONS.length];
     const initial = (name.match(/[A-Za-z0-9]/) || ['K'])[0].toUpperCase();
@@ -55,7 +78,7 @@
     <path d="M178 36H96M222 36H304" stroke-width="1" opacity=".6"/>
     ${div.d ? `<path d="${div.d}" fill="url(#sg-hatch)" stroke="none" clip-path="url(#sg-clip)"/>` : ''}
     <path d="${SHIELD}" stroke-width="2.2"/>
-    <path d="M82 82H318V230C318 322 262 376 200 410C138 376 82 322 82 230Z" stroke-width=".9" opacity=".7"/>
+    <path d="${SHIELD}" transform="translate(200 214) scale(.91) translate(-200 -214)" stroke-width="1" opacity=".7"/>
     <g transform="translate(128 150) scale(6)" stroke-width=".42">${CHARGE[cat] || CHARGE.other}</g>
     <g transform="translate(96 96) scale(1.6)" stroke-width=".9">${virtue.d}</g>
     <g transform="translate(266 96) scale(1.6)" stroke-width=".9">${virtue.d}</g>
@@ -66,7 +89,7 @@
 </svg>`;
     stage.innerHTML = svg;
     const blazon = $('[data-sigil-blazon]');
-    if (blazon) blazon.textContent = `${div.n}, with the ${form.cat.selectedOptions[0].textContent.toLowerCase()} charge and two marks of ${virtue.word.toLowerCase()}. Motto: ${virtue.motto}.`;
+    if (blazon) blazon.textContent = `${/^[AEIOU]/.test(shield.n) ? 'An' : 'A'} ${shield.n}, ${div.n.toLowerCase()}, with the ${form.cat.selectedOptions[0].textContent.toLowerCase()} charge and two marks of ${virtue.word.toLowerCase()}. Motto: ${virtue.motto}.`;
     return svg;
   };
 
