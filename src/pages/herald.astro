@@ -1,0 +1,71 @@
+---
+// The herald: print-ready QR signs that never expire, framed in the business's own arms (public/assets/js/herald.js).
+import Base from '../layouts/Base.astro';
+import Cta from '../components/Cta.astro';
+const PURPOSES = [['review', 'Google review'], ['book', 'Booking'], ['wifi', 'Guest Wi-Fi'], ['contact', 'Contact card'], ['link', 'Menu or link']];
+const SIZES = [['sign', 'Front-desk sign', '8.5 × 11 in'], ['card', 'Table card', '4 × 6 in'], ['sticker', 'Seal sticker', '3 × 3 in']];
+const CATS = [['clinic', 'Clinic'], ['dental', 'Dental'], ['medspa', 'Medspa'], ['law', 'Law firm'], ['spirits', 'Spirits'], ['food', 'Food and drink'], ['other', 'Something else']];
+const ld = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'KNGHT herald', applicationCategory: 'BusinessApplication', operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'CAD' },
+  description: 'Make print-ready QR code signs for Google reviews, booking, guest Wi-Fi and contact cards. Direct links that never expire, no sign-up, no redirect.' }];
+---
+<Base title="Free QR code signs that never expire | KNGHT" description="Make a print-ready QR sign for Google reviews, booking, guest Wi-Fi or your contact card. Direct link, no redirect, no sign-up, never expires. Free, runs in your browser." path="herald/" ld={ld}>
+  <Fragment slot="scripts"><script is:inline src="/assets/js/vendor/qrcode.js" defer></script><script is:inline src="/assets/js/herald.js" defer></script></Fragment>
+  <section class="whero ck-hero">
+    <div class="wrap">
+      <p class="eyebrow">The herald</p>
+      <h1 class="display book__title" style="margin-top:24px">A QR code that <br><em>never dies.</em></h1>
+      <p class="for__answer">Make a print-ready sign for reviews, booking, guest Wi-Fi or your contact card. The link goes straight into the code, with no redirect and no sign-up, so it works for as long as the link does. It runs in your browser, and nothing is sent anywhere.</p>
+    </div>
+  </section>
+
+  <section class="wsec hb-sec">
+    <div class="wrap hb">
+      <form class="hb__form" data-herald novalidate>
+        <div class="ck__cats" role="group" aria-label="What it's for"><span class="ck__lbl">What it&rsquo;s for</span>{PURPOSES.map(([v, l]) => <button type="button" class="cat" data-hb-purpose={v} aria-pressed="false">{l}</button>)}</div>
+        <div class="hb__fields" data-hb-fields></div>
+        <label class="rp__field hb__tagrow" data-hb-tagrow hidden><span>Analytics</span><span class="hb__check"><input type="checkbox" data-hb-tag checked> Tag the link so your analytics shows which sign people scanned</span></label>
+        <div class="rp__row">
+          <label class="rp__field"><span>Business name</span><input name="name" type="text" maxlength="40" placeholder="Your business" autocomplete="organization"></label>
+          <label class="rp__field"><span>The line on the sign</span><input name="line" type="text" maxlength="40"></label>
+        </div>
+        <div class="rp__row">
+          <label class="rp__field"><span>Category</span><select name="cat" class="hb__select">{CATS.map(([v, l]) => <option value={v}>{l}</option>)}</select></label>
+          <label class="rp__field"><span>What you guard</span><select name="guard" class="hb__select"><option value="trust">Trust</option><option value="craft">Craft</option><option value="care">Care</option><option value="heritage">Heritage</option></select></label>
+        </div>
+        <div class="ck__cats" role="group" aria-label="Size"><span class="ck__lbl">Size</span>{SIZES.map(([v, l, d]) => <button type="button" class="cat hb__size" data-hb-size={v} aria-pressed="false">{l}<small>{d}</small></button>)}</div>
+        <div class="ck__cats" role="group" aria-label="Paper"><span class="ck__lbl">Paper</span><button type="button" class="cat" data-hb-paper="black" aria-pressed="true">Black</button><button type="button" class="cat" data-hb-paper="white" aria-pressed="false">White</button></div>
+      </form>
+
+      <div class="hb__out">
+        <figure class="hb__stage" data-hb-stage aria-live="polite"></figure>
+        <div class="hb__read">
+          <p class="hb__verdict" data-hb-verdict></p>
+          <div class="hb__range" data-hb-range></div>
+          <p class="hb__payload" data-hb-payload></p>
+          <div class="ck__actions">
+            <button type="button" class="btn" data-hb-pdf>Download print PDF</button>
+            <button type="button" class="link" data-hb-png>PNG</button>
+            <button type="button" class="link" data-hb-test>Test the seal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="hb-cam" data-hb-cam hidden role="dialog" aria-modal="true" aria-label="Test the seal with your camera">
+    <canvas class="hb-cam__view" data-hb-cam-view></canvas>
+    <p class="hb-cam__status" data-hb-cam-status aria-live="polite">Point your camera at the printed sign.</p>
+    <button type="button" class="btn btn--sm hb-cam__close" data-hb-cam-close>Done</button>
+  </div>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">What it never does</p>
+    <ul class="wrules">
+      <li><b>Route through us</b><span>Many free generators send every scan through their own server, then switch your code off when the trial ends. Here the link is inside the code. There&rsquo;s nothing to switch off.</span></li>
+      <li><b>Put a logo in the middle</b><span>It eats into the code&rsquo;s margin for error, and it&rsquo;s the most common reason printed codes fail. Your brand lives in the frame instead.</span></li>
+      <li><b>Use colour or rounded dots</b><span>Black on white scans on every phone, in every light. Your sign stays on brand anyway.</span></li>
+      <li><b>Leave anyone out</b><span>Every sign prints the link in words too, for people who can&rsquo;t scan.</span></li>
+    </ul>
+  </div></section>
+
+  <Cta line="The herald makes one sign. A Build makes the whole world around it: the space, the signs, the systems and the words." />
+</Base>
