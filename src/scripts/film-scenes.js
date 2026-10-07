@@ -75,6 +75,45 @@ DIRS['spark-end'] = (f, t) => {
   ctx.restore();
 };
 
+// Scene 2 in the film: the flare throws off sparks, and a spark traces each ring as the diagram draws it,
+// leaving embers behind. The diagram draws ring k from 0.9 + k seconds over 1.1, starting at three o'clock.
+const BURST = (() => { const r = rnd(19); return Array.from({ length: 90 }, () => ({ a: r() * TAU, v: 0.4 + r() * 1.1, s: 0.5 + r(), p: r() * TAU })); })();
+const TRAIL = 90;
+DIRS['ember-rings'] = (f, t) => {
+  const { ctx, cx, cy, U, dpr } = f;
+  f.glow(cx, cy, 14 * U, 0.3 * (1 - ease(t / 3) * 0.6));
+  ctx.fillStyle = '#fff';
+  // The burst from the flare.
+  BURST.forEach((b) => {
+    const life = t / (1.4 + b.v * 0.8); if (life >= 1) return;
+    const d = ease(life) * b.v * 26 * U, x = cx + Math.cos(b.a) * d, y = cy + Math.sin(b.a) * d + life * life * 6 * U;
+    f.dot(x, y, b.s * dpr, (1 - life) * 0.9);
+  });
+  for (let k = 0; k < 7; k++) {
+    const at = 0.9 + k, R = R_(f, k), run = 1.1, p = inout((t - at) / run);
+    if (p <= 0) continue;
+    const head = p * TAU;
+    // Embers left along the ring: bright where the spark has just passed, settling to a faint glow.
+    for (let i = 0; i < TRAIL; i++) {
+      const u = (i / TRAIL) * TAU; if (u > head) break;
+      const passed = t - at - (u / TAU) * run, j = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453 % 1;
+      const rr = R + j * 0.5 * U, a = Math.exp(-passed * 1.8) * 0.85 + 0.1 * (1 - ease((t - at - run - 1) / 2));
+      f.dot(cx + Math.cos(u) * rr, cy + Math.sin(u) * rr, (0.9 + Math.exp(-passed * 2)) * dpr, a * (0.7 + 0.3 * Math.sin(t * 9 + i)));
+    }
+    // The spark itself, throwing off a few embers of its own.
+    if (p < 1) {
+      const hx = cx + Math.cos(head) * R, hy = cy + Math.sin(head) * R;
+      f.glow(hx, hy, 4 * U, 0.85); f.dot(hx, hy, 1.8 * dpr, 1);
+      for (let e = 0; e < 10; e++) {
+        const born = at + (e / 10) * run, age = t - born; if (age < 0 || age > 0.9) continue;
+        const u = inout((born - at) / run) * TAU, ox = cx + Math.cos(u) * R, oy = cy + Math.sin(u) * R, sp = (e % 3 + 1) * 3 * U;
+        const dx = -Math.sin(u) * sp * age + Math.cos(u + e) * U * age * 4, dy = Math.cos(u) * sp * age + age * age * 10 * U;
+        f.dot(ox + dx, oy + dy, 1.1 * dpr, (1 - age / 0.9) * 0.8);
+      }
+    }
+  }
+};
+
 /* ---------- Scene 2: seven layers ---------- */
 // A ring in three dimensions: tilt about x, then turn about y, with depth shading on the near side.
 const ring3 = (f, r, tilt, turn, spin, a, lw, ticks = 0) => {

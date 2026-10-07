@@ -140,6 +140,9 @@ export default function film(gsap) {
 
   /* ---------- Footage and motion: one per scene, crossfaded, kept in step with the clock ---------- */
   const RATE = 0.75; // six-second shots, stretched over each scene
+  // Each scene plays at its own pace: the timeline is laid out in long scenes, then run faster where it can be.
+  // About 42 seconds in all, with the hall the longest and the nine worlds given time to land.
+  const SPEED = [1.3, 1.4, 1.3, 1.0, 1.35, 1.15];
   const motion = canvas && gfx ? filmMotion(canvas, gfx) : null, MIX = 1.2;
   let scene = -1, playing = false, visible = false, userPaused = false;
   const shot = (i) => plates.find((v) => +v.dataset.i === i);
@@ -160,11 +163,12 @@ export default function film(gsap) {
     const t = tl.time(), i = sceneAt(t);
     if (i !== scene || force) {
       scene = i;
+      tl.timeScale(SPEED[i]);
       load(i); for (let k = i + 1; k < START.length; k++) if (shot(k)) { load(k); break; }
       plates.forEach((v) => { const on = +v.dataset.i === i; v.classList.toggle('is-on', on); if (!on && !v.paused) v.pause(); });
       const v = shot(i);
       if (v && v.src) {
-        v.playbackRate = RATE;
+        v.playbackRate = RATE * SPEED[i];
         try { v.currentTime = Math.max(0, (t - START[i]) * RATE); } catch (e) {}
         if (playing) v.play().catch(() => {});
       }

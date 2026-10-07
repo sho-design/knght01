@@ -2,7 +2,7 @@
    (the first draws its flare over the genesis shot as it ends); drawn scenes fill it. The drawing is
    sized from the diagram itself, so the rings, the window and the nine worlds land under it exactly. */
 import { DIRS, frame } from './film-scenes.js';
-export const PLAN = ['spark-end', 'sphere', null, null, 'embers', 'ascend'];
+export const PLAN = ['spark-end', 'ember-rings', null, null, 'embers', 'ascend'];
 // Drawn over its footage, not instead of it: the canvas stays see-through for these.
 const OVER = new Set(['spark-end']);
 const solid = (id) => !!id && !OVER.has(id);
@@ -20,6 +20,26 @@ export default function filmMotion(canvas, gfx) {
     const bx = b.getContext('2d'); bx.setTransform(1, 0, 0, 1, 0, 0); bx.globalCompositeOperation = 'source-over'; bx.globalAlpha = 1; bx.clearRect(0, 0, f.W, f.H);
     fn({ ...f, ctx: bx }, t); return b;
   };
+  // The look of the footage laid over the drawn scenes, so all six feel shot on one camera:
+  // a soft bloom on the bright parts, a vignette, grain and a faint flicker of exposure.
+  const small = document.createElement('canvas'), tiny = document.createElement('canvas');
+  const grain = (() => { const c = document.createElement('canvas'); c.width = c.height = 160; const x = c.getContext('2d'), d = x.createImageData(160, 160); for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; } x.putImageData(d, 0, 0); return c; })();
+  const look = (f, amount, t) => {
+    const { ctx, W, H } = f;
+    small.width = Math.max(1, W >> 3); small.height = Math.max(1, H >> 3); tiny.width = Math.max(1, W >> 5); tiny.height = Math.max(1, H >> 5);
+    const sx = small.getContext('2d'), tx = tiny.getContext('2d');
+    sx.drawImage(canvas, 0, 0, small.width, small.height); tx.drawImage(small, 0, 0, tiny.width, tiny.height);
+    ctx.save(); ctx.imageSmoothingQuality = 'high'; ctx.globalCompositeOperation = 'lighter';
+    ctx.globalAlpha = 0.45 * amount; ctx.drawImage(small, 0, 0, W, H);
+    ctx.globalAlpha = 0.5 * amount; ctx.drawImage(tiny, 0, 0, W, H);
+    ctx.globalCompositeOperation = 'soft-light'; ctx.globalAlpha = 0.35 * amount;
+    const g = ctx.createPattern(grain, 'repeat'); ctx.translate((Math.random() * 160) | 0, (Math.random() * 160) | 0); ctx.fillStyle = g; ctx.fillRect(-160, -160, W + 160, H + 160);
+    ctx.restore();
+    const v = ctx.createRadialGradient(f.cx, H / 2, Math.min(W, H) * 0.3, f.cx, H / 2, Math.max(W, H) * 0.85);
+    v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, `rgba(0,0,0,${0.6 * amount})`); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+    const flick = 0.03 + 0.025 * Math.sin(t * 23) * Math.sin(t * 7.3);
+    ctx.fillStyle = `rgba(0,0,0,${flick * amount})`; ctx.fillRect(0, 0, W, H);
+  };
   // Draw one frame. When a scene has just begun, the last one fades out beneath it.
   const draw = (i, local, prev, prevLocal, mix) => {
     const f = frame(canvas, layout), { ctx, W, H } = f;
@@ -27,10 +47,13 @@ export default function filmMotion(canvas, gfx) {
     const cur = PLAN[i], was = prev != null && mix < 1 ? PLAN[prev] : undefined;
     const bg = solid(cur) ? (was !== undefined && !solid(was) ? mix : 1) : solid(was) ? 1 - mix : 0;
     if (bg > 0) { ctx.fillStyle = `rgba(0,0,0,${bg})`; ctx.fillRect(0, 0, W, H); }
-    if (was === undefined) { if (cur) DIRS[cur](f, local); return; }
-    if (was) { ctx.globalAlpha = 1 - mix; ctx.drawImage(into(f, 0, DIRS[was], prevLocal), 0, 0); }
-    if (cur) { ctx.globalAlpha = mix; ctx.drawImage(into(f, 1, DIRS[cur], local), 0, 0); }
-    ctx.globalAlpha = 1;
+    if (was === undefined) { if (cur) DIRS[cur](f, local); }
+    else {
+      if (was) { ctx.globalAlpha = 1 - mix; ctx.drawImage(into(f, 0, DIRS[was], prevLocal), 0, 0); }
+      if (cur) { ctx.globalAlpha = mix; ctx.drawImage(into(f, 1, DIRS[cur], local), 0, 0); }
+      ctx.globalAlpha = 1;
+    }
+    if (bg > 0) look(f, bg, local);
   };
   return { draw, resize: () => {} };
 }
