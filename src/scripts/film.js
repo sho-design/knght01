@@ -1,6 +1,7 @@
 /* The film: what KNGHT does, in six scenes. It runs on its own clock (not the scroll):
    it plays when it comes into view, pauses when it leaves, and can be paused, scrubbed by
-   chapter, or watched again. Each scene has its own black-and-white shot underneath. */
+   chapter, or watched again. Each scene has its own black-and-white motion underneath, drawn live (film-motion.js). */
+import filmMotion from './film-motion.js';
 export default function film(gsap) {
   const sec = document.querySelector('.film');
   if (!sec) return;
@@ -9,7 +10,7 @@ export default function film(gsap) {
   const root = document.documentElement;
 
   const START = [0, 8, 17, 25, 33, 42], END = 52;
-  const plates = $$('.film__plate'), scenes = $$('.film__scene');
+  const canvas = $('.film__canvas'), scenes = $$('.film__scene');
   const playBtn = $('[data-film-play]'), fill = $('[data-film-fill]'), ticks = $$('[data-film-tick]'), replay = $('[data-film-replay]');
 
   /* ---------- Graphics: the same world as the diagram, turned and scaled about its own centre ---------- */
@@ -137,33 +138,21 @@ export default function film(gsap) {
     },
   });
 
-  /* ---------- Footage: one shot per scene, crossfaded, kept in step with the clock ---------- */
-  const RATE = 0.75; // six-second shots, stretched over each eight-second scene
+  /* ---------- Motion: one drawn scene each, the last fading out under the next, kept on the film's clock ---------- */
+  const motion = canvas ? filmMotion(canvas) : null, MIX = 1.2;
   let scene = -1, playing = false, visible = false, userPaused = false;
-  const load = (i) => { const v = plates[i]; if (v && !v.src && v.dataset.src) { v.src = v.dataset.src; v.preload = 'auto'; } };
-  // If a shot cannot load, say so (for us), and keep the film running on its graphics alone.
-  plates.forEach((v, i) => {
-    v.addEventListener('error', () => { console.warn(`KNGHT film: shot ${i + 1} did not load`, v.currentSrc || v.dataset.src, v.error && v.error.code); sec.dataset.missing = ((sec.dataset.missing || '') + ' ' + (i + 1)).trim(); });
-    v.addEventListener('loadeddata', () => { sec.dataset.loaded = ((sec.dataset.loaded || '') + ' ' + (i + 1)).trim(); });
-  });
   const sceneAt = (t) => { let i = 0; START.forEach((s, k) => { if (t >= s) i = k; }); return i; };
+  const paint = () => {
+    if (!motion) return;
+    const t = tl.time(), i = sceneAt(t), local = t - START[i];
+    if (i > 0 && local < MIX) motion.draw(i, local, i - 1, t - START[i - 1], local / MIX);
+    else motion.draw(i, local);
+  };
+  if (canvas && 'ResizeObserver' in window) new ResizeObserver(() => { motion.resize(); paint(); }).observe(canvas);
   const syncPlate = (force) => {
-    const t = tl.time(), i = sceneAt(t);
-    if (i !== scene || force) {
-      scene = i;
-      load(i); load(i + 1);
-      plates.forEach((v, k) => {
-        v.classList.toggle('is-on', k === i);
-        if (k !== i && !v.paused) v.pause();
-      });
-      const v = plates[i];
-      if (v && v.src) {
-        v.playbackRate = RATE;
-        try { v.currentTime = Math.max(0, (t - START[i]) * RATE); } catch (e) {}
-        if (playing) v.play().catch(() => {});
-      }
-      ticks.forEach((b, k) => b.classList.toggle('is-on', k <= i));
-    }
+    const i = sceneAt(tl.time());
+    if (i !== scene || force) { scene = i; ticks.forEach((b, k) => b.classList.toggle('is-on', k <= i)); }
+    paint();
   };
   tl.eventCallback('onUpdate', () => {
     fill.style.transform = `scaleX(${(tl.time() / END).toFixed(4)})`;
@@ -175,9 +164,8 @@ export default function film(gsap) {
     playing = on;
     sec.classList.toggle('is-playing', on);
     playBtn.setAttribute('aria-label', on ? 'Pause the film' : 'Play the film');
-    const v = plates[scene];
-    if (on) { tl.play(); spin.play(); if (v && v.src) v.play().catch(() => {}); }
-    else { tl.pause(); spin.pause(); plates.forEach((p) => p.pause()); }
+    if (on) { tl.play(); spin.play(); }
+    else { tl.pause(); spin.pause(); }
   };
   const start = () => {
     if (tl.progress() >= 1) return;
@@ -200,7 +188,7 @@ export default function film(gsap) {
   }));
 
   // Play when it is on screen, pause when it is not.
-  load(0);
+  paint();
   new IntersectionObserver(([e]) => {
     visible = e.intersectionRatio >= 0.55;
     root.classList.toggle('in-reel', e.intersectionRatio > 0.3);
