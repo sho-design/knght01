@@ -1,0 +1,56 @@
+---
+// The one-line forge: who you serve, what changes for them, what you refuse, forged into one line and a card (public/assets/js/line.js).
+import Base from '../layouts/Base.astro';
+import Cta from '../components/Cta.astro';
+const CATS = [['clinic', 'Clinic'], ['dental', 'Dental'], ['medspa', 'Medspa'], ['law', 'Law firm'], ['spirits', 'Spirits'], ['food', 'Food and drink'], ['other', 'Something else']];
+const GUARD = [['trust', 'Trust'], ['craft', 'Craft'], ['care', 'Care'], ['heritage', 'Heritage'], ['discretion', 'Discretion'], ['precision', 'Precision'], ['hospitality', 'Hospitality'], ['renewal', 'Renewal']];
+const ld = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'KNGHT one-line forge', applicationCategory: 'BusinessApplication', operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'CAD' },
+  description: 'Answer three questions and get one line your whole team can repeat, with a printable card.' }];
+---
+<Base title="Write your one-line positioning statement, free | KNGHT" description="Who you serve, what changes for them, what you refuse to do. Three answers, one line your whole team can repeat, and a card to keep at the desk. Free, runs in your browser." path="line/" ld={ld}>
+  <Fragment slot="scripts"><script is:inline src="/assets/js/arms.js" defer></script><script is:inline src="/assets/js/line.js" defer></script></Fragment>
+  <section class="whero ck-hero">
+    <div class="wrap">
+      <p class="eyebrow">The one-line forge</p>
+      <h1 class="display book__title" style="margin-top:24px">One line <br><em>the whole team can say.</em></h1>
+      <p class="for__answer">Every world starts here. Answer three questions and the forge shapes them into one line you can say at the desk, on the phone and on the website. Then keep it on a card. It runs in your browser, and nothing is sent anywhere.</p>
+    </div>
+  </section>
+
+  <section class="wsec hb-sec">
+    <div class="wrap ln">
+      <form class="hb__form" data-lineforge novalidate>
+        <label class="lk__row ln__row"><span class="lk__q">Who do you serve?</span><input class="ln__in" name="who" type="text" maxlength="70" placeholder="busy parents in Leslieville"><em class="lk__hint">Be specific. “Everyone” is no one.</em></label>
+        <label class="lk__row ln__row"><span class="lk__q">What changes for them because of you?</span><input class="ln__in" name="change" type="text" maxlength="80" placeholder="feel at ease at the dentist"><em class="lk__hint">Finish the sentence “We help them…”. The result they feel, not the service you sell.</em></label>
+        <label class="lk__row ln__row"><span class="lk__q">How? <small>(optional)</small></span><input class="ln__in" name="how" type="text" maxlength="70" placeholder="by never rushing an appointment"></label>
+        <label class="lk__row ln__row"><span class="lk__q">What do you refuse to do?</span><input class="ln__in" name="refuse" type="text" maxlength="60" placeholder="upsell"><em class="lk__hint">Finish “We never…”. The thing your competitors do that you won&rsquo;t.</em></label>
+        <div class="rp__row">
+          <label class="rp__field"><span>Business name</span><input name="name" type="text" maxlength="40" placeholder="Your business" autocomplete="organization"></label>
+          <label class="rp__field"><span>Category</span><select name="cat" class="hb__select">{CATS.map(([v, l]) => <option value={v}>{l}</option>)}</select></label>
+        </div>
+        <label class="rp__field"><span>What you guard</span><select name="guard" class="hb__select">{GUARD.map(([v, l]) => <option value={v}>{l}</option>)}</select></label>
+      </form>
+      <div class="ln__out">
+        <div class="ln__stage" data-line-stage aria-live="polite"></div>
+        <div class="ck__cats ln__forms" role="group" aria-label="Form of the line" data-line-forms></div>
+        <div class="ck__actions">
+          <button type="button" class="btn" data-line-pdf>Download the card</button>
+          <button type="button" class="link" data-line-png>PNG</button>
+          <button type="button" class="link" data-line-copy>Copy the line</button>
+        </div>
+        <p class="ln__test" data-line-test></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">Use it</p>
+    <ul class="wrules">
+      <li><b>At the desk</b><span>It&rsquo;s the answer when someone asks what makes you different.</span></li>
+      <li><b>In hiring</b><span>Read it to every new hire. If they can&rsquo;t say it back in a week, it&rsquo;s too long.</span></li>
+      <li><b>On the website</b><span>It belongs near the top of your home page, in these words.</span></li>
+    </ul>
+    <p class="wrules__more"><a class="link" href="/layers/lore/">Where a world starts: the Lore layer</a></p>
+  </div></section>
+
+  <Cta line="The forge gives you one line. A Build gives you the whole lore behind it: the story, the voice and the world that carries it." />
+</Base>

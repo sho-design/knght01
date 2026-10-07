@@ -1,0 +1,51 @@
+---
+// The plain-speech test: marks filler, machine-sounding words, long sentences and dashes, and offers a plainer version (public/assets/js/plain.js).
+import Base from '../layouts/Base.astro';
+import Cta from '../components/Cta.astro';
+const ld = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'KNGHT plain-speech test', applicationCategory: 'BusinessApplication', operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'CAD' },
+  description: 'Paste website copy or an email. See the filler, the words that sound machine-written and the sentences that run long, with a plainer version to copy.' }];
+---
+<Base title="Does your copy sound like AI? Free plain-speech test | KNGHT" description="Paste your website copy, an email or a post. See the filler, the words that sound machine-written, the long sentences and the dashes, and get a plainer version. Free, runs in your browser." path="plain/" ld={ld}>
+  <Fragment slot="scripts"><script is:inline src="/assets/js/plain.js" defer></script></Fragment>
+  <section class="whero ck-hero">
+    <div class="wrap">
+      <p class="eyebrow">The plain-speech test</p>
+      <h1 class="display book__title" style="margin-top:24px">Say it like <br><em>a person would.</em></h1>
+      <p class="for__answer">Paste your website copy, an email or a post. The red pen strikes the filler, the words that sound like a machine wrote them, the sentences that run long and the dashes, then hands you a plainer version. It runs in your browser, and nothing is sent anywhere.</p>
+      <form class="ck" data-plain novalidate>
+        <label class="sr-only" for="plain-text">Your copy</label>
+        <textarea id="plain-text" class="ck__text" rows="7" maxlength="8000" placeholder="Paste your copy here"></textarea>
+        <div class="ck__actions">
+          <button type="submit" class="btn">Read it</button>
+          <button type="button" class="link" data-plain-example>Try an example</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="wsec ck-out pl-out" data-plain-out hidden aria-live="polite">
+    <div class="wrap">
+      <div class="pl__score">
+        <div class="pl__dial" data-plain-dial></div>
+        <div><p class="eyebrow">The read</p><p class="ck__sum" data-plain-sum></p><p class="pl__meta" data-plain-meta></p></div>
+      </div>
+      <p class="ck__marked" data-plain-marked></p>
+      <ol class="ck__list" data-plain-list></ol>
+      <p class="eyebrow pl__plain-h">A plainer version</p>
+      <p class="pl__plain" data-plain-plain></p>
+      <div class="ck__actions"><button type="button" class="btn" data-plain-copy>Copy the plainer version</button></div>
+      <p class="ck__note">A first pass by rules, not a writer. It cuts and swaps words; read it aloud before you use it.</p>
+    </div>
+  </section>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">What it reads for</p>
+    <ul class="wrules">
+      <li><b>Machine words</b><span>Elevate, seamless, unlock, delve, robust, tailored, journey and the rest. They read as if no one in particular wrote them.</span></li>
+      <li><b>Filler</b><span>Very, really, just, truly, in order to, due to the fact that. Cut them and nothing is lost.</span></li>
+      <li><b>Long sentences</b><span>Past about 25 words, people stop following. Two short ones beat one long one.</span></li>
+      <li><b>Dashes and stacked exclamation marks</b><span>A full stop or a comma does the job, and sounds calmer.</span></li>
+    </ul>
+  </div></section>
+
+  <Cta line="The test reads one page. A Build writes your whole world in one voice: site, signs, emails and replies." />
+</Base>

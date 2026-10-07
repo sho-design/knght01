@@ -1,0 +1,45 @@
+---
+// The cartographer: a guided check of a Google Business Profile, scored, with the fixes in order (public/assets/js/cartographer.js).
+import Base from '../layouts/Base.astro';
+import Cta from '../components/Cta.astro';
+const ld = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'KNGHT cartographer', applicationCategory: 'BusinessApplication', operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'CAD' },
+  description: 'A guided check of your Google Business Profile. Tick what is true, get a score out of 100 and the fixes in order.' }];
+---
+<Base title="Free Google Business Profile checklist and score | KNGHT" description="Check your Google Business Profile in two minutes: categories, hours, photos, services, reviews and posts. Get a score out of 100 and the fixes in order. Free, runs in your browser." path="cartographer/" ld={ld}>
+  <Fragment slot="scripts"><script is:inline src="/assets/js/cartographer.js" defer></script></Fragment>
+  <section class="whero ck-hero">
+    <div class="wrap">
+      <p class="eyebrow">The cartographer</p>
+      <h1 class="display book__title" style="margin-top:24px">Put yourself <br><em>on the map.</em></h1>
+      <p class="for__answer">Open your Google Business Profile next to this page and tick what&rsquo;s true. Every tick lights a road on the map. You get a score out of 100 and the fixes in the order that matter most. It runs in your browser, and nothing is sent anywhere.</p>
+    </div>
+  </section>
+
+  <section class="wsec hb-sec">
+    <div class="wrap ct">
+      <form class="ct__form" data-carto novalidate></form>
+      <div class="ct__out">
+        <figure class="ct__map" data-carto-map aria-hidden="true"></figure>
+        <div class="ct__read" aria-live="polite">
+          <p class="lk__lbl">Your profile</p>
+          <p class="lk__big" data-carto-score>0</p>
+          <p class="lk__sub" data-carto-sum></p>
+          <p class="lk__lbl lk__lbl--gap">Fix next</p>
+          <ol class="ct__fixes" data-carto-fixes></ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">How Google decides</p>
+    <ul class="wrules">
+      <li><b>Relevance</b><span>How well your profile matches what someone searched. Categories, services and a full description do the work here.</span></li>
+      <li><b>Distance</b><span>How far you are from the person searching. You can&rsquo;t change it, so the other two matter more.</span></li>
+      <li><b>Prominence</b><span>How well known you are: reviews, replies, photos and the rest of the web talking about you.</span></li>
+    </ul>
+    <p class="ck__note">Google names these three in its own help pages. A full profile helps, but nobody can promise a ranking, and this check isn&rsquo;t a guarantee.</p>
+    <p class="wrules__more"><a class="link" href="/layers/map/">How we map a business: the Map layer</a></p>
+  </div></section>
+
+  <Cta line="The cartographer checks one profile. A Build sets up the whole map: profile, pages, reviews and the systems that keep them fresh." />
+</Base>

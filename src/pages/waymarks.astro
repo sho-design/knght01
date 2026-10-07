@@ -1,0 +1,50 @@
+---
+// Waymarks: a matching set of signs for the space, in the business's own arms (public/assets/js/waymarks.js).
+import Base from '../layouts/Base.astro';
+import Cta from '../components/Cta.astro';
+const CATS = [['clinic', 'Clinic'], ['dental', 'Dental'], ['medspa', 'Medspa'], ['law', 'Law firm'], ['spirits', 'Spirits'], ['food', 'Food and drink'], ['other', 'Something else']];
+const GUARD = [['trust', 'Trust'], ['craft', 'Craft'], ['care', 'Care'], ['heritage', 'Heritage'], ['discretion', 'Discretion'], ['precision', 'Precision'], ['hospitality', 'Hospitality'], ['renewal', 'Renewal']];
+const ld = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'KNGHT waymarks', applicationCategory: 'BusinessApplication', operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'CAD' },
+  description: 'Make a matching set of printable signs for your space: please wait here, reception, washroom, rooms, this way, staff only.' }];
+---
+<Base title="Free printable signs for your clinic or shop | KNGHT" description="Make a matching set of printable signs: please wait here, reception, washroom, room numbers, this way, staff only. One print-ready PDF in your own style. Free, runs in your browser." path="waymarks/" ld={ld}>
+  <Fragment slot="scripts"><script is:inline src="/assets/js/arms.js" defer></script><script is:inline src="/assets/js/waymarks.js" defer></script></Fragment>
+  <section class="whero ck-hero">
+    <div class="wrap">
+      <p class="eyebrow">Waymarks</p>
+      <h1 class="display book__title" style="margin-top:24px">Signs that answer <br><em>before anyone asks.</em></h1>
+      <p class="for__answer">Pick the signs your space needs. They come as one matching set in your own arms, ready to print. When the signs do the directing, your staff don&rsquo;t have to. It runs in your browser, and nothing is sent anywhere.</p>
+    </div>
+  </section>
+
+  <section class="wsec hb-sec">
+    <div class="wrap wm">
+      <form class="hb__form" data-waymarks novalidate>
+        <div class="ck__cats" role="group" aria-label="Signs"><span class="ck__lbl">Signs</span><div class="wm__picks" data-wm-picks></div></div>
+        <div class="rp__row">
+          <label class="rp__field"><span>Rooms</span><input name="rooms" type="number" min="0" max="20" value="2" inputmode="numeric"></label>
+          <label class="rp__field"><span>Business name</span><input name="name" type="text" maxlength="40" placeholder="Your business" autocomplete="organization"></label>
+        </div>
+        <div class="rp__row">
+          <label class="rp__field"><span>Category</span><select name="cat" class="hb__select">{CATS.map(([v, l]) => <option value={v}>{l}</option>)}</select></label>
+          <label class="rp__field"><span>What you guard</span><select name="guard" class="hb__select">{GUARD.map(([v, l]) => <option value={v}>{l}</option>)}</select></label>
+        </div>
+        <div class="ck__cats" role="group" aria-label="Size"><span class="ck__lbl">Size</span><button type="button" class="cat hb__size" data-wm-size="plate" aria-pressed="true">Door plate<small>8 × 3 in</small></button><button type="button" class="cat hb__size" data-wm-size="wall" aria-pressed="false">Wall sign<small>11 × 8.5 in</small></button></div>
+        <div class="ck__cats" role="group" aria-label="Paper"><span class="ck__lbl">Paper</span><button type="button" class="cat" data-wm-paper="black" aria-pressed="true">Black</button><button type="button" class="cat" data-wm-paper="white" aria-pressed="false">White</button></div>
+        <div class="ck__actions"><button type="button" class="btn" data-wm-pdf>Download the set (PDF)</button><span class="wm__count" data-wm-count></span></div>
+      </form>
+      <div class="wm__grid" data-wm-grid aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="wsec"><div class="wrap wsec__grid"><p class="eyebrow">Why a set</p>
+    <ul class="wrules">
+      <li><b>One voice in the room</b><span>Signs taped up one at a time never match. A set reads as one place that thought about you.</span></li>
+      <li><b>Fewer questions at the desk</b><span>Every question a sign answers is a minute your front desk gets back.</span></li>
+      <li><b>Big enough to read</b><span>Door plates for eye level up close, wall signs for across the room.</span></li>
+    </ul>
+    <p class="wrules__more"><a class="link" href="/layers/ground/">How we plan a space: the Ground layer</a></p>
+  </div></section>
+
+  <Cta line="Waymarks label a room. A Build plans the whole route, from the street to the chair." />
+</Base>

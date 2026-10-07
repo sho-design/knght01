@@ -5,15 +5,15 @@ import Cta from '../components/Cta.astro';
 import { SIGILS } from '../lib/sigils';
 type Tool = { name: string; href?: string; promise: string };
 const LAYERS: { id: string; name: string; tools: Tool[] }[] = [
-  { id: 'lore', name: 'Lore', tools: [{ name: 'The one-line forge', promise: 'Who you serve, what you change, what you refuse. One line the whole team can repeat.' }] },
+  { id: 'lore', name: 'Lore', tools: [{ name: 'The one-line forge', href: '/line/', promise: 'Who you serve, what you change, what you refuse. One line the whole team can repeat.' }] },
   { id: 'law', name: 'Law', tools: [{ name: 'The claim checker', href: '/check/', promise: 'Paste an ad or a label. See the words a regulator would question, and a safer way to say them.' }] },
   { id: 'language', name: 'Language', tools: [
     { name: 'The reply scribe', href: '/reply/', promise: 'Answer every review. Give nothing away.' },
-    { name: 'The plain-speech test', promise: 'Strike the filler and the words that sound like a machine wrote them.' }] },
-  { id: 'map', name: 'Map', tools: [{ name: 'The cartographer', promise: 'A guided check of your Google Business Profile, with the fixes in order.' }] },
+    { name: 'The plain-speech test', href: '/plain/', promise: 'Strike the filler and the words that sound like a machine wrote them.' }] },
+  { id: 'map', name: 'Map', tools: [{ name: 'The cartographer', href: '/cartographer/', promise: 'A guided check of your Google Business Profile, with the fixes in order.' }] },
   { id: 'ground', name: 'Ground', tools: [
     { name: 'The herald', href: '/herald/', promise: 'QR signs that never expire, framed in your own arms and tested before you print.' },
-    { name: 'Waymarks', promise: 'A matching set of signs for your space: wait here, this way, room two.' }] },
+    { name: 'Waymarks', href: '/waymarks/', promise: 'A matching set of signs for your space: wait here, this way, room two.' }] },
   { id: 'artifacts', name: 'Artifacts', tools: [{ name: 'Your sigil', href: '/sigil/', promise: 'A crest forged from your name, with a video, a livery kit and a link that re-forges it anywhere.' }] },
   { id: 'machinery', name: 'Machinery', tools: [
     { name: 'The leak', href: '/leak/', promise: 'What your missed calls cost in a year, from your own numbers.' },
