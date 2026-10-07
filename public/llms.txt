@@ -62,6 +62,8 @@ Each world is built in this order. No layer is built before Lore.
 - [Reply scribe](https://knght.com/reply/): paste a Google review, pick the stars and your category, and get a reply that thanks the reviewer, takes it offline and never confirms they were a patient or client. Flags risky edits live. Free, runs in the browser.
 - [Licence keep](https://knght.com/keep/): list licence, registration, insurance and domain renewal dates and download a calendar file with reminders 90, 30 and 7 days ahead. Free, runs in the browser.
 - [The herald](https://knght.com/herald/): make print-ready QR code signs for Google reviews, booking, guest Wi-Fi and contact cards. The link goes straight into the code, with no redirect or sign-up, so it never expires. Tests the code before you print. Free, runs in the browser.
+- [The leak](https://knght.com/leak/): work out what missed calls and unanswered messages cost in a year from your own numbers, and what faster replies would recover. Free, runs in the browser.
+- [The armoury](https://knght.com/armoury/): every free KNGHT tool, one for each of the seven layers.
 - [Can your clinic put patient information into ChatGPT?](https://knght.com/rules/clinics-ai-and-patient-information/): PHIPA and AI tools for Ontario clinics, in plain language.
 - [Real estate teams and the brokerage name](https://knght.com/rules/real-estate-teams-and-the-brokerage-name/): RECO advertising rules for real estate teams under TRESA: brokerage name, team names, sold stories and awards.
 - [What a brand world costs in Ontario](https://knght.com/rules/what-a-brand-world-costs-in-ontario/): published price ranges for branding, websites and retainers in Toronto and the GTA, and how KNGHT prices the Verdict and the Build.

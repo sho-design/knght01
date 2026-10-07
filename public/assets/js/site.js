@@ -623,8 +623,8 @@
         ['Selling spirits without the buzz', 'rules/alcohol-ads-strength-and-success/'],
         ['Why lawyers can’t say “specialist”', 'rules/lawyers-and-the-word-specialist/']] },
       { label: 'Score your world', sigil: 'scales', href: '#score' },
-      { label: 'Free tools', sigil: 'quill', items: [
-        ['Claim checker', 'check/'], ['Reply scribe', 'reply/'], ['Licence keep', 'keep/'], ['The herald', 'herald/'], ['Your sigil', 'sigil/']] }
+      { label: 'Free tools', sigil: 'quill', all: ['All free tools', 'armoury/'], items: [
+        ['Claim checker', 'check/'], ['Reply scribe', 'reply/'], ['Licence keep', 'keep/'], ['The herald', 'herald/'], ['The leak', 'leak/'], ['Your sigil', 'sigil/']] }
     ];
     const link = ([label, p], cls, n) => `<li><a class="${cls}" href="${to(p)}"${here(p) ? ' aria-current="page"' : ''}>${n ? `<span class="mnav__num">${n}</span>` : ''}${label}</a></li>`;
     const group = (m, i) => {
@@ -1004,7 +1004,7 @@
         avoid.push([r.left + sx, pr.top + sy, r.right + sx, pr.bottom + sy]);
       });
       // The white rooms, and the pinned rooms whose contents move while you scroll (the hero, the worlds gallery).
-      $$('.engage,.score,.worlds,.hero,.lx,.lring,.kp__wall,.hb').forEach((el) => { const r = el.getBoundingClientRect(); avoid.push([-1e5, r.top + sy - 60, 1e5, r.bottom + sy + 60]); });
+      $$('.engage,.score,.worlds,.hero,.lx,.lring,.kp__wall,.hb,.lk,.arm').forEach((el) => { const r = el.getBoundingClientRect(); avoid.push([-1e5, r.top + sy - 60, 1e5, r.bottom + sy + 60]); });
       const hits = (b, px, py, list) => list.some((a) => b[0] - px < a[2] && b[2] + px > a[0] && b[1] - py < a[3] && b[3] + py > a[1]);
       // The field never touches a hero. On the homepage it begins with the worlds.
       if (startEl) startY = startTop() + sy;
