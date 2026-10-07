@@ -20,6 +20,7 @@ export const GET: APIRoute = async ({ site }) => {
     ['/rules/', 'src/pages/rules/index.astro'],
     ['/check/', 'src/pages/check.astro'],
     ['/reply/', 'src/pages/reply.astro'],
+    ['/keep/', 'src/pages/keep.astro'],
     ['/sigil/', 'src/pages/sigil.astro'],
     ['/privacy/', 'src/pages/privacy/index.astro'],
     ['/accessibility/', 'src/pages/accessibility/index.astro'],
