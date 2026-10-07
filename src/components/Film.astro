@@ -105,9 +105,12 @@ const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work',
               <a href="/book/" tabindex="-1" class="reel__wa" aria-label="Yours is next: book the free call">
                 <g transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}>
                   <g class="reel__wb">
-                    <circle class="reel__ping" r="40" />
-                    <circle class="reel__chip" r="40" />
-                    <text class="reel__name" y={y > 0 ? 70 : -56}>Yours</text>
+                    <g class="reel__seatg">
+                      <circle class="reel__hit" r="72" />
+                      <circle class="reel__ping" r="40" />
+                      <circle class="reel__chip" r="40" />
+                      <text class="reel__name" y={y > 0 ? 70 : -56}>Yours</text>
+                    </g>
                   </g>
                 </g>
               </a>

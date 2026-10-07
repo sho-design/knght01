@@ -329,17 +329,38 @@ DIRS.searchlight = (f, t) => {
 
 // D. Embers drift up in the dark, then gather into the two broken rings and become them.
 const EMBERS = (() => { const r = rnd(91); return Array.from({ length: 260 }, (_, i) => ({ x: r(), y: r(), v: 0.4 + r(), p: r() * TAU, k: BROKE[i % 2], a: r() * TAU })); })();
+// The bridge from the hall: when f.beam is set, the embers begin as the dust in the hall's column of light,
+// in the same place and shape, then loosen, drift and start to glow. The light itself lingers, then goes.
+const inBeam = (b, e) => { const v = (e.y * 1.37) % 1, y = b.top + (b.floor - b.top) * v, hw = b.w0 + (b.w1 - b.w0) * v; return [b.x + (((e.x * 7.31) % 1) * 2 - 1) * hw * Math.sqrt((e.p / TAU)), y]; };
 DIRS.embers = (f, t) => {
-  const { cx, cy, W, H, dpr } = f;
-  f.ctx.fillStyle = '#fff';
+  const { ctx, cx, cy, W, H, dpr } = f, b = f.beam;
+  if (b) {
+    const a = 1 - ease((t - 0.4) / 2.4);
+    if (a > 0) {
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      const g = ctx.createLinearGradient(b.x - b.w1, 0, b.x + b.w1, 0); g.addColorStop(0, W_(0)); g.addColorStop(0.5, W_(0.22 * a)); g.addColorStop(1, W_(0));
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(b.x - b.w0, b.top); ctx.lineTo(b.x + b.w0, b.top); ctx.lineTo(b.x + b.w1, b.floor); ctx.lineTo(b.x - b.w1, b.floor); ctx.closePath(); ctx.fill();
+      ctx.restore();
+      f.glow(b.x, b.floor, b.w1 * 1.6, 0.18 * a);
+    }
+  }
+  ctx.fillStyle = '#fff';
   EMBERS.forEach((e, i) => {
     const j = BROKE.indexOf(e.k), g = inout((t - BUILT[j] + 1.2 - (i % 20) * 0.03) / 1.6);
-    const fx = (e.x * W + Math.sin(t * 0.6 * e.v + e.p) * 20 * dpr), fy = ((e.y * H - t * 14 * e.v * dpr) % H + H) % H;
+    let fx = (e.x * W + Math.sin(t * 0.6 * e.v + e.p) * 20 * dpr), fy = ((e.y * H - t * 14 * e.v * dpr) % H + H) % H;
+    let warm = 1;
+    if (b) {
+      // Dust in the beam first, then loose.
+      const loose = inout((t - 0.5 - (i % 13) * 0.05) / 2.4), [bx, by] = inBeam(b, e);
+      const dx = bx + Math.sin(t * 0.8 + e.p) * 0.6 * dpr, dy = by + t * 4 * e.v * dpr;
+      fx = dx + (fx - dx) * loose; fy = dy + (fy - dy) * loose; warm = loose;
+    }
     const r = R_(f, e.k), tx = cx + Math.cos(e.a + t * 0.05) * r, ty = cy + Math.sin(e.a + t * 0.05) * r;
     const x = fx + (tx - fx) * g, y = fy + (ty - fy) * g;
-    f.dot(x, y, (0.7 + 0.5 * g) * dpr, (0.2 + 0.35 * Math.abs(Math.sin(t * 2 * e.v + e.p))) * (1 - g * 0.2) + g * 0.45);
+    const free = (0.2 + 0.35 * Math.abs(Math.sin(t * 2 * e.v + e.p))) * (1 - g * 0.2) + g * 0.45, dust = 0.35 + 0.55 * Math.abs(Math.sin(t * 3.1 * e.v + e.p * 2));
+    f.dot(x, y, (0.7 + 0.5 * g) * dpr * (1.15 - 0.15 * warm), free * warm + dust * (1 - warm));
   });
-  BROKE.forEach((k, j) => { const p = ease((t - BUILT[j] - 0.4) / 0.8); if (p > 0) { f.glow(cx, cy, 0, 0); f.line(0.35 * p * (1 - ease((t - BUILT[j] - 1.4) / 1.2) * 0.6), 2); f.ctx.beginPath(); f.ctx.arc(cx, cy, R_(f, k), 0, TAU); f.ctx.stroke(); } });
+  BROKE.forEach((k, j) => { const p = ease((t - BUILT[j] - 0.4) / 0.8); if (p > 0) { f.line(0.35 * p * (1 - ease((t - BUILT[j] - 1.4) / 1.2) * 0.6), 2); ctx.beginPath(); ctx.arc(cx, cy, R_(f, k), 0, TAU); ctx.stroke(); } });
 };
 
 // The close: the rebuilt world shrinks with its embers still on it, glowing hotter as it tightens,

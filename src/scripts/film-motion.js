@@ -15,7 +15,12 @@ export default function filmMotion(canvas, gfx) {
     const cx = (g.left - r.left + g.width / 2) * dpr, cy = (g.top - r.top + g.height / 2) * dpr;
     // The worlds sit on ten seats; the last one is empty, waiting for the viewer's.
     const seats = Array.from({ length: SEATS }, (_, i) => { const a = ((-90 + (i * 360) / SEATS) * Math.PI) / 180; return [cx + Math.cos(a) * 372 * u, cy + Math.sin(a) * 372 * u]; });
-    return { cx, cy, U: u * 12.5, ring: (k) => ring(k) * u, nine: seats.slice(0, SEATS - 1), seat: seats[SEATS - 1], nineAt: (i) => 1.9 + i * 0.16, shrink: (t) => 1 - 0.7 * inout((t - 0.4) / 1.4), tw: 1.7, glass: 0.55 }; // the glass a little darker, so the diagram's labels read over it
+    // The column of light in the hall shot (scene 4), where it falls on screen: the shot is centred and cropped
+    // to cover, slightly enlarged. Its dust becomes scene 5's embers.
+    const hall = gfx.closest('.film').querySelector('.film__plate[data-i="3"]'), va = hall && hall.videoWidth ? hall.videoWidth / hall.videoHeight : 16 / 9;
+    const vh = Math.max(r.height, r.width / va) * 1.04 * dpr, mid = (r.height * dpr) / 2;
+    const beam = { x: (r.width * dpr) / 2, top: mid - vh / 2, floor: mid + 0.31 * vh, w0: 0.052 * vh, w1: 0.12 * vh };
+    return { beam, cx, cy, U: u * 12.5, ring: (k) => ring(k) * u, nine: seats.slice(0, SEATS - 1), seat: seats[SEATS - 1], nineAt: (i) => 1.9 + i * 0.16, shrink: (t) => 1 - 0.7 * inout((t - 0.4) / 1.4), tw: 1.7, glass: 0.55 }; // the glass a little darker, so the diagram's labels read over it
   };
   const bufs = [document.createElement('canvas'), document.createElement('canvas')];
   const into = (f, k, fn, t) => {
