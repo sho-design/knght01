@@ -1,0 +1,81 @@
+---
+// A private comparison page for the film: several drawn directions per scene, playing side by side (public/assets/js/film-lab.js).
+// Not linked anywhere and not in the sitemap.
+const SCENES = [
+  { n: '01', label: 'What we do', h: 'Every business <br>is a <em>world.</em>', note: 'The ending of your genesis shot. This is drawn over the last seconds of the footage.', dirs: [
+    ['spark-flare', 'A', 'The flare', 'The cloud settles, one point gathers the light and flares into a star.'],
+    ['spark-gather', 'B', 'The gathering', 'The dust swirls inward and collapses into a single spark, with a pulse going out.'],
+  ] },
+  { n: '02', label: 'The layers', h: 'A world is built in <br><em>seven layers.</em>', note: 'Picks up from the spark.', dirs: [
+    ['sphere', 'A', 'The sphere assembles', 'Seven rings of light lock in around the spark one by one, turning on their own axes, then settle flat into the diagram.'],
+    ['keep', 'B', 'The keep rises', 'Seven walls rise around a single fire, the innermost first.'],
+    ['strata', 'C', 'The cut stone', 'Light sweeps across a cut stone and shows seven bands around a glowing core.'],
+  ] },
+  { n: '05', label: 'The work', h: 'Most worlds <br>are missing <em>layers.</em>', note: 'Between the hall (scene 4) and the worlds (scene 6).', dirs: [
+    ['window', 'A', 'The broken window', 'A rose window with panes missing. A beam finds each gap, then the glass fills in and the light pours through.'],
+    ['wall', 'B', 'The unfinished wall', 'A lantern moves along a wall with stones missing. Behind it the stones rise and set.'],
+    ['map', 'C', 'The map table', 'An old chart with its coast torn away. The ink comes back and redraws it.'],
+  ] },
+  { n: '06', label: 'The worlds', h: 'Nine worlds, <br><em>built so far.</em>', note: 'The close. The nine-world diagram lands on top.', dirs: [
+    ['through', 'A', 'Out through the window', 'We rise through the finished window into the night. Nine worlds hang in a slow ring.'],
+    ['gallery', 'B', 'The gallery of doors', 'A long corridor of nine lit archways, ending at the threshold.'],
+    ['beacons', 'C', 'Nine beacons', 'Across a dark land at dusk, nine fires light one after another toward the horizon.'],
+  ] },
+];
+---
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Film directions | KNGHT</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<style>
+.fl{padding-block:clamp(48px,8vw,96px)}
+.fl h1{font-size:clamp(2.4rem,6vw,4.4rem);margin:18px 0 14px}
+.fl__intro{color:var(--ash);max-width:60ch;margin:0}
+.fl__scene{margin-top:clamp(56px,8vw,104px)}
+.fl__scene h2{font:400 clamp(1.8rem,3.4vw,2.6rem)/1.05 var(--serif);margin:14px 0 6px}
+.fl__note{color:var(--ash-2);margin:0 0 24px;font-size:.95rem}
+.fl__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:28px}
+.fl__card{margin:0}
+.fl__view{position:relative;aspect-ratio:16/9;background:#000;border:1px solid rgba(255,255,255,.14);overflow:hidden}
+.fl__view canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.fl__view::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,0) 46%);pointer-events:none}
+.fl__type{position:absolute;left:5%;top:50%;transform:translateY(-50%);z-index:1;font:400 clamp(1rem,2.2vw,1.6rem)/1 var(--serif);letter-spacing:-.01em;pointer-events:none}
+.fl__type small{display:block;font:500 .56rem/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--ash);margin-bottom:10px}
+.fl__bar{position:absolute;left:0;bottom:0;height:2px;background:#fff;opacity:.5;z-index:1;width:0}
+.fl__cap{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin-top:14px}
+.fl__let{font:italic 400 2rem/1 var(--serif);grid-row:span 2}
+.fl__cap b{font:400 1.25rem/1.2 var(--serif)}
+.fl__cap span{color:var(--ash);font-size:.92rem}
+</style>
+</head>
+<body>
+<main class="wrap fl">
+  <p class="eyebrow">For Sho only · not linked</p>
+  <h1 class="display">Film directions</h1>
+  <p class="fl__intro">Each one loops through its eight seconds, drawn live in the browser. In the film the diagram sits on top and the words sit left, as sketched here. Pick a letter for each scene.</p>
+  {SCENES.map((s) => (
+    <section class="fl__scene">
+      <p class="eyebrow">Scene {s.n} · {s.label}</p>
+      <h2 set:html={s.h} />
+      <p class="fl__note">{s.note}</p>
+      <div class="fl__grid">
+        {s.dirs.map(([id, l, name, d]) => (
+          <figure class="fl__card">
+            <div class="fl__view"><canvas data-dir={id}></canvas><p class="fl__type"><small>{s.label}</small><span set:html={s.h} /></p><i class="fl__bar"></i></div>
+            <figcaption class="fl__cap"><span class="fl__let">{l}</span><b>{name}</b><span>{d}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  ))}
+</main>
+<script is:inline src="/assets/js/film-lab.js" defer></script>
+</body>
+</html>
