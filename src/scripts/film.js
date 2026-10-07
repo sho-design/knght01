@@ -43,6 +43,7 @@ export default function film(gsap) {
   const coreT = T(core, 0.001), haloT = T(halo, 0.4), pulseT = T(pulse, 1), lawT = T(law, 0.9), worldT = T(world, 1);
   const orbitT = orbits.map((o) => T(o, 1, 0));
   const badgeT = badges.map((b) => T(b, 0.4, 0));
+  const ringT = rings.map((r) => T(r, 1));
   const wbT = wbs.map((b) => T(b, 0));
   const layerText = $$('.reel__layer text, .reel__name--core');
   gsap.set([halo, pulse], { opacity: 0 });
@@ -90,6 +91,9 @@ export default function film(gsap) {
     .fromTo(pulse, { opacity: 1 }, { opacity: 0, duration: 0.9 }, 18.6)
     .to(worldT, { s: 1.06, duration: 6, ease: 'none', onUpdate: up(worldT) }, 17.1);
   rings.forEach((r, i) => {
+    // Each ring swells a little as the sound of the strike passes through it (the waves are drawn in film-motion.js).
+    tl.to(ringT[i], { s: 1.035, duration: 0.24, ease: 'power2.out', onUpdate: up(ringT[i]) }, 18.8 + i * 0.32)
+      .to(ringT[i], { s: 1, duration: 0.9, ease: 'power2.inOut', onUpdate: up(ringT[i]) }, 19.04 + i * 0.32);
     tl.to(r, { stroke: 'rgba(255,255,255,.85)', strokeWidth: 1.6, duration: 0.3, ease: 'power2.out' }, 18.8 + i * 0.32)
       .to(r, { stroke: 'rgba(255,255,255,.32)', strokeWidth: 1.1, duration: 0.9 }, 19.02 + i * 0.32);
   });

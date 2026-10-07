@@ -115,17 +115,39 @@ DIRS['ember-rings'] = (f, t) => {
 };
 
 // Into the forge (scene 3, footage): the last embers of the rings don't vanish, they drift up over the
-// footage and go out, handing over to the forge's own sparks. Drawn over the footage, not instead of it.
+// footage and go out, handing over to the forge's own sparks. Then the hammer strikes (1.5s) and its sound
+// goes out as waves: a front of close rings and a soft band of pressure, meeting each of the diagram's rings
+// just as it flashes (1.7 + 0.32k), carrying on past the world, and an echo behind it. Drawn over the footage.
+const STRIKE = 1.5, FRONT = 50 / 0.32; // svg units per second: one ring every 0.32s
+const FRONTS = [[0, 1], [0.42, 0.45]];  // [delay, strength]: the strike and its echo
+const TRAIN = [0.8, 0.45, 0.24, 0.12];   // the close rings that make each front read as sound
 DIRS['ember-carry'] = (f, t) => {
-  const { ctx, cx, cy, U, dpr } = f;
-  if (t > 3) return;
+  const { ctx, cx, cy, U, W, H, dpr } = f, u = R_(f, 0) / 114, far = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy));
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = '#fff';
-  for (let i = 0; i < 140; i++) {
-    const k = i % 7, u = ((i * 0.618) % 1) * TAU, r = R_(f, k), life = clamp(t / (1.6 + (i % 5) * 0.3));
+  if (t < 3) for (let i = 0; i < 140; i++) {
+    const k = i % 7, ua = ((i * 0.618) % 1) * TAU, r = R_(f, k), life = clamp(t / (1.6 + (i % 5) * 0.3));
     if (life >= 1) continue;
-    const x = cx + Math.cos(u) * r * (1 + life * 0.15) + Math.sin(t * 2 + i) * U * 0.4, y = cy + Math.sin(u) * r * (1 + life * 0.15) - life * life * 9 * U;
+    const x = cx + Math.cos(ua) * r * (1 + life * 0.15) + Math.sin(t * 2 + i) * U * 0.4, y = cy + Math.sin(ua) * r * (1 + life * 0.15) - life * life * 9 * U;
     f.dot(x, y, (1.3 - life * 0.6) * dpr, (1 - life) * (0.45 + 0.35 * Math.sin(t * 7 + i)));
   }
+  FRONTS.forEach(([d, power]) => {
+    const tt = t - d; if (tt < STRIKE) return;
+    const units = 114 + (tt - 1.7) * FRONT, rad = units * u; if (rad - 60 * u > far) return;
+    const life = clamp((units - 83) / 760), env = power * Math.pow(1 - life, 1.4) * clamp((tt - STRIKE) / 0.12);
+    if (env <= 0.005) return;
+    // The band of pressure just behind the front.
+    const g = ctx.createRadialGradient(cx, cy, Math.max(0, rad - 34 * u), cx, cy, rad + 8 * u);
+    g.addColorStop(0, W_(0)); g.addColorStop(0.78, W_(0.14 * env)); g.addColorStop(1, W_(0));
+    ctx.fillStyle = g; ctx.fillRect(cx - rad - 8 * u, cy - rad - 8 * u, (rad + 8 * u) * 2, (rad + 8 * u) * 2);
+    // The front itself: close rings, each trembling a little as it travels, settling as it spreads.
+    TRAIN.forEach((a, m) => {
+      const rm = rad - m * 15 * u; if (rm <= 2) return;
+      const shake = 1.6 * u * (1 - life);
+      ctx.beginPath();
+      for (let q = 0; q <= 120; q++) { const th = (q / 120) * TAU, rr = rm + Math.sin(th * 18 + tt * 22 + m * 1.7) * shake; q ? ctx.lineTo(cx + Math.cos(th) * rr, cy + Math.sin(th) * rr) : ctx.moveTo(cx + Math.cos(th) * rr, cy + Math.sin(th) * rr); }
+      f.line(a * env, Math.max(0.6, 1.5 - m * 0.3)); ctx.stroke();
+    });
+  });
   ctx.restore();
 };
 
@@ -345,12 +367,14 @@ DIRS.searchlight = (f, t) => {
 // D. Embers drift up in the dark, then gather into the two broken rings and become them.
 const EMBERS = (() => { const r = rnd(91); return Array.from({ length: 260 }, (_, i) => ({ x: r(), y: r(), v: 0.4 + r(), p: r() * TAU, k: BROKE[i % 2], a: r() * TAU })); })();
 // The bridge from the hall: when f.beam is set, the embers begin as the dust in the hall's column of light,
-// in the same place and shape, then loosen, drift and start to glow. The light itself lingers, then goes.
+// in the same place and shape. Then they leave the beam in a stream, arc over to the world, gather round
+// the two broken rings while the Verdict finds the gaps, and become the rings when the Build fills them.
 const inBeam = (b, e) => { const v = (e.y * 1.37) % 1, y = b.top + (b.floor - b.top) * v, hw = b.w0 + (b.w1 - b.w0) * v; return [b.x + (((e.x * 7.31) % 1) * 2 - 1) * hw * Math.sqrt((e.p / TAU)), y]; };
+const LEAVE = (i) => 0.7 + (i % 48) * 0.042, TRAVEL = 1.7; // the stream runs for about two seconds
 DIRS.embers = (f, t) => {
-  const { ctx, cx, cy, W, H, dpr } = f, b = f.beam;
+  const { ctx, cx, cy, W, H, U, dpr } = f, b = f.beam;
   if (b) {
-    const a = 1 - ease((t - 0.4) / 2.4);
+    const a = 1 - ease((t - 1.1) / 2.4);
     if (a > 0) {
       ctx.save(); ctx.globalCompositeOperation = 'lighter';
       const g = ctx.createLinearGradient(b.x - b.w1, 0, b.x + b.w1, 0); g.addColorStop(0, W_(0)); g.addColorStop(0.5, W_(0.22 * a)); g.addColorStop(1, W_(0));
@@ -359,21 +383,36 @@ DIRS.embers = (f, t) => {
       f.glow(b.x, b.floor, b.w1 * 1.6, 0.18 * a);
     }
   }
+  // Where an ember is at time s, before the Build pulls it onto its ring.
+  const loose = (e, i, s) => {
+    const R = R_(f, e.k);
+    if (!b) return [e.x * W + Math.sin(s * 0.6 * e.v + e.p) * 20 * dpr, ((e.y * H - s * 14 * e.v * dpr) % H + H) % H, 1];
+    // Hovering round its broken ring, a little off it, turning slowly.
+    const ha = e.a + s * 0.12 * (e.v - 0.9), hr = R * (1 + (((e.x * 13.7) % 1) - 0.5) * 0.22) + Math.sin(s * 1.3 + e.p) * 0.6 * U;
+    const hx = cx + Math.cos(ha) * hr, hy = cy + Math.sin(ha) * hr;
+    const [bx, by0] = inBeam(b, e), by = by0 + Math.min(s, LEAVE(i)) * 4 * e.v * dpr, bx2 = bx + Math.sin(s * 0.8 + e.p) * 0.6 * dpr;
+    const p = inout((s - LEAVE(i)) / TRAVEL);
+    if (p <= 0) return [bx2, by, 0];
+    if (p >= 1) return [hx, hy, 1];
+    // An arc from the beam to the world, lifting as it goes.
+    const mx = (bx2 + hx) / 2 + (((e.y * 5.1) % 1) - 0.5) * 12 * U, my = Math.max(H * 0.06, Math.min(by, hy) - (6 + ((e.p * 3) % 1) * 9) * U);
+    const q = 1 - p;
+    return [q * q * bx2 + 2 * q * p * mx + p * p * hx, q * q * by + 2 * q * p * my + p * p * hy, p];
+  };
   ctx.fillStyle = '#fff';
   EMBERS.forEach((e, i) => {
     const j = BROKE.indexOf(e.k), g = inout((t - BUILT[j] + 1.2 - (i % 20) * 0.03) / 1.6);
-    let fx = (e.x * W + Math.sin(t * 0.6 * e.v + e.p) * 20 * dpr), fy = ((e.y * H - t * 14 * e.v * dpr) % H + H) % H;
-    let warm = 1;
-    if (b) {
-      // Dust in the beam first, then loose.
-      const loose = inout((t - 0.5 - (i % 13) * 0.05) / 2.4), [bx, by] = inBeam(b, e);
-      const dx = bx + Math.sin(t * 0.8 + e.p) * 0.6 * dpr, dy = by + t * 4 * e.v * dpr;
-      fx = dx + (fx - dx) * loose; fy = dy + (fy - dy) * loose; warm = loose;
-    }
+    const [fx, fy, warm] = loose(e, i, t);
     const r = R_(f, e.k), tx = cx + Math.cos(e.a + t * 0.05) * r, ty = cy + Math.sin(e.a + t * 0.05) * r;
     const x = fx + (tx - fx) * g, y = fy + (ty - fy) * g;
-    const free = (0.2 + 0.35 * Math.abs(Math.sin(t * 2 * e.v + e.p))) * (1 - g * 0.2) + g * 0.45, dust = 0.35 + 0.55 * Math.abs(Math.sin(t * 3.1 * e.v + e.p * 2));
-    f.dot(x, y, (0.7 + 0.5 * g) * dpr * (1.15 - 0.15 * warm), free * warm + dust * (1 - warm));
+    // In flight, a short streak behind each one, so the stream reads as movement.
+    if (b && warm > 0 && warm < 1 && g < 0.5) {
+      const [px, py] = loose(e, i, t - 0.045);
+      f.line(0.32 * (1 - g * 2) * Math.sin(warm * Math.PI), 0.9); ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(x, y); ctx.stroke();
+    }
+    const tw = Math.abs(Math.sin(t * 2.4 * e.v + e.p * 2));
+    const alpha = b ? (warm < 1 ? 0.45 + 0.45 * tw : 0.35 + 0.4 * tw) * (1 - g * 0.15) + g * 0.4 : (0.2 + 0.35 * Math.abs(Math.sin(t * 2 * e.v + e.p))) * (1 - g * 0.2) + g * 0.45;
+    f.dot(x, y, (b ? 1.15 + 0.35 * Math.sin(warm * Math.PI) : 0.7 + 0.5 * g) * dpr, alpha);
   });
   BROKE.forEach((k, j) => { const p = ease((t - BUILT[j] - 0.4) / 0.8); if (p > 0) { f.line(0.35 * p * (1 - ease((t - BUILT[j] - 1.4) / 1.2) * 0.6), 2); ctx.beginPath(); ctx.arc(cx, cy, R_(f, k), 0, TAU); ctx.stroke(); } });
 };
