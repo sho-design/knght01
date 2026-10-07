@@ -373,20 +373,39 @@ const EMBERS = (() => { const r = rnd(91); return Array.from({ length: 260 }, (_
 // The bridge from the hall: when f.beam is set, the embers begin as the dust in the hall's column of light,
 // in the same place and shape. Then they leave the beam in a stream, arc over to the world, gather round
 // the two broken rings while the Verdict finds the gaps, and become the rings when the Build fills them.
-const inBeam = (b, e) => { const v = (e.y * 1.37) % 1, y = b.top + (b.floor - b.top) * v, hw = b.w0 + (b.w1 - b.w0) * v; return [b.x + (((e.x * 7.31) % 1) * 2 - 1) * hw * Math.sqrt((e.p / TAU)), y]; };
+// The beam's width (full width at half brightness) down its length, v = 0 at the top of the shot, 1 at the floor:
+// nearly straight, widening only just above the floor. Measured from the hall footage.
+const beamW = (b, v) => b.fw0 + b.fwm * v + b.fwf * Math.pow(v, 6);
+const inBeam = (b, e) => { const v = (e.y * 1.37) % 1, y = b.top + (b.floor - b.top) * v, hw = beamW(b, v) * 0.55; return [b.x + (((e.x * 7.31) % 1) * 2 - 1) * hw * Math.sqrt((e.p / TAU)), y]; };
+const MOTES = (() => { const r = rnd(73); return Array.from({ length: 420 }, () => { const g = (r() + r() + r() - 1.5) / 1.5; return { g, v: r(), s: 0.5 + r() * 0.9, p: r() * TAU, d: 0.3 + r() }; }); })();
+// The column of light itself, drawn as soft horizontal slices so it keeps the footage's falloff: bright at the
+// top, dimmer lower down, a pool of light where it meets the floor, and fine dust turning in it.
+const drawBeam = (f, b, a, t) => {
+  const { ctx, dpr } = f, rows = 56, span = b.floor - b.top;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (let r = 0; r < rows; r++) {
+    const y0 = Math.round(b.top + (span * r) / rows), y1 = Math.round(b.top + (span * (r + 1)) / rows), v = (r + 0.5) / rows;
+    const fw = beamW(b, v), k = (0.6 - 0.36 * v) * a, g = ctx.createLinearGradient(b.x - 1.4 * fw, 0, b.x + 1.4 * fw, 0);
+    // A gaussian across the beam: 1 at the centre, half at the stated width.
+    [[0, 0], [0.197, 0.135], [0.321, 0.5], [0.409, 0.835], [0.5, 1], [0.591, 0.835], [0.679, 0.5], [0.803, 0.135], [1, 0]].forEach(([o, m]) => g.addColorStop(o, W_(k * m)));
+    ctx.fillStyle = g; ctx.fillRect(b.x - 1.4 * fw, y0, 2.8 * fw, y1 - y0);
+  }
+  // The pool of light on the floor, a little to the right of the beam as in the shot.
+  ctx.translate(b.x + b.poolDx, b.floor + b.pool * 0.03); ctx.scale(1, 0.15);
+  const pg = ctx.createRadialGradient(0, 0, 0, 0, 0, b.pool); pg.addColorStop(0, W_(0.85 * a)); pg.addColorStop(0.35, W_(0.5 * a)); pg.addColorStop(1, W_(0));
+  ctx.fillStyle = pg; ctx.fillRect(-b.pool, -b.pool, b.pool * 2, b.pool * 2);
+  ctx.restore();
+  // Fine dust that stays in the light and goes when it goes.
+  ctx.fillStyle = '#fff';
+  MOTES.forEach((m) => {
+    const v = (m.v + t * 0.012 * m.d) % 1, y = b.top + span * v, x = b.x + m.g * beamW(b, v) * 0.75 + Math.sin(t * 0.7 * m.d + m.p) * 0.8 * dpr;
+    f.dot(x, y, m.s * dpr, a * (0.25 + 0.55 * Math.abs(Math.sin(t * 2.2 * m.d + m.p))) * (1 - Math.abs(m.g) * 0.5));
+  });
+};
 const LEAVE = (i) => 0.7 + (i % 48) * 0.042, TRAVEL = 1.7; // the stream runs for about two seconds
 DIRS.embers = (f, t) => {
   const { ctx, cx, cy, W, H, U, dpr } = f, b = f.beam;
-  if (b) {
-    const a = 1 - ease((t - 1.1) / 2.4);
-    if (a > 0) {
-      ctx.save(); ctx.globalCompositeOperation = 'lighter';
-      const g = ctx.createLinearGradient(b.x - b.w1, 0, b.x + b.w1, 0); g.addColorStop(0, W_(0)); g.addColorStop(0.5, W_(0.22 * a)); g.addColorStop(1, W_(0));
-      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(b.x - b.w0, b.top); ctx.lineTo(b.x + b.w0, b.top); ctx.lineTo(b.x + b.w1, b.floor); ctx.lineTo(b.x - b.w1, b.floor); ctx.closePath(); ctx.fill();
-      ctx.restore();
-      f.glow(b.x, b.floor, b.w1 * 1.6, 0.18 * a);
-    }
-  }
+  if (b) { const a = 1 - ease((t - 1.1) / 2.4); if (a > 0) drawBeam(f, b, a, t); }
   // Where an ember is at time s, before the Build pulls it onto its ring.
   const loose = (e, i, s) => {
     const R = R_(f, e.k);

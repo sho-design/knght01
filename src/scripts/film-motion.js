@@ -19,7 +19,9 @@ export default function filmMotion(canvas, gfx) {
     // to cover, slightly enlarged. Its dust becomes scene 5's embers.
     const hall = gfx.closest('.film').querySelector('.film__plate[data-i="3"]'), va = hall && hall.videoWidth ? hall.videoWidth / hall.videoHeight : 16 / 9;
     const vh = Math.max(r.height, r.width / va) * 1.04 * dpr, mid = (r.height * dpr) / 2;
-    const beam = { x: (r.width * dpr) / 2, top: mid - vh / 2, floor: mid + 0.31 * vh, w0: 0.052 * vh, w1: 0.12 * vh };
+    // Measured against the footage: the beam is about 7% of the shot's height wide, widening to 10% at the floor,
+    // the floor is 33% of the shot's height below its middle, and the pool of light sits a little right of the beam.
+    const beam = { x: (r.width * dpr) / 2, top: mid - vh / 2, floor: mid + 0.331 * vh, fw0: 0.07 * vh, fwm: 0.006 * vh, fwf: 0.024 * vh, pool: 0.25 * vh, poolDx: 0.03 * vh };
     return { beam, cx, cy, U: u * 12.5, ring: (k) => ring(k) * u, nine: seats.slice(0, SEATS - 1), seat: seats[SEATS - 1], nineAt: (i) => 1.9 + i * 0.16, shrink: (t) => 1 - 0.7 * inout((t - 0.4) / 1.4), tw: 1.7, glass: 0.55 }; // the glass a little darker, so the diagram's labels read over it
   };
   const bufs = [document.createElement('canvas'), document.createElement('canvas')];
