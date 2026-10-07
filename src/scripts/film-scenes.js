@@ -87,7 +87,7 @@ DIRS['ember-rings'] = (f, t) => {
   BURST.forEach((b) => {
     const life = t / (1.4 + b.v * 0.8); if (life >= 1) return;
     const d = ease(life) * b.v * 26 * U, x = cx + Math.cos(b.a) * d, y = cy + Math.sin(b.a) * d + life * life * 6 * U;
-    f.dot(x, y, b.s * dpr, (1 - life) * 0.9);
+    f.dot(x, y, b.s * dpr, (1 - life) * 0.9 * QUIET);
   });
   for (let k = 0; k < 7; k++) {
     const at = 0.9 + k, R = R_(f, k), run = 1.1, p = inout((t - at) / run);
@@ -98,17 +98,17 @@ DIRS['ember-rings'] = (f, t) => {
       const u = (i / TRAIL) * TAU; if (u > head) break;
       const passed = t - at - (u / TAU) * run, j = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453 % 1;
       const rr = R + j * 0.5 * U, a = Math.exp(-passed * 1.8) * 0.85 + 0.1 * (1 - ease((t - at - run - 1) / 2));
-      f.dot(cx + Math.cos(u) * rr, cy + Math.sin(u) * rr, (0.9 + Math.exp(-passed * 2)) * dpr, a * (0.7 + 0.3 * Math.sin(t * 9 + i)));
+      f.dot(cx + Math.cos(u) * rr, cy + Math.sin(u) * rr, (0.9 + Math.exp(-passed * 2)) * dpr, a * (0.7 + 0.3 * Math.sin(t * 9 + i)) * QUIET);
     }
     // The spark itself, throwing off a few embers of its own.
     if (p < 1) {
       const hx = cx + Math.cos(head) * R, hy = cy + Math.sin(head) * R;
-      f.glow(hx, hy, 4 * U, 0.85); f.dot(hx, hy, 1.8 * dpr, 1);
+      f.glow(hx, hy, 3.5 * U, 0.6); f.dot(hx, hy, 1.6 * dpr, 0.85);
       for (let e = 0; e < 10; e++) {
         const born = at + (e / 10) * run, age = t - born; if (age < 0 || age > 0.9) continue;
         const u = inout((born - at) / run) * TAU, ox = cx + Math.cos(u) * R, oy = cy + Math.sin(u) * R, sp = (e % 3 + 1) * 3 * U;
         const dx = -Math.sin(u) * sp * age + Math.cos(u + e) * U * age * 4, dy = Math.cos(u) * sp * age + age * age * 10 * U;
-        f.dot(ox + dx, oy + dy, 1.1 * dpr, (1 - age / 0.9) * 0.8);
+        f.dot(ox + dx, oy + dy, 1.1 * dpr, (1 - age / 0.9) * 0.8 * QUIET);
       }
     }
   }
@@ -124,11 +124,12 @@ const TRAIN = [0.8, 0.45, 0.24, 0.12];   // the close rings that make each front
 DIRS['ember-carry'] = (f, t) => {
   const { ctx, cx, cy, U, W, H, dpr } = f, u = R_(f, 0) / 114, far = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy));
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = '#fff';
-  if (t < 3) for (let i = 0; i < 140; i++) {
-    const k = i % 7, ua = ((i * 0.618) % 1) * TAU, r = R_(f, k), life = clamp(t / (1.6 + (i % 5) * 0.3));
+  // The carried embers are all out by 1.1s, so there is a held breath before the strike at 1.5s.
+  if (t < 1.2) for (let i = 0; i < 140; i++) {
+    const k = i % 7, ua = ((i * 0.618) % 1) * TAU, r = R_(f, k), life = clamp(t / (0.7 + (i % 5) * 0.1));
     if (life >= 1) continue;
     const x = cx + Math.cos(ua) * r * (1 + life * 0.15) + Math.sin(t * 2 + i) * U * 0.4, y = cy + Math.sin(ua) * r * (1 + life * 0.15) - life * life * 9 * U;
-    f.dot(x, y, (1.3 - life * 0.6) * dpr, (1 - life) * (0.45 + 0.35 * Math.sin(t * 7 + i)));
+    f.dot(x, y, (1.3 - life * 0.6) * dpr, (1 - life) * (0.45 + 0.35 * Math.sin(t * 7 + i)) * QUIET);
   }
   FRONTS.forEach(([d, power]) => {
     const tt = t - d; if (tt < STRIKE) return;
@@ -310,6 +311,9 @@ DIRS.map = (f, t) => {
 };
 
 // The film breaks two layers (2 and 5) at 1.3s and rebuilds them from 5.5s; these keep to that clock.
+// A hierarchy of sparks: every ember before the close burns at QUIET, so the sparks that light the nine
+// worlds are the brightest particles in the film.
+const QUIET = 0.72;
 const R_ = (f, k) => (f.ring ? f.ring(k) : (6 + k * 4.6) * f.U);
 const BROKE = [2, 5], FOUND = [2.6, 3.8], BUILT = [5.5, 5.8];
 
@@ -407,12 +411,12 @@ DIRS.embers = (f, t) => {
     const x = fx + (tx - fx) * g, y = fy + (ty - fy) * g;
     // In flight, a short streak behind each one, so the stream reads as movement.
     if (b && warm > 0 && warm < 1 && g < 0.5) {
-      const [px, py] = loose(e, i, t - 0.045);
-      f.line(0.32 * (1 - g * 2) * Math.sin(warm * Math.PI), 0.9); ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(x, y); ctx.stroke();
+      const [px, py] = loose(e, i, t - 0.028);
+      f.line(0.17 * (1 - g * 2) * Math.sin(warm * Math.PI), 0.8); ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(x, y); ctx.stroke();
     }
     const tw = Math.abs(Math.sin(t * 2.4 * e.v + e.p * 2));
     const alpha = b ? (warm < 1 ? 0.45 + 0.45 * tw : 0.35 + 0.4 * tw) * (1 - g * 0.15) + g * 0.4 : (0.2 + 0.35 * Math.abs(Math.sin(t * 2 * e.v + e.p))) * (1 - g * 0.2) + g * 0.45;
-    f.dot(x, y, (b ? 1.15 + 0.35 * Math.sin(warm * Math.PI) : 0.7 + 0.5 * g) * dpr, alpha);
+    f.dot(x, y, (b ? 1.15 + 0.35 * Math.sin(warm * Math.PI) : 0.7 + 0.5 * g) * dpr, alpha * QUIET);
   });
   BROKE.forEach((k, j) => { const p = ease((t - BUILT[j] - 0.4) / 0.8); if (p > 0) { f.line(0.35 * p * (1 - ease((t - BUILT[j] - 1.4) / 1.2) * 0.6), 2); ctx.beginPath(); ctx.arc(cx, cy, R_(f, k), 0, TAU); ctx.stroke(); } });
 };
@@ -442,11 +446,11 @@ DIRS.ascend = (f, t) => {
     if (p <= 0) return;
     if (p < 1) {
       const hx = cx + (x - cx) * p, hy = cy + (y - cy) * p, tx = cx + (x - cx) * Math.max(0, p - 0.3), ty = cy + (y - cy) * Math.max(0, p - 0.3);
-      const g = ctx.createLinearGradient(tx, ty, hx, hy); g.addColorStop(0, W_(0)); g.addColorStop(1, W_(0.85)); ctx.strokeStyle = g; ctx.lineWidth = 1.8 * dpr; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
-      f.glow(hx, hy, 3 * U, 0.85); return;
+      const g = ctx.createLinearGradient(tx, ty, hx, hy); g.addColorStop(0, W_(0)); g.addColorStop(1, W_(1)); ctx.strokeStyle = g; ctx.lineWidth = 2.4 * dpr; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
+      f.glow(hx, hy, 5 * U, 1); ctx.fillStyle = '#fff'; f.dot(hx, hy, 2.2 * dpr, 1); return;
     }
     const since = t - go - 0.5;
-    f.glow(x, y, 9 * U * (1 + 0.6 * Math.exp(-since * 4)), (0.3 + 0.5 * Math.exp(-since * 3)) * (0.9 + 0.1 * Math.sin(t * 2 + i)));
+    f.glow(x, y, 9 * U * (1 + 0.6 * Math.exp(-since * 4)), (0.32 + 0.68 * Math.exp(-since * 3)) * (0.9 + 0.1 * Math.sin(t * 2 + i)));
   });
   // The empty seat: no spark reaches it. It breathes, waiting.
   const wait = clamp((t - at(9) - 0.2) / 0.8);
