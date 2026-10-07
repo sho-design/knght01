@@ -3,6 +3,9 @@
    sized from the diagram itself, so the rings, the window and the nine worlds land under it exactly. */
 import { DIRS, frame } from './film-scenes.js';
 export const PLAN = ['spark-end', 'sphere', null, null, 'window', 'through'];
+// Drawn over its footage, not instead of it: the canvas stays see-through for these.
+const OVER = new Set(['spark-end']);
+const solid = (id) => !!id && !OVER.has(id);
 export default function filmMotion(canvas, gfx) {
   const ring = (k) => 64 + (k + 1) * 50; // the diagram's own ring radii: Law 114 ... Machinery 364
   const layout = (r, dpr) => {
@@ -22,7 +25,7 @@ export default function filmMotion(canvas, gfx) {
     const f = frame(canvas, layout), { ctx, W, H } = f;
     ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.setLineDash([]); ctx.clearRect(0, 0, W, H);
     const cur = PLAN[i], was = prev != null && mix < 1 ? PLAN[prev] : undefined;
-    const bg = cur ? (was === null ? mix : 1) : was ? 1 - mix : 0;
+    const bg = solid(cur) ? (was !== undefined && !solid(was) ? mix : 1) : solid(was) ? 1 - mix : 0;
     if (bg > 0) { ctx.fillStyle = `rgba(0,0,0,${bg})`; ctx.fillRect(0, 0, W, H); }
     if (was === undefined) { if (cur) DIRS[cur](f, local); return; }
     if (was) { ctx.globalAlpha = 1 - mix; ctx.drawImage(into(f, 0, DIRS[was], prevLocal), 0, 0); }
