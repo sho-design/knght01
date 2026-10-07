@@ -233,6 +233,76 @@ DIRS.map = (f, t) => {
   for (let i = 0; i < 8; i++) { const a = rot + (i / 8) * TAU, l = i % 2 ? 0.6 : 1.3; ctx.beginPath(); ctx.moveTo(kx, ky); ctx.lineTo(kx + Math.cos(a) * kr * l, ky + Math.sin(a) * kr * l); ctx.stroke(); }
 };
 
+// The film breaks two layers (2 and 5) at 1.3s and rebuilds them from 5.5s; these keep to that clock.
+const R_ = (f, k) => (f.ring ? f.ring(k) : (6 + k * 4.6) * f.U);
+const BROKE = [2, 5], FOUND = [2.6, 3.8], BUILT = [5.5, 5.8];
+
+// A. Light from a window out of frame: shafts fall across the world, two are missing, then they arrive.
+const SHAFTS = [-0.62, -0.42, -0.24, -0.08, 0.08, 0.24, 0.42, 0.62];
+DIRS.shafts = (f, t) => {
+  const { ctx, cx, cy, W, H, U } = f, sx = cx + 6 * U, sy = -H * 0.35, gone = [2, 5];
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  SHAFTS.forEach((d, i) => {
+    const miss = gone.indexOf(i), on = miss < 0 ? ease(t / 1.2) : ease((t - BUILT[miss]) / 1.2) + (t < 1.3 ? 1 - ease((t - 0.6) / 0.7) : 0);
+    if (on <= 0.01) return;
+    const x2 = cx + d * W * 0.75, y2 = H * 1.05, wd = (3 + Math.abs(d) * 2) * U, flick = 0.9 + 0.1 * Math.sin(t * 1.3 + i * 2);
+    const g = ctx.createLinearGradient(sx, sy, x2, y2); g.addColorStop(0, W_(0)); g.addColorStop(0.45, W_(0.075 * on * flick)); g.addColorStop(1, W_(0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(sx - wd * 0.15, sy); ctx.lineTo(sx + wd * 0.15, sy); ctx.lineTo(x2 + wd, y2); ctx.lineTo(x2 - wd, y2); ctx.closePath(); ctx.fill();
+  });
+  ctx.restore();
+  // Where a shaft is missing, a faint dotted edge says something should be there.
+  gone.forEach((i, j) => {
+    const a = clamp((t - 1.4) / 0.6) * (1 - ease((t - BUILT[j]) / 0.6)) * (0.25 + 0.35 * clamp((t - FOUND[j]) / 0.4)); if (a <= 0) return;
+    const x2 = cx + SHAFTS[i] * W * 0.75; ctx.setLineDash([2 * f.dpr, 6 * f.dpr]); f.line(a, 1); ctx.beginPath(); ctx.moveTo(sx + (x2 - sx) * 0.3, sy + (H * 1.05 - sy) * 0.3); ctx.lineTo(x2, H * 1.05); ctx.stroke(); ctx.setLineDash([]);
+  });
+  ctx.fillStyle = '#fff';
+  for (let i = 0; i < 70; i++) { const u = (i * 0.618) % 1, s2 = SHAFTS[i % 8], y = ((u * H + t * (6 + (i % 5)) * f.dpr) % H), x = sx + (cx + s2 * W * 0.75 - sx) * ((y - sy) / (H * 1.05 - sy)) + Math.sin(i + t * 0.5) * 2 * U; const off = [2, 5].indexOf(i % 8); const on = off < 0 ? 1 : clamp((t - BUILT[off]) / 1); f.dot(x, y, 0.9 * f.dpr, on * (0.2 + 0.3 * Math.sin(t * 2 + i))); }
+};
+
+// B. A crown of light around the world, outside its rings: two arcs go dark, a light circles and finds them, they relight.
+DIRS.halo = (f, t) => {
+  const { ctx, cx, cy } = f, r0 = R_(f, 6) * 1.12, r1 = R_(f, 6) * 1.2, N = 28, gone = { 6: 0, 19: 1 }, scan = -Math.PI / 2 + inout((t - 1.6) / 3.6) * TAU;
+  f.glow(cx, cy, r1 * 1.25, 0.06);
+  for (let i = 0; i < N; i++) {
+    const a0 = (i / N) * TAU - Math.PI / 2 + 0.03, a1 = ((i + 1) / N) * TAU - Math.PI / 2 - 0.03, j = gone[i];
+    let a = 0.32 + 0.06 * Math.sin(t * 1.5 + i);
+    if (j !== undefined) {
+      const out = ease((t - 1.3 - j * 0.25) / 0.5), back = ease((t - BUILT[j]) / 0.7);
+      a = a * (1 - out) + back * 0.75 * (1 - ease((t - BUILT[j] - 0.8) / 1)) + back * 0.32 * ease((t - BUILT[j] - 0.8) / 1);
+      if (out > 0 && back < 1) { ctx.setLineDash([2 * f.dpr, 4 * f.dpr]); f.line(0.3 * out * (1 - back) + 0.5 * clamp((t - FOUND[j]) / 0.3) * (1 - back), 1); ctx.beginPath(); ctx.arc(cx, cy, (r0 + r1) / 2, a0, a1); ctx.stroke(); ctx.setLineDash([]); }
+    }
+    if (a > 0.01) { ctx.beginPath(); ctx.arc(cx, cy, r1, a0, a1); ctx.arc(cx, cy, r0, a1, a0, true); ctx.closePath(); ctx.fillStyle = W_(a * 0.5); ctx.fill(); }
+  }
+  if (t > 1.6 && t < 5.4) { const a = Math.sin(clamp((t - 1.6) / 3.8) * Math.PI); const x = cx + Math.cos(scan) * (r0 + r1) / 2, y = cy + Math.sin(scan) * (r0 + r1) / 2; f.glow(x, y, (r1 - r0) * 3, 0.6 * a); }
+};
+
+// C. One soft light: it drifts over the world, rests on each break, then fills the whole of it.
+DIRS.searchlight = (f, t) => {
+  const { cx, cy } = f, Rm = R_(f, 6);
+  const spot = [[cx - Rm * 0.9, cy + Rm * 0.6], [Math.cos(-2.6) * R_(f, 2) + cx, Math.sin(-2.6) * R_(f, 2) + cy], [Math.cos(0.5) * R_(f, 5) + cx, Math.sin(0.5) * R_(f, 5) + cy], [cx, cy]];
+  const legs = [[1.2, 2.5], [2.9, 3.7], [4.2, 5.2]];
+  let [x, y] = spot[0];
+  legs.forEach(([a, b], i) => { const p = inout((t - a) / (b - a)); if (p > 0) { x = spot[i][0] + (spot[i + 1][0] - spot[i][0]) * p; y = spot[i][1] + (spot[i + 1][1] - spot[i][1]) * p; } });
+  const fill = ease((t - 5.4) / 1.8);
+  f.glow(x, y, Rm * (0.55 + fill * 1.2), 0.36 * (1 - fill * 0.45) * clamp(t / 0.8));
+  [[2.5, 2.9], [3.7, 4.2]].forEach(([a, b], j) => { const k = Math.sin(clamp((t - a) / (b - a + 0.6)) * Math.PI); if (k > 0) { f.line(0.5 * k, 1); f.ctx.beginPath(); f.ctx.arc(spot[j + 1][0], spot[j + 1][1], Rm * 0.09 * (1 + 0.15 * Math.sin(t * 8)), 0, TAU); f.ctx.stroke(); } });
+};
+
+// D. Embers drift up in the dark, then gather into the two broken rings and become them.
+const EMBERS = (() => { const r = rnd(91); return Array.from({ length: 260 }, (_, i) => ({ x: r(), y: r(), v: 0.4 + r(), p: r() * TAU, k: BROKE[i % 2], a: r() * TAU })); })();
+DIRS.embers = (f, t) => {
+  const { cx, cy, W, H, dpr } = f;
+  f.ctx.fillStyle = '#fff';
+  EMBERS.forEach((e, i) => {
+    const j = BROKE.indexOf(e.k), g = inout((t - BUILT[j] + 1.2 - (i % 20) * 0.03) / 1.6);
+    const fx = (e.x * W + Math.sin(t * 0.6 * e.v + e.p) * 20 * dpr), fy = ((e.y * H - t * 14 * e.v * dpr) % H + H) % H;
+    const r = R_(f, e.k), tx = cx + Math.cos(e.a + t * 0.05) * r, ty = cy + Math.sin(e.a + t * 0.05) * r;
+    const x = fx + (tx - fx) * g, y = fy + (ty - fy) * g;
+    f.dot(x, y, (0.7 + 0.5 * g) * dpr, (0.2 + 0.35 * Math.abs(Math.sin(t * 2 * e.v + e.p))) * (1 - g * 0.2) + g * 0.45);
+  });
+  BROKE.forEach((k, j) => { const p = ease((t - BUILT[j] - 0.4) / 0.8); if (p > 0) { f.glow(cx, cy, 0, 0); f.line(0.35 * p * (1 - ease((t - BUILT[j] - 1.4) / 1.2) * 0.6), 2); f.ctx.beginPath(); f.ctx.arc(cx, cy, R_(f, k), 0, TAU); f.ctx.stroke(); } });
+};
+
 /* ---------- Scene 6: the nine worlds ---------- */
 const STARS = (() => { const r = rnd(77); return Array.from({ length: 260 }, () => ({ x: r(), y: r(), z: 0.2 + r(), p: r() * TAU })); })();
 const world = (f, x, y, rad, a, light = -0.6) => {
@@ -307,4 +377,15 @@ DIRS.beacons = (f, t) => {
   }
 };
 
+// A sketch of the film's diagram for the directions page, so a direction can be judged under it.
+export const diagram = (f, t) => {
+  const { ctx, cx, cy, U } = f;
+  for (let k = 0; k < 7; k++) {
+    const j = BROKE.indexOf(k), broken = j >= 0 && t > 1.3 + j * 0.25 && t < BUILT[j] + 0.5;
+    ctx.setLineDash(broken ? [3 * f.dpr, 5 * f.dpr] : []); f.line(broken ? 0.18 : 0.42, 1); ctx.beginPath(); ctx.arc(cx, cy, R_(f, k), 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+    const a = [-64, 28, -150, 112, -28, 200, 150][k] * Math.PI / 180, bx = cx + Math.cos(a) * R_(f, k), by = cy + Math.sin(a) * R_(f, k);
+    ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(bx, by, 1.8 * U, 0, TAU); ctx.fill(); f.line(broken ? 0.25 : 0.8, 1); ctx.stroke();
+  }
+  ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(cx, cy, 4 * U, 0, TAU); ctx.fill(); f.line(0.9, 1.2); ctx.stroke();
+};
 export { frame, flare };

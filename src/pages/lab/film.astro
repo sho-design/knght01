@@ -11,10 +11,12 @@ const SCENES = [
     ['keep', 'B', 'The keep rises', 'Seven walls rise around a single fire, the innermost first.'],
     ['strata', 'C', 'The cut stone', 'Light sweeps across a cut stone and shows seven bands around a glowing core.'],
   ] },
-  { n: '05', label: 'The work', h: 'Most worlds <br>are missing <em>layers.</em>', note: 'Between the hall (scene 4) and the worlds (scene 6).', dirs: [
-    ['window', 'A', 'The broken window', 'A rose window with panes missing. A beam finds each gap, then the glass fills in and the light pours through.'],
-    ['wall', 'B', 'The unfinished wall', 'A lantern moves along a wall with stones missing. Behind it the stones rise and set.'],
-    ['map', 'C', 'The map table', 'An old chart with its coast torn away. The ink comes back and redraws it.'],
+  { n: '05', label: 'The work', h: 'Most worlds <br>are missing <em>layers.</em>', note: 'Shown under a sketch of the diagram, which breaks two rings and rebuilds them. All five keep the middle clear.', diagram: true, dirs: [
+    ['window', '', 'Now: the broken window', 'For comparison. Busy under the rings.'],
+    ['shafts', 'A', 'Light from above', 'Shafts of light fall across the world from a window out of frame. Two are missing; they arrive as the rings are rebuilt.'],
+    ['halo', 'B', 'The crown of light', 'A ring of light outside the world. Two arcs go dark, a light circles and finds them, and they relight.'],
+    ['searchlight', 'C', 'One light', 'A single soft light drifts over the world, rests on each break, then grows to fill all of it.'],
+    ['embers', 'D', 'The embers', 'Embers drift up in the dark, then gather into the two broken rings and become them.'],
   ] },
   { n: '06', label: 'The worlds', h: 'Nine worlds, <br><em>built so far.</em>', note: 'The close. The nine-world diagram lands on top.', dirs: [
     ['through', 'A', 'Out through the window', 'We rise through the finished window into the night. Nine worlds hang in a slow ring.'],
@@ -68,8 +70,8 @@ const SCENES = [
       <div class="fl__grid">
         {s.dirs.map(([id, l, name, d]) => (
           <figure class="fl__card">
-            <div class="fl__view"><canvas data-dir={id}></canvas><p class="fl__type"><small>{s.label}</small><span set:html={s.h} /></p><i class="fl__bar"></i></div>
-            <figcaption class="fl__cap"><span class="fl__let">{l}</span><b>{name}</b><span>{d}</span></figcaption>
+            <div class="fl__view"><canvas data-dir={id} data-diagram={s.diagram ? '' : undefined}></canvas><p class="fl__type"><small>{s.label}</small><span set:html={s.h} /></p><i class="fl__bar"></i></div>
+            <figcaption class="fl__cap"><span class="fl__let">{l || '·'}</span><b>{name}</b><span>{d}</span></figcaption>
           </figure>
         ))}
       </div>
