@@ -1122,6 +1122,12 @@ html.has-hall body{background:transparent}
 .reel__spoke{stroke:rgba(255,255,255,.2);stroke-width:1}
 .reel__worlds{display:none}
 .reel__wa{cursor:pointer}
+.reel__seat .reel__chip{fill:none;stroke:rgba(255,255,255,.7);stroke-dasharray:3 6}
+.reel__seat .reel__spoke{opacity:.5}
+.reel__seat .reel__name{font-style:italic}
+.reel__ping{fill:none;stroke:#fff;stroke-width:1;opacity:0;transform-box:fill-box;transform-origin:center;animation:seat 2.4s ease-out infinite}
+@keyframes seat{0%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
+@media (prefers-reduced-motion:reduce){.reel__ping{animation:none}}
 .reel__wa:hover .reel__chip,.reel__wa:focus-visible .reel__chip{fill:#161616;stroke:#fff}
 /* With motion: one pinned stage, the captions trade places */
 .gsap .reel__pin{height:100svh;padding-block:clamp(70px,9vh,100px) clamp(30px,5vh,60px)}

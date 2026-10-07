@@ -342,32 +342,40 @@ DIRS.embers = (f, t) => {
   BROKE.forEach((k, j) => { const p = ease((t - BUILT[j] - 0.4) / 0.8); if (p > 0) { f.glow(cx, cy, 0, 0); f.line(0.35 * p * (1 - ease((t - BUILT[j] - 1.4) / 1.2) * 0.6), 2); f.ctx.beginPath(); f.ctx.arc(cx, cy, R_(f, k), 0, TAU); f.ctx.stroke(); } });
 };
 
-// The close: the embers of scene 5 rise and become the night sky, and nine of them fly out along
-// the spokes to light the nine worlds. In the film the world shrinks and the spokes draw at the same moment.
+// The close: the rebuilt world shrinks with its embers still on it, glowing hotter as it tightens,
+// then fires nine sparks along the spokes to light the nine worlds. The rest burst out into the night sky.
+// One seat stays empty, breathing, for the next world. In the film the world shrinks from 0.4s to 1.8s.
 const SKY = (() => { const r = rnd(57); return EMBERS.map(() => ({ x: r(), y: r() * 0.95, p: r() * TAU, s: 0.4 + r() * 0.9 })); })();
 DIRS.ascend = (f, t) => {
   const { ctx, cx, cy, W, H, U, dpr } = f;
-  const nine = f.nine || Array.from({ length: 9 }, (_, i) => { const a = ((-90 + i * 40) * Math.PI) / 180; return [cx + Math.cos(a) * 34 * U, cy + Math.sin(a) * 34 * U]; });
-  const at = f.nineAt || ((i) => 1.9 + i * 0.16);
+  const seats = Array.from({ length: 10 }, (_, i) => { const a = ((-90 + i * 36) * Math.PI) / 180; return [cx + Math.cos(a) * 34 * U, cy + Math.sin(a) * 34 * U]; });
+  const nine = f.nine || seats.slice(0, 9), seat = f.seat || seats[9];
+  const at = f.nineAt || ((i) => 1.9 + i * 0.16), shrink = f.shrink || ((v) => 1 - 0.7 * inout((v - 0.4) / 1.4));
+  const s = shrink(t), heat = clamp((1 - s) / 0.7), fire = 1.75;
   ctx.fillStyle = '#fff';
   EMBERS.forEach((e, i) => {
-    const r = R_(f, e.k), a = e.a + 0.45, x0 = cx + Math.cos(a) * r, y0 = cy + Math.sin(a) * r;
-    const s = SKY[i], p = inout((t - (i % 30) * 0.02) / 2.6), lift = Math.sin(p * Math.PI) * 6 * U;
-    const x = x0 + (s.x * W - x0) * p, y = y0 + (s.y * H - y0) * p - lift + Math.sin(t * 0.3 + s.p) * 0.4 * U * p;
-    f.dot(x, y, (1.2 - 0.6 * p) * s.s * dpr * 1.4, (0.75 - 0.4 * p) * (p < 1 ? 1 : 0.6 + 0.4 * Math.sin(t * 1.6 + s.p)));
+    const r = R_(f, e.k) * s, a = e.a + 0.45 + heat * 1.2, x0 = cx + Math.cos(a) * r, y0 = cy + Math.sin(a) * r;
+    const k = SKY[i], p = inout((t - fire - (i % 30) * 0.015) / 2.4);
+    const x = x0 + (k.x * W - x0) * p, y = y0 + (k.y * H - y0) * p + Math.sin(t * 0.3 + k.p) * 0.4 * U * p;
+    f.dot(x, y, ((1 + heat * 0.6) * (1 - p) + 0.6 * p) * k.s * dpr * 1.4, p < 1 ? 0.55 + 0.4 * heat * (1 - p) : 0.25 + 0.25 * Math.sin(t * 1.6 + k.p));
   });
+  // The core, hot as it tightens, flashing as it fires.
+  const flash = Math.exp(-Math.pow((t - fire) * 4, 2));
+  f.glow(cx, cy, (10 + 8 * heat) * U, 0.18 + 0.28 * heat * (1 - clamp((t - fire) / 2)) + 0.4 * flash);
   nine.forEach(([x, y], i) => {
-    const go = at(i) - 0.45, p = ease((t - go) / 0.55);
+    const go = Math.max(fire, at(i) - 0.4), p = ease((t - go) / 0.5);
     if (p <= 0) return;
     if (p < 1) {
-      const hx = cx + (x - cx) * p, hy = cy + (y - cy) * p, tx = cx + (x - cx) * Math.max(0, p - 0.25), ty = cy + (y - cy) * Math.max(0, p - 0.25);
-      const g = ctx.createLinearGradient(tx, ty, hx, hy); g.addColorStop(0, W_(0)); g.addColorStop(1, W_(0.8)); ctx.strokeStyle = g; ctx.lineWidth = 1.6 * dpr; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
-      f.glow(hx, hy, 3 * U, 0.8); return;
+      const hx = cx + (x - cx) * p, hy = cy + (y - cy) * p, tx = cx + (x - cx) * Math.max(0, p - 0.3), ty = cy + (y - cy) * Math.max(0, p - 0.3);
+      const g = ctx.createLinearGradient(tx, ty, hx, hy); g.addColorStop(0, W_(0)); g.addColorStop(1, W_(0.85)); ctx.strokeStyle = g; ctx.lineWidth = 1.8 * dpr; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
+      f.glow(hx, hy, 3 * U, 0.85); return;
     }
-    const since = t - go - 0.55;
+    const since = t - go - 0.5;
     f.glow(x, y, 9 * U * (1 + 0.6 * Math.exp(-since * 4)), (0.3 + 0.5 * Math.exp(-since * 3)) * (0.9 + 0.1 * Math.sin(t * 2 + i)));
   });
-  f.glow(cx, cy, 10 * U, 0.25);
+  // The empty seat: no spark reaches it. It breathes, waiting.
+  const wait = clamp((t - at(9) - 0.2) / 0.8);
+  if (wait > 0) f.glow(seat[0], seat[1], 8 * U, wait * (0.1 + 0.08 * Math.sin(t * 2.6)));
 };
 
 /* ---------- Scene 6: the nine worlds ---------- */

@@ -7,12 +7,15 @@ export const PLAN = ['spark-end', 'ember-rings', null, null, 'embers', 'ascend']
 const OVER = new Set(['spark-end']);
 const solid = (id) => !!id && !OVER.has(id);
 export default function filmMotion(canvas, gfx) {
+  const SEATS = gfx.querySelectorAll('.reel__wl').length || 10;
+  const inout = (v) => { v = Math.max(0, Math.min(1, v)); return v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2; };
   const ring = (k) => 64 + (k + 1) * 50; // the diagram's own ring radii: Law 114 ... Machinery 364
   const layout = (r, dpr) => {
     const g = gfx.getBoundingClientRect(), u = (g.width / 1000) * dpr;
     const cx = (g.left - r.left + g.width / 2) * dpr, cy = (g.top - r.top + g.height / 2) * dpr;
-    const nine = Array.from({ length: 9 }, (_, i) => { const a = ((-90 + i * 40) * Math.PI) / 180; return [cx + Math.cos(a) * 372 * u, cy + Math.sin(a) * 372 * u]; });
-    return { cx, cy, U: u * 12.5, ring: (k) => ring(k) * u, nine, nineAt: (i) => 1.9 + i * 0.16, tw: 1.7, glass: 0.55 }; // the glass a little darker, so the diagram's labels read over it
+    // The worlds sit on ten seats; the last one is empty, waiting for the viewer's.
+    const seats = Array.from({ length: SEATS }, (_, i) => { const a = ((-90 + (i * 360) / SEATS) * Math.PI) / 180; return [cx + Math.cos(a) * 372 * u, cy + Math.sin(a) * 372 * u]; });
+    return { cx, cy, U: u * 12.5, ring: (k) => ring(k) * u, nine: seats.slice(0, SEATS - 1), seat: seats[SEATS - 1], nineAt: (i) => 1.9 + i * 0.16, shrink: (t) => 1 - 0.7 * inout((t - 0.4) / 1.4), tw: 1.7, glass: 0.55 }; // the glass a little darker, so the diagram's labels read over it
   };
   const bufs = [document.createElement('canvas'), document.createElement('canvas')];
   const into = (f, k, fn, t) => {

@@ -176,8 +176,13 @@ export default function film(gsap) {
     }
     paint();
   };
+  // The bar in real seconds: each scene's share is its length at its own pace.
+  const REAL = START.map((s, i) => ((START[i + 1] ?? END) - s) / SPEED[i]), TOTAL = REAL.reduce((a, b) => a + b, 0);
+  const AT = REAL.map((_, i) => REAL.slice(0, i).reduce((a, b) => a + b, 0) / TOTAL);
+  ticks.forEach((b, i) => b.style.setProperty('--p', AT[i].toFixed(4)));
+  const realProgress = (t) => { const i = sceneAt(t); return AT[i] + (t - START[i]) / SPEED[i] / TOTAL; };
   tl.eventCallback('onUpdate', () => {
-    fill.style.transform = `scaleX(${(tl.time() / END).toFixed(4)})`;
+    fill.style.transform = `scaleX(${Math.min(1, realProgress(tl.time())).toFixed(4)})`;
     syncPlate(false);
   });
   tl.eventCallback('onComplete', () => { setPlaying(false); sec.classList.add('is-ended'); });

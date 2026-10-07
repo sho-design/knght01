@@ -29,7 +29,7 @@ const scenes = [
   { eb: 'The order', h: ['Built in order.', '<em>Lore first.</em>'], p: 'We start with the story, because everything else is built on it.' },
   { eb: 'The rules', h: ['All of it', 'inside', '<em>your rules.</em>'], p: 'Every word, sign and system is checked against <span data-reel-reg>your regulator</span>.' },
   { eb: 'The work', h: ['Most worlds', 'are missing', '<em>layers.</em>'], p: '' },
-  { eb: 'The worlds', h: ['Nine worlds,', '<em>built so far.</em>'], p: 'Clinics, law, spirits, food and more. Scroll to step inside.' },
+  { eb: 'The worlds', h: ['Nine worlds built.', '<em>Yours is next.</em>'], p: 'Clinics, law, spirits, food and more. Scroll to step inside.' },
 ];
 const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work', 'Nine worlds'];
 ---
@@ -79,7 +79,7 @@ const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work',
       </g>
       <g class="reel__worlds">
         {worlds.map((w, i) => {
-          const a = rad(-90 + (i * 360) / worlds.length);
+          const a = rad(-90 + (i * 360) / (worlds.length + 1)); // one seat more than there are worlds, left empty
           const x = Math.cos(a) * WR, y = Math.sin(a) * WR;
           return (
             <g class="reel__wl" data-i={i}>
@@ -96,6 +96,24 @@ const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work',
             </g>
           );
         })}
+        {(() => {
+          // The empty seat: the next world, the viewer's.
+          const a = rad(-90 + (worlds.length * 360) / (worlds.length + 1)), x = Math.cos(a) * WR, y = Math.sin(a) * WR;
+          return (
+            <g class="reel__wl reel__seat" data-i={worlds.length}>
+              <line class="reel__spoke" x1="0" y1="0" x2={x.toFixed(1)} y2={y.toFixed(1)} />
+              <a href="/book/" tabindex="-1" class="reel__wa" aria-label="Yours is next: book the free call">
+                <g transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}>
+                  <g class="reel__wb">
+                    <circle class="reel__ping" r="40" />
+                    <circle class="reel__chip" r="40" />
+                    <text class="reel__name" y={y > 0 ? 70 : -56}>Yours</text>
+                  </g>
+                </g>
+              </a>
+            </g>
+          );
+        })()}
       </g>
     </svg>
     <div class="film__type">
