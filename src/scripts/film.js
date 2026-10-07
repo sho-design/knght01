@@ -169,7 +169,11 @@ export default function film(gsap) {
       scene = i;
       tl.timeScale(SPEED[i]);
       load(i); for (let k = i + 1; k < START.length; k++) if (shot(k)) { load(k); break; }
-      plates.forEach((v) => { const on = +v.dataset.i === i; v.classList.toggle('is-on', on); if (!on && !v.paused) v.pause(); });
+      // An outgoing shot keeps playing while it fades (the hall fades slowly), then stops.
+      plates.forEach((v) => {
+        const on = +v.dataset.i === i; v.classList.toggle('is-on', on); clearTimeout(v._stop);
+        if (!on && !v.paused) v._stop = setTimeout(() => { if (!v.classList.contains('is-on')) v.pause(); }, 3000);
+      });
       const v = shot(i);
       if (v && v.src) {
         v.playbackRate = RATE * SPEED[i];

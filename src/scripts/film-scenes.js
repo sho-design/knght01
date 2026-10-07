@@ -384,8 +384,20 @@ const drawBeam = (f, b, a, t) => {
   // Fine dust where the light was, going as the light goes.
   ctx.fillStyle = '#fff';
   MOTES.forEach((m) => {
-    const v = (m.v + t * 0.012 * m.d) % 1, y = b.top + span * v, x = b.x + m.g * beamW(b, v) * 0.75 + Math.sin(t * 0.7 * m.d + m.p) * 0.8 * dpr;
+    const v = ((m.v + t * 0.012 * m.d) % 1 + 1) % 1, y = b.top + span * v, x = b.x + m.g * beamW(b, v) * 0.75 + Math.sin(t * 0.7 * m.d + m.p) * 0.8 * dpr;
     f.dot(x, y, m.s * dpr, a * (0.25 + 0.55 * Math.abs(Math.sin(t * 2.2 * m.d + m.p))) * (1 - Math.abs(m.g) * 0.5));
+  });
+};
+// The end of the hall (scene 4, footage): the dust that scene 5 begins with appears in the real beam
+// over the last seconds of the shot, while the cathedral is still there. Its clock runs into scene 5's
+// (s = 0 at the cut), so the hand-over is seamless. Drawn over the footage.
+DIRS['hall-dust'] = (f, t) => {
+  const b = f.beam; if (!b || t < 6.2) return;
+  const a = ease((t - 6.2) / 1.4), s = t - 8, { dpr } = f;
+  drawBeam(f, b, a, s);
+  EMBERS.forEach((e, i) => {
+    const [bx, by0] = inBeam(b, e), tw = Math.abs(Math.sin(s * 2.4 * e.v + e.p * 2));
+    f.dot(bx + Math.sin(s * 0.8 + e.p) * 0.6 * dpr, by0 + Math.min(s, LEAVE(i)) * 4 * e.v * dpr, 1.15 * dpr, a * (0.45 + 0.45 * tw) * QUIET);
   });
 };
 const LEAVE = (i) => 0.7 + (i % 48) * 0.042, TRAVEL = 1.7; // the stream runs for about two seconds

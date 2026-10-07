@@ -2,9 +2,12 @@
    (the first draws its flare over the genesis shot as it ends); drawn scenes fill it. The drawing is
    sized from the diagram itself, so the rings, the window and the nine worlds land under it exactly. */
 import { DIRS, frame } from './film-scenes.js';
-export const PLAN = ['spark-end', 'ember-rings', 'ember-carry', null, 'embers', 'ascend'];
+export const PLAN = ['spark-end', 'ember-rings', 'ember-carry', 'hall-dust', 'embers', 'ascend'];
 // Drawn over its footage, not instead of it: the canvas stays see-through for these.
-const OVER = new Set(['spark-end', 'ember-carry']);
+const OVER = new Set(['spark-end', 'ember-carry', 'hall-dust']);
+// A footage scene that starts to dim before it ends, so the next drawn scene can come in over it slowly:
+// the hall begins to darken 1.4s before the cut (to 25%), and the darkness finishes over the embers' first 2.8s.
+const LEAD = { 'hall-dust': { at: 6.6, dur: 1.4, to: 0.25 } }, BGIN = 2.8;
 const solid = (id) => !!id && !OVER.has(id);
 export default function filmMotion(canvas, gfx) {
   const SEATS = gfx.querySelectorAll('.reel__wl').length || 10;
@@ -55,7 +58,10 @@ export default function filmMotion(canvas, gfx) {
     const f = frame(canvas, layout), { ctx, W, H } = f;
     ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.setLineDash([]); ctx.clearRect(0, 0, W, H);
     const cur = PLAN[i], was = prev != null && mix < 1 ? PLAN[prev] : undefined;
-    const bg = solid(cur) ? (was !== undefined && !solid(was) ? mix : 1) : solid(was) ? 1 - mix : 0;
+    const before = i > 0 ? PLAN[i - 1] : undefined, lead = LEAD[cur], led = LEAD[before];
+    const bg = solid(cur)
+      ? (led ? led.to + (1 - led.to) * inout(local / BGIN) : was !== undefined && !solid(was) ? mix : 1)
+      : solid(was) ? 1 - mix : lead ? lead.to * inout((local - lead.at) / lead.dur) : 0;
     if (bg > 0) { ctx.fillStyle = `rgba(0,0,0,${bg})`; ctx.fillRect(0, 0, W, H); }
     if (was === undefined) { if (cur) DIRS[cur](f, local); }
     else {
