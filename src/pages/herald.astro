@@ -30,7 +30,7 @@ const ld = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name:
         </div>
         <div class="rp__row">
           <label class="rp__field"><span>Category</span><select name="cat" class="hb__select">{CATS.map(([v, l]) => <option value={v}>{l}</option>)}</select></label>
-          <label class="rp__field"><span>What you guard</span><select name="guard" class="hb__select"><option value="trust">Trust</option><option value="craft">Craft</option><option value="care">Care</option><option value="heritage">Heritage</option></select></label>
+          <label class="rp__field"><span>What you guard</span><select name="guard" class="hb__select"><option value="trust">Trust</option><option value="craft">Craft</option><option value="care">Care</option><option value="heritage">Heritage</option><option value="discretion">Discretion</option><option value="precision">Precision</option><option value="hospitality">Hospitality</option><option value="renewal">Renewal</option></select></label>
         </div>
         <div class="ck__cats" role="group" aria-label="Size"><span class="ck__lbl">Size</span>{SIZES.map(([v, l, d]) => <button type="button" class="cat hb__size" data-hb-size={v} aria-pressed="false">{l}<small>{d}</small></button>)}</div>
         <div class="ck__cats" role="group" aria-label="Paper"><span class="ck__lbl">Paper</span><button type="button" class="cat" data-hb-paper="black" aria-pressed="true">Black</button><button type="button" class="cat" data-hb-paper="white" aria-pressed="false">White</button></div>

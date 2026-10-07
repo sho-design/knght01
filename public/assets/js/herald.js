@@ -31,7 +31,8 @@
   const SIZE = { sign: { w: 850, h: 1100, place: 'front-desk' }, card: { w: 400, h: 600, place: 'table' }, sticker: { w: 300, h: 300, place: 'sticker' } };
 
   /* The shield, from the sigil: what you guard sets the chief, the category sets the base. */
-  const CHIEF = { trust: 'M70 70H330', craft: 'M70 62Q200 96 330 62', care: 'M70 84Q200 46 330 84', heritage: 'M70 76L112 76L122 66L200 54L278 66L288 76L330 76' };
+  const CHIEF = { trust: 'M70 70H330', craft: 'M70 62Q200 96 330 62', care: 'M70 84Q200 46 330 84', heritage: 'M70 76L112 76L122 66L200 54L278 66L288 76L330 76',
+    discretion: 'M70 66 Q102.5 86 135 66 Q167.5 86 200 66 Q232.5 86 265 66 Q297.5 86 330 66', precision: 'M70 74 L91.7 62 L113.3 74 L135.0 62 L156.7 74 L178.3 62 L200.0 74 L221.7 62 L243.3 74 L265.0 62 L286.7 74 L308.3 62 L330.0 74', hospitality: 'M70 76 H83 V62 H109 V76 H135 V62 H161 V76 H187 V62 H213 V76 H239 V62 H265 V76 H291 V62 H317 V76 H330', renewal: 'M70 70 Q86.25 60 102.5 70 T135 70 T167.5 70 T200 70 T232.5 70 T265 70 T297.5 70 T330 70' };
   const BASE = {
     clinic: 'V230C330 330 268 388 200 424C132 388 70 330 70 230Z', dental: 'V300A130 124 0 0 1 70 300Z', medspa: 'V232C330 352 236 366 200 424C164 366 70 352 70 232Z',
     law: 'V364Q330 392 302 392H230Q208 392 200 420Q192 392 170 392H98Q70 392 70 364Z', spirits: 'V410L200 374L70 410Z',

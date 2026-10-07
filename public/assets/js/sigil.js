@@ -19,16 +19,24 @@
     trust: { motto: 'FIDES', word: 'Trust', d: '<circle cx="7" cy="12" r="4.2"/><circle cx="7" cy="12" r="1.4"/><path d="M11.2 12H21M17.5 12v3.2M20.5 12v2.4"/>' },
     craft: { motto: 'ARS ET LABOR', word: 'Craft', d: '<path d="M4.5 20.5l9.5-9.5"/><path d="M11 6l4-4 6.5 6.5-4 4z"/><path d="M13 8l3 3"/>' },
     care: { motto: 'CURA', word: 'Care', d: '<path d="M9 4h6M10.5 4V2.5h3V4"/><path d="M7.5 7h9v11h-9z"/><path d="M7.5 7l1.5-3h6l1.5 3M12 10v5M6 21h12"/>' },
-    heritage: { motto: 'MEMORIA', word: 'Heritage', d: '<path d="M4.5 21V9.5h2.5V6.5h2.5v3h1.5v-3h2v3h1.5v-3h2.5v3h2.5V21z"/><path d="M10 21v-4.5a2 2 0 0 1 4 0V21"/>' }
+    heritage: { motto: 'MEMORIA', word: 'Heritage', d: '<path d="M4.5 21V9.5h2.5V6.5h2.5v3h1.5v-3h2v3h1.5v-3h2.5v3h2.5V21z"/><path d="M10 21v-4.5a2 2 0 0 1 4 0V21"/>' },
+    discretion: { motto: 'SUB ROSA', word: 'Discretion', d: '<circle cx="12" cy="12" r="2.4"/><path d="M12 4.6c2.7 0 4.2 2.2 3.4 4.5M19.2 9.8c.8 2.6-.6 4.8-3 5.1M16.5 18.3c-2.2 1.5-4.7 1.1-5.8-.9M7.5 18.3c-2.2-1.6-2.7-4.1-1-5.8M4.8 9.8C4 7.2 5.6 5 8 5.1"/>' },
+    precision: { motto: 'CERTA MANU', word: 'Precision', d: '<circle cx="12" cy="5.6" r="1.7"/><path d="M12 2.5v1.4M11 7.2L6 21M13 7.2L18 21M8.3 15h7.4"/>' },
+    hospitality: { motto: 'SALVE', word: 'Hospitality', d: '<path d="M7 3h10c0 5.2-2.2 8.2-5 8.2S7 8.2 7 3z"/><path d="M12 11.2V18M8 21h8M10 18h4M7.4 6.6h9.2"/>' },
+    renewal: { motto: 'RENASCOR', word: 'Renewal', d: '<path d="M3 17h18M6.2 17a5.8 5.8 0 0 1 11.6 0M3 21h18"/><path d="M12 4v3.2M5.4 7.4l2.2 2.2M18.6 7.4l-2.2 2.2M2.5 12.8h2.8M18.7 12.8h2.8"/>' },
   };
   /* The shield is built from both choices: what you guard sets the chief (the top edge),
-     the category sets the base. Four chiefs by seven bases: 28 shields, so two businesses
+     the category sets the base. Eight chiefs by seven bases: 56 shields, so two businesses
      that guard different things never share an outline. */
   const CHIEF = {
     trust: { n: 'a straight chief', d: 'M70 70H330' },
     craft: { n: 'a dished chief', d: 'M70 62Q200 96 330 62' },
     care: { n: 'an arched chief', d: 'M70 84Q200 46 330 84' },
     heritage: { n: 'a peaked chief', d: 'M70 76L112 76L122 66L200 54L278 66L288 76L330 76' },
+    discretion: { n: 'an engrailed chief', d: 'M70 66 Q102.5 86 135 66 Q167.5 86 200 66 Q232.5 86 265 66 Q297.5 86 330 66' },
+    precision: { n: 'an indented chief', d: 'M70 74 L91.7 62 L113.3 74 L135.0 62 L156.7 74 L178.3 62 L200.0 74 L221.7 62 L243.3 74 L265.0 62 L286.7 74 L308.3 62 L330.0 74' },
+    hospitality: { n: 'an embattled chief', d: 'M70 76 H83 V62 H109 V76 H135 V62 H161 V76 H187 V62 H213 V76 H239 V62 H265 V76 H291 V62 H317 V76 H330' },
+    renewal: { n: 'a wavy chief', d: 'M70 70 Q86.25 60 102.5 70 T135 70 T167.5 70 T200 70 T232.5 70 T265 70 T297.5 70 T330 70' },
   };
   const BASE = {
     clinic: { n: 'Heater', d: 'V230C330 330 268 388 200 424C132 388 70 330 70 230Z' },
