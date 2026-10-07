@@ -378,24 +378,10 @@ const EMBERS = (() => { const r = rnd(91); return Array.from({ length: 260 }, (_
 const beamW = (b, v) => b.fw0 + b.fwm * v + b.fwf * Math.pow(v, 6);
 const inBeam = (b, e) => { const v = (e.y * 1.37) % 1, y = b.top + (b.floor - b.top) * v, hw = beamW(b, v) * 0.55; return [b.x + (((e.x * 7.31) % 1) * 2 - 1) * hw * Math.sqrt((e.p / TAU)), y]; };
 const MOTES = (() => { const r = rnd(73); return Array.from({ length: 420 }, () => { const g = (r() + r() + r() - 1.5) / 1.5; return { g, v: r(), s: 0.5 + r() * 0.9, p: r() * TAU, d: 0.3 + r() }; }); })();
-// The column of light itself, drawn as soft horizontal slices so it keeps the footage's falloff: bright at the
-// top, dimmer lower down, a pool of light where it meets the floor, and fine dust turning in it.
+// No drawn light: the footage's beam fades out on its own, and only its dust carries on into this scene.
 const drawBeam = (f, b, a, t) => {
-  const { ctx, dpr } = f, rows = 56, span = b.floor - b.top;
-  ctx.save(); ctx.globalCompositeOperation = 'lighter';
-  for (let r = 0; r < rows; r++) {
-    const y0 = Math.round(b.top + (span * r) / rows), y1 = Math.round(b.top + (span * (r + 1)) / rows), v = (r + 0.5) / rows;
-    const fw = beamW(b, v), k = (0.6 - 0.36 * v) * a, g = ctx.createLinearGradient(b.x - 1.4 * fw, 0, b.x + 1.4 * fw, 0);
-    // A gaussian across the beam: 1 at the centre, half at the stated width.
-    [[0, 0], [0.197, 0.135], [0.321, 0.5], [0.409, 0.835], [0.5, 1], [0.591, 0.835], [0.679, 0.5], [0.803, 0.135], [1, 0]].forEach(([o, m]) => g.addColorStop(o, W_(k * m)));
-    ctx.fillStyle = g; ctx.fillRect(b.x - 1.4 * fw, y0, 2.8 * fw, y1 - y0);
-  }
-  // The pool of light on the floor, a little to the right of the beam as in the shot.
-  ctx.translate(b.x + b.poolDx, b.floor + b.pool * 0.03); ctx.scale(1, 0.15);
-  const pg = ctx.createRadialGradient(0, 0, 0, 0, 0, b.pool); pg.addColorStop(0, W_(0.85 * a)); pg.addColorStop(0.35, W_(0.5 * a)); pg.addColorStop(1, W_(0));
-  ctx.fillStyle = pg; ctx.fillRect(-b.pool, -b.pool, b.pool * 2, b.pool * 2);
-  ctx.restore();
-  // Fine dust that stays in the light and goes when it goes.
+  const { ctx, dpr } = f, span = b.floor - b.top;
+  // Fine dust where the light was, going as the light goes.
   ctx.fillStyle = '#fff';
   MOTES.forEach((m) => {
     const v = (m.v + t * 0.012 * m.d) % 1, y = b.top + span * v, x = b.x + m.g * beamW(b, v) * 0.75 + Math.sin(t * 0.7 * m.d + m.p) * 0.8 * dpr;
