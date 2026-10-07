@@ -114,6 +114,21 @@ DIRS['ember-rings'] = (f, t) => {
   }
 };
 
+// Into the forge (scene 3, footage): the last embers of the rings don't vanish, they drift up over the
+// footage and go out, handing over to the forge's own sparks. Drawn over the footage, not instead of it.
+DIRS['ember-carry'] = (f, t) => {
+  const { ctx, cx, cy, U, dpr } = f;
+  if (t > 3) return;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = '#fff';
+  for (let i = 0; i < 140; i++) {
+    const k = i % 7, u = ((i * 0.618) % 1) * TAU, r = R_(f, k), life = clamp(t / (1.6 + (i % 5) * 0.3));
+    if (life >= 1) continue;
+    const x = cx + Math.cos(u) * r * (1 + life * 0.15) + Math.sin(t * 2 + i) * U * 0.4, y = cy + Math.sin(u) * r * (1 + life * 0.15) - life * life * 9 * U;
+    f.dot(x, y, (1.3 - life * 0.6) * dpr, (1 - life) * (0.45 + 0.35 * Math.sin(t * 7 + i)));
+  }
+  ctx.restore();
+};
+
 /* ---------- Scene 2: seven layers ---------- */
 // A ring in three dimensions: tilt about x, then turn about y, with depth shading on the near side.
 const ring3 = (f, r, tilt, turn, spin, a, lw, ticks = 0) => {

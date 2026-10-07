@@ -90,7 +90,7 @@ export default function film(gsap) {
     .fromTo(pulse, { opacity: 1 }, { opacity: 0, duration: 0.9 }, 18.6)
     .to(worldT, { s: 1.06, duration: 6, ease: 'none', onUpdate: up(worldT) }, 17.1);
   rings.forEach((r, i) => {
-    tl.to(r, { stroke: 'rgba(255,255,255,1)', strokeWidth: 2.2, duration: 0.22 }, 18.8 + i * 0.32)
+    tl.to(r, { stroke: 'rgba(255,255,255,.85)', strokeWidth: 1.6, duration: 0.3, ease: 'power2.out' }, 18.8 + i * 0.32)
       .to(r, { stroke: 'rgba(255,255,255,.32)', strokeWidth: 1.1, duration: 0.9 }, 19.02 + i * 0.32);
   });
   leave(2, 24.3);
