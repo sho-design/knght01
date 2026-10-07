@@ -303,6 +303,34 @@ DIRS.embers = (f, t) => {
   BROKE.forEach((k, j) => { const p = ease((t - BUILT[j] - 0.4) / 0.8); if (p > 0) { f.glow(cx, cy, 0, 0); f.line(0.35 * p * (1 - ease((t - BUILT[j] - 1.4) / 1.2) * 0.6), 2); f.ctx.beginPath(); f.ctx.arc(cx, cy, R_(f, k), 0, TAU); f.ctx.stroke(); } });
 };
 
+// The close: the embers of scene 5 rise and become the night sky, and nine of them fly out along
+// the spokes to light the nine worlds. In the film the world shrinks and the spokes draw at the same moment.
+const SKY = (() => { const r = rnd(57); return EMBERS.map(() => ({ x: r(), y: r() * 0.95, p: r() * TAU, s: 0.4 + r() * 0.9 })); })();
+DIRS.ascend = (f, t) => {
+  const { ctx, cx, cy, W, H, U, dpr } = f;
+  const nine = f.nine || Array.from({ length: 9 }, (_, i) => { const a = ((-90 + i * 40) * Math.PI) / 180; return [cx + Math.cos(a) * 34 * U, cy + Math.sin(a) * 34 * U]; });
+  const at = f.nineAt || ((i) => 1.9 + i * 0.16);
+  ctx.fillStyle = '#fff';
+  EMBERS.forEach((e, i) => {
+    const r = R_(f, e.k), a = e.a + 0.45, x0 = cx + Math.cos(a) * r, y0 = cy + Math.sin(a) * r;
+    const s = SKY[i], p = inout((t - (i % 30) * 0.02) / 2.6), lift = Math.sin(p * Math.PI) * 6 * U;
+    const x = x0 + (s.x * W - x0) * p, y = y0 + (s.y * H - y0) * p - lift + Math.sin(t * 0.3 + s.p) * 0.4 * U * p;
+    f.dot(x, y, (1.2 - 0.6 * p) * s.s * dpr * 1.4, (0.75 - 0.4 * p) * (p < 1 ? 1 : 0.6 + 0.4 * Math.sin(t * 1.6 + s.p)));
+  });
+  nine.forEach(([x, y], i) => {
+    const go = at(i) - 0.45, p = ease((t - go) / 0.55);
+    if (p <= 0) return;
+    if (p < 1) {
+      const hx = cx + (x - cx) * p, hy = cy + (y - cy) * p, tx = cx + (x - cx) * Math.max(0, p - 0.25), ty = cy + (y - cy) * Math.max(0, p - 0.25);
+      const g = ctx.createLinearGradient(tx, ty, hx, hy); g.addColorStop(0, W_(0)); g.addColorStop(1, W_(0.8)); ctx.strokeStyle = g; ctx.lineWidth = 1.6 * dpr; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
+      f.glow(hx, hy, 3 * U, 0.8); return;
+    }
+    const since = t - go - 0.55;
+    f.glow(x, y, 9 * U * (1 + 0.6 * Math.exp(-since * 4)), (0.3 + 0.5 * Math.exp(-since * 3)) * (0.9 + 0.1 * Math.sin(t * 2 + i)));
+  });
+  f.glow(cx, cy, 10 * U, 0.25);
+};
+
 /* ---------- Scene 6: the nine worlds ---------- */
 const STARS = (() => { const r = rnd(77); return Array.from({ length: 260 }, () => ({ x: r(), y: r(), z: 0.2 + r(), p: r() * TAU })); })();
 const world = (f, x, y, rad, a, light = -0.6) => {

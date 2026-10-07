@@ -2,7 +2,7 @@
    (the first draws its flare over the genesis shot as it ends); drawn scenes fill it. The drawing is
    sized from the diagram itself, so the rings, the window and the nine worlds land under it exactly. */
 import { DIRS, frame } from './film-scenes.js';
-export const PLAN = ['spark-end', 'sphere', null, null, 'embers', 'through'];
+export const PLAN = ['spark-end', 'sphere', null, null, 'embers', 'ascend'];
 // Drawn over its footage, not instead of it: the canvas stays see-through for these.
 const OVER = new Set(['spark-end']);
 const solid = (id) => !!id && !OVER.has(id);
