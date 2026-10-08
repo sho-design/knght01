@@ -9,7 +9,11 @@ const OVER = new Set(['spark-end', 'ember-carry', 'hall-dust']);
 // the hall begins to darken 1.4s before the cut (to 25%), and the darkness finishes over the embers' first 2.8s.
 // Genesis doesn't dim early (to: 0); its entry in LEAD only gives the rings a slow dark coming in, under the cloud
 // as it condenses into the core.
-const LEAD = { 'hall-dust': { at: 6.6, dur: 1.4, to: 0.25 }, 'spark-end': { at: 99, dur: 1, to: 0 } }, BGIN = 2.8;
+// The forge settles too: it darkens over its last 1.7s (to 50%), so the spark storm calms before the hall.
+const LEAD = { 'hall-dust': { at: 6.6, dur: 1.4, to: 0.25 }, 'spark-end': { at: 99, dur: 1, to: 0 }, 'ember-carry': { at: 6.3, dur: 1.7, to: 0.5 } }, BGIN = 2.8;
+// Footage into footage through the dark: the forge goes down into shadow and the hall comes up out of it,
+// its beam of light first (a soft column cut through the dark), then the arches.
+const DIP = { 'hall-dust': { peak: 0.94, at: 0.5, end: 2.8 } };
 const solid = (id) => !!id && !OVER.has(id);
 export default function filmMotion(canvas, gfx) {
   const SEATS = gfx.querySelectorAll('.reel__wl').length || 10;
@@ -70,10 +74,24 @@ export default function filmMotion(canvas, gfx) {
     ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.setLineDash([]); ctx.clearRect(0, 0, W, H);
     const cur = PLAN[i], was = prev != null && mix < 1 ? PLAN[prev] : undefined;
     const before = i > 0 ? PLAN[i - 1] : undefined, lead = LEAD[cur], led = LEAD[before];
+    const dip = DIP[cur], from = led ? led.to : 0;
+    const dipBg = !dip ? 0 : local < dip.at ? from + (dip.peak - from) * inout(local / dip.at) : dip.peak * (1 - inout((local - dip.at) / (dip.end - dip.at)));
     const bg = solid(cur)
       ? (led ? led.to + (1 - led.to) * inout(local / BGIN) : was !== undefined && !solid(was) ? mix : 1)
-      : solid(was) ? 1 - mix : lead ? lead.to * inout((local - lead.at) / lead.dur) : 0;
+      : solid(was) ? 1 - mix : Math.max(dipBg, lead ? lead.to * inout((local - lead.at) / lead.dur) : 0);
     if (bg > 0) { ctx.fillStyle = `rgba(0,0,0,${bg})`; ctx.fillRect(0, 0, W, H); }
+    if (dipBg > 0.01 && f.beam) {
+      // The beam shows through first.
+      const b = f.beam, h = inout((local - 0.1) / 0.9) * 0.95, fw = b.fw0 * 1.6 + b.fwf * 0.5;
+      ctx.save(); ctx.globalCompositeOperation = 'destination-out';
+      const g = ctx.createLinearGradient(b.x - 2.2 * fw, 0, b.x + 2.2 * fw, 0);
+      [[0, 0], [0.25, 0.14], [0.36, 0.5], [0.44, 0.84], [0.5, 1], [0.56, 0.84], [0.64, 0.5], [0.75, 0.14], [1, 0]].forEach(([o, m]) => g.addColorStop(o, `rgba(0,0,0,${h * m})`));
+      ctx.fillStyle = g; ctx.fillRect(b.x - 2.2 * fw, 0, 4.4 * fw, H);
+      ctx.translate(b.x + b.poolDx, b.floor); ctx.scale(1, 0.18);
+      const pg = ctx.createRadialGradient(0, 0, 0, 0, 0, b.pool); pg.addColorStop(0, `rgba(0,0,0,${h * 0.85})`); pg.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = pg; ctx.fillRect(-b.pool, -b.pool, b.pool * 2, b.pool * 2);
+      ctx.restore();
+    }
     if (was === undefined) { if (cur) DIRS[cur](f, local); }
     else {
       if (was) { ctx.globalAlpha = 1 - mix; ctx.drawImage(into(f, 0, DIRS[was], prevLocal), 0, 0); }

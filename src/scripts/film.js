@@ -2,6 +2,7 @@
    it plays when it comes into view, pauses when it leaves, and can be paused, scrubbed by
    chapter, or watched again. Underneath, three scenes are black-and-white footage and three are drawn live (film-motion.js). */
 import filmMotion, { PLAN } from './film-motion.js';
+import { STRIKE, FORGE_RATE } from './film-scenes.js';
 export default function film(gsap) {
   const sec = document.querySelector('.film');
   if (!sec) return;
@@ -40,7 +41,7 @@ export default function film(gsap) {
   setReg();
   new MutationObserver(() => setTimeout(setReg, 30)).observe(root, { attributes: true, attributeFilter: ['data-cat'] });
 
-  const coreT = T(core, 0.001), haloT = T(halo, 0.4), pulseT = T(pulse, 1), lawT = T(law, 0.9), worldT = T(world, 1);
+  const coreT = T(core, 0.001), haloT = T(halo, 0.4), pulseT = T(pulse, 1), lawT = T(law, 1), worldT = T(world, 1);
   const orbitT = orbits.map((o) => T(o, 1, 0));
   const badgeT = badges.map((b) => T(b, 0.4, 0));
   const ringT = rings.map((r) => T(r, 1));
@@ -89,10 +90,9 @@ export default function film(gsap) {
 
   // 3 · Built in order: the strike lights each ring from the core outward
   enter(2, 17.1);
-  // The hammer lands 1.38s into the forge shot (read from the shot's own frames in display order: they jump in
-  // size as the sparks fly). The shot plays 0.75s per timeline second from the scene's start (17), so 18.84.
-  // The drawn sound waves use the same moment (STRIKE in film-scenes.js).
-  const HIT = START[2] + 1.84;
+  // The hammer meets the metal 1.375s into the forge shot (its flash frame). The shot plays at FORGE_RATE from the
+  // scene's start, so the strike is STRIKE into the scene; the drawn sound waves use the same moment.
+  const HIT = START[2] + STRIKE;
   tl.fromTo(pulseT, { s: 1 }, { s: 1.8, duration: 0.9, ease: 'power1.out', onUpdate: up(pulseT) }, HIT)
     .fromTo(pulse, { opacity: 1 }, { opacity: 0, duration: 0.9 }, HIT)
     .to(worldT, { s: 1.06, duration: 6, ease: 'none', onUpdate: up(worldT) }, 17.1);
@@ -110,7 +110,8 @@ export default function film(gsap) {
   enter(3, 25.1);
   tl.to(worldT, { s: 0.94, duration: 2, ease: 'power2.inOut', onUpdate: up(worldT) }, 25.3)
     .to(law, { autoAlpha: 1, duration: 1.2 }, 25.8)
-    .to(lawT, { s: 1, r: 30, duration: 7, ease: 'power1.out', onUpdate: up(lawT) }, 25.8)
+    // The boundary arrives at its full size: the strike's last wave already drew it there (film-scenes.js).
+    .to(lawT, { r: 30, duration: 7, ease: 'power1.out', onUpdate: up(lawT) }, 25.8)
     .fromTo(path, { attr: { startOffset: '0%' } }, { attr: { startOffset: '-24%' }, duration: 7.2 }, 25.8);
   leave(3, 32.3);
 
@@ -152,9 +153,9 @@ export default function film(gsap) {
   });
 
   /* ---------- Footage and motion: one per scene, crossfaded, kept in step with the clock ---------- */
-  // Six-second shots, stretched over each scene: footage seconds per timeline second. Genesis and the hall run a
-  // little slower so they are still moving while they fade into the next scene.
-  const RATES = [0.66, 0.75, 0.75, 0.6, 0.75, 0.75];
+  // Six-second shots, stretched over each scene: footage seconds per timeline second. Genesis, the forge and the
+  // hall run a little slower so they are still moving while they fade into the next scene.
+  const RATES = [0.66, 0.75, FORGE_RATE, 0.6, 0.75, 0.75];
   // Each scene plays at its own pace: the timeline is laid out in long scenes, then run faster where it can be.
   // About 42 seconds in all, with the hall the longest and the nine worlds given time to land.
   const SPEED = [1.3, 1.4, 1.3, 1.0, 1.35, 1.15];

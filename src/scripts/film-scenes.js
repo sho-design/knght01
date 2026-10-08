@@ -115,13 +115,23 @@ DIRS['ember-rings'] = (f, t) => {
 };
 
 // Into the forge (scene 3, footage): the last embers of the rings don't vanish, they drift up over the
-// footage and go out, handing over to the forge's own sparks. Then the hammer strikes (1.84s) and its sound
-// goes out as waves: a front of close rings and a soft band of pressure, meeting each of the diagram's rings
-// just as it flashes (STRIKE + 0.2 + 0.32k), carrying on past the world, and an echo behind it. Drawn over the footage.
-// The strike is when the hammer lands in the shot (see HIT in film.js).
-const STRIKE = 1.84, FRONT = 50 / 0.32; // svg units per second: one ring every 0.32s
+// footage and go out, handing over to the forge's own sparks. Then the hammer strikes and its sound goes out as
+// waves: a front of close rings and a soft band of pressure, meeting each of the diagram's rings just as it
+// flashes (STRIKE + 0.2 + 0.32k). The main front then slows and comes to rest just outside the world, as the
+// boundary of scene 4 ("inside your rules"); its echo carries on past and fades. Drawn over the footage.
+// The hammer meets the metal 1.375s into the forge shot, which plays at FORGE_RATE (see film.js).
+export const FORGE_RATE = 0.68, STRIKE = 1.375 / FORGE_RATE;
+const FRONT = 50 / 0.32;                  // svg units per second: one ring every 0.32s
 const FRONTS = [[0, 1], [0.42, 0.45]];  // [delay, strength]: the strike and its echo
 const TRAIN = [0.8, 0.45, 0.24, 0.12];   // the close rings that make each front read as sound
+const OUTER = 414, BOUND = 430;          // the outermost layer ring, and the boundary ring of scene 4 (svg units)
+const SETTLE = 3 * (BOUND - OUTER) / FRONT; // time to come to rest, leaving the last ring at full speed
+// The boundary as the diagram draws it: a fine dotted ring.
+const bound = (f, a) => {
+  if (a <= 0.005) return;
+  const { ctx, cx, cy, dpr } = f, r = (R_(f, 0) / 114) * BOUND;
+  ctx.save(); ctx.setLineDash([2 * dpr, 7 * dpr]); f.line(a, 1.2); ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU); ctx.stroke(); ctx.restore();
+};
 DIRS['ember-carry'] = (f, t) => {
   const { ctx, cx, cy, U, W, H, dpr } = f, u = R_(f, 0) / 114, far = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy));
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = '#fff';
@@ -134,26 +144,30 @@ DIRS['ember-carry'] = (f, t) => {
   }
   FRONTS.forEach(([d, power]) => {
     const tt = t - d; if (tt < STRIKE) return;
-    const units = 114 + (tt - STRIKE - 0.2) * FRONT, rad = units * u; if (rad - 60 * u > far) return;
+    const lin = 114 + (tt - STRIKE - 0.2) * FRONT, main = d === 0;
+    // The main front eases to rest at the boundary; the echo runs on.
+    const rest = main ? clamp((lin - OUTER) / (FRONT * SETTLE)) : 0;
+    const units = main && lin > OUTER ? OUTER + (BOUND - OUTER) * ease(rest) : lin, rad = units * u;
+    if (main && rest >= 1) { bound(f, 0.5 + 0.35 * Math.exp(-(tt - STRIKE - 0.2 - (OUTER - 114) / FRONT - SETTLE) * 3)); return; }
+    if (rad - 60 * u > far) return;
     const life = clamp((units - 83) / 760), env = power * Math.pow(1 - life, 1.4) * clamp((tt - STRIKE) / 0.12);
     if (env <= 0.005) return;
-    // The band of pressure just behind the front.
-    // Filled as a ring only, not the whole square around it: once the front passes the screen edge, that square
-    // would be the whole canvas, twice a frame.
-    const r0 = Math.max(0, rad - 34 * u), r1 = rad + 8 * u;
-    if (r0 < far) {
+    // The band of pressure just behind the front (a ring only, not the whole square around it), gone as it rests.
+    const r0 = Math.max(0, rad - 34 * u), r1 = rad + 8 * u, band = env * (1 - ease(rest));
+    if (r0 < far && band > 0.005) {
       const g = ctx.createRadialGradient(cx, cy, r0, cx, cy, r1);
-      g.addColorStop(0, W_(0)); g.addColorStop(0.78, W_(0.14 * env)); g.addColorStop(1, W_(0));
+      g.addColorStop(0, W_(0)); g.addColorStop(0.78, W_(0.14 * band)); g.addColorStop(1, W_(0));
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, r1, 0, TAU); ctx.arc(cx, cy, r0, 0, TAU, true); ctx.fill();
     }
-    // The front itself: close rings, each trembling a little as it travels, settling as it spreads.
+    // The front itself: close rings, each trembling a little as it travels, drawing together as it comes to rest.
     TRAIN.forEach((a, m) => {
-      const rm = rad - m * 15 * u; if (rm <= 2) return;
-      const shake = 1.6 * u * (1 - life);
+      const rm = rad - m * 15 * u * (1 - rest); if (rm <= 2) return;
+      const shake = 1.6 * u * (1 - life) * (1 - rest);
       ctx.beginPath();
       for (let q = 0; q <= 72; q++) { const th = (q / 72) * TAU, rr = rm + Math.sin(th * 18 + tt * 22 + m * 1.7) * shake; q ? ctx.lineTo(cx + Math.cos(th) * rr, cy + Math.sin(th) * rr) : ctx.moveTo(cx + Math.cos(th) * rr, cy + Math.sin(th) * rr); }
-      f.line(a * env, Math.max(0.6, 1.5 - m * 0.3)); ctx.stroke();
+      f.line(a * env * (1 - rest * (m ? 1 : 0.4)), Math.max(0.6, 1.5 - m * 0.3)); ctx.stroke();
     });
+    if (main && rest > 0) bound(f, 0.85 * ease(rest));
   });
   ctx.restore();
 };
@@ -398,6 +412,8 @@ const drawBeam = (f, b, a, t) => {
 // over the last seconds of the shot, while the cathedral is still there. Its clock runs into scene 5's
 // (s = 0 at the cut), so the hand-over is seamless. Drawn over the footage.
 DIRS['hall-dust'] = (f, t) => {
+  // The strike's boundary carries over from the forge, and gives way to the diagram's own as it fades in (0.8-2.0).
+  if (t < 2.2) bound(f, 0.5 * (1 - ease((t - 0.8) / 1.2)));
   const b = f.beam; if (!b || t < 6.2) return;
   const a = ease((t - 6.2) / 1.4), s = t - 8, { dpr } = f;
   drawBeam(f, b, a, s);
