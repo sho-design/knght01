@@ -36,12 +36,12 @@ const cloud = (f, t, R, alpha, pull = 0) => {
     f.dot(cx + Math.cos(a) * d * R, cy + Math.sin(a) * d * R * 0.82, m.s * dpr, alpha * (0.25 + 0.5 * Math.abs(Math.sin(t * 0.9 * m.w + m.p))) * (1 - d * 0.5));
   });
 };
-const flare = (f, x, y, s, a) => {
+const flare = (f, x, y, s, a, maxL = Infinity) => {
   const { ctx, W, U } = f;
   f.glow(x, y, s * 26 * U, 0.55 * a); f.glow(x, y, s * 6 * U, 0.9 * a);
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
   [[1, 0, 0.5], [0, 1, 0.32]].forEach(([hx, vy, k]) => {
-    const L = (hx ? W * 0.5 : 34 * U) * s, g = ctx.createLinearGradient(x - hx * L, y - vy * L, x + hx * L, y + vy * L);
+    const L = (hx ? Math.min(W * 0.5, maxL) : 34 * U) * s, g = ctx.createLinearGradient(x - hx * L, y - vy * L, x + hx * L, y + vy * L);
     g.addColorStop(0, W_(0)); g.addColorStop(0.5, W_(k * a)); g.addColorStop(1, W_(0));
     ctx.fillStyle = g; const th = Math.max(1, 0.35 * U * s);
     hx ? ctx.fillRect(x - L, y - th / 2, L * 2, th) : ctx.fillRect(x - th / 2, y - L, th, L * 2);
@@ -66,11 +66,12 @@ DIRS['spark-gather'] = (f, t) => {
   if (t > 5) [0, 0.35].forEach((o) => { const p = clamp((t - 5 - o) / 2.4); f.line(0.6 * (1 - p), 1.4 - o * 2); f.ctx.beginPath(); f.ctx.arc(cx, cy, ease(p) * 52 * U, 0, TAU); f.ctx.stroke(); });
 };
 
-// The film's version: only the flare, over the last seconds of the genesis footage.
+// The film's version: only the flare, over the last seconds of the genesis footage. Its streak stops short of the
+// type column, so it never runs through the headline.
 DIRS['spark-end'] = (f, t) => {
   const { cx, cy, U, ctx } = f, g = ease((t - 4.9) / 1.5), pop = Math.exp(-Math.pow((t - 6.5) * 2.2, 2));
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
-  flare(f, cx, cy, g * (0.7 + 0.5 * pop) * (1 + 0.04 * Math.sin(t * 3)), g);
+  flare(f, cx, cy, g * (0.7 + 0.5 * pop) * (1 + 0.04 * Math.sin(t * 3)), g, 40 * U);
   if (t > 6.4) { const p = clamp((t - 6.4) / 1.6); f.line(0.5 * (1 - p), 1.2); ctx.beginPath(); ctx.arc(cx, cy, p * 46 * U, 0, TAU); ctx.stroke(); }
   ctx.restore();
 };
@@ -426,9 +427,40 @@ const drawBeam = (f, b, a, t) => {
 // The end of the hall (scene 4, footage): the dust that scene 5 begins with appears in the real beam
 // over the last seconds of the shot, while the cathedral is still there. Its clock runs into scene 5's
 // (s = 0 at the cut), so the hand-over is seamless. Drawn over the footage.
+// The check (scene 4, "every word, sign and system is checked"): once the boundary is up, one hand goes round it
+// from twelve o'clock, sealing the boundary as it goes, and each layer it passes flashes at its rim and gets a tick.
+// Kept tight: hairlines and small marks, no glow. Everything fades with the hall.
+const CHECK = [1.4, 3.0]; // starts, and takes (seconds into the hall)
+const check = (f, t) => {
+  if (t < CHECK[0]) return;
+  const { ctx, cx, cy, dpr } = f, u = R_(f, 0) / 114, s = inout((t - CHECK[0]) / CHECK[1]), out = 1 - ease((t - 6.2) / 0.9);
+  if (out <= 0) return;
+  const th = -Math.PI / 2 + s * TAU, R0 = 70 * u, R1 = BOUND * u;
+  ctx.save(); ctx.lineCap = 'round';
+  // The boundary, sealed behind the hand, then back to its dotted self once the round is done.
+  const seal = 0.45 * out * (1 - ease((t - CHECK[0] - CHECK[1] - 0.3) / 1));
+  if (seal > 0.005) { f.line(seal, 1.2); ctx.beginPath(); ctx.arc(cx, cy, R1, -Math.PI / 2, th); ctx.stroke(); }
+  if (s < 1) {
+    const g = ctx.createLinearGradient(cx + Math.cos(th) * R0, cy + Math.sin(th) * R0, cx + Math.cos(th) * R1, cy + Math.sin(th) * R1);
+    g.addColorStop(0, W_(0)); g.addColorStop(1, W_(0.75 * out));
+    ctx.strokeStyle = g; ctx.lineWidth = 1 * dpr; ctx.beginPath(); ctx.moveTo(cx + Math.cos(th) * R0, cy + Math.sin(th) * R0); ctx.lineTo(cx + Math.cos(th) * R1, cy + Math.sin(th) * R1); ctx.stroke();
+    ctx.fillStyle = '#fff'; f.dot(cx + Math.cos(th) * R1, cy + Math.sin(th) * R1, 1.6 * dpr, 0.9 * out);
+  }
+  (f.badges ? f.badges() : []).forEach(([bx, by, br]) => {
+    const sb = ((((Math.atan2(by - cy, bx - cx) + Math.PI / 2) % TAU) + TAU) % TAU) / TAU, d = s - sb;
+    if (d < 0 || br <= 0) return;
+    const flash = Math.exp(-d * 9);
+    if (flash > 0.02) { f.line(0.9 * flash * out, 1.4); ctx.beginPath(); ctx.arc(bx, by, br * (1 + 0.18 * (1 - flash)), 0, TAU); ctx.stroke(); }
+    // The tick, just above and right of the badge.
+    const k = br * 0.42, tx = bx + br * 1.05, ty = by - br * 1.05, a = ease(d * 18) * 0.85 * out;
+    f.line(a, 1.4); ctx.beginPath(); ctx.moveTo(tx - k, ty); ctx.lineTo(tx - k * 0.35, ty + k * 0.65); ctx.lineTo(tx + k, ty - k * 0.8); ctx.stroke();
+  });
+  ctx.restore();
+};
 DIRS['hall-dust'] = (f, t) => {
   // The strike's boundary carries over from the forge, and gives way to the diagram's own as it fades in (0.8-2.0).
   if (t < 2.2) bound(f, 0.5 * (1 - ease((t - 0.8) / 1.2)));
+  check(f, t);
   const b = f.beam; if (!b || t < 6.2) return;
   const a = ease((t - 6.2) / 1.4), s = t - 8, { dpr } = f;
   drawBeam(f, b, a, s);
@@ -440,7 +472,7 @@ DIRS['hall-dust'] = (f, t) => {
 const LEAVE = (i) => 0.7 + (i % 48) * 0.042, TRAVEL = 1.7; // the stream runs for about two seconds
 DIRS.embers = (f, t) => {
   const { ctx, cx, cy, W, H, U, dpr } = f, b = f.beam;
-  if (b) { const a = 1 - ease((t - 1.9) / 1.8); if (a > 0) drawBeam(f, b, a, t); }
+  if (b) { const a = 1 - ease((t - 0.4) / 1.6); if (a > 0) drawBeam(f, b, a, t); }
   // Where an ember is at time s, before the Build pulls it onto its ring.
   const loose = (e, i, s) => {
     const R = R_(f, e.k);
@@ -473,6 +505,13 @@ DIRS.embers = (f, t) => {
     f.dot(x, y, (b ? 1.15 + 0.35 * Math.sin(warm * Math.PI) : 0.7 + 0.5 * g) * dpr, alpha * QUIET);
   });
   BROKE.forEach((k, j) => { const p = ease((t - BUILT[j] - 0.4) / 0.8); if (p > 0) { f.line(0.35 * p * (1 - ease((t - BUILT[j] - 1.4) / 1.2) * 0.6), 2); ctx.beginPath(); ctx.arc(cx, cy, R_(f, k), 0, TAU); ctx.stroke(); } });
+  // The Verdict finds the gaps (film.js, 2.0s in): each broken ring's missing stretch (the diagram keeps the first 36%
+  // from three o'clock) shows as a fine dotted line until the Build fills it.
+  BROKE.forEach((k, j) => {
+    const a = ease((t - 2.0 - j * 0.25) / 0.6) * (1 - ease((t - BUILT[j]) / 0.6));
+    if (a <= 0.01) return;
+    ctx.save(); ctx.setLineDash([1.5 * dpr, 6 * dpr]); f.line(0.55 * a, 1.2); ctx.beginPath(); ctx.arc(cx, cy, R_(f, k), 0.36 * TAU, TAU); ctx.stroke(); ctx.restore();
+  });
 };
 
 // The close: the rebuilt world shrinks with its embers still on it, glowing hotter as it tightens,
@@ -489,7 +528,8 @@ DIRS.ascend = (f, t) => {
   ctx.fillStyle = '#fff';
   EMBERS.forEach((e, i) => {
     const r = R_(f, e.k) * s, a = e.a + 0.45 + heat * 1.2, x0 = cx + Math.cos(a) * r, y0 = cy + Math.sin(a) * r;
-    const k = SKY[i], go = fire + (i % 30) * 0.015, p = inout((t - go) / 2.4);
+    // They clear the core quickly and stay dim in flight, so they never hang round it in a cloud.
+    const k = SKY[i], go = fire + (i % 30) * 0.015, p = 1 - Math.pow(1 - clamp((t - go) / 2.4), 3), dim = 1 - 0.5 * Math.sin(p * Math.PI);
     // Once landed, each star drifts slowly left (the nearer, larger ones faster), wrapping round the frame and
     // fading at its edges, and twinkles at its own pace, with now and then a brief glint.
     const v = 0.8 + 1.6 * ((k.p * 7.13) % 1), sx = (((k.x - Math.max(0, t - go - 2.4) * 0.0035 * k.s) % 1) + 1) % 1;
@@ -497,24 +537,24 @@ DIRS.ascend = (f, t) => {
     const star = edge * (0.2 + 0.3 * k.s) * (0.5 + 0.5 * Math.sin(t * v + k.p)) + glint;
     const x = x0 + (sx * W - x0) * p, y = y0 + (k.y * H - y0) * p + Math.sin(t * 0.3 + k.p) * 0.4 * U * p;
     if (p >= 1 && glint > 0.1) { f.glow(x, y, 0.9 * U * k.s, glint * 0.45); ctx.fillStyle = '#fff'; }
-    f.dot(x, y, ((1 + heat * 0.6) * (1 - p) + 0.75 * p) * k.s * dpr * 1.4, (0.55 + 0.4 * heat * (1 - p)) * (1 - p) + star * p);
+    f.dot(x, y, ((1 + heat * 0.6) * (1 - p) + 0.75 * p) * k.s * dpr * 1.4, ((0.55 + 0.4 * heat * (1 - p)) * (1 - p) + star * p) * dim);
   });
-  // The core, hot as it tightens, flashing as it fires.
+  // The core, hot as it tightens, flashing as it fires: kept close to the core, never a disc round the world.
   const flash = Math.exp(-Math.pow((t - fire) * 4, 2));
   const cool = clamp((t - fire) / 2);
-  f.glow(cx, cy, (10 + 8 * heat * (1 - cool) - cool) * U, 0.18 + 0.28 * heat * (1 - cool) + 0.4 * flash - 0.06 * cool);
+  f.glow(cx, cy, (5 + 3 * heat) * U, 0.12 + 0.3 * heat * (1 - cool) + 0.3 * flash);
   nine.forEach(([x, y], i) => {
     const go = Math.max(fire, at(i) - 0.4), p = ease((t - go) / 0.5);
     if (p <= 0) return;
     if (p < 1) {
       const hx = cx + (x - cx) * p, hy = cy + (y - cy) * p, tx = cx + (x - cx) * Math.max(0, p - 0.3), ty = cy + (y - cy) * Math.max(0, p - 0.3);
       const g = ctx.createLinearGradient(tx, ty, hx, hy); g.addColorStop(0, W_(0)); g.addColorStop(1, W_(1)); ctx.strokeStyle = g; ctx.lineWidth = 2.4 * dpr; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
-      f.glow(hx, hy, 5 * U, 1); ctx.fillStyle = '#fff'; f.dot(hx, hy, 2.2 * dpr, 1); return;
+      f.glow(hx, hy, 2.2 * U, 0.8); ctx.fillStyle = '#fff'; f.dot(hx, hy, 2.2 * dpr, 1); return;
     }
-    // It lands as a flash, then the light dies down to a faint rim round the world, so the worlds sit in the dark
-    // rather than in balls of light.
-    const since = t - go - 0.5, fl = Math.exp(-since * 2.5);
-    f.glow(x, y, (4.4 + 2.6 * fl) * U, (0.1 + 0.7 * fl) * (0.9 + 0.1 * Math.sin(t * 2 + i)));
+    // It lands as a flash on the world's own outline (its chip is 3.2U across), a ring that brightens and opens a
+    // little as it fades, so the worlds sit in the dark rather than in balls of light.
+    const since = t - go - 0.5, fl = Math.exp(-since * 3);
+    if (fl > 0.01) { f.line(0.9 * fl, 1.6); ctx.beginPath(); ctx.arc(x, y, 3.2 * U * (1 + 0.14 * (1 - fl)), 0, TAU); ctx.stroke(); f.glow(x, y, 3.8 * U, 0.3 * fl); }
   });
   // The empty seat: no spark reaches it, but it holds the most light of all, breathing, waiting. Kept close to the
   // seat, so it reads as light on the ring rather than a ball.

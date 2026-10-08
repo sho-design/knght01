@@ -10,7 +10,7 @@ export default function film(gsap) {
   const $$ = (s, c = sec) => [...c.querySelectorAll(s)];
   const root = document.documentElement;
 
-  const START = [0, 8, 17, 25, 33, 42], END = 52;
+  const START = [0, 8, 17, 25, 33, 42], END = 49;
   const canvas = $('.film__canvas'), gfx = $('.film__gfx'), plates = $$('.film__plate'), scenes = $$('.film__scene');
   const playBtn = $('[data-film-play]'), fill = $('[data-film-fill]'), ticks = $$('[data-film-tick]'), replay = $('[data-film-replay]');
 
@@ -55,30 +55,37 @@ export default function film(gsap) {
     const src = document.querySelector('[data-cat-reg]');
     const t = src && root.dataset.cat ? src.textContent.trim() : '';
     if (regOut) regOut.textContent = t || 'your regulator';
-    if (path) path.textContent = `CHECKED AGAINST ${(t || 'your regulator').toUpperCase()} · EVERY WORD · EVERY SIGN · EVERY SYSTEM · `.repeat(2);
+    if (path) path.textContent = `CHECKED AGAINST ${(t || 'your regulator').toUpperCase()}`;
   };
   setReg();
   new MutationObserver(() => setTimeout(setReg, 30)).observe(root, { attributes: true, attributeFilter: ['data-cat'] });
 
   const coreT = T(core, 0.001), haloT = T(halo, 0.4), pulseT = T(pulse, 1), lawT = T(law, 1), worldT = T(world, 1);
   const orbitT = orbits.map((o) => T(o, 1, 0));
-  const badgeT = badges.map((b) => T(b, 0.4, 0));
+  const badgeT = badges.map((b) => T(b, 0.6, 0));
   const ringT = rings.map((r) => T(r, 1));
   const ringD = rings.map(arc), spokeD = spokes.map(reach);
   // Seeking (chapter ticks, Watch again) moves these proxies without running their onUpdate, so re-apply them all.
   const applyAll = () => [coreT, haloT, pulseT, lawT, worldT, ...orbitT, ...badgeT, ...ringT, ...ringD, ...spokeD, ...wbT].forEach((p) => p.apply());
   const wbT = wbs.map((b) => T(b, 0));
-  const layerText = $$('.reel__layer text, .reel__name--core');
+  const layerText = $$('.reel__layer text, .reel__name--core'), coreName = $('.reel__name--core');
   gsap.set([halo, pulse], { opacity: 0 });
   gsap.set([badges, law, wls], { autoAlpha: 0 });
 
   /* ---------- Type: each line rises out of its own mask ---------- */
   gsap.set(scenes, { autoAlpha: 0 });
-  const enter = (i, at) => {
-    const sc = scenes[i];
-    tl.set(sc, { autoAlpha: 1 }, at)
-      .fromTo($$('.film__in', sc), { yPercent: 110 }, { yPercent: 0, duration: 1.1, ease: 'expo.out', stagger: 0.12 }, at)
-      .fromTo($$('.eyebrow, .film__p, .film__cta', sc), { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.1 }, at + 0.45);
+  // A scene's lines rise together, unless beats say when each line, and then the rest, should land on the picture.
+  const enter = (i, at, beats) => {
+    const sc = scenes[i], lines = $$('.film__in', sc), rise = { yPercent: 0, duration: 1.1, ease: 'expo.out' }, show = { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' };
+    tl.set(sc, { autoAlpha: 1 }, at);
+    if (!beats) {
+      tl.fromTo(lines, { yPercent: 110 }, { ...rise, stagger: 0.12 }, at)
+        .fromTo($$('.eyebrow, .film__p, .film__cta', sc), { autoAlpha: 0, y: 14 }, { ...show, stagger: 0.1 }, at + 0.45);
+      return;
+    }
+    lines.forEach((l, k) => tl.fromTo(l, { yPercent: 110 }, rise, beats.lines[k] ?? at + k * 0.12));
+    tl.fromTo($$('.eyebrow', sc), { autoAlpha: 0, y: 14 }, show, at + 0.45)
+      .fromTo($$('.film__p, .film__cta', sc), { autoAlpha: 0, y: 14 }, { ...show, stagger: 0.1 }, beats.rest);
   };
   const leave = (i, at) => {
     tl.to(scenes[i], { autoAlpha: 0, y: -18, duration: 0.6, ease: 'power2.in' }, at)
@@ -96,21 +103,26 @@ export default function film(gsap) {
     .fromTo(pulse, { opacity: 0.8 }, { opacity: 0, duration: 1.4 }, 5.2);
   leave(0, 7.3);
 
-  // 2 · Seven layers, one ring at a time, in time with the ripples
+  // 2 · Seven layers, one ring at a time, in time with the ripples. The core's name comes in once the cloud has
+  // condensed into it, so it never sits on the bright cloud.
   enter(1, 8.1);
+  tl.fromTo(coreName, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 8.4);
   rings.forEach((r, i) => {
     const at = 9.0 + i * 1.0;
     tl.to(ringD[i], { v: 1, duration: 1.1, ease: 'power2.inOut', onUpdate: up(ringD[i]) }, at)
       .to(badges[i], { autoAlpha: 1, duration: 0.3 }, at + 0.45)
-      .to(badgeT[i], { s: 1, duration: 0.6, ease: 'back.out(2.2)', onUpdate: up(badgeT[i]) }, at + 0.45);
+      .to(badgeT[i], { s: 1, duration: 0.8, ease: 'expo.out', onUpdate: up(badgeT[i]) }, at + 0.45);
   });
   leave(1, 16.3);
 
-  // 3 · Built in order: the strike lights each ring from the core outward
-  enter(2, 17.1);
+  // 3 · Built in order: the world falls back to its core, and the strike relights each layer from the core outward.
   // The hammer meets the metal 1.375s into the forge shot (its flash frame). The shot plays at FORGE_RATE from the
-  // scene's start, so the strike is STRIKE into the scene; the drawn sound waves use the same moment.
+  // scene's start, so the strike is STRIKE into the scene; the drawn sound waves use the same moment. "Lore first."
+  // lands with the hammer, and the line under it once the first layers are lit.
   const HIT = START[2] + STRIKE;
+  enter(2, 17.1, { lines: [17.1, HIT - 0.1], rest: HIT + 0.5 });
+  tl.to(rings, { opacity: 0.15, duration: 0.6, ease: 'power2.out' }, 17.1)
+    .to(badges, { autoAlpha: 0.15, duration: 0.6, ease: 'power2.out' }, 17.1);
   tl.fromTo(pulseT, { s: 1 }, { s: 1.8, duration: 0.9, ease: 'power1.out', onUpdate: up(pulseT) }, HIT)
     .fromTo(pulse, { opacity: 1 }, { opacity: 0, duration: 0.9 }, HIT)
     .to(worldT, { s: 1.06, duration: 6, ease: 'none', onUpdate: up(worldT) }, 17.1);
@@ -120,17 +132,18 @@ export default function film(gsap) {
     tl.to(ringT[i], { s: 1.035, duration: 0.24, ease: 'power2.out', onUpdate: up(ringT[i]) }, at)
       .to(ringT[i], { s: 1, duration: 0.9, ease: 'power2.inOut', onUpdate: up(ringT[i]) }, at + 0.24);
     tl.to(r, { stroke: 'rgba(255,255,255,.85)', strokeWidth: 1.6, duration: 0.3, ease: 'power2.out' }, at)
-      .to(r, { stroke: 'rgba(255,255,255,.32)', strokeWidth: 1.1, duration: 0.9 }, at + 0.22);
+      .to(r, { stroke: 'rgba(255,255,255,.32)', strokeWidth: 1.1, duration: 0.9 }, at + 0.22)
+      .to(r, { opacity: 1, duration: 0.25, ease: 'power2.out' }, at)
+      .to(badges[i], { autoAlpha: 1, duration: 0.3, ease: 'power2.out' }, at);
   });
   leave(2, 24.3);
 
   // 4 · All of it inside your rules: the boundary closes round the world
   enter(3, 25.1);
+  // The boundary arrives at its full size (the strike's last wave already drew it there) and holds still, its words
+  // level. Then one hand goes round it and ticks each layer as checked (drawn in film-scenes.js).
   tl.to(worldT, { s: 0.94, duration: 2, ease: 'power2.inOut', onUpdate: up(worldT) }, 25.3)
-    .to(law, { autoAlpha: 1, duration: 1.2 }, 25.8)
-    // The boundary arrives at its full size: the strike's last wave already drew it there (film-scenes.js).
-    .to(lawT, { r: 30, duration: 7, ease: 'power1.out', onUpdate: up(lawT) }, 25.8)
-    .fromTo(path, { attr: { startOffset: '0%' } }, { attr: { startOffset: '-24%' }, duration: 7.2 }, 25.8);
+    .to(law, { autoAlpha: 1, duration: 1.2 }, 25.8);
   leave(3, 32.3);
 
   // 5 · Most worlds are missing layers: two break, the Verdict, the Build and the Keep rebuild them
@@ -147,21 +160,24 @@ export default function film(gsap) {
       .to(badges[k], { autoAlpha: 1, duration: 0.5 }, 38.9 + j * 0.3)
       .to(r, { stroke: 'rgba(255,255,255,.32)', duration: 1 }, 39.8 + j * 0.3);
   });
-  steps.forEach((s, i) => tl.to(s, { autoAlpha: 1, x: 0, duration: 0.7, ease: 'expo.out' }, 35.6 + i * 1.1));
+  // Each line lands on its picture: the Verdict as the gaps are found, the Build with the rebuild, the Keep as the
+  // rebuilt rings settle back into the world.
+  [35.0, 38.6, 39.7].forEach((at, i) => steps[i] && tl.to(steps[i], { autoAlpha: 1, x: 0, duration: 0.7, ease: 'expo.out' }, at));
   leave(4, 41.3);
 
-  // 6 · Nine worlds: the world folds into the centre of a star
-  enter(5, 42.1);
+  // 6 · Nine worlds: the world folds into the centre of a star. "Yours is next." and the call arrive as the empty
+  // seat lights (film-scenes.js: about 3.5s in), not before.
+  enter(5, 42.1, { lines: [42.1, START[5] + 3.4], rest: START[5] + 3.9 });
   tl.to(law, { autoAlpha: 0, duration: 0.8 }, 42.2)
     .to(layerText, { autoAlpha: 0, duration: 0.6 }, 42.2)
     .to(worldT, { s: 0.3, duration: 1.4, ease: 'power3.inOut', onUpdate: up(worldT) }, 42.4)
-    // The world's halo goes in with it, so no wide disc of light is left behind the nine.
-    .to(haloT, { s: 0.3, duration: 1.4, ease: 'power3.inOut', onUpdate: up(haloT) }, 42.4)
+    // The world's halo goes out as it folds in, so no disc of light is left behind the nine.
+    .to(halo, { opacity: 0, duration: 0.6 }, 42.2)
     .to(wls, { autoAlpha: 1, duration: 0.01 }, 43.5);
   spokeD.forEach((d, i) => tl.to(d, { v: 1, duration: 0.7, ease: 'power2.out', onUpdate: up(d) }, 43.6 + i * 0.16));
   // Each world appears as its spark reaches it (the sparks are drawn in film-scenes.js: they leave the core at
   // max(1.75, 1.5 + 0.16i) into the scene and take about 0.4s to arrive).
-  wbT.forEach((b, i) => tl.to(b, { s: 1, duration: 0.6, ease: 'back.out(2.4)', onUpdate: up(b) }, START[5] + Math.max(1.75, 1.5 + i * 0.16) + 0.4));
+  wbT.forEach((b, i) => tl.to(b, { s: 1, duration: 0.7, ease: 'expo.out', onUpdate: up(b) }, START[5] + Math.max(1.75, 1.5 + i * 0.16) + 0.4));
   tl.to({}, { duration: 1 }, END - 1);
 
   // The layers keep turning together, slowly, while the film is on screen.
@@ -181,8 +197,8 @@ export default function film(gsap) {
   // Where each shot starts. Genesis is black for its first second, so the film opens on its spark already lit.
   const OFFSET = [1, 0, 0, 0, 0, 0];
   // Each scene plays at its own pace: the timeline is laid out in long scenes, then run faster where it can be.
-  // About 42 seconds in all, with the hall the longest and the nine worlds given time to land.
-  const SPEED = [1.3, 1.4, 1.3, 1.0, 1.35, 1.15];
+  // About 37 seconds in all, with the nine worlds given time to land.
+  const SPEED = [1.3, 1.4, 1.3, 1.25, 1.25, 1.15];
   const motion = canvas && gfx ? filmMotion(canvas, gfx) : null, MIX = 1.2;
   let scene = -1, playing = false, visible = false, userPaused = false;
   const shot = (i) => plates.find((v) => +v.dataset.i === i);
@@ -215,15 +231,16 @@ export default function film(gsap) {
     const tx0 = g.left - st.left + g.width / 2, ty0 = g.top - st.top + g.height / 2;
     plates.forEach((v) => {
       if (!v.dataset.anchor) return;
-      // Anchor "x y max": the point, and the most the shot may be enlarged to reach the core. Past that it gets as
-      // close as it can while still covering the frame (on phones the forge would otherwise lose its hammer).
+      // Anchor "x y max": the point ("-" for y keeps the shot level), and the most the shot may be enlarged to reach
+      // the core. Past that it gets as close as it can while still covering the frame (on phones the forge would
+      // otherwise lose its hammer).
       const [fx, fy, kmax = 1.5] = v.dataset.anchor.split(' ').map(Number), va = v.videoWidth ? v.videoWidth / v.videoHeight : 16 / 9;
-      const dw = Math.max(W, H * va), dh = dw / va, ax = (W - dw) / 2 + fx * dw - W / 2, ay = (H - dh) / 2 + fy * dh - H / 2;
+      const free = Number.isNaN(fy), dw = Math.max(W, H * va), dh = dw / va, ax = (W - dw) / 2 + fx * dw - W / 2, ay = free ? 0 : (H - dh) / 2 + fy * dh - H / 2;
       // The shot is laid out at the size of its whole frame, centred (not cropped to the screen), so that shifting it
       // to put the anchor on the core never uncovers an edge of it.
       Object.assign(v.style, { left: `${((W - dw) / 2).toFixed(1)}px`, top: `${((H - dh) / 2).toFixed(1)}px`, width: `${dw.toFixed(1)}px`, height: `${dh.toFixed(1)}px`, right: 'auto', bottom: 'auto', maxWidth: 'none', maxHeight: 'none' });
       let k = 1.04, x = 0, y = 0;
-      for (let n = 0; n < 4; n++) { x = tx0 - W / 2 - k * ax; y = ty0 - H / 2 - k * ay; k = Math.min(kmax, Math.max(1.04, (W + 2 * Math.abs(x)) / dw + 0.01, (H + 2 * Math.abs(y)) / dh + 0.01)); }
+      for (let n = 0; n < 4; n++) { x = tx0 - W / 2 - k * ax; y = free ? 0 : ty0 - H / 2 - k * ay; k = Math.min(kmax, Math.max(1.04, (W + 2 * Math.abs(x)) / dw + 0.01, (H + 2 * Math.abs(y)) / dh + 0.01)); }
       const mx = Math.max(0, (k * dw - W) / 2 - 1), my = Math.max(0, (k * dh - H) / 2 - 1);
       x = Math.max(-mx, Math.min(mx, x)); y = Math.max(-my, Math.min(my, y));
       v._place = { x, y, k, cx: tx0 - W / 2, cy: ty0 - H / 2 };

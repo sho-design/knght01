@@ -6,7 +6,7 @@ import { SIGILS, WORLD_SIGILS } from '../lib/sigils';
 const worlds = await getWorlds();
 const layers = await getLayers();
 const TAG: Record<string, string> = {
-  lore: 'The story', law: 'The rules', language: 'The voice', map: 'The site and search',
+  lore: 'The story', law: 'Offers and claims', language: 'The voice', map: 'The site and search',
   ground: 'The space', artifacts: 'What people hold', machinery: 'The systems',
 };
 const RING = (k: number) => 64 + k * 50; // Law 114 ... Machinery 364
@@ -26,14 +26,18 @@ const SHOTS: (string | null)[] = [
 ];
 // Where in each shot the diagram's core belongs (fractions of the frame), measured from the footage: the heart of
 // the genesis cloud, and the point where the hammer meets the metal. The hall stays centred (its beam is matched).
-const ANCHOR: Record<number, string> = { 0: '0.505 0.505 1.6', 2: '0.545 0.598 1.3' }; // x y, most it may be enlarged
+// The hall's column of light is matched to the core too, sideways only ("-" leaves it level), so the light falls on the world.
+const ANCHOR: Record<number, string> = { 0: '0.505 0.505 1.6', 2: '0.545 0.598 1.3', 3: '0.5 - 1.5' }; // x y, most it may be enlarged
+// Under each world's name, what the business is: the rest of its name from its world file. Rum Raiders' second word is
+// part of its name, so its category stands in.
+const WHAT: Record<string, string> = { 'rum-raiders-ring': 'Spirits' };
 const scenes = [
   { eb: 'What we do', h: ['Every', 'business', 'is a <em>world.</em>'], p: 'Your customers meet it everywhere: online, on the shelf and at the front desk.' },
-  { eb: 'The layers', h: ['A world', 'is built in', '<em>seven layers.</em>'], p: 'From the story at its core to the systems that keep it running.' },
+  { eb: 'The layers', h: ['A world', 'is built in', '<em>seven layers.</em>'], p: 'We build all seven, from the story at its core to the systems that keep it running.' },
   { eb: 'The order', h: ['Built in order.', '<em>Lore first.</em>'], p: 'We start with the story, because everything else is built on it.' },
   { eb: 'The rules', h: ['All of it', 'inside', '<em>your rules.</em>'], p: 'Every word, sign and system is checked against <span data-reel-reg>your regulator</span>.' },
   { eb: 'The work', h: ['Most worlds', 'are missing', '<em>layers.</em>'], p: '' },
-  { eb: 'The worlds', h: ['Nine worlds built.', '<em>Yours is next.</em>'], p: 'Clinics, law, spirits, food and more. Scroll to step inside.' },
+  { eb: 'The worlds', h: ['Nine worlds built.', '<em>Yours is next.</em>'], p: 'A free 30-minute call. Your three biggest risks, one fix for this week, and a straight answer on fit.' },
 ];
 const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work', 'Nine worlds'];
 ---
@@ -48,13 +52,16 @@ const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work',
     <svg class="reel__svg film__gfx" viewBox="-500 -500 1000 1000" aria-hidden="true" data-role="img" aria-label="A world drawn as seven rings around a core: Lore at the centre, then Law, Language, Map, Ground, Artifacts and Machinery, all inside a boundary of your regulator's rules.">
       <defs>
         <radialGradient id="reelGlow"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".45" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
-        <path id="reelArc" d="M 0 -452 A 452 452 0 1 1 -0.1 -452" />
+        <!-- The boundary's words sit level: the claim across the top, the rest along the bottom, both upright. -->
+        <path id="reelTop" d="M -452 0 A 452 452 0 0 1 452 0" />
+        <path id="reelBottom" d="M -466 0 A 466 466 0 0 0 466 0" />
       </defs>
       <circle class="reel__halo" r="480" fill="url(#reelGlow)" />
       <g class="reel__world">
         <g class="reel__law">
           <circle class="reel__bound" r="430" />
-          <text class="reel__lawtext"><textPath href="#reelArc" startOffset="0%" data-reel-path>CHECKED AGAINST YOUR REGULATOR · EVERY WORD · EVERY SIGN · EVERY SYSTEM · CHECKED AGAINST YOUR REGULATOR · EVERY WORD · EVERY SIGN · EVERY SYSTEM ·</textPath></text>
+          <text class="reel__lawtext" text-anchor="middle"><textPath href="#reelTop" startOffset="50%" data-reel-path>CHECKED AGAINST YOUR REGULATOR</textPath></text>
+          <text class="reel__lawtext" text-anchor="middle"><textPath href="#reelBottom" startOffset="50%">EVERY WORD · EVERY SIGN · EVERY SYSTEM</textPath></text>
         </g>
         <g class="reel__core">
           <circle class="reel__pulse" r="58" />
@@ -93,7 +100,8 @@ const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work',
                   <g class="reel__wb">
                     <circle class="reel__chip" r="40" />
                     <g transform="translate(-21.6 -21.6) scale(1.8)" class="reel__sig" set:html={WORLD_SIGILS[w.id] || ''} />
-                    <text class="reel__name" y={y > 0 ? 70 : -56}>{w.data.name}</text>
+                    <text class="reel__name" y={y > 0 ? 70 : -78}>{w.data.name}</text>
+                    <text class="reel__tag reel__what" y={y > 0 ? 94 : -54}>{WHAT[w.id] ?? w.data.em}</text>
                   </g>
                 </g>
               </a>
@@ -146,7 +154,7 @@ const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work',
       <button type="button" class="film__play" data-film-play aria-label="Pause the film"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14"/><path class="i-play" d="M7 4.5v15l12-7.5z"/></svg></button>
       <div class="film__bar">
         <div class="film__fill" data-film-fill></div>
-        {LABELS.map((l, i) => <button type="button" class="film__tick" data-film-tick={i} style={`--p:${([0, 8, 17, 25, 33, 42][i] / 52).toFixed(4)}`} aria-label={`Scene ${i + 1}: ${l}`}><span>{l}</span></button>)}
+        {LABELS.map((l, i) => <button type="button" class="film__tick" data-film-tick={i} style={`--p:${([0, 8, 17, 25, 33, 42][i] / 49).toFixed(4)}`} aria-label={`Scene ${i + 1}: ${l}`}><span>{l}</span></button>)}
       </div>
       <button type="button" class="film__replay" data-film-replay>Watch again</button>
     </div>

@@ -1189,7 +1189,9 @@ html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
 .film__plate.is-on{opacity:1}
 .film.no-autoplay .film__plate{opacity:0} /* the browser would not start the footage: the drawn film runs over black (film.js) */
 .film__plate[data-i="3"]:not(.is-on){transition-duration:2.8s}
-.film__plate[data-i="0"]:not(.is-on){transition-duration:2.4s} /* genesis fades as it condenses into the core */ /* the hall fades out slowly under scene 5's dust */
+.film__plate[data-i="0"]:not(.is-on){transition-duration:2.4s}
+/* The forge's metal is the brightest thing in the film: graded down so it keeps its texture instead of clipping to white */
+.film__plate[data-i="2"]{filter:grayscale(1) contrast(1.06) brightness(.92)} /* genesis fades as it condenses into the core */ /* the hall fades out slowly under scene 5's dust */
 .film__shade{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.38) 30%,rgba(0,0,0,0) 52%),radial-gradient(ellipse at 50% 50%,transparent 60%,rgba(0,0,0,.4) 100%)}
 .gsap .film__gfx{position:absolute;z-index:2;right:3vw;top:50%;margin:0;width:min(80vh,50vw);height:auto;aspect-ratio:1;transform:translateY(-50%)}
 .gsap .film__type{position:absolute;z-index:3;left:var(--gutter);top:50%;transform:translateY(-50%);width:min(44vw,640px);display:grid}
@@ -1207,8 +1209,8 @@ html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
 .film__tick.is-on::before{background:#fff;border-color:#fff}
 .film__tick span{position:absolute;left:50%;bottom:calc(100% + 4px);transform:translateX(-50%);white-space:nowrap;font:500 .62rem/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.6);opacity:0;transition:opacity .3s}
 .film__tick:hover span,.film__tick:focus-visible span,.film__tick.is-on:last-of-type span{opacity:1}
-.film__replay{display:none;flex:none;padding:0;border:0;background:none;color:#fff;font:500 .72rem/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;cursor:pointer;border-bottom:1px solid currentColor;padding-bottom:4px}
-.film.is-ended .film__replay{display:inline-block}
+.film__replay{display:inline-block;visibility:hidden;opacity:0;transition:opacity .6s;flex:none;padding:0;border:0;background:none;color:#fff;font:500 .72rem/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;cursor:pointer;border-bottom:1px solid currentColor;padding-bottom:4px}
+.film.is-ended .film__replay{visibility:visible;opacity:1} /* its room is kept all along, so the bar never jumps when it appears */
 @media (max-width:900px){
   .gsap .film__gfx{left:50%;right:auto;top:calc(var(--nav-h) + 1svh);width:min(84vw,40svh);transform:translateX(-50%)}
   .gsap .film__type{left:20px;right:20px;width:auto;top:auto;bottom:86px;transform:none}
@@ -1216,7 +1218,19 @@ html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
   .film__shade{background:linear-gradient(180deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.6) 58%,rgba(0,0,0,.92) 100%)}
   .film__tick span{display:none}
   .film__ui{gap:14px}
+  /* The diagram is small on a phone: the little tags go, and the names and the boundary's words grow so they read */
+  .film .reel__tag{display:none}
+  .film .reel__name{font-size:38px}
+  .film .reel__name--core{font-size:42px}
+  .film .reel__lawtext{font-size:22px;letter-spacing:.24em}
 }
+/* A thin dark keyline under the diagram's words, so they hold over bright footage */
+.film .reel__name,.film .reel__tag,.film .reel__lawtext{paint-order:stroke;stroke:rgba(0,0,0,.72);stroke-width:2.5px;stroke-linejoin:round}
+.film .reel__tag,.film .reel__lawtext{stroke-width:2px}
+.film__p{text-wrap:balance}
+/* The site's faint light from the cursor stays off over the film, which has its own light */
+.hall__glow{transition:opacity .6s}
+.in-reel .hall__glow{opacity:0}
 
 .gsap .film__gfx .reel__halo{mix-blend-mode:screen}
 .film.no-footage .film__plates{display:none}

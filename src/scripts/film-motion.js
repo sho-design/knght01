@@ -24,17 +24,22 @@ export default function filmMotion(canvas, gfx) {
     const cx = (g.left - r.left + g.width / 2) * dpr, cy = (g.top - r.top + g.height / 2) * dpr;
     // The worlds sit on ten seats; the last one is empty, waiting for the viewer's.
     const seats = Array.from({ length: SEATS }, (_, i) => { const a = ((-90 + (i * 360) / SEATS) * Math.PI) / 180; return [cx + Math.cos(a) * 372 * u, cy + Math.sin(a) * 372 * u]; });
-    // The column of light in the hall shot (scene 4), where it falls on screen: the shot is centred and cropped
-    // to cover, slightly enlarged. Its dust becomes scene 5's embers.
+    // The column of light in the hall shot (scene 4), where it falls on screen: the shot covers the screen and is
+    // shifted sideways and enlarged (film.js align(), its _place) so the beam falls on the core. Its dust becomes
+    // scene 5's embers.
     const hall = gfx.closest('.film').querySelector('.film__plate[data-i="3"]'), va = hall && hall.videoWidth ? hall.videoWidth / hall.videoHeight : 16 / 9;
-    const vh = Math.max(r.height, r.width / va) * 1.04 * dpr, mid = (r.height * dpr) / 2;
+    const pl = hall && hall._place, k = pl ? pl.k : 1.04;
+    const vh = Math.max(r.height, r.width / va) * k * dpr, mid = (r.height / 2 + (pl ? pl.y : 0)) * dpr;
     // Measured against the footage: the beam is about 7% of the shot's height wide, widening to 10% at the floor,
     // the floor is 33% of the shot's height below its middle, and the pool of light sits a little right of the beam.
-    const beam = { x: (r.width * dpr) / 2, top: mid - vh / 2, floor: mid + 0.331 * vh, fw0: 0.07 * vh, fwm: 0.006 * vh, fwf: 0.024 * vh, pool: 0.25 * vh, poolDx: 0.03 * vh };
+    const beam = { x: (r.width / 2 + (pl ? pl.x : 0)) * dpr, top: mid - vh / 2, floor: mid + 0.331 * vh, fw0: 0.07 * vh, fwm: 0.006 * vh, fwf: 0.024 * vh, pool: 0.25 * vh, poolDx: 0.03 * vh };
+    // Where the six layer badges are on screen (centre and radius), for the check in scene 4. A function, so it is
+    // only measured when a scene asks.
+    const badges = () => [...gfx.querySelectorAll('.reel__badge .reel__chip')].map((c) => { const b = c.getBoundingClientRect(); return [(b.left - r.left + b.width / 2) * dpr, (b.top - r.top + b.height / 2) * dpr, (b.width / 2) * dpr]; });
     // The world group's live scale (it breathes, holds at 0.94 from scene 4, and shrinks into the core in scene 6),
     // so drawn rings land on the diagram's rings rather than beside them.
     const wm = /scale\(([\d.]+)\)/.exec((gfx.querySelector('.reel__world') || gfx).getAttribute('transform') || ''), ws = wm ? +wm[1] : 1;
-    return { beam, ws, cx, cy, U: u * 12.5, ring: (k) => ring(k) * u * ws, nine: seats.slice(0, SEATS - 1), seat: seats[SEATS - 1], nineAt: (i) => 1.9 + i * 0.16, shrink: (t) => 1 - 0.7 * inout((t - 0.4) / 1.4), tw: 1.7, glass: 0.55 }; // the glass a little darker, so the diagram's labels read over it
+    return { beam, badges, ws, cx, cy, U: u * 12.5, ring: (k) => ring(k) * u * ws, nine: seats.slice(0, SEATS - 1), seat: seats[SEATS - 1], nineAt: (i) => 1.9 + i * 0.16, shrink: (t) => 1 - 0.7 * inout((t - 0.4) / 1.4), tw: 1.7, glass: 0.55 }; // the glass a little darker, so the diagram's labels read over it
   };
   const bufs = [document.createElement('canvas'), document.createElement('canvas')];
   const into = (f, k, fn, t) => {
@@ -53,14 +58,14 @@ export default function filmMotion(canvas, gfx) {
     vig.width = W; vig.height = H; const c = vig.getContext('2d'), g = c.createRadialGradient(x, H / 2, Math.min(W, H) * 0.3, x, H / 2, Math.max(W, H) * 0.85);
     g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0.6)'); c.fillStyle = g; c.fillRect(0, 0, W, H); vigKey = key; return vig;
   };
-  const look = (f, amount, t) => {
+  const look = (f, amount, t, bloom = 1) => {
     const { ctx, W, H } = f;
     small.width = Math.max(1, W >> 3); small.height = Math.max(1, H >> 3); tiny.width = Math.max(1, W >> 5); tiny.height = Math.max(1, H >> 5);
     const sx = small.getContext('2d'), tx = tiny.getContext('2d');
     sx.drawImage(canvas, 0, 0, small.width, small.height); tx.drawImage(small, 0, 0, tiny.width, tiny.height);
     ctx.save(); ctx.globalCompositeOperation = 'lighter';
-    ctx.globalAlpha = 0.45 * amount; ctx.drawImage(small, 0, 0, W, H);
-    ctx.globalAlpha = 0.5 * amount; ctx.drawImage(tiny, 0, 0, W, H);
+    ctx.globalAlpha = 0.45 * amount * bloom; ctx.drawImage(small, 0, 0, W, H);
+    ctx.globalAlpha = 0.5 * amount * bloom; ctx.drawImage(tiny, 0, 0, W, H);
     ctx.globalCompositeOperation = 'soft-light'; ctx.globalAlpha = 0.35 * amount;
     const g = ctx.createPattern(grain, 'repeat'); ctx.translate((Math.random() * 160) | 0, (Math.random() * 160) | 0); ctx.fillStyle = g; ctx.fillRect(-160, -160, W + 160, H + 160);
     ctx.restore();
@@ -98,7 +103,8 @@ export default function filmMotion(canvas, gfx) {
       if (cur) { ctx.globalAlpha = mix; ctx.drawImage(into(f, 1, DIRS[cur], local), 0, 0); }
       ctx.globalAlpha = 1;
     }
-    if (bg > 0) look(f, bg, local);
+    // Less bloom on the close, so its light stays on the sparks and the outlines rather than spreading into discs.
+    if (bg > 0) look(f, bg, local, cur === 'ascend' ? 0.4 : 1);
   };
   return { draw, resize: () => {} };
 }
