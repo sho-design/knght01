@@ -89,10 +89,10 @@ export default function film(gsap) {
 
   // 3 · Built in order: the strike lights each ring from the core outward
   enter(2, 17.1);
-  // The hammer lands 1.46s into the forge shot (read from the shot's own frames: they jump in size as the
-  // sparks fly). The shot plays 0.75s per timeline second from the scene's start (17), so that is 18.95.
+  // The hammer lands 1.38s into the forge shot (read from the shot's own frames in display order: they jump in
+  // size as the sparks fly). The shot plays 0.75s per timeline second from the scene's start (17), so 18.84.
   // The drawn sound waves use the same moment (STRIKE in film-scenes.js).
-  const HIT = START[2] + 1.95;
+  const HIT = START[2] + 1.84;
   tl.fromTo(pulseT, { s: 1 }, { s: 1.8, duration: 0.9, ease: 'power1.out', onUpdate: up(pulseT) }, HIT)
     .fromTo(pulse, { opacity: 1 }, { opacity: 0, duration: 0.9 }, HIT)
     .to(worldT, { s: 1.06, duration: 6, ease: 'none', onUpdate: up(worldT) }, 17.1);
@@ -136,7 +136,9 @@ export default function film(gsap) {
     .to(worldT, { s: 0.3, duration: 1.4, ease: 'power3.inOut', onUpdate: up(worldT) }, 42.4)
     .to(wls, { autoAlpha: 1, duration: 0.01 }, 43.5);
   spokes.forEach((sp, i) => tl.to(sp, { strokeDashoffset: 0, duration: 0.7, ease: 'power2.out' }, 43.6 + i * 0.16));
-  wbT.forEach((b, i) => tl.to(b, { s: 1, duration: 0.6, ease: 'back.out(2.4)', onUpdate: up(b) }, 43.9 + i * 0.16));
+  // Each world appears as its spark reaches it (the sparks are drawn in film-scenes.js: they leave the core at
+  // max(1.75, 1.5 + 0.16i) into the scene and take about 0.4s to arrive).
+  wbT.forEach((b, i) => tl.to(b, { s: 1, duration: 0.6, ease: 'back.out(2.4)', onUpdate: up(b) }, START[5] + Math.max(1.75, 1.5 + i * 0.16) + 0.4));
   tl.to({}, { duration: 1 }, END - 1);
 
   // The layers keep turning together, slowly, while the film is on screen.
@@ -161,6 +163,11 @@ export default function film(gsap) {
   // If a shot cannot load, say so (for us), and keep the film running on its graphics alone.
   plates.forEach((v) => {
     v.addEventListener('error', () => { console.warn(`KNGHT film: shot ${+v.dataset.i + 1} did not load`, v.currentSrc || v.dataset.src, v.error && v.error.code); sec.dataset.missing = ((sec.dataset.missing || '') + ' ' + (+v.dataset.i + 1)).trim(); });
+    // What keepTime needs to be patient: whether the shot is stalled waiting for data, and how long its seeks take.
+    v.addEventListener('waiting', () => { v._wait = true; });
+    ['playing', 'canplay'].forEach((e) => v.addEventListener(e, () => { v._wait = false; }));
+    v.addEventListener('seeking', () => { v._t0 = performance.now(); });
+    v.addEventListener('seeked', () => { if (v._t0) v._lat = Math.min(2, (performance.now() - v._t0) / 1000); });
   });
   const sceneAt = (t) => { let i = 0; START.forEach((s, k) => { if (t >= s) i = k; }); return i; };
   const paint = () => {
@@ -184,7 +191,9 @@ export default function film(gsap) {
       const v = shot(i);
       if (v && v.src) {
         v.playbackRate = RATE * SPEED[i];
-        try { v.currentTime = Math.max(0, (t - START[i]) * RATE); } catch (e) {}
+        // Seek only when the shot is clearly somewhere else: after a pause the shot and the clock stopped together.
+        const want = Math.max(0, (t - START[i]) * RATE);
+        if (Math.abs(want - v.currentTime) > 0.1) { try { v.currentTime = want; } catch (e) {} }
         if (playing) v.play().catch(() => {});
       }
       ticks.forEach((b, k) => b.classList.toggle('is-on', k <= i));
@@ -197,13 +206,17 @@ export default function film(gsap) {
   ticks.forEach((b, i) => b.style.setProperty('--p', AT[i].toFixed(4)));
   const realProgress = (t) => { const i = sceneAt(t); return AT[i] + (t - START[i]) / SPEED[i] / TOTAL; };
   // Keep the shot on the film's clock: a shot can start late (decoding) or drift, which would put moments like
-  // the hammer strike out of step with the drawing. Small drift is eased out with the playback rate; large drift is cut.
+  // the hammer strike out of step with the drawing. It is patient: nothing while the shot is stalled for data;
+  // drift is eased out with the playback rate (up to 30% faster or slower); only a large drift is cut, at most
+  // once every 1.5s, and the cut aims ahead by however long this shot's seeks have been taking.
   const keepTime = () => {
     const v = shot(scene);
-    if (!v || !v.src || !playing || v.paused || v.seeking || v.readyState < 2) return;
-    const want = (tl.time() - START[scene]) * RATE, drift = want - v.currentTime, base = RATE * SPEED[scene];
-    if (Math.abs(drift) > 0.25) { try { v.currentTime = want; } catch (e) {} v.playbackRate = base; }
-    else v.playbackRate = base * (1 + Math.max(-0.15, Math.min(0.15, drift * 0.8)));
+    if (!v || !v.src || !playing || v.paused || v.seeking || v._wait || v.readyState < 3) return;
+    const want = (tl.time() - START[scene]) * RATE, drift = want - v.currentTime, base = RATE * SPEED[scene], now = performance.now();
+    if (Math.abs(drift) > 0.6 && !(now - (v._cut || 0) < 1500)) {
+      v._cut = now; v.playbackRate = base;
+      try { v.currentTime = Math.min(v.duration || Infinity, want + (v._lat || 0.1) * base); } catch (e) {}
+    } else v.playbackRate = base * (1 + Math.max(-0.3, Math.min(0.3, drift * 0.9)));
   };
   tl.eventCallback('onUpdate', () => {
     fill.style.transform = `scaleX(${Math.min(1, realProgress(tl.time())).toFixed(4)})`;

@@ -115,11 +115,11 @@ DIRS['ember-rings'] = (f, t) => {
 };
 
 // Into the forge (scene 3, footage): the last embers of the rings don't vanish, they drift up over the
-// footage and go out, handing over to the forge's own sparks. Then the hammer strikes (1.95s) and its sound
+// footage and go out, handing over to the forge's own sparks. Then the hammer strikes (1.84s) and its sound
 // goes out as waves: a front of close rings and a soft band of pressure, meeting each of the diagram's rings
 // just as it flashes (STRIKE + 0.2 + 0.32k), carrying on past the world, and an echo behind it. Drawn over the footage.
 // The strike is when the hammer lands in the shot (see HIT in film.js).
-const STRIKE = 1.95, FRONT = 50 / 0.32; // svg units per second: one ring every 0.32s
+const STRIKE = 1.84, FRONT = 50 / 0.32; // svg units per second: one ring every 0.32s
 const FRONTS = [[0, 1], [0.42, 0.45]];  // [delay, strength]: the strike and its echo
 const TRAIN = [0.8, 0.45, 0.24, 0.12];   // the close rings that make each front read as sound
 DIRS['ember-carry'] = (f, t) => {
