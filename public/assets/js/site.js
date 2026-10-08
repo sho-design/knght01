@@ -11,135 +11,12 @@
   const G = !!window.KNGHT_MOTION;
   if (!G) root.classList.remove('gsap');
 
-  /* ---------- Sound: synthesised in the browser, off until the visitor asks ---------- */
-  const Sound = (() => {
-    let ctx = null, master = null, droneNodes = [], on = false;
-    const noiseBuffer = (c, seconds) => {
-      const b = c.createBuffer(1, c.sampleRate * seconds, c.sampleRate);
-      const d = b.getChannelData(0);
-      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-      return b;
-    };
-    const startDrone = () => {
-      const t = ctx.currentTime;
-      const bus = ctx.createGain(); bus.gain.value = 0;
-      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.6;
-      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.06;
-      const lfoGain = ctx.createGain(); lfoGain.gain.value = 160;
-      lfo.connect(lfoGain).connect(lp.frequency);
-      [[55, 0], [82.41, 4], [110, -6]].forEach(([f, det], i) => {
-        const o = ctx.createOscillator(); o.type = i === 2 ? 'triangle' : 'sine';
-        o.frequency.value = f; o.detune.value = det;
-        const g = ctx.createGain(); g.gain.value = i === 2 ? 0.18 : 0.5;
-        o.connect(g).connect(lp); o.start(); droneNodes.push(o);
-      });
-      const air = ctx.createBufferSource(); air.buffer = noiseBuffer(ctx, 4); air.loop = true;
-      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 900; bp.Q.value = 0.5;
-      const ag = ctx.createGain(); ag.gain.value = 0.05;
-      air.connect(bp).connect(ag).connect(bus); air.start();
-      lp.connect(bus); bus.connect(master); lfo.start();
-      bus.gain.linearRampToValueAtTime(0.09, t + 3);
-      droneNodes.push(air, lfo);
-    };
-    const shing = (level = 1) => {
-      if (!on || !ctx) return;
-      const t = ctx.currentTime + 0.02;
-      const n = ctx.createBufferSource(); n.buffer = noiseBuffer(ctx, 0.6);
-      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.2;
-      bp.frequency.setValueAtTime(2400, t); bp.frequency.exponentialRampToValueAtTime(9000, t + 0.38);
-      const ng = ctx.createGain(); ng.gain.setValueAtTime(0, t);
-      ng.gain.linearRampToValueAtTime(0.16 * level, t + 0.08); ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
-      n.connect(bp).connect(ng).connect(master); n.start(t); n.stop(t + 0.6);
-      [1870, 2960, 4410, 6230, 8150].forEach((f, i) => {
-        const o = ctx.createOscillator(); o.type = 'sine';
-        o.frequency.setValueAtTime(f, t + 0.12); o.frequency.linearRampToValueAtTime(f * 1.004, t + 2.4);
-        const g = ctx.createGain(); const peak = [0.07, 0.05, 0.035, 0.022, 0.014][i] * level;
-        const tail = 2.6 / (1 + i * 0.45);
-        g.gain.setValueAtTime(0, t + 0.12); g.gain.linearRampToValueAtTime(peak, t + 0.14);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.14 + tail);
-        o.connect(g).connect(master); o.start(t + 0.12); o.stop(t + 0.2 + tail);
-      });
-    };
-    const tick = () => {
-      if (!on || !ctx) return;
-      const t = ctx.currentTime;
-      const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(1320, t);
-      o.frequency.exponentialRampToValueAtTime(880, t + 0.08);
-      const g = ctx.createGain(); g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
-      o.connect(g).connect(master); o.start(t); o.stop(t + 0.14);
-    };
-    const enable = async () => {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return false;
-      if (!ctx) {
-        ctx = new AC();
-        master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
-        startDrone();
-      }
-      try { await ctx.resume(); } catch (e) { return false; }
-      on = true;
-      master.gain.cancelScheduledValues(ctx.currentTime);
-      master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
-      master.gain.linearRampToValueAtTime(0.8, ctx.currentTime + 0.4);
-      shing();
-      return true;
-    };
-    const disable = () => {
-      on = false;
-      if (!ctx) return;
-      master.gain.cancelScheduledValues(ctx.currentTime);
-      master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
-      master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4);
-      setTimeout(() => { if (!on) ctx.suspend().catch(() => {}); }, 450);
-    };
-    document.addEventListener('visibilitychange', () => {
-      if (!ctx) return;
-      if (document.hidden) ctx.suspend().catch(() => {});
-      else if (on) ctx.resume().catch(() => {});
-    });
-    return { enable, disable, shing, tick, get on() { return on; } };
-  })();
-
-  const soundBtn = $('[data-sound]');
-  if (soundBtn) {
-    soundBtn.addEventListener('click', async () => {
-      const next = !Sound.on;
-      const ok = next ? await Sound.enable() : (Sound.disable(), true);
-      if (!ok) return;
-      soundBtn.setAttribute('aria-pressed', String(next));
-      soundBtn.setAttribute('aria-label', next ? 'Sound on. Turn sound off' : 'Sound off. Turn sound on');
-    });
-  }
-
-  /* ---------- Loader ---------- */
-  let seen = false;
-  try { seen = sessionStorage.getItem('knght-intro') === '1'; } catch (e) {}
-  const finishIntro = () => {
-    root.classList.add('is-loaded');
-    if (lenis) lenis.start();
-    try { sessionStorage.setItem('knght-intro', '1'); } catch (e) {}
-  };
-  if (reduce || seen || !$('.loader')) {
-    root.classList.add('no-loader');
-    requestAnimationFrame(finishIntro);
-  } else {
-    const count = $('.loader__count');
-    const start = performance.now();
-    const dur = 800;
-    const tick = (t) => {
-      const p = clamp((t - start) / dur, 0, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      if (count) count.textContent = String(Math.round(eased * 100)).padStart(3, '0');
-      if (p < 1) requestAnimationFrame(tick);
-      else setTimeout(finishIntro, 180);
-    };
-    requestAnimationFrame(tick);
-  }
+  /* ---------- The page is ready on its first frame: the hero's entrance runs from here ---------- */
+  requestAnimationFrame(() => root.classList.add('is-loaded'));
 
   /* ---------- Smooth scroll ---------- */
   if (!reduce && window.Lenis) {
     lenis = new window.Lenis({ lerp: 0.085, smoothWheel: true, anchors: true, autoRaf: true });
-    if (!root.classList.contains('is-loaded') && !root.classList.contains('no-loader')) lenis.stop();
   }
 
   /* ---------- Split headings into masked lines ---------- */
@@ -260,7 +137,7 @@
     const vio = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting) {
-          verdictVideo.play().then(() => setTimeout(() => Sound.shing(0.8), 900)).catch(() => {});
+          verdictVideo.play().catch(() => {});
           vio.disconnect();
         }
       });
@@ -488,7 +365,6 @@
       result.hidden = false;
       paint();
       live.textContent = `Your score is ${sum} out of 70. ${band}. Weakest layer: ${wq.dataset.layer}.`;
-      Sound.shing(0.6);
       document.dispatchEvent(new CustomEvent('knght:verdict', { detail: { total: sum, band, weak: wq.dataset.layer, fix: wq.dataset.fix, layers: qs.map((q, i) => ({ name: q.dataset.layer, score: answers[i] })) } }));
       const h = $('[data-r-band]'); h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true });
     };
@@ -500,7 +376,6 @@
       $$('.opt', qs[i]).forEach((o) => o.setAttribute('aria-pressed', String(o === opt)));
       answers[i] = Number(opt.dataset.v);
       document.dispatchEvent(new CustomEvent('knght:answer', { detail: { i } }));
-      Sound.tick();
       paint();
       setTimeout(() => { busy = false; i < qs.length - 1 ? show(i + 1, true) : finish(); }, reduce ? 0 : 420);
     });
@@ -731,7 +606,6 @@
     if (lenis) lenis.stop();
     document.body.style.overflow = 'hidden';
     requestAnimationFrame(() => codexEl.classList.add('is-on'));
-    Sound.shing && Sound.shing(0.6);
     const close = $('[data-codex-close]', codexEl);
     close.focus({ preventScroll: true });
     close.addEventListener('click', closeCodex);
@@ -781,9 +655,6 @@
     ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => markEl.addEventListener(ev, stop));
     markEl.addEventListener('click', (e) => { if (held) { e.preventDefault(); held = false; } });
     markEl.addEventListener('contextmenu', (e) => e.preventDefault());
-    // Drawing the I out of the name rings the blade, once per visit to the mark.
-    let rung = 0;
-    markEl.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'mouse' || Date.now() - rung < 1500) return; rung = Date.now(); setTimeout(() => { if (markEl.matches(':hover')) Sound.shing && Sound.shing(0.35); }, 120); });
   }
 
   /* ---------- Layer pages: seal each rule as it arrives, and turn outward to the next layer ---------- */
@@ -793,7 +664,7 @@
       const io = new IntersectionObserver((es) => es.forEach((e) => {
         if (!e.isIntersecting) return;
         io.unobserve(e.target);
-        $$('li', e.target).forEach((li, k) => setTimeout(() => { li.classList.add('is-sealed'); Sound.tick && Sound.tick(); }, 500 + k * 260));
+        $$('li', e.target).forEach((li, k) => setTimeout(() => { li.classList.add('is-sealed'); }, 500 + k * 260));
       }), { rootMargin: '0px 0px -25% 0px' });
       lists.forEach((l) => io.observe(l));
     } else lists.forEach((l) => $$('li', l).forEach((li) => li.classList.add('is-sealed')));
@@ -808,7 +679,6 @@
       g.style.top = (e.clientY || r.top + r.height / 2) + 'px';
       document.body.appendChild(g);
       const s = (Math.hypot(innerWidth, innerHeight) / 10) * 1.2;
-      Sound.shing && Sound.shing(0.4);
       requestAnimationFrame(() => requestAnimationFrame(() => { g.style.transform = `scale(${s})`; }));
       setTimeout(() => { location.href = a.href; }, 620);
     }));
@@ -876,7 +746,7 @@
     });
   });
 
-  window.KNGHT = { Sound, get lenis() { return lenis; }, resize: () => { sizeWorlds(); onScroll(); } };
+  window.KNGHT = { get lenis() { return lenis; }, resize: () => { sizeWorlds(); onScroll(); } };
 
   /* ---------- Toronto time in the hero ---------- */
   const clock = $('[data-clock]');
@@ -893,7 +763,7 @@
     const hall = document.createElement('div');
     hall.className = 'hall';
     hall.setAttribute('aria-hidden', 'true');
-    hall.innerHTML = '<div class="hall-field"><div class="hall-field__d" data-f="0.55"></div><div class="hall-field__d" data-f="0.78"></div><div class="hall-field__d" data-f="1"></div></div><div class="hall__glow"></div><div class="hall__veil"></div><p class="hall__hint"></p>';
+    hall.innerHTML = '<div class="hall-field"><div class="hall-field__d" data-f="0.55"></div><div class="hall-field__d" data-f="0.78"></div><div class="hall-field__d" data-f="1"></div></div><div class="hall__glow"></div>';
     document.body.appendChild(hall);
     const floor = document.createElement('div');
     floor.className = 'hall-floor';
@@ -992,7 +862,7 @@
       // Where words must not go: anything a visitor reads, clicks or looks at, and the white rooms.
       const avoid = [];
       $$('h1,h2,h3,h4,h5,p,a,button,li,img,video,figure,input,select,textarea,label,dt,dd,blockquote,.btn,.cat,.ck__marked,.rp__ink,.footer__word,.chap__num,.dial,.rung').forEach((el) => {
-        if (el.closest('.hall,.hall-portals,.nav,.mnav,.loader,.codex')) return;
+        if (el.closest('.hall,.hall-portals,.nav,.mnav,.codex')) return;
         const r = el.getBoundingClientRect();
         if (r.width < 2 || r.height < 2) return;
         avoid.push([r.left + sx, r.top + sy, r.right + sx, r.bottom + sy]);
@@ -1132,42 +1002,15 @@
       rooms.forEach((r) => io.observe(r));
     }
 
-    let tx = innerWidth * 0.5, ty = innerHeight * 0.32, x = tx, y = ty, lastX = x, lastY = y, flare = 0;
+    let tx = innerWidth * 0.5, ty = innerHeight * 0.32, x = tx, y = ty, lastX = x, lastY = y;
     if (reduce) {
       setVar('--lx', '50%'); setVar('--ly', '30%');
       return;
     }
     if (fine) addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; }, { passive: true });
 
-    // The torch: on a first visit the hall waits in the dark until the visitor moves.
-    let lit = true, ig = 1;
-    try { lit = sessionStorage.getItem('knght-lit') === '1'; } catch (e) {}
-    if (!lit) {
-      ig = 0.12;
-      root.classList.add('hall-unlit');
-      $('.hall__hint', hall).textContent = fine ? 'Move to light the hall' : 'Touch to light the hall';
-      const ignite = () => {
-        if (lit || !root.classList.contains('is-loaded')) return;
-        lit = true; flare = 2.2;
-        root.classList.remove('hall-unlit');
-        root.classList.add('hall-igniting');
-        setTimeout(() => root.classList.remove('hall-igniting'), 1600);
-        try { sessionStorage.setItem('knght-lit', '1'); } catch (e) {}
-        ['pointermove', 'pointerdown', 'wheel', 'keydown', 'touchstart'].forEach((ev) => removeEventListener(ev, onFirst));
-      };
-      let moved = 0;
-      const onFirst = (e) => {
-        if (e.type === 'pointermove') { moved += Math.abs(e.movementX || 0) + Math.abs(e.movementY || 0); if (moved < 24) return; }
-        ignite();
-      };
-      ['pointermove', 'pointerdown', 'wheel', 'keydown', 'touchstart'].forEach((ev) => addEventListener(ev, onFirst, { passive: true }));
-      // Never leave anyone in the dark.
-      const failsafe = () => (root.classList.contains('is-loaded') ? setTimeout(ignite, 4500) : setTimeout(failsafe, 300));
-      failsafe();
-    }
-
     // Steel catches the light: marks, numerals, sigils and chips glint as the light passes.
-    const STEEL = '.mark, .chap__num, .footer__word .sheen, .layer__sigil, .rung__sigil, .cat, .wfilter__chip, .sound, .nring__sig';
+    const STEEL = '.mark, .chap__num, .footer__word .sheen, .layer__sigil, .rung__sigil, .cat, .wfilter__chip, .nring__sig';
     const steel = new Set();
     if ('IntersectionObserver' in window) {
       const sio = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? steel.add(e.target) : steel.delete(e.target))));
@@ -1183,10 +1026,8 @@
         ty = innerHeight * (0.34 + Math.sin(t * 0.17 + 1.3) * 0.08);
       }
       x += (tx - x) * 0.09; y += (ty - y) * 0.09;
-      flare *= 0.93;
-      ig += ((lit ? 1 : 0.12) - ig) * (lit ? 0.045 : 0.2);
       // A candle never holds still.
-      const flick = (1 + Math.sin(t * 7.3) * 0.012 + Math.sin(t * 13.1 + 2) * 0.008 + Math.sin(t * 2.1) * 0.02 + flare * 0.06) * ig;
+      const flick = (1 + Math.sin(t * 7.3) * 0.012 + Math.sin(t * 13.1 + 2) * 0.008 + Math.sin(t * 2.1) * 0.02);
       setVar('--lx', x.toFixed(1) + 'px');
       setVar('--ly', y.toFixed(1) + 'px');
       setVar('--lr', flick.toFixed(4));
@@ -1204,7 +1045,7 @@
         const off = (scrollY + vh2 - p.y) * (1 - p.f);
         p.a.style.transform = `translate3d(0,${off.toFixed(1)}px,0)`;
         const d = Math.hypot(p.x - scrollX - x, p.y + off - scrollY - y);
-        const v = Math.max(0, Math.min(1, 1 - (d - 40) / 170)) * ig * (p.y + off - scrollY > edge ? 1 : 0);
+        const v = Math.max(0, Math.min(1, 1 - (d - 40) / 170)) * (p.y + off - scrollY > edge ? 1 : 0);
         p.a.style.opacity = (v * 0.8).toFixed(3);
         p.a.style.pointerEvents = v > 0.3 && !p.blocked ? 'auto' : 'none';
         p.a.classList.toggle('is-near', v > 0.75);
@@ -1214,7 +1055,7 @@
         const r = el.getBoundingClientRect();
         const gx = ((x - r.left) / Math.max(r.width, 1)) * 100;
         const d = Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2));
-        const ga = Math.max(0, 1 - d / 520) * ig;
+        const ga = Math.max(0, 1 - d / 520);
         el.style.setProperty('--gx', Math.max(-60, Math.min(160, gx)).toFixed(1) + '%');
         el.style.setProperty('--ga', ga.toFixed(3));
       });

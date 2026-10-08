@@ -95,7 +95,6 @@
     out.hidden = false;
     out.classList.toggle('is-clean', !kept.length);
     track('claim_check', { category: c, flags: kept.length });
-    if (window.KNGHT && window.KNGHT.Sound && window.KNGHT.Sound.tick) window.KNGHT.Sound.tick();
     out.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   };
   form.addEventListener('submit', (e) => { e.preventDefault(); run(); });

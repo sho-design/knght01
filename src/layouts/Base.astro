@@ -13,12 +13,11 @@ interface Props {
   bodyClass?: string;
   ld?: object[];
   nav?: { href: string; label: string }[];
-  sound?: boolean;
   footer?: 'contact' | 'home';
 }
 const {
   title, description, path, ogTitle = title, ogType = 'article', ogImage = 'https://knght.com/og.jpg',
-  bodyClass = 'worldpage', ld = [], sound = false, footer = 'contact',
+  bodyClass = 'worldpage', ld = [], footer = 'contact',
   nav = [
     { href: '/#worlds', label: 'Worlds' },
     { href: '/#layers', label: 'The layers' },
@@ -68,7 +67,6 @@ const url = `https://knght.com/${path}`;
       <ul>{nav.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
     </nav>
     <div class="nav__end">
-      {sound && <button type="button" class="sound" data-sound aria-pressed="false" aria-label="Sound off. Turn sound on"><span class="sound__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sound__label">Sound</span></button>}
       <a class="btn btn--sm" href="/book/" data-magnetic>Book the free call</a>
     </div>
   </div>

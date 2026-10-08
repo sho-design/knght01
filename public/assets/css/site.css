@@ -66,20 +66,7 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 
 /* Cursor */
 
-/* Loader */
-.loader{position:fixed;inset:0;z-index:120;display:grid;place-items:center;background:var(--sable);transition:clip-path 1.1s var(--ease);clip-path:inset(0 0 0 0)}
-.loader__inner{display:flex;flex-direction:column;align-items:center;gap:28px}
-.loader svg{width:34px;height:auto}
-.loader svg *{fill:none;stroke:var(--argent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.3s var(--ease) forwards}
-.loader svg .d2{animation-delay:.15s}.loader svg .d3{animation-delay:.3s}.loader svg .d4{animation-delay:.45s}
-.loader__word{display:flex;gap:.34em;font:500 1.15rem/1 var(--serif);letter-spacing:.1em;overflow:hidden}
-.loader__word span{display:block;transform:translateY(110%);animation:rise .9s var(--ease-out) forwards}
-.loader__word span:nth-child(2){animation-delay:.06s}.loader__word span:nth-child(3){animation-delay:.12s}.loader__word span:nth-child(4){animation-delay:.18s}.loader__word span:nth-child(5){animation-delay:.24s}
-.loader__count{position:absolute;right:var(--gutter);bottom:var(--gutter);font:400 clamp(3rem,9vw,7rem)/1 var(--serif);font-style:italic;color:var(--ash);font-variant-numeric:tabular-nums}
-.is-loaded .loader{clip-path:inset(0 0 100% 0);pointer-events:none}
-.no-loader .loader{display:none}
 @keyframes draw{to{stroke-dashoffset:0}}
-@keyframes rise{to{transform:translateY(0)}}
 
 /* Nav */
 .nav{position:fixed;top:0;left:0;right:0;z-index:80;padding-top:env(safe-area-inset-top,0px);transition:transform .6s var(--ease),background .4s,border-color .4s;border-bottom:1px solid transparent}
@@ -293,17 +280,6 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 .dial__score b{font:300 clamp(4.4rem,8.6vw,7.6rem)/.8 var(--serif);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.03em}
 .dial__score span{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ash)}
 
-/* Sound toggle */
-.nav__end{display:flex;align-items:center;gap:clamp(14px,2vw,26px)}
-.sound{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 4px;background:none;border:0;color:var(--ash);font:500 .74rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:color .3s}
-.sound:hover,.sound[aria-pressed="true"]{color:var(--argent)}
-.sound__bars{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
-.sound__bars i{display:block;width:2px;height:3px;background:currentColor}
-.sound[aria-pressed="true"] .sound__bars i{animation:eq 1.1s ease-in-out infinite}
-.sound[aria-pressed="true"] .sound__bars i:nth-child(2){animation-delay:.25s}
-.sound[aria-pressed="true"] .sound__bars i:nth-child(3){animation-delay:.5s}
-.sound[aria-pressed="true"] .sound__bars i:nth-child(4){animation-delay:.12s}
-@keyframes eq{0%,100%{height:3px}50%{height:12px}}
 
 /* Foil sheen: a slow glint across the few words that carry the brand */
 @supports ((-webkit-background-clip:text) or (background-clip:text)){
@@ -519,7 +495,6 @@ html.lenis,html.lenis body{height:auto}
   .footer__cols > :nth-child(2){grid-column:1/-1;order:3}
 }
 @media (max-width:560px){
-  .sound__label{display:none}
   .nav__end{gap:10px}
   .opt{min-height:56px;padding:0 20px}
   .thesis__stats{grid-template-columns:minmax(0,1fr)}
@@ -579,7 +554,6 @@ html.lenis,html.lenis body{height:auto}
 .mnav a[aria-current]{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
 .mnav__foot{display:flex;flex-direction:column;align-items:flex-start;gap:20px}
 @media (max-width:900px){.nav__toggle{display:block}}
-@media (max-width:600px){.nav .sound{display:none}}
 @media (prefers-reduced-motion:reduce){.mnav,.mnav__list li,.nav__toggle *,.mnav__sub,.mnav__sub ul,.mnav__plus::after{transition:none!important}}
 
 /* Back to top */
@@ -986,12 +960,6 @@ html.has-hall body{background:transparent}
 .has-hall .thesis,.has-hall .layers,.has-hall .chap,.has-hall .footer{background:radial-gradient(ellipse 90% 60% at 50% 0%,rgba(255,255,255,.045) 0%,rgba(255,255,255,.015) 40%,rgba(255,255,255,0) 75%)}
 /* The light finds words */
 /* The torch: a first visit starts in the dark */
-.hall__veil{position:absolute;inset:0;background:#000;opacity:0;transition:opacity 1.6s cubic-bezier(.2,.7,.2,1)}
-.hall__hint{position:absolute;left:50%;bottom:clamp(28px,6vh,64px);transform:translateX(-50%);margin:0;font:500 .72rem/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;color:#cfcfcf;opacity:0;transition:opacity .8s;white-space:nowrap}
-.hall-unlit .hall__veil{opacity:.8}
-.hall-unlit.is-loaded .hall__hint{opacity:.85;animation:hintPulse 2.4s ease-in-out infinite}
-@keyframes hintPulse{0%,100%{opacity:.4}50%{opacity:.9}}
-.hall-unlit .nav{opacity:.25;transition:opacity 1.6s}
 .nav{transition:transform .6s var(--ease),background .4s,border-color .4s,opacity 1.6s}
 /* Steel catches the light */
 .steel{--ga:0;--gx:50%}

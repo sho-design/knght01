@@ -91,7 +91,6 @@
   };
   catBtns.forEach((b) => b.addEventListener('click', () => {
     setCategory(root.dataset.cat === b.dataset.cat ? null : b.dataset.cat);
-    if (window.KNGHT) window.KNGHT.Sound.tick();
   }));
 
   // Category from ?for= or a previous visit
