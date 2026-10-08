@@ -79,10 +79,24 @@ DIRS['spark-end'] = (f, t) => {
 // leaving embers behind. The diagram draws ring k from 0.9 + k seconds over 1.1, starting at three o'clock.
 const BURST = (() => { const r = rnd(19); return Array.from({ length: 90 }, () => ({ a: r() * TAU, v: 0.4 + r() * 1.1, s: 0.5 + r(), p: r() * TAU })); })();
 const TRAIL = 90;
+// What is left of the genesis cloud once it has condensed into the core: a faint dust the world sits inside,
+// turning slowly round it, the inner dust a little faster than the outer.
+const REMNANT = (() => { const r = rnd(29); return Array.from({ length: 240 }, () => ({ a: r() * TAU, d: 0.15 + 0.85 * Math.sqrt(r()), s: (0.45 + r() * 0.9) * (r() < 0.12 ? 2 : 1), w: 0.5 + r(), p: r() * TAU })); })();
+const remnant = (f, t, alpha) => {
+  const { cx, cy, dpr } = f, R = R_(f, 6) * 1.3;
+  REMNANT.forEach((m) => {
+    const a = m.a + (t * 0.03 * m.w) / (0.4 + m.d), d = m.d * R;
+    f.dot(cx + Math.cos(a) * d, cy + Math.sin(a) * d * 0.9, m.s * dpr, alpha * (0.35 + 0.65 * Math.abs(Math.sin(t * 0.7 * m.w + m.p))) * (1.1 - m.d * 0.6));
+  });
+};
 DIRS['ember-rings'] = (f, t) => {
   const { ctx, cx, cy, U, dpr } = f;
+  // The remnant comes in as the genesis shot fades, so the cloud never quite leaves.
+  const left = ease((t - 0.3) / 2.2);
+  f.glow(cx, cy, R_(f, 6) * 1.15, 0.05 * left);
   f.glow(cx, cy, 14 * U, 0.3 * (1 - ease(t / 3) * 0.6));
   ctx.fillStyle = '#fff';
+  remnant(f, t, 0.36 * left * QUIET);
   // The burst from the flare.
   BURST.forEach((b) => {
     const life = t / (1.4 + b.v * 0.8); if (life >= 1) return;
@@ -103,7 +117,7 @@ DIRS['ember-rings'] = (f, t) => {
     // The spark itself, throwing off a few embers of its own.
     if (p < 1) {
       const hx = cx + Math.cos(head) * R, hy = cy + Math.sin(head) * R;
-      f.glow(hx, hy, 3.5 * U, 0.6); f.dot(hx, hy, 1.6 * dpr, 0.85);
+      f.glow(hx, hy, 3.5 * U, 0.6); ctx.fillStyle = '#fff'; f.dot(hx, hy, 1.6 * dpr, 0.85);
       for (let e = 0; e < 10; e++) {
         const born = at + (e / 10) * run, age = t - born; if (age < 0 || age > 0.9) continue;
         const u = inout((born - at) / run) * TAU, ox = cx + Math.cos(u) * R, oy = cy + Math.sin(u) * R, sp = (e % 3 + 1) * 3 * U;
@@ -474,9 +488,15 @@ DIRS.ascend = (f, t) => {
   ctx.fillStyle = '#fff';
   EMBERS.forEach((e, i) => {
     const r = R_(f, e.k) * s, a = e.a + 0.45 + heat * 1.2, x0 = cx + Math.cos(a) * r, y0 = cy + Math.sin(a) * r;
-    const k = SKY[i], p = inout((t - fire - (i % 30) * 0.015) / 2.4);
-    const x = x0 + (k.x * W - x0) * p, y = y0 + (k.y * H - y0) * p + Math.sin(t * 0.3 + k.p) * 0.4 * U * p;
-    f.dot(x, y, ((1 + heat * 0.6) * (1 - p) + 0.6 * p) * k.s * dpr * 1.4, p < 1 ? 0.55 + 0.4 * heat * (1 - p) : 0.25 + 0.25 * Math.sin(t * 1.6 + k.p));
+    const k = SKY[i], go = fire + (i % 30) * 0.015, p = inout((t - go) / 2.4);
+    // Once landed, each star drifts slowly left (the nearer, larger ones faster), wrapping round the frame and
+    // fading at its edges, and twinkles at its own pace, with now and then a brief glint.
+    const v = 0.8 + 1.6 * ((k.p * 7.13) % 1), sx = (((k.x - Math.max(0, t - go - 2.4) * 0.0035 * k.s) % 1) + 1) % 1;
+    const edge = clamp(Math.min(sx, 1 - sx) / 0.04), glint = edge * 0.65 * Math.pow(Math.max(0, Math.sin(t * v * 0.31 + k.p * 3)), 60);
+    const star = edge * (0.2 + 0.3 * k.s) * (0.5 + 0.5 * Math.sin(t * v + k.p)) + glint;
+    const x = x0 + (sx * W - x0) * p, y = y0 + (k.y * H - y0) * p + Math.sin(t * 0.3 + k.p) * 0.4 * U * p;
+    if (p >= 1 && glint > 0.1) { f.glow(x, y, 0.9 * U * k.s, glint * 0.45); ctx.fillStyle = '#fff'; }
+    f.dot(x, y, ((1 + heat * 0.6) * (1 - p) + 0.75 * p) * k.s * dpr * 1.4, (0.55 + 0.4 * heat * (1 - p)) * (1 - p) + star * p);
   });
   // The core, hot as it tightens, flashing as it fires.
   const flash = Math.exp(-Math.pow((t - fire) * 4, 2));

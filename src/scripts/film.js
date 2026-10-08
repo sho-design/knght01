@@ -155,7 +155,9 @@ export default function film(gsap) {
   /* ---------- Footage and motion: one per scene, crossfaded, kept in step with the clock ---------- */
   // Six-second shots, stretched over each scene: footage seconds per timeline second. Genesis, the forge and the
   // hall run a little slower so they are still moving while they fade into the next scene.
-  const RATES = [0.66, 0.75, FORGE_RATE, 0.6, 0.75, 0.75];
+  const RATES = [0.55, 0.75, FORGE_RATE, 0.6, 0.75, 0.75];
+  // Where each shot starts. Genesis is black for its first second, so the film opens on its spark already lit.
+  const OFFSET = [1, 0, 0, 0, 0, 0];
   // Each scene plays at its own pace: the timeline is laid out in long scenes, then run faster where it can be.
   // About 42 seconds in all, with the hall the longest and the nine worlds given time to land.
   const SPEED = [1.3, 1.4, 1.3, 1.0, 1.35, 1.15];
@@ -210,12 +212,14 @@ export default function film(gsap) {
     v.style.transform = `translate(${X.toFixed(1)}px, ${Y.toFixed(1)}px) scale(${(p.k * f).toFixed(3)})`;
   };
   // Genesis to the rings: the cloud doesn't just go dark, it condenses into the core over the rings' first seconds,
-  // still moving, while it fades (its fade is slower too, see .film__plate[data-i="0"] in site.css).
+  // still moving, while it fades (its fade is slower too, see .film__plate[data-i="0"] in site.css). It slows as it
+  // condenses, which also keeps the shot from running out before it has faded.
   const COLLAPSE = 2.6, inout3 = (v) => { v = Math.max(0, Math.min(1, v)); return v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2; };
   const collapse = () => {
     const v = shot(0); if (!v || !v._place) return;
     const local = tl.time() - START[1], f = local <= 0 ? 1 : 1 - 0.82 * inout3(local / COLLAPSE);
     if (Math.abs(f - (v._f || 1)) > 0.0005) place(v, f);
+    if (local > 0 && local < COLLAPSE + 1 && !v.paused) v.playbackRate = RATES[0] * SPEED[0] * (1 - 0.8 * inout3(local / 1.4));
   };
   plates.forEach((v) => v.addEventListener('loadedmetadata', align));
   if (canvas && 'ResizeObserver' in window) new ResizeObserver(() => { align(); paint(); }).observe(canvas);
@@ -234,7 +238,7 @@ export default function film(gsap) {
       if (v && v.src) {
         v.playbackRate = RATES[i] * SPEED[i];
         // Seek only when the shot is clearly somewhere else: after a pause the shot and the clock stopped together.
-        const want = Math.max(0, (t - START[i]) * RATES[i]);
+        const want = OFFSET[i] + Math.max(0, (t - START[i]) * RATES[i]);
         if (Math.abs(want - v.currentTime) > 0.1) { try { v.currentTime = want; } catch (e) {} }
         if (playing) v.play().catch(() => {});
       }
@@ -254,7 +258,7 @@ export default function film(gsap) {
   const keepTime = () => {
     const v = shot(scene);
     if (!v || !v.src || !playing || v.paused || v.seeking || v._wait || v.readyState < 3) return;
-    const want = (tl.time() - START[scene]) * RATES[scene], drift = want - v.currentTime, base = RATES[scene] * SPEED[scene], now = performance.now();
+    const want = OFFSET[scene] + (tl.time() - START[scene]) * RATES[scene], drift = want - v.currentTime, base = RATES[scene] * SPEED[scene], now = performance.now();
     if (Math.abs(drift) > 0.6 && !(now - (v._cut || 0) < 1500)) {
       v._cut = now; v.playbackRate = base;
       try { v.currentTime = Math.min(v.duration || Infinity, want + (v._lat || 0.1) * base); } catch (e) {}
@@ -266,7 +270,18 @@ export default function film(gsap) {
     keepTime();
     collapse();
   });
-  tl.eventCallback('onComplete', () => { setPlaying(false); sec.classList.add('is-ended'); });
+  tl.eventCallback('onComplete', () => { setPlaying(false); sec.classList.add('is-ended'); holdOn(); });
+  // After the last scene the night keeps living while it is on screen: the stars drift and twinkle and the empty
+  // seat keeps breathing. The last scene is simply drawn on past its end, at about 30 frames a second.
+  let held = 0, last = 0, raf = 0;
+  const hold = (now) => {
+    raf = 0;
+    if (!motion || !sec.classList.contains('is-ended') || !visible || document.hidden) return;
+    const dt = last ? (now - last) / 1000 : 0;
+    if (!last || dt > 0.03) { held += Math.min(0.1, dt); last = now; motion.draw(5, END - START[5] + held * SPEED[5]); }
+    raf = requestAnimationFrame(hold);
+  };
+  const holdOn = () => { if (!raf) { last = 0; raf = requestAnimationFrame(hold); } };
 
   const setPlaying = (on) => {
     playing = on;
@@ -278,7 +293,7 @@ export default function film(gsap) {
   };
   const start = () => {
     if (tl.progress() >= 1) return;
-    sec.classList.remove('is-ended');
+    sec.classList.remove('is-ended'); held = 0;
     syncPlate(true);
     setPlaying(true);
   };
@@ -303,6 +318,10 @@ export default function film(gsap) {
     root.classList.toggle('in-reel', e.intersectionRatio > 0.3);
     if (visible && !userPaused && !playing) start();
     else if (!visible && playing) setPlaying(false);
+    if (visible && sec.classList.contains('is-ended')) holdOn();
   }, { threshold: [0, 0.3, 0.55] }).observe(sec);
-  document.addEventListener('visibilitychange', () => { if (document.hidden && playing) setPlaying(false); else if (!document.hidden && visible && !userPaused) start(); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && playing) setPlaying(false); else if (!document.hidden && visible && !userPaused) start();
+    if (!document.hidden && visible && sec.classList.contains('is-ended')) holdOn();
+  });
 }
