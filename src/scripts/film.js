@@ -219,9 +219,12 @@ export default function film(gsap) {
       // close as it can while still covering the frame (on phones the forge would otherwise lose its hammer).
       const [fx, fy, kmax = 1.5] = v.dataset.anchor.split(' ').map(Number), va = v.videoWidth ? v.videoWidth / v.videoHeight : 16 / 9;
       const dw = Math.max(W, H * va), dh = dw / va, ax = (W - dw) / 2 + fx * dw - W / 2, ay = (H - dh) / 2 + fy * dh - H / 2;
+      // The shot is laid out at the size of its whole frame, centred (not cropped to the screen), so that shifting it
+      // to put the anchor on the core never uncovers an edge of it.
+      Object.assign(v.style, { left: `${((W - dw) / 2).toFixed(1)}px`, top: `${((H - dh) / 2).toFixed(1)}px`, width: `${dw.toFixed(1)}px`, height: `${dh.toFixed(1)}px`, right: 'auto', bottom: 'auto', maxWidth: 'none', maxHeight: 'none' });
       let k = 1.04, x = 0, y = 0;
       for (let n = 0; n < 4; n++) { x = tx0 - W / 2 - k * ax; y = ty0 - H / 2 - k * ay; k = Math.min(kmax, Math.max(1.04, (W + 2 * Math.abs(x)) / dw + 0.01, (H + 2 * Math.abs(y)) / dh + 0.01)); }
-      const mx = Math.max(0, (k * dw - W) / 2), my = Math.max(0, (k * dh - H) / 2);
+      const mx = Math.max(0, (k * dw - W) / 2 - 1), my = Math.max(0, (k * dh - H) / 2 - 1);
       x = Math.max(-mx, Math.min(mx, x)); y = Math.max(-my, Math.min(my, y));
       v._place = { x, y, k, cx: tx0 - W / 2, cy: ty0 - H / 2 };
       place(v, v._f || 1);
@@ -237,10 +240,18 @@ export default function film(gsap) {
   // still moving, while it fades (its fade is slower too, see .film__plate[data-i="0"] in site.css). It slows as it
   // condenses, which also keeps the shot from running out before it has faded.
   const COLLAPSE = 2.6, inout3 = (v) => { v = Math.max(0, Math.min(1, v)); return v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2; };
+  // Once it is smaller than the screen its edges would show as a hard rectangle, so they fade out as it condenses.
+  const soft = (v, e) => {
+    const m = e > 0 ? ['right', 'bottom'].map((d) => `linear-gradient(to ${d}, transparent, #000 ${e.toFixed(1)}%, #000 ${(100 - e).toFixed(1)}%, transparent)`).join(', ') : '';
+    Object.assign(v.style, { webkitMaskImage: m, maskImage: m, webkitMaskComposite: m ? 'source-in' : '', maskComposite: m ? 'intersect' : '' });
+    v._e = e;
+  };
   const collapse = () => {
     const v = shot(0); if (!v || !v._place) return;
     const local = tl.time() - START[1], f = local <= 0 ? 1 : 1 - 0.82 * inout3(local / COLLAPSE);
     if (Math.abs(f - (v._f || 1)) > 0.0005) place(v, f);
+    const e = Math.min(30, 400 * (1 - f));
+    if (Math.abs(e - (v._e || 0)) > 0.25 || (!e && v._e)) soft(v, e);
     if (local > 0 && local < COLLAPSE + 1 && !v.paused) v.playbackRate = RATES[0] * SPEED[0] * (1 - 0.8 * inout3(local / 1.4));
   };
   plates.forEach((v) => v.addEventListener('loadedmetadata', align));
