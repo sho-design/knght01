@@ -12,7 +12,6 @@ import { fileURLToPath } from 'node:url';
 
 const GA = ['https://*.googletagmanager.com', 'https://*.google-analytics.com', 'https://*.analytics.google.com'];
 const CDN = 'https://d2ol7oe51mr4n9.cloudfront.net';
-const FILM = 'https://d8j0ntlcm91z4.cloudfront.net'; // the film's footage
 const CLARITY = 'https://*.clarity.ms https://c.bing.com';
 
 const walk = async (dir) => (await Promise.all((await readdir(dir, { withFileTypes: true })).map((d) =>
@@ -24,7 +23,7 @@ const policy = (hashes, formOrigins) => [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com",
   "font-src 'self' https://fonts.gstatic.com",
   `img-src 'self' data: blob: ${CDN} ${GA.join(' ')} ${CLARITY}`,
-  `media-src 'self' ${CDN} ${FILM}`,
+  `media-src 'self' ${CDN}`,
   `connect-src 'self' ${CDN} ${GA.join(' ')} ${CLARITY} ${formOrigins.join(' ')}`.trim(),
   'frame-src https://calendly.com',
   "object-src 'none'",
