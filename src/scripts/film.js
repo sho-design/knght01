@@ -22,9 +22,28 @@ export default function film(gsap) {
   const orbits = layers.map((l) => $('.reel__orbit', l));
   const law = $('.reel__law'), path = $('[data-reel-path]'), world = $('.reel__world');
   const wls = $$('.reel__wl'), spokes = wls.map((w) => $('.reel__spoke', w)), wbs = wls.map((w) => $('.reel__wb', w));
-  const C = (el) => 2 * Math.PI * +el.getAttribute('r');
   const T = (el, s = 1, r = 0) => {
     const p = { s, r, apply() { el.setAttribute('transform', `rotate(${p.r.toFixed(2)}) scale(${p.s.toFixed(4)})`); } };
+    p.apply();
+    return p;
+  };
+  // The rings and spokes draw themselves by their shape (an arc that grows from three o'clock, a line that lengthens
+  // from the core), not by stroke dashes. Their strokes keep one width on screen (vector-effect in site.css), and
+  // Safari and Firefox then measure dashes in screen pixels where Chrome measures them in the drawing's units, which
+  // left part of every ring missing. v is how much is drawn, 0 to 1.
+  const arc = (el) => {
+    const R = +el.dataset.r;
+    const p = { v: 0, apply() {
+      const v = Math.max(0, Math.min(1, p.v)), a = v * 2 * Math.PI;
+      el.setAttribute('d', v >= 0.9999 ? `M ${R} 0 A ${R} ${R} 0 1 1 ${-R} 0 A ${R} ${R} 0 1 1 ${R} 0`
+        : v <= 0 ? `M ${R} 0` : `M ${R} 0 A ${R} ${R} 0 ${v > 0.5 ? 1 : 0} 1 ${(R * Math.cos(a)).toFixed(2)} ${(R * Math.sin(a)).toFixed(2)}`);
+    } };
+    p.apply();
+    return p;
+  };
+  const reach = (el) => {
+    const X = +el.getAttribute('x2'), Y = +el.getAttribute('y2');
+    const p = { v: 0, apply() { const v = Math.max(0, Math.min(1, p.v)); el.setAttribute('x2', (X * v).toFixed(2)); el.setAttribute('y2', (Y * v).toFixed(2)); } };
     p.apply();
     return p;
   };
@@ -45,14 +64,13 @@ export default function film(gsap) {
   const orbitT = orbits.map((o) => T(o, 1, 0));
   const badgeT = badges.map((b) => T(b, 0.4, 0));
   const ringT = rings.map((r) => T(r, 1));
+  const ringD = rings.map(arc), spokeD = spokes.map(reach);
   // Seeking (chapter ticks, Watch again) moves these proxies without running their onUpdate, so re-apply them all.
-  const applyAll = () => [coreT, haloT, pulseT, lawT, worldT, ...orbitT, ...badgeT, ...ringT, ...wbT].forEach((p) => p.apply());
+  const applyAll = () => [coreT, haloT, pulseT, lawT, worldT, ...orbitT, ...badgeT, ...ringT, ...ringD, ...spokeD, ...wbT].forEach((p) => p.apply());
   const wbT = wbs.map((b) => T(b, 0));
   const layerText = $$('.reel__layer text, .reel__name--core');
   gsap.set([halo, pulse], { opacity: 0 });
-  rings.forEach((r) => gsap.set(r, { strokeDasharray: C(r), strokeDashoffset: C(r) }));
   gsap.set([badges, law, wls], { autoAlpha: 0 });
-  spokes.forEach((sp) => { const L = Math.hypot(+sp.getAttribute('x2'), +sp.getAttribute('y2')); gsap.set(sp, { strokeDasharray: L, strokeDashoffset: L }); });
 
   /* ---------- Type: each line rises out of its own mask ---------- */
   gsap.set(scenes, { autoAlpha: 0 });
@@ -82,7 +100,7 @@ export default function film(gsap) {
   enter(1, 8.1);
   rings.forEach((r, i) => {
     const at = 9.0 + i * 1.0;
-    tl.to(r, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, at)
+    tl.to(ringD[i], { v: 1, duration: 1.1, ease: 'power2.inOut', onUpdate: up(ringD[i]) }, at)
       .to(badges[i], { autoAlpha: 1, duration: 0.3 }, at + 0.45)
       .to(badgeT[i], { s: 1, duration: 0.6, ease: 'back.out(2.2)', onUpdate: up(badgeT[i]) }, at + 0.45);
   });
@@ -120,10 +138,12 @@ export default function film(gsap) {
   const steps = $$('.film__steps li', scenes[4]);
   gsap.set(steps, { autoAlpha: 0, x: -16 });
   [2, 5].forEach((k, j) => {
-    const r = rings[k];
-    tl.to(r, { strokeDashoffset: C(r) * 0.64, opacity: 0.3, duration: 0.6, ease: 'power2.in' }, 34.4 + j * 0.25)
+    const r = rings[k], d = ringD[k];
+    tl.to(d, { v: 0.36, duration: 0.6, ease: 'power2.in', onUpdate: up(d) }, 34.4 + j * 0.25)
+      .to(r, { opacity: 0.3, duration: 0.6, ease: 'power2.in' }, 34.4 + j * 0.25)
       .to(badges[k], { autoAlpha: 0.2, duration: 0.5 }, 34.4 + j * 0.25)
-      .to(r, { strokeDashoffset: 0, opacity: 1, stroke: 'rgba(255,255,255,1)', duration: 1, ease: 'power2.out' }, 38.6 + j * 0.3)
+      .to(d, { v: 1, duration: 1, ease: 'power2.out', onUpdate: up(d) }, 38.6 + j * 0.3)
+      .to(r, { opacity: 1, stroke: 'rgba(255,255,255,1)', duration: 1, ease: 'power2.out' }, 38.6 + j * 0.3)
       .to(badges[k], { autoAlpha: 1, duration: 0.5 }, 38.9 + j * 0.3)
       .to(r, { stroke: 'rgba(255,255,255,.32)', duration: 1 }, 39.8 + j * 0.3);
   });
@@ -136,7 +156,7 @@ export default function film(gsap) {
     .to(layerText, { autoAlpha: 0, duration: 0.6 }, 42.2)
     .to(worldT, { s: 0.3, duration: 1.4, ease: 'power3.inOut', onUpdate: up(worldT) }, 42.4)
     .to(wls, { autoAlpha: 1, duration: 0.01 }, 43.5);
-  spokes.forEach((sp, i) => tl.to(sp, { strokeDashoffset: 0, duration: 0.7, ease: 'power2.out' }, 43.6 + i * 0.16));
+  spokeD.forEach((d, i) => tl.to(d, { v: 1, duration: 0.7, ease: 'power2.out', onUpdate: up(d) }, 43.6 + i * 0.16));
   // Each world appears as its spark reaches it (the sparks are drawn in film-scenes.js: they leave the core at
   // max(1.75, 1.5 + 0.16i) into the scene and take about 0.4s to arrive).
   wbT.forEach((b, i) => tl.to(b, { s: 1, duration: 0.6, ease: 'back.out(2.4)', onUpdate: up(b) }, START[5] + Math.max(1.75, 1.5 + i * 0.16) + 0.4));

@@ -66,7 +66,7 @@ const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work',
           const k = i + 1, R = RING(k), a = ANG[k];
           return (
             <g class="reel__layer" data-k={k}>
-              <circle class="reel__ring" r={R} />
+              <path class="reel__ring" data-r={R} d={`M ${R} 0 A ${R} ${R} 0 1 1 ${-R} 0 A ${R} ${R} 0 1 1 ${R} 0`} />
               <g class="reel__orbit" data-speed={(k % 2 ? 1 : -1) * (60 + k * 18)}>
                 <g transform={`translate(${(Math.cos(rad(a)) * R).toFixed(1)} ${(Math.sin(rad(a)) * R).toFixed(1)})`}>
                   <g class="reel__badge">
