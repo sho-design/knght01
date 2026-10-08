@@ -500,7 +500,8 @@ DIRS.ascend = (f, t) => {
   });
   // The core, hot as it tightens, flashing as it fires.
   const flash = Math.exp(-Math.pow((t - fire) * 4, 2));
-  f.glow(cx, cy, (10 + 8 * heat) * U, 0.18 + 0.28 * heat * (1 - clamp((t - fire) / 2)) + 0.4 * flash);
+  const cool = clamp((t - fire) / 2);
+  f.glow(cx, cy, (10 + 8 * heat * (1 - cool) - cool) * U, 0.18 + 0.28 * heat * (1 - cool) + 0.4 * flash - 0.06 * cool);
   nine.forEach(([x, y], i) => {
     const go = Math.max(fire, at(i) - 0.4), p = ease((t - go) / 0.5);
     if (p <= 0) return;
@@ -509,12 +510,15 @@ DIRS.ascend = (f, t) => {
       const g = ctx.createLinearGradient(tx, ty, hx, hy); g.addColorStop(0, W_(0)); g.addColorStop(1, W_(1)); ctx.strokeStyle = g; ctx.lineWidth = 2.4 * dpr; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
       f.glow(hx, hy, 5 * U, 1); ctx.fillStyle = '#fff'; f.dot(hx, hy, 2.2 * dpr, 1); return;
     }
-    const since = t - go - 0.5;
-    f.glow(x, y, 9 * U * (1 + 0.6 * Math.exp(-since * 4)), (0.32 + 0.68 * Math.exp(-since * 3)) * (0.9 + 0.1 * Math.sin(t * 2 + i)));
+    // It lands as a flash, then the light dies down to a faint rim round the world, so the worlds sit in the dark
+    // rather than in balls of light.
+    const since = t - go - 0.5, fl = Math.exp(-since * 2.5);
+    f.glow(x, y, (4.4 + 2.6 * fl) * U, (0.1 + 0.7 * fl) * (0.9 + 0.1 * Math.sin(t * 2 + i)));
   });
-  // The empty seat: no spark reaches it, but it holds the most light of all, breathing, waiting.
+  // The empty seat: no spark reaches it, but it holds the most light of all, breathing, waiting. Kept close to the
+  // seat, so it reads as light on the ring rather than a ball.
   const wait = clamp((t - at(9) - 0.2) / 0.8);
-  if (wait > 0) { f.glow(seat[0], seat[1], 12 * U, wait * (0.4 + 0.12 * Math.sin(t * 2.6))); f.glow(seat[0], seat[1], 5 * U, wait * 0.25); }
+  if (wait > 0) f.glow(seat[0], seat[1], 5.6 * U, wait * (0.3 + 0.08 * Math.sin(t * 2.6)));
 };
 
 /* ---------- Scene 6: the nine worlds ---------- */

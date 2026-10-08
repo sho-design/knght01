@@ -155,6 +155,8 @@ export default function film(gsap) {
   tl.to(law, { autoAlpha: 0, duration: 0.8 }, 42.2)
     .to(layerText, { autoAlpha: 0, duration: 0.6 }, 42.2)
     .to(worldT, { s: 0.3, duration: 1.4, ease: 'power3.inOut', onUpdate: up(worldT) }, 42.4)
+    // The world's halo goes in with it, so no wide disc of light is left behind the nine.
+    .to(haloT, { s: 0.3, duration: 1.4, ease: 'power3.inOut', onUpdate: up(haloT) }, 42.4)
     .to(wls, { autoAlpha: 1, duration: 0.01 }, 43.5);
   spokeD.forEach((d, i) => tl.to(d, { v: 1, duration: 0.7, ease: 'power2.out', onUpdate: up(d) }, 43.6 + i * 0.16));
   // Each world appears as its spark reaches it (the sparks are drawn in film-scenes.js: they leave the core at
