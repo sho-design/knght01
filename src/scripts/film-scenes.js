@@ -476,9 +476,9 @@ DIRS.ascend = (f, t) => {
     const since = t - go - 0.5;
     f.glow(x, y, 9 * U * (1 + 0.6 * Math.exp(-since * 4)), (0.32 + 0.68 * Math.exp(-since * 3)) * (0.9 + 0.1 * Math.sin(t * 2 + i)));
   });
-  // The empty seat: no spark reaches it. It breathes, waiting.
+  // The empty seat: no spark reaches it, but it holds the most light of all, breathing, waiting.
   const wait = clamp((t - at(9) - 0.2) / 0.8);
-  if (wait > 0) f.glow(seat[0], seat[1], 8 * U, wait * (0.1 + 0.08 * Math.sin(t * 2.6)));
+  if (wait > 0) { f.glow(seat[0], seat[1], 12 * U, wait * (0.4 + 0.12 * Math.sin(t * 2.6))); f.glow(seat[0], seat[1], 5 * U, wait * 0.25); }
 };
 
 /* ---------- Scene 6: the nine worlds ---------- */
