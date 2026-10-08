@@ -11,7 +11,7 @@
   const G = !!window.KNGHT_MOTION;
   if (!G) root.classList.remove('gsap');
 
-  /* ---------- The page is ready on its first frame: the hero's entrance runs from here ---------- */
+  /* ---------- The page is ready on its first frame (an inline script under the hero does this first) ---------- */
   requestAnimationFrame(() => root.classList.add('is-loaded'));
 
   /* ---------- Smooth scroll ---------- */
@@ -1027,7 +1027,7 @@
       }
       x += (tx - x) * 0.09; y += (ty - y) * 0.09;
       // A candle never holds still.
-      const flick = (1 + Math.sin(t * 7.3) * 0.012 + Math.sin(t * 13.1 + 2) * 0.008 + Math.sin(t * 2.1) * 0.02);
+      const flick = 1 + Math.sin(t * 7.3) * 0.012 + Math.sin(t * 13.1 + 2) * 0.008 + Math.sin(t * 2.1) * 0.02;
       setVar('--lx', x.toFixed(1) + 'px');
       setVar('--ly', y.toFixed(1) + 'px');
       setVar('--lr', flick.toFixed(4));

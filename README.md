@@ -53,7 +53,6 @@ Across the page:
 - **Intake line**: "Q4 2026 · Two new worlds open" in the hero and above the offers. Change or clear `knght:intake` in the page head.
 
 - **Smooth scroll**: inertial scrolling from Lenis 1.3.26 (MIT, hosted in `assets/js/vendor/`). It is off for reduced motion.
-- **Sound**: off by default. The nav toggle starts a low ambient tone, plus a blade ring at the intro and at the knight reveal. It is synthesised with Web Audio, so there are no audio files.
 - **Foil sheen**: a slow silver glint on "get it wrong.", "Verdict." and the footer wordmark.
 
 Motion respects `prefers-reduced-motion`: the intro, the films and the scroll effects are switched off and still frames are shown instead.

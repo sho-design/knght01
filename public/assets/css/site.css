@@ -73,6 +73,7 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 .nav.is-solid{background:rgba(0,0,0,.72);backdrop-filter:blur(14px) saturate(120%);-webkit-backdrop-filter:blur(14px) saturate(120%);border-color:var(--rule)}
 .nav.is-hidden{transform:translateY(-100%)}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;height:var(--nav-h)}
+.nav__end{display:flex;align-items:center;gap:clamp(14px,2vw,26px)}
 .mark{display:inline-flex;flex-direction:column;align-items:flex-start;gap:5px;font:600 1.35rem/1 var(--serif);letter-spacing:.34em;text-decoration:none}
 .mark svg{order:2;display:block;width:0;min-width:calc(100% - .34em);height:auto}
 .mark svg *{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
@@ -115,7 +116,7 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 .hero__meta{position:absolute;right:var(--gutter);top:calc(var(--nav-h) + 4vh);display:flex;flex-direction:column;align-items:flex-end;gap:6px;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ash);text-align:right;font-variant-numeric:tabular-nums}
 
 /* Hero intro choreography */
-.js .hero__title .line > span{transform:translateY(105%)}
+.js .hero__title .line > span{transform:translateY(calc(105% + .24em))}
 .js .hero [data-hero-fade]{opacity:0;transform:translateY(16px)}
 .is-loaded .hero__title .line > span{transform:none;transition:transform 1.25s var(--ease-out)}
 .is-loaded .hero__title .line:nth-child(2) > span{transition-delay:.08s}
@@ -959,8 +960,6 @@ html.has-hall body{background:transparent}
 /* Each dark room is lit from above, a thin layer of light over the floor */
 .has-hall .thesis,.has-hall .layers,.has-hall .chap,.has-hall .footer{background:radial-gradient(ellipse 90% 60% at 50% 0%,rgba(255,255,255,.045) 0%,rgba(255,255,255,.015) 40%,rgba(255,255,255,0) 75%)}
 /* The light finds words */
-/* The torch: a first visit starts in the dark */
-.nav{transition:transform .6s var(--ease),background .4s,border-color .4s,opacity 1.6s}
 /* Steel catches the light */
 .steel{--ga:0;--gx:50%}
 /* A glow, not text-clipped steel: Chrome can't clip a gradient to letters that move, and the hover moves them. */
