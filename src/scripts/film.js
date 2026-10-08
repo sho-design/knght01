@@ -29,8 +29,8 @@ export default function film(gsap) {
   };
   // The rings and spokes draw themselves by their shape (an arc that grows from three o'clock, a line that lengthens
   // from the core), not by stroke dashes. Their strokes keep one width on screen (vector-effect in site.css), and
-  // Safari and Firefox then measure dashes in screen pixels where Chrome measures them in the drawing's units, which
-  // left part of every ring missing. v is how much is drawn, 0 to 1.
+  // browsers then measure dashes in screen pixels, so a dash sized to the path in the drawing's units only fitted
+  // when the diagram showed at one pixel per unit: larger, part of every ring went missing. v is how much is drawn.
   const arc = (el) => {
     const R = +el.dataset.r;
     const p = { v: 0, apply() {
@@ -273,7 +273,7 @@ export default function film(gsap) {
         // Seek only when the shot is clearly somewhere else: after a pause the shot and the clock stopped together.
         const want = OFFSET[i] + Math.max(0, (t - START[i]) * RATES[i]);
         if (Math.abs(want - v.currentTime) > 0.1) { try { v.currentTime = want; } catch (e) {} }
-        if (playing) v.play().catch(() => {});
+        if (playing) tryPlay(v);
       }
       ticks.forEach((b, k) => b.classList.toggle('is-on', k <= i));
     }
@@ -316,12 +316,26 @@ export default function film(gsap) {
   };
   const holdOn = () => { if (!raf) { last = 0; raf = requestAnimationFrame(hold); } };
 
+  // Some browsers refuse to start a video without a tap, even a muted one (Safari in Low Power Mode or set to Never
+  // Auto-Play, Firefox set to block). Then the shots stay hidden and the drawn film runs over black, rather than over
+  // a frozen frame, and the next tap on the film's controls lets every shot play (Safari unblocks each video only
+  // when it is played inside the tap).
+  let blocked = false;
+  const tryPlay = (v) => {
+    const r = v.play(); if (!r) return;
+    r.then(() => { if (blocked) { blocked = false; sec.classList.remove('no-autoplay'); } },
+      (e) => { if (e && e.name === 'NotAllowedError') { blocked = true; sec.classList.add('no-autoplay'); } });
+  };
+  const unlock = () => {
+    if (!blocked) return;
+    plates.forEach((p) => { if (p === shot(scene) || !p.paused) return; const r = p.play(); if (r) r.catch(() => {}); p.pause(); });
+  };
   const setPlaying = (on) => {
     playing = on;
     sec.classList.toggle('is-playing', on);
     playBtn.setAttribute('aria-label', on ? 'Pause the film' : 'Play the film');
     const v = shot(scene);
-    if (on) { tl.play(); spin.play(); if (v && v.src) v.play().catch(() => {}); }
+    if (on) { tl.play(); spin.play(); if (v && v.src) tryPlay(v); }
     else { tl.pause(); spin.pause(); plates.forEach((p) => p.pause()); }
   };
   const start = () => {
@@ -333,13 +347,15 @@ export default function film(gsap) {
 
   playBtn.addEventListener('click', () => {
     if (tl.progress() >= 1) { replayFilm(); return; }
+    // While the shots are blocked, a tap means "let it play", not "pause".
+    if (blocked) { unlock(); userPaused = false; const v = shot(scene); if (!playing) start(); else if (v && v.src) tryPlay(v); return; }
     userPaused = playing;
     if (playing) setPlaying(false); else start();
   });
-  const replayFilm = () => { userPaused = false; tl.pause(0); applyAll(); scene = -1; syncPlate(true); start(); };
+  const replayFilm = () => { unlock(); userPaused = false; tl.pause(0); applyAll(); scene = -1; syncPlate(true); start(); };
   replay.addEventListener('click', replayFilm);
   ticks.forEach((b, i) => b.addEventListener('click', () => {
-    userPaused = false;
+    unlock(); userPaused = false;
     sec.classList.remove('is-ended');
     tl.pause(START[i] + 0.01); applyAll(); scene = -1; syncPlate(true); start();
   }));

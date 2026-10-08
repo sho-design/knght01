@@ -76,7 +76,8 @@ DIRS['spark-end'] = (f, t) => {
 };
 
 // Scene 2 in the film: the flare throws off sparks, and a spark traces each ring as the diagram draws it,
-// leaving embers behind. The diagram draws ring k from 0.9 + k seconds over 1.1, starting at three o'clock.
+// leaving embers behind. The diagram draws its six rings, ring k from 1.0 + k seconds over 1.1, starting at three
+// o'clock, with the same ease, so the spark sits on the head of the line.
 const BURST = (() => { const r = rnd(19); return Array.from({ length: 90 }, () => ({ a: r() * TAU, v: 0.4 + r() * 1.1, s: 0.5 + r(), p: r() * TAU })); })();
 const TRAIL = 90;
 // What is left of the genesis cloud once it has condensed into the core: a faint dust the world sits inside,
@@ -103,8 +104,8 @@ DIRS['ember-rings'] = (f, t) => {
     const d = ease(life) * b.v * 26 * U, x = cx + Math.cos(b.a) * d, y = cy + Math.sin(b.a) * d + life * life * 6 * U;
     f.dot(x, y, b.s * dpr, (1 - life) * 0.9 * QUIET);
   });
-  for (let k = 0; k < 7; k++) {
-    const at = 0.9 + k, R = R_(f, k), run = 1.1, p = inout((t - at) / run);
+  for (let k = 0; k < 6; k++) {
+    const at = 1.0 + k, R = R_(f, k), run = 1.1, p = inout((t - at) / run);
     if (p <= 0) continue;
     const head = p * TAU;
     // Embers left along the ring: bright where the spark has just passed, settling to a faint glow.
@@ -138,7 +139,7 @@ export const FORGE_RATE = 0.68, STRIKE = 1.375 / FORGE_RATE;
 const FRONT = 50 / 0.32;                  // svg units per second: one ring every 0.32s
 const FRONTS = [[0, 1], [0.42, 0.45]];  // [delay, strength]: the strike and its echo
 const TRAIN = [0.8, 0.45, 0.24, 0.12];   // the close rings that make each front read as sound
-const OUTER = 414, BOUND = 430;          // the outermost layer ring, and the boundary ring of scene 4 (svg units)
+const OUTER = 414, BOUND = 430;          // where the strike's front starts to slow (a ring's width past Machinery, 364), and the boundary ring of scene 4 (svg units)
 const SETTLE = 3 * (BOUND - OUTER) / FRONT; // time to come to rest, leaving the last ring at full speed
 // The boundary as the diagram draws it: a fine dotted ring.
 const bound = (f, a) => {
@@ -151,7 +152,7 @@ DIRS['ember-carry'] = (f, t) => {
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = '#fff';
   // The carried embers are all out by 1.1s, so there is a held breath before the strike.
   if (t < 1.2) for (let i = 0; i < 140; i++) {
-    const k = i % 7, ua = ((i * 0.618) % 1) * TAU, r = R_(f, k), life = clamp(t / (0.7 + (i % 5) * 0.1));
+    const k = i % 6, ua = ((i * 0.618) % 1) * TAU, r = R_(f, k), life = clamp(t / (0.7 + (i % 5) * 0.1));
     if (life >= 1) continue;
     const x = cx + Math.cos(ua) * r * (1 + life * 0.15) + Math.sin(t * 2 + i) * U * 0.4, y = cy + Math.sin(ua) * r * (1 + life * 0.15) - life * life * 9 * U;
     f.dot(x, y, (1.3 - life * 0.6) * dpr, (1 - life) * (0.45 + 0.35 * Math.sin(t * 7 + i)) * QUIET);
@@ -344,12 +345,12 @@ DIRS.map = (f, t) => {
   for (let i = 0; i < 8; i++) { const a = rot + (i / 8) * TAU, l = i % 2 ? 0.6 : 1.3; ctx.beginPath(); ctx.moveTo(kx, ky); ctx.lineTo(kx + Math.cos(a) * kr * l, ky + Math.sin(a) * kr * l); ctx.stroke(); }
 };
 
-// The film breaks two layers (2 and 5) at 1.3s and rebuilds them from 5.5s; these keep to that clock.
+// The film breaks two layers (2 and 5) at 1.4s and rebuilds them from 5.6s; these keep to that clock.
 // A hierarchy of sparks: every ember before the close burns at QUIET, so the sparks that light the nine
 // worlds are the brightest particles in the film.
 const QUIET = 0.72;
 const R_ = (f, k) => (f.ring ? f.ring(k) : (6 + k * 4.6) * f.U);
-const BROKE = [2, 5], FOUND = [2.6, 3.8], BUILT = [5.5, 5.8];
+const BROKE = [2, 5], FOUND = [2.6, 3.8], BUILT = [5.6, 5.9];
 
 // A. Light from a window out of frame: shafts fall across the world, two are missing, then they arrive.
 const SHAFTS = [-0.62, -0.42, -0.24, -0.08, 0.08, 0.24, 0.42, 0.62];
@@ -357,7 +358,7 @@ DIRS.shafts = (f, t) => {
   const { ctx, cx, cy, W, H, U } = f, sx = cx + 6 * U, sy = -H * 0.35, gone = [2, 5];
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
   SHAFTS.forEach((d, i) => {
-    const miss = gone.indexOf(i), on = miss < 0 ? ease(t / 1.2) : ease((t - BUILT[miss]) / 1.2) + (t < 1.3 ? 1 - ease((t - 0.6) / 0.7) : 0);
+    const miss = gone.indexOf(i), on = miss < 0 ? ease(t / 1.2) : ease((t - BUILT[miss]) / 1.2) + (t < 1.4 ? 1 - ease((t - 0.7) / 0.7) : 0);
     if (on <= 0.01) return;
     const x2 = cx + d * W * 0.75, y2 = H * 1.05, wd = (3 + Math.abs(d) * 2) * U, flick = 0.9 + 0.1 * Math.sin(t * 1.3 + i * 2);
     const g = ctx.createLinearGradient(sx, sy, x2, y2); g.addColorStop(0, W_(0)); g.addColorStop(0.45, W_(0.075 * on * flick)); g.addColorStop(1, W_(0));
@@ -381,7 +382,7 @@ DIRS.halo = (f, t) => {
     const a0 = (i / N) * TAU - Math.PI / 2 + 0.03, a1 = ((i + 1) / N) * TAU - Math.PI / 2 - 0.03, j = gone[i];
     let a = 0.32 + 0.06 * Math.sin(t * 1.5 + i);
     if (j !== undefined) {
-      const out = ease((t - 1.3 - j * 0.25) / 0.5), back = ease((t - BUILT[j]) / 0.7);
+      const out = ease((t - 1.4 - j * 0.25) / 0.5), back = ease((t - BUILT[j]) / 0.7);
       a = a * (1 - out) + back * 0.75 * (1 - ease((t - BUILT[j] - 0.8) / 1)) + back * 0.32 * ease((t - BUILT[j] - 0.8) / 1);
       if (out > 0 && back < 1) { ctx.setLineDash([2 * f.dpr, 4 * f.dpr]); f.line(0.3 * out * (1 - back) + 0.5 * clamp((t - FOUND[j]) / 0.3) * (1 - back), 1); ctx.beginPath(); ctx.arc(cx, cy, (r0 + r1) / 2, a0, a1); ctx.stroke(); ctx.setLineDash([]); }
     }
@@ -599,7 +600,7 @@ DIRS.beacons = (f, t) => {
 export const diagram = (f, t) => {
   const { ctx, cx, cy, U } = f;
   for (let k = 0; k < 7; k++) {
-    const j = BROKE.indexOf(k), broken = j >= 0 && t > 1.3 + j * 0.25 && t < BUILT[j] + 0.5;
+    const j = BROKE.indexOf(k), broken = j >= 0 && t > 1.4 + j * 0.25 && t < BUILT[j] + 0.5;
     ctx.setLineDash(broken ? [3 * f.dpr, 5 * f.dpr] : []); f.line(broken ? 0.18 : 0.42, 1); ctx.beginPath(); ctx.arc(cx, cy, R_(f, k), 0, TAU); ctx.stroke(); ctx.setLineDash([]);
     const a = [-64, 28, -150, 112, -28, 200, 150][k] * Math.PI / 180, bx = cx + Math.cos(a) * R_(f, k), by = cy + Math.sin(a) * R_(f, k);
     ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(bx, by, 1.8 * U, 0, TAU); ctx.fill(); f.line(broken ? 0.25 : 0.8, 1); ctx.stroke();
