@@ -7,7 +7,9 @@ export const PLAN = ['spark-end', 'ember-rings', 'ember-carry', 'hall-dust', 'em
 const OVER = new Set(['spark-end', 'ember-carry', 'hall-dust']);
 // A footage scene that starts to dim before it ends, so the next drawn scene can come in over it slowly:
 // the hall begins to darken 1.4s before the cut (to 25%), and the darkness finishes over the embers' first 2.8s.
-const LEAD = { 'hall-dust': { at: 6.6, dur: 1.4, to: 0.25 } }, BGIN = 2.8;
+// Genesis doesn't dim early (to: 0); its entry in LEAD only gives the rings a slow dark coming in, under the cloud
+// as it condenses into the core.
+const LEAD = { 'hall-dust': { at: 6.6, dur: 1.4, to: 0.25 }, 'spark-end': { at: 99, dur: 1, to: 0 } }, BGIN = 2.8;
 const solid = (id) => !!id && !OVER.has(id);
 export default function filmMotion(canvas, gfx) {
   const SEATS = gfx.querySelectorAll('.reel__wl').length || 10;

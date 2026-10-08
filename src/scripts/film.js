@@ -152,9 +152,9 @@ export default function film(gsap) {
   });
 
   /* ---------- Footage and motion: one per scene, crossfaded, kept in step with the clock ---------- */
-  // Six-second shots, stretched over each scene: footage seconds per timeline second. The hall runs a little slower
-  // so it is still moving while it fades out under scene 5's dust.
-  const RATES = [0.75, 0.75, 0.75, 0.6, 0.75, 0.75];
+  // Six-second shots, stretched over each scene: footage seconds per timeline second. Genesis and the hall run a
+  // little slower so they are still moving while they fade into the next scene.
+  const RATES = [0.66, 0.75, 0.75, 0.6, 0.75, 0.75];
   // Each scene plays at its own pace: the timeline is laid out in long scenes, then run faster where it can be.
   // About 42 seconds in all, with the hall the longest and the nine worlds given time to land.
   const SPEED = [1.3, 1.4, 1.3, 1.0, 1.35, 1.15];
@@ -198,8 +198,23 @@ export default function film(gsap) {
       for (let n = 0; n < 4; n++) { x = tx0 - W / 2 - k * ax; y = ty0 - H / 2 - k * ay; k = Math.min(kmax, Math.max(1.04, (W + 2 * Math.abs(x)) / dw + 0.01, (H + 2 * Math.abs(y)) / dh + 0.01)); }
       const mx = Math.max(0, (k * dw - W) / 2), my = Math.max(0, (k * dh - H) / 2);
       x = Math.max(-mx, Math.min(mx, x)); y = Math.max(-my, Math.min(my, y));
-      v.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${k.toFixed(3)})`;
+      v._place = { x, y, k, cx: tx0 - W / 2, cy: ty0 - H / 2 };
+      place(v, v._f || 1);
     });
+  };
+  // Draw a placed shot, contracted by f toward the diagram's core (1 = as placed).
+  const place = (v, f) => {
+    const p = v._place; if (!p) return; v._f = f;
+    const X = p.cx * (1 - f) + f * p.x, Y = p.cy * (1 - f) + f * p.y;
+    v.style.transform = `translate(${X.toFixed(1)}px, ${Y.toFixed(1)}px) scale(${(p.k * f).toFixed(3)})`;
+  };
+  // Genesis to the rings: the cloud doesn't just go dark, it condenses into the core over the rings' first seconds,
+  // still moving, while it fades (its fade is slower too, see .film__plate[data-i="0"] in site.css).
+  const COLLAPSE = 2.6, inout3 = (v) => { v = Math.max(0, Math.min(1, v)); return v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2; };
+  const collapse = () => {
+    const v = shot(0); if (!v || !v._place) return;
+    const local = tl.time() - START[1], f = local <= 0 ? 1 : 1 - 0.82 * inout3(local / COLLAPSE);
+    if (Math.abs(f - (v._f || 1)) > 0.0005) place(v, f);
   };
   plates.forEach((v) => v.addEventListener('loadedmetadata', align));
   if (canvas && 'ResizeObserver' in window) new ResizeObserver(() => { align(); paint(); }).observe(canvas);
@@ -248,6 +263,7 @@ export default function film(gsap) {
     fill.style.transform = `scaleX(${Math.min(1, realProgress(tl.time())).toFixed(4)})`;
     syncPlate(false);
     keepTime();
+    collapse();
   });
   tl.eventCallback('onComplete', () => { setPlaying(false); sec.classList.add('is-ended'); });
 
