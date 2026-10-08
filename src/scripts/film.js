@@ -152,14 +152,19 @@ export default function film(gsap) {
   });
 
   /* ---------- Footage and motion: one per scene, crossfaded, kept in step with the clock ---------- */
-  const RATE = 0.75; // six-second shots, stretched over each scene
+  // Six-second shots, stretched over each scene: footage seconds per timeline second. The hall runs a little slower
+  // so it is still moving while it fades out under scene 5's dust.
+  const RATES = [0.75, 0.75, 0.75, 0.6, 0.75, 0.75];
   // Each scene plays at its own pace: the timeline is laid out in long scenes, then run faster where it can be.
   // About 42 seconds in all, with the hall the longest and the nine worlds given time to land.
   const SPEED = [1.3, 1.4, 1.3, 1.0, 1.35, 1.15];
   const motion = canvas && gfx ? filmMotion(canvas, gfx) : null, MIX = 1.2;
   let scene = -1, playing = false, visible = false, userPaused = false;
   const shot = (i) => plates.find((v) => +v.dataset.i === i);
-  const load = (i) => { const v = shot(i); if (v && !v.src && v.dataset.src) { v.src = v.dataset.src; v.preload = 'auto'; } };
+  // Each shot is H.264 (plays almost everywhere), with a VP9 WebM beside it for browsers built without H.264.
+  const probe = document.createElement('video');
+  const pick = (src) => (!probe.canPlayType('video/mp4; codecs="avc1.640028"') && probe.canPlayType('video/webm; codecs="vp9"') ? src.replace(/\.mp4$/, '.webm') : src);
+  const load = (i) => { const v = shot(i); if (v && !v.src && v.dataset.src) { v.src = pick(v.dataset.src); v.preload = 'auto'; } };
   // If a shot cannot load, say so (for us), and keep the film running on its graphics alone.
   plates.forEach((v) => {
     v.addEventListener('error', () => { console.warn(`KNGHT film: shot ${+v.dataset.i + 1} did not load`, v.currentSrc || v.dataset.src, v.error && v.error.code); sec.dataset.missing = ((sec.dataset.missing || '') + ' ' + (+v.dataset.i + 1)).trim(); });
@@ -176,7 +181,28 @@ export default function film(gsap) {
     if (i > 0 && local < MIX) motion.draw(i, local, i - 1, t - START[i - 1], local / MIX);
     else motion.draw(i, local);
   };
-  if (canvas && 'ResizeObserver' in window) new ResizeObserver(paint).observe(canvas);
+  // Some shots have a point that belongs under the diagram's core: the heart of the genesis cloud, the hammer's
+  // impact in the forge. Shift and enlarge those shots so that point lands on the core, still covering the frame.
+  const align = () => {
+    if (!canvas || !gfx) return;
+    const st = canvas.getBoundingClientRect(), g = gfx.getBoundingClientRect(), W = st.width, H = st.height;
+    if (!W || !H) return;
+    const tx0 = g.left - st.left + g.width / 2, ty0 = g.top - st.top + g.height / 2;
+    plates.forEach((v) => {
+      if (!v.dataset.anchor) return;
+      // Anchor "x y max": the point, and the most the shot may be enlarged to reach the core. Past that it gets as
+      // close as it can while still covering the frame (on phones the forge would otherwise lose its hammer).
+      const [fx, fy, kmax = 1.5] = v.dataset.anchor.split(' ').map(Number), va = v.videoWidth ? v.videoWidth / v.videoHeight : 16 / 9;
+      const dw = Math.max(W, H * va), dh = dw / va, ax = (W - dw) / 2 + fx * dw - W / 2, ay = (H - dh) / 2 + fy * dh - H / 2;
+      let k = 1.04, x = 0, y = 0;
+      for (let n = 0; n < 4; n++) { x = tx0 - W / 2 - k * ax; y = ty0 - H / 2 - k * ay; k = Math.min(kmax, Math.max(1.04, (W + 2 * Math.abs(x)) / dw + 0.01, (H + 2 * Math.abs(y)) / dh + 0.01)); }
+      const mx = Math.max(0, (k * dw - W) / 2), my = Math.max(0, (k * dh - H) / 2);
+      x = Math.max(-mx, Math.min(mx, x)); y = Math.max(-my, Math.min(my, y));
+      v.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${k.toFixed(3)})`;
+    });
+  };
+  plates.forEach((v) => v.addEventListener('loadedmetadata', align));
+  if (canvas && 'ResizeObserver' in window) new ResizeObserver(() => { align(); paint(); }).observe(canvas);
   const syncPlate = (force) => {
     const t = tl.time(), i = sceneAt(t);
     if (i !== scene || force) {
@@ -190,9 +216,9 @@ export default function film(gsap) {
       });
       const v = shot(i);
       if (v && v.src) {
-        v.playbackRate = RATE * SPEED[i];
+        v.playbackRate = RATES[i] * SPEED[i];
         // Seek only when the shot is clearly somewhere else: after a pause the shot and the clock stopped together.
-        const want = Math.max(0, (t - START[i]) * RATE);
+        const want = Math.max(0, (t - START[i]) * RATES[i]);
         if (Math.abs(want - v.currentTime) > 0.1) { try { v.currentTime = want; } catch (e) {} }
         if (playing) v.play().catch(() => {});
       }
@@ -212,7 +238,7 @@ export default function film(gsap) {
   const keepTime = () => {
     const v = shot(scene);
     if (!v || !v.src || !playing || v.paused || v.seeking || v._wait || v.readyState < 3) return;
-    const want = (tl.time() - START[scene]) * RATE, drift = want - v.currentTime, base = RATE * SPEED[scene], now = performance.now();
+    const want = (tl.time() - START[scene]) * RATES[scene], drift = want - v.currentTime, base = RATES[scene] * SPEED[scene], now = performance.now();
     if (Math.abs(drift) > 0.6 && !(now - (v._cut || 0) < 1500)) {
       v._cut = now; v.playbackRate = base;
       try { v.currentTime = Math.min(v.duration || Infinity, want + (v._lat || 0.1) * base); } catch (e) {}

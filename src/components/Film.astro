@@ -14,15 +14,19 @@ const ANG = [0, -64, 28, -150, 112, -28, 200]; // where each badge sits on its r
 const rad = (d: number) => (d * Math.PI) / 180;
 const WR = 372;
 // Three scenes are footage (black and white, made for this film); the other three are drawn live (film-motion.js).
-// /film/ is served by the site itself (a rewrite in vercel.json to the footage host).
+// The shots live in public/footage, re-encoded from the generated originals as H.264 (8-bit, a keyframe every
+// half second, metadata first) so they play in every browser and seek quickly.
 const SHOTS: (string | null)[] = [
-  '/film/hf_20261005_072020_b85a1201-2279-46b8-8766-aaaa5177b012.mp4',
+  '/footage/genesis.mp4',
   null,
-  '/film/hf_20261005_072020_9ae1e329-b34b-41f3-8a23-f2ca41422e00.mp4',
-  '/film/hf_20261005_072020_39607bdc-1fdc-4703-8742-0b50166271d0.mp4',
+  '/footage/forge.mp4',
+  '/footage/hall.mp4',
   null,
   null,
 ];
+// Where in each shot the diagram's core belongs (fractions of the frame), measured from the footage: the heart of
+// the genesis cloud, and the point where the hammer meets the metal. The hall stays centred (its beam is matched).
+const ANCHOR: Record<number, string> = { 0: '0.505 0.505 1.6', 2: '0.545 0.598 1.3' }; // x y, most it may be enlarged
 const scenes = [
   { eb: 'What we do', h: ['Every', 'business', 'is a <em>world.</em>'], p: 'Your customers meet it everywhere: online, on the shelf and at the front desk.' },
   { eb: 'The layers', h: ['A world', 'is built in', '<em>seven layers.</em>'], p: 'From the story at its core to the systems that keep it running.' },
@@ -37,7 +41,7 @@ const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work',
   <h2 class="sr-only" id="film-title">What KNGHT does, in six scenes</h2>
   <div class="film__stage">
     <div class="film__plates" aria-hidden="true">
-      {SHOTS.map((src, i) => src && <video class="film__plate" muted playsinline preload="none" data-src={src} data-i={i}></video>)}
+      {SHOTS.map((src, i) => src && <video class="film__plate" muted playsinline preload="none" data-src={src} data-i={i} data-anchor={ANCHOR[i]}></video>)}
       <canvas class="film__canvas"></canvas>
     </div>
     <div class="film__shade" aria-hidden="true"></div>
