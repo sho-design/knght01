@@ -176,7 +176,7 @@ export default function film(gsap) {
     .to(wls, { autoAlpha: 1, duration: 0.01 }, 43.5);
   spokeD.forEach((d, i) => tl.to(d, { v: 1, duration: 0.7, ease: 'power2.out', onUpdate: up(d) }, 43.6 + i * 0.16));
   // Each world appears as its spark reaches it (the sparks are drawn in film-scenes.js: they leave the core at
-  // max(1.75, 1.5 + 0.16i) into the scene and take about 0.4s to arrive).
+  // max(1.75, 1.5 + 0.16i) into the scene and take 0.5s to arrive; the landing flash follows the chip as it grows).
   wbT.forEach((b, i) => tl.to(b, { s: 1, duration: 0.7, ease: 'expo.out', onUpdate: up(b) }, START[5] + Math.max(1.75, 1.5 + i * 0.16) + 0.4));
   tl.to({}, { duration: 1 }, END - 1);
 
@@ -369,7 +369,8 @@ export default function film(gsap) {
     userPaused = playing;
     if (playing) setPlaying(false); else start();
   });
-  const replayFilm = () => { unlock(); userPaused = false; tl.pause(0); applyAll(); scene = -1; syncPlate(true); start(); };
+  // Every play starts from the same turn, so the layers' words sit where they were placed (Law's above the core).
+  const replayFilm = () => { unlock(); userPaused = false; tl.pause(0); spin.time(0); applyAll(); scene = -1; syncPlate(true); start(); };
   replay.addEventListener('click', replayFilm);
   ticks.forEach((b, i) => b.addEventListener('click', () => {
     unlock(); userPaused = false;

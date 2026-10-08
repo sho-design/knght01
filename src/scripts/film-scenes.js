@@ -553,8 +553,8 @@ DIRS.ascend = (f, t) => {
     }
     // It lands as a flash on the world's own outline (its chip is 3.2U across), a ring that brightens and opens a
     // little as it fades, so the worlds sit in the dark rather than in balls of light.
-    const since = t - go - 0.5, fl = Math.exp(-since * 3);
-    if (fl > 0.01) { f.line(0.9 * fl, 1.6); ctx.beginPath(); ctx.arc(x, y, 3.2 * U * (1 + 0.14 * (1 - fl)), 0, TAU); ctx.stroke(); f.glow(x, y, 3.8 * U, 0.3 * fl); }
+    const since = t - go - 0.5, fl = Math.exp(-since * 3), cs = f.wb ? f.wb[i] : 1;
+    if (fl > 0.01) { f.line(0.9 * fl, 1.6); ctx.beginPath(); ctx.arc(x, y, 3.2 * U * cs * (1 + 0.14 * (1 - fl)), 0, TAU); ctx.stroke(); f.glow(x, y, 3.8 * U * cs, 0.3 * fl); }
   });
   // The empty seat: no spark reaches it, but it holds the most light of all, breathing, waiting. Kept close to the
   // seat, so it reads as light on the ring rather than a ball.

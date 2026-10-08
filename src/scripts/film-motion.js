@@ -39,7 +39,9 @@ export default function filmMotion(canvas, gfx) {
     // The world group's live scale (it breathes, holds at 0.94 from scene 4, and shrinks into the core in scene 6),
     // so drawn rings land on the diagram's rings rather than beside them.
     const wm = /scale\(([\d.]+)\)/.exec((gfx.querySelector('.reel__world') || gfx).getAttribute('transform') || ''), ws = wm ? +wm[1] : 1;
-    return { beam, badges, ws, cx, cy, U: u * 12.5, ring: (k) => ring(k) * u * ws, nine: seats.slice(0, SEATS - 1), seat: seats[SEATS - 1], nineAt: (i) => 1.9 + i * 0.16, shrink: (t) => 1 - 0.7 * inout((t - 0.4) / 1.4), tw: 1.7, glass: 0.55 }; // the glass a little darker, so the diagram's labels read over it
+    // Each world chip's live scale (they grow in as their sparks land), so a landing flash sits on the chip's outline.
+    const wb = [...gfx.querySelectorAll('.reel__wl .reel__wb')].map((el) => { const m = /scale\(([\d.]+)\)/.exec(el.getAttribute('transform') || ''); return m ? +m[1] : 1; });
+    return { beam, badges, ws, wb, cx, cy, U: u * 12.5, ring: (k) => ring(k) * u * ws, nine: seats.slice(0, SEATS - 1), seat: seats[SEATS - 1], nineAt: (i) => 1.9 + i * 0.16, shrink: (t) => 1 - 0.7 * inout((t - 0.4) / 1.4), tw: 1.7, glass: 0.55 }; // the glass a little darker, so the diagram's labels read over it
   };
   const bufs = [document.createElement('canvas'), document.createElement('canvas')];
   const into = (f, k, fn, t) => {

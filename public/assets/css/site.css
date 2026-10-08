@@ -1223,7 +1223,13 @@ html:not(.gsap) .reel__stage{position:sticky;top:calc(var(--nav-h) + 4vh)}
   .film .reel__name{font-size:38px}
   .film .reel__name--core{font-size:42px}
   .film .reel__lawtext{font-size:22px;letter-spacing:.24em}
+  /* Names below a world chip clear its outline; names above sit as close as "Yours" (the descriptors are hidden here) */
+  .film .reel__name--below{transform:translateY(10px)}
+  .film .reel__name--above{transform:translateY(22px)}
+  /* Each scene sits on the bottom of the shared type cell, so the tallest one (the ending) doesn't lift the rest */
+  .gsap .film__scene{align-self:end}
 }
+@media (max-width:900px) and (max-height:700px){.gsap .film__gfx{width:min(84vw,34svh)}}
 /* A thin dark keyline under the diagram's words, so they hold over bright footage */
 .film .reel__name,.film .reel__tag,.film .reel__lawtext{paint-order:stroke;stroke:rgba(0,0,0,.72);stroke-width:2.5px;stroke-linejoin:round}
 .film .reel__tag,.film .reel__lawtext{stroke-width:2px}

@@ -27,7 +27,7 @@ const SHOTS: (string | null)[] = [
 // Where in each shot the diagram's core belongs (fractions of the frame), measured from the footage: the heart of
 // the genesis cloud, and the point where the hammer meets the metal. The hall stays centred (its beam is matched).
 // The hall's column of light is matched to the core too, sideways only ("-" leaves it level), so the light falls on the world.
-const ANCHOR: Record<number, string> = { 0: '0.505 0.505 1.6', 2: '0.545 0.598 1.3', 3: '0.5 - 1.5' }; // x y, most it may be enlarged
+const ANCHOR: Record<number, string> = { 0: '0.505 0.505 1.6', 2: '0.545 0.598 1.3', 3: '0.5 - 1.65' }; // x y, most it may be enlarged
 // Under each world's name, what the business is: the rest of its name from its world file. Rum Raiders' second word is
 // part of its name, so its category stands in.
 const WHAT: Record<string, string> = { 'rum-raiders-ring': 'Spirits' };
@@ -70,7 +70,7 @@ const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work',
           <text class="reel__name reel__name--core" y="94">Lore</text>
         </g>
         {layers.slice(1).map((l, i) => {
-          const k = i + 1, R = RING(k), a = ANG[k];
+          const k = i + 1, R = RING(k), a = ANG[k], top = k === 1; // Law sits just above the core: its words go above its chip, clear of Lore
           return (
             <g class="reel__layer" data-k={k}>
               <path class="reel__ring" data-r={R} d={`M ${R} 0 A ${R} ${R} 0 1 1 ${-R} 0 A ${R} ${R} 0 1 1 ${R} 0`} />
@@ -79,8 +79,8 @@ const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work',
                   <g class="reel__badge">
                     <circle class="reel__chip" r="25" />
                     <g transform="translate(-14.4 -14.4) scale(1.2)" class="reel__sig" set:html={SIGILS[l.id] || ''} />
-                    <text class="reel__name" y="48">{l.data.name}</text>
-                    <text class="reel__tag" y="70">{TAG[l.id]}</text>
+                    <text class="reel__name" y={top ? -66 : 48}>{l.data.name}</text>
+                    <text class="reel__tag" y={top ? -44 : 70}>{TAG[l.id]}</text>
                   </g>
                 </g>
               </g>
@@ -100,7 +100,7 @@ const LABELS = ['A world', 'Seven layers', 'In order', 'Your rules', 'The work',
                   <g class="reel__wb">
                     <circle class="reel__chip" r="40" />
                     <g transform="translate(-21.6 -21.6) scale(1.8)" class="reel__sig" set:html={WORLD_SIGILS[w.id] || ''} />
-                    <text class="reel__name" y={y > 0 ? 70 : -78}>{w.data.name}</text>
+                    <text class={`reel__name ${y > 0 ? 'reel__name--below' : 'reel__name--above'}`} y={y > 0 ? 70 : -78}>{w.data.name}</text>
                     <text class="reel__tag reel__what" y={y > 0 ? 94 : -54}>{WHAT[w.id] ?? w.data.em}</text>
                   </g>
                 </g>
