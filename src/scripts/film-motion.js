@@ -25,7 +25,10 @@ export default function filmMotion(canvas, gfx) {
     // Measured against the footage: the beam is about 7% of the shot's height wide, widening to 10% at the floor,
     // the floor is 33% of the shot's height below its middle, and the pool of light sits a little right of the beam.
     const beam = { x: (r.width * dpr) / 2, top: mid - vh / 2, floor: mid + 0.331 * vh, fw0: 0.07 * vh, fwm: 0.006 * vh, fwf: 0.024 * vh, pool: 0.25 * vh, poolDx: 0.03 * vh };
-    return { beam, cx, cy, U: u * 12.5, ring: (k) => ring(k) * u, nine: seats.slice(0, SEATS - 1), seat: seats[SEATS - 1], nineAt: (i) => 1.9 + i * 0.16, shrink: (t) => 1 - 0.7 * inout((t - 0.4) / 1.4), tw: 1.7, glass: 0.55 }; // the glass a little darker, so the diagram's labels read over it
+    // The world group's live scale (it breathes, holds at 0.94 from scene 4, and shrinks into the core in scene 6),
+    // so drawn rings land on the diagram's rings rather than beside them.
+    const wm = /scale\(([\d.]+)\)/.exec((gfx.querySelector('.reel__world') || gfx).getAttribute('transform') || ''), ws = wm ? +wm[1] : 1;
+    return { beam, ws, cx, cy, U: u * 12.5, ring: (k) => ring(k) * u * ws, nine: seats.slice(0, SEATS - 1), seat: seats[SEATS - 1], nineAt: (i) => 1.9 + i * 0.16, shrink: (t) => 1 - 0.7 * inout((t - 0.4) / 1.4), tw: 1.7, glass: 0.55 }; // the glass a little darker, so the diagram's labels read over it
   };
   const bufs = [document.createElement('canvas'), document.createElement('canvas')];
   const into = (f, k, fn, t) => {
@@ -37,19 +40,25 @@ export default function filmMotion(canvas, gfx) {
   // a soft bloom on the bright parts, a vignette, grain and a faint flicker of exposure.
   const small = document.createElement('canvas'), tiny = document.createElement('canvas');
   const grain = (() => { const c = document.createElement('canvas'); c.width = c.height = 160; const x = c.getContext('2d'), d = x.createImageData(160, 160); for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; } x.putImageData(d, 0, 0); return c; })();
+  // The vignette only changes with the canvas size, so it is drawn once and reused.
+  const vig = document.createElement('canvas'); let vigKey = '';
+  const vignette = (W, H, x) => {
+    const key = `${W}x${H}@${Math.round(x)}`; if (key === vigKey) return vig;
+    vig.width = W; vig.height = H; const c = vig.getContext('2d'), g = c.createRadialGradient(x, H / 2, Math.min(W, H) * 0.3, x, H / 2, Math.max(W, H) * 0.85);
+    g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0.6)'); c.fillStyle = g; c.fillRect(0, 0, W, H); vigKey = key; return vig;
+  };
   const look = (f, amount, t) => {
     const { ctx, W, H } = f;
     small.width = Math.max(1, W >> 3); small.height = Math.max(1, H >> 3); tiny.width = Math.max(1, W >> 5); tiny.height = Math.max(1, H >> 5);
     const sx = small.getContext('2d'), tx = tiny.getContext('2d');
     sx.drawImage(canvas, 0, 0, small.width, small.height); tx.drawImage(small, 0, 0, tiny.width, tiny.height);
-    ctx.save(); ctx.imageSmoothingQuality = 'high'; ctx.globalCompositeOperation = 'lighter';
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
     ctx.globalAlpha = 0.45 * amount; ctx.drawImage(small, 0, 0, W, H);
     ctx.globalAlpha = 0.5 * amount; ctx.drawImage(tiny, 0, 0, W, H);
     ctx.globalCompositeOperation = 'soft-light'; ctx.globalAlpha = 0.35 * amount;
     const g = ctx.createPattern(grain, 'repeat'); ctx.translate((Math.random() * 160) | 0, (Math.random() * 160) | 0); ctx.fillStyle = g; ctx.fillRect(-160, -160, W + 160, H + 160);
     ctx.restore();
-    const v = ctx.createRadialGradient(f.cx, H / 2, Math.min(W, H) * 0.3, f.cx, H / 2, Math.max(W, H) * 0.85);
-    v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, `rgba(0,0,0,${0.6 * amount})`); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+    ctx.globalAlpha = amount; ctx.drawImage(vignette(W, H, f.cx), 0, 0); ctx.globalAlpha = 1;
     const flick = 0.03 + 0.025 * Math.sin(t * 23) * Math.sin(t * 7.3);
     ctx.fillStyle = `rgba(0,0,0,${flick * amount})`; ctx.fillRect(0, 0, W, H);
   };

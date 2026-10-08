@@ -44,6 +44,8 @@ export default function film(gsap) {
   const orbitT = orbits.map((o) => T(o, 1, 0));
   const badgeT = badges.map((b) => T(b, 0.4, 0));
   const ringT = rings.map((r) => T(r, 1));
+  // Seeking (chapter ticks, Watch again) moves these proxies without running their onUpdate, so re-apply them all.
+  const applyAll = () => [coreT, haloT, pulseT, lawT, worldT, ...orbitT, ...badgeT, ...ringT, ...wbT].forEach((p) => p.apply());
   const wbT = wbs.map((b) => T(b, 0));
   const layerText = $$('.reel__layer text, .reel__name--core');
   gsap.set([halo, pulse], { opacity: 0 });
@@ -87,15 +89,20 @@ export default function film(gsap) {
 
   // 3 · Built in order: the strike lights each ring from the core outward
   enter(2, 17.1);
-  tl.fromTo(pulseT, { s: 1 }, { s: 1.8, duration: 0.9, ease: 'power1.out', onUpdate: up(pulseT) }, 18.6)
-    .fromTo(pulse, { opacity: 1 }, { opacity: 0, duration: 0.9 }, 18.6)
+  // The hammer lands 1.46s into the forge shot (read from the shot's own frames: they jump in size as the
+  // sparks fly). The shot plays 0.75s per timeline second from the scene's start (17), so that is 18.95.
+  // The drawn sound waves use the same moment (STRIKE in film-scenes.js).
+  const HIT = START[2] + 1.95;
+  tl.fromTo(pulseT, { s: 1 }, { s: 1.8, duration: 0.9, ease: 'power1.out', onUpdate: up(pulseT) }, HIT)
+    .fromTo(pulse, { opacity: 1 }, { opacity: 0, duration: 0.9 }, HIT)
     .to(worldT, { s: 1.06, duration: 6, ease: 'none', onUpdate: up(worldT) }, 17.1);
   rings.forEach((r, i) => {
-    // Each ring swells a little as the sound of the strike passes through it (the waves are drawn in film-motion.js).
-    tl.to(ringT[i], { s: 1.035, duration: 0.24, ease: 'power2.out', onUpdate: up(ringT[i]) }, 18.8 + i * 0.32)
-      .to(ringT[i], { s: 1, duration: 0.9, ease: 'power2.inOut', onUpdate: up(ringT[i]) }, 19.04 + i * 0.32);
-    tl.to(r, { stroke: 'rgba(255,255,255,.85)', strokeWidth: 1.6, duration: 0.3, ease: 'power2.out' }, 18.8 + i * 0.32)
-      .to(r, { stroke: 'rgba(255,255,255,.32)', strokeWidth: 1.1, duration: 0.9 }, 19.02 + i * 0.32);
+    // Each ring swells a little as the sound of the strike passes through it (the waves are drawn in film-scenes.js).
+    const at = HIT + 0.2 + i * 0.32;
+    tl.to(ringT[i], { s: 1.035, duration: 0.24, ease: 'power2.out', onUpdate: up(ringT[i]) }, at)
+      .to(ringT[i], { s: 1, duration: 0.9, ease: 'power2.inOut', onUpdate: up(ringT[i]) }, at + 0.24);
+    tl.to(r, { stroke: 'rgba(255,255,255,.85)', strokeWidth: 1.6, duration: 0.3, ease: 'power2.out' }, at)
+      .to(r, { stroke: 'rgba(255,255,255,.32)', strokeWidth: 1.1, duration: 0.9 }, at + 0.22);
   });
   leave(2, 24.3);
 
@@ -189,9 +196,19 @@ export default function film(gsap) {
   const AT = REAL.map((_, i) => REAL.slice(0, i).reduce((a, b) => a + b, 0) / TOTAL);
   ticks.forEach((b, i) => b.style.setProperty('--p', AT[i].toFixed(4)));
   const realProgress = (t) => { const i = sceneAt(t); return AT[i] + (t - START[i]) / SPEED[i] / TOTAL; };
+  // Keep the shot on the film's clock: a shot can start late (decoding) or drift, which would put moments like
+  // the hammer strike out of step with the drawing. Small drift is eased out with the playback rate; large drift is cut.
+  const keepTime = () => {
+    const v = shot(scene);
+    if (!v || !v.src || !playing || v.paused || v.seeking || v.readyState < 2) return;
+    const want = (tl.time() - START[scene]) * RATE, drift = want - v.currentTime, base = RATE * SPEED[scene];
+    if (Math.abs(drift) > 0.25) { try { v.currentTime = want; } catch (e) {} v.playbackRate = base; }
+    else v.playbackRate = base * (1 + Math.max(-0.15, Math.min(0.15, drift * 0.8)));
+  };
   tl.eventCallback('onUpdate', () => {
     fill.style.transform = `scaleX(${Math.min(1, realProgress(tl.time())).toFixed(4)})`;
     syncPlate(false);
+    keepTime();
   });
   tl.eventCallback('onComplete', () => { setPlaying(false); sec.classList.add('is-ended'); });
 
@@ -215,12 +232,12 @@ export default function film(gsap) {
     userPaused = playing;
     if (playing) setPlaying(false); else start();
   });
-  const replayFilm = () => { userPaused = false; tl.pause(0); scene = -1; syncPlate(true); start(); };
+  const replayFilm = () => { userPaused = false; tl.pause(0); applyAll(); scene = -1; syncPlate(true); start(); };
   replay.addEventListener('click', replayFilm);
   ticks.forEach((b, i) => b.addEventListener('click', () => {
     userPaused = false;
     sec.classList.remove('is-ended');
-    tl.pause(START[i] + 0.01); scene = -1; syncPlate(true); start();
+    tl.pause(START[i] + 0.01); applyAll(); scene = -1; syncPlate(true); start();
   }));
 
   // Play when it is on screen, pause when it is not.

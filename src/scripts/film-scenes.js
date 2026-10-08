@@ -115,16 +115,17 @@ DIRS['ember-rings'] = (f, t) => {
 };
 
 // Into the forge (scene 3, footage): the last embers of the rings don't vanish, they drift up over the
-// footage and go out, handing over to the forge's own sparks. Then the hammer strikes (1.5s) and its sound
+// footage and go out, handing over to the forge's own sparks. Then the hammer strikes (1.95s) and its sound
 // goes out as waves: a front of close rings and a soft band of pressure, meeting each of the diagram's rings
-// just as it flashes (1.7 + 0.32k), carrying on past the world, and an echo behind it. Drawn over the footage.
-const STRIKE = 1.5, FRONT = 50 / 0.32; // svg units per second: one ring every 0.32s
+// just as it flashes (STRIKE + 0.2 + 0.32k), carrying on past the world, and an echo behind it. Drawn over the footage.
+// The strike is when the hammer lands in the shot (see HIT in film.js).
+const STRIKE = 1.95, FRONT = 50 / 0.32; // svg units per second: one ring every 0.32s
 const FRONTS = [[0, 1], [0.42, 0.45]];  // [delay, strength]: the strike and its echo
 const TRAIN = [0.8, 0.45, 0.24, 0.12];   // the close rings that make each front read as sound
 DIRS['ember-carry'] = (f, t) => {
   const { ctx, cx, cy, U, W, H, dpr } = f, u = R_(f, 0) / 114, far = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy));
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = '#fff';
-  // The carried embers are all out by 1.1s, so there is a held breath before the strike at 1.5s.
+  // The carried embers are all out by 1.1s, so there is a held breath before the strike.
   if (t < 1.2) for (let i = 0; i < 140; i++) {
     const k = i % 7, ua = ((i * 0.618) % 1) * TAU, r = R_(f, k), life = clamp(t / (0.7 + (i % 5) * 0.1));
     if (life >= 1) continue;
@@ -133,19 +134,24 @@ DIRS['ember-carry'] = (f, t) => {
   }
   FRONTS.forEach(([d, power]) => {
     const tt = t - d; if (tt < STRIKE) return;
-    const units = 114 + (tt - 1.7) * FRONT, rad = units * u; if (rad - 60 * u > far) return;
+    const units = 114 + (tt - STRIKE - 0.2) * FRONT, rad = units * u; if (rad - 60 * u > far) return;
     const life = clamp((units - 83) / 760), env = power * Math.pow(1 - life, 1.4) * clamp((tt - STRIKE) / 0.12);
     if (env <= 0.005) return;
     // The band of pressure just behind the front.
-    const g = ctx.createRadialGradient(cx, cy, Math.max(0, rad - 34 * u), cx, cy, rad + 8 * u);
-    g.addColorStop(0, W_(0)); g.addColorStop(0.78, W_(0.14 * env)); g.addColorStop(1, W_(0));
-    ctx.fillStyle = g; ctx.fillRect(cx - rad - 8 * u, cy - rad - 8 * u, (rad + 8 * u) * 2, (rad + 8 * u) * 2);
+    // Filled as a ring only, not the whole square around it: once the front passes the screen edge, that square
+    // would be the whole canvas, twice a frame.
+    const r0 = Math.max(0, rad - 34 * u), r1 = rad + 8 * u;
+    if (r0 < far) {
+      const g = ctx.createRadialGradient(cx, cy, r0, cx, cy, r1);
+      g.addColorStop(0, W_(0)); g.addColorStop(0.78, W_(0.14 * env)); g.addColorStop(1, W_(0));
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, r1, 0, TAU); ctx.arc(cx, cy, r0, 0, TAU, true); ctx.fill();
+    }
     // The front itself: close rings, each trembling a little as it travels, settling as it spreads.
     TRAIN.forEach((a, m) => {
       const rm = rad - m * 15 * u; if (rm <= 2) return;
       const shake = 1.6 * u * (1 - life);
       ctx.beginPath();
-      for (let q = 0; q <= 120; q++) { const th = (q / 120) * TAU, rr = rm + Math.sin(th * 18 + tt * 22 + m * 1.7) * shake; q ? ctx.lineTo(cx + Math.cos(th) * rr, cy + Math.sin(th) * rr) : ctx.moveTo(cx + Math.cos(th) * rr, cy + Math.sin(th) * rr); }
+      for (let q = 0; q <= 72; q++) { const th = (q / 72) * TAU, rr = rm + Math.sin(th * 18 + tt * 22 + m * 1.7) * shake; q ? ctx.lineTo(cx + Math.cos(th) * rr, cy + Math.sin(th) * rr) : ctx.moveTo(cx + Math.cos(th) * rr, cy + Math.sin(th) * rr); }
       f.line(a * env, Math.max(0.6, 1.5 - m * 0.3)); ctx.stroke();
     });
   });
@@ -403,7 +409,7 @@ DIRS['hall-dust'] = (f, t) => {
 const LEAVE = (i) => 0.7 + (i % 48) * 0.042, TRAVEL = 1.7; // the stream runs for about two seconds
 DIRS.embers = (f, t) => {
   const { ctx, cx, cy, W, H, U, dpr } = f, b = f.beam;
-  if (b) { const a = 1 - ease((t - 1.1) / 2.4); if (a > 0) drawBeam(f, b, a, t); }
+  if (b) { const a = 1 - ease((t - 1.9) / 1.8); if (a > 0) drawBeam(f, b, a, t); }
   // Where an ember is at time s, before the Build pulls it onto its ring.
   const loose = (e, i, s) => {
     const R = R_(f, e.k);
@@ -447,7 +453,8 @@ DIRS.ascend = (f, t) => {
   const seats = Array.from({ length: 10 }, (_, i) => { const a = ((-90 + i * 36) * Math.PI) / 180; return [cx + Math.cos(a) * 34 * U, cy + Math.sin(a) * 34 * U]; });
   const nine = f.nine || seats.slice(0, 9), seat = f.seat || seats[9];
   const at = f.nineAt || ((i) => 1.9 + i * 0.16), shrink = f.shrink || ((v) => 1 - 0.7 * inout((v - 0.4) / 1.4));
-  const s = shrink(t), heat = clamp((1 - s) / 0.7), fire = 1.75;
+  // In the film the rings already follow the world's live scale (f.ws) as it shrinks; on the directions page they don't.
+  const live = f.ws != null, s = live ? 1 : shrink(t), heat = live ? clamp((0.94 - f.ws) / 0.64) : clamp((1 - s) / 0.7), fire = 1.75;
   ctx.fillStyle = '#fff';
   EMBERS.forEach((e, i) => {
     const r = R_(f, e.k) * s, a = e.a + 0.45 + heat * 1.2, x0 = cx + Math.cos(a) * r, y0 = cy + Math.sin(a) * r;
