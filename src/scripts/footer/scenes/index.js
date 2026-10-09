@@ -8,14 +8,13 @@ export const SCENES = {
   'last-rank': () => import('./last-rank.js'),
   candle: () => import('./candle.js'),
   'letter-to-piece': () => import('./letter-to-piece.js'),
+  dusk: () => import('./dusk.js'),
+  'back-rank': () => import('./back-rank.js'),
 };
 
 /* Preview only: finished endings the owner can open with ?ending=<id>. Never in the visitor bag.
    Under ?ending= the knight steps through SCENES, then these. To put one in the rotation, move its line up. */
 export const PREVIEW = {
   title: () => import('./title.js'),
-  spotlight: () => import('./spotlight.js'),
-  dusk: () => import('./dusk.js'),
-  'back-rank': () => import('./back-rank.js'),
   'missing-i': () => import('./missing-i.js'),
 };

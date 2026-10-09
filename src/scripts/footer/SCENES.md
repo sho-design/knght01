@@ -197,7 +197,7 @@ scene does not take over. Either way the next scene starts with clean letters.
 | Shadows cast across the floor (dusk, light-the-knght) | `ctx.canvas({ layer: 'back' })`: the whole footer, behind the links, in stage coordinates. Outlines from `letters.js` as `Path2D`, the B knight from `ctx.knight.d`. |
 | A floor that reflects (still-water, the-set-below, floor-reads-knight) | The prototypes add room under the letters by growing the wordmark's bottom margin (about 0.95 cap height: 205 px on desktop, 64 px on phones). A scene may not do that (rule 1), and `floor` is only 77 and 26 px. A reflection must fit that room, or the owner decides to give every ending a deeper floor, once, in `site.css`. |
 | Driven by the scroll, not by time (dusk, tour) | A ScrollTrigger made in `mount` that scrubs a paused timeline; `still()` sets it to the end. After a swap the reader is already at the bottom, so a scrub alone would show the end at once: when `ctx.reason === 'swap'`, `play()` tweens the timeline from the start to the scroll's place first. |
-| Footage scrubbed by the scroll (spotlight) | Frames, not a `<video>`: a video seeks through the whole media pipeline on every change and cannot keep up with a scroll. WebP frames fetched when the scene mounts, decoded around the playhead with `createImageBitmap`, drawn on a canvas in the backdrop. Cut the frames at the sizes the screens draw (a phone set and a large one) and decode them at their own size: a resize inside `createImageBitmap` costs two to four times the decode. Read the scroll from Lenis (`window.KNGHT.lenis.scroll`) inside `ctx.tick`, not from scroll events, and follow it closely (Lenis has smoothed it already: a second slow ease makes the film trail the reader). Take the time from `gsap.globalTimeline.time()` so a recorder that steps GSAP steps the film. |
+| Footage scrubbed by the scroll | Frames, not a `<video>`: a video seeks through the whole media pipeline on every change and cannot keep up with a scroll. WebP frames fetched when the scene mounts, decoded around the playhead with `createImageBitmap`, drawn on a canvas in the backdrop. Cut the frames at the sizes the screens draw (a phone set and a large one) and decode them at their own size: a resize inside `createImageBitmap` costs two to four times the decode. Read the scroll from Lenis (`window.KNGHT.lenis.scroll`) inside `ctx.tick`, not from scroll events, and follow it closely (Lenis has smoothed it already: a second slow ease makes the film trail the reader). Take the time from `gsap.globalTimeline.time()` so a recorder that steps GSAP steps the film. |
 | WebGL (still-water) | `ctx.canvas({ layer, context: 'webgl' })`; draw only in `ctx.tick` (it stops off screen); set `gl.viewport` in `ctx.onResize`. Fall back to a still picture when `ctx` is null. |
 | `KF.measure()`, `KF.geo`, `KN.baseline(word)` | `ctx.measure()` |
 | `kf:resize`, `addEventListener('resize')`, `document.fonts.ready.then(build)` | `ctx.onResize(fn)` |
@@ -225,16 +225,23 @@ scene does not take over. Either way the next scene starts with clean letters.
 
 ## 8. The scenes now
 
-| id | name | status |
+| id | name | where |
 | --- | --- | --- |
-| `classic` | Classic | Permanent. Today's footer exactly: the base alone, no layer, no tween. |
-| `outline` | Outline | **Placeholder, to be replaced.** The letters draw in as hairline outlines, then fill. It exists to prove the host. |
-| `spotlight` | The spotlight | Footage (public/footage/knght-footer/, 66 frames in two cuts: 960 wide for phones, about 0.53 MB, and 1600 for larger screens, about 1.1 MB; loaded only when it mounts). A light snaps on over a knight standing where the missing I would be; the camera's push-in is timed to the scroll and ends with the page. |
+| `lookout` | The lookout | Rotation |
+| `your-move` | Your move | Rotation |
+| `tear-along` | The blade in the line | Rotation |
+| `last-rank` | The last rank | Rotation |
+| `candle` | Candle | Rotation. Its knght shadow stands in the gap between the N and the G. |
+| `letter-to-piece` | Letter to piece | Rotation |
+| `dusk` | Dusk | Rotation. Also stands its knght shadow in the N-G gap, by the owner's choice. No other ending may. |
+| `back-rank` | The back rank | Rotation |
+| `title` | Title sequence | Preview |
+| `missing-i` | The missing I | Preview |
 
-The rotation needs at least seven endings. Each designed one replaces `outline` or joins the list.
+`classic.js` and `outline.js` stay in the folder as the base and the template for a new scene (section 7). They are in neither list.
 
-**Preview endings.** `PREVIEW` in `scenes/index.js` holds finished endings that are not in the rotation (now `candle`,
-`title`, `spotlight`, `dusk`, `back-rank`, `letter-to-piece`, `missing-i`). The bag is built from `SCENES` alone, so a
+**Preview endings.** `PREVIEW` in `scenes/index.js` holds finished endings that are not in the rotation (now `title`
+and `missing-i`). The bag is built from `SCENES` alone, so a
 visit never gets one and never fetches one; the list itself adds about 0.5 KB (0.2 KB gzipped) to the host's chunk.
 `/?ending=<id>` opens an id from either list, and the knight then steps through `SCENES`, then `PREVIEW`, in order. To
 put one in the rotation, move its line from `PREVIEW` to `SCENES`. A preview scene must not import a module the host
