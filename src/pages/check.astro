@@ -13,7 +13,7 @@ const ld = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name:
     <div class="wrap">
       <p class="eyebrow">The claim checker</p>
       <h1 class="display book__title" style="margin-top:24px">Will this line <br><em>pass review?</em></h1>
-      <p class="for__answer">Paste an ad, a label line or a website headline and pick your category. You&rsquo;ll see the words a regulator or an ad platform is most likely to question, why, and a safer way to say it. It runs in your browser. Nothing you paste leaves it unless you send it to Sergio.</p>
+      <p class="for__answer">Paste an ad, a label line or a website headline and pick your category. You&rsquo;ll see the words a regulator or an ad platform is most likely to question, why, and a safer way to say it. It runs in your browser. Nothing you paste leaves it unless you send it to us.</p>
       <form class="ck" data-check novalidate>
         <div class="ck__cats" role="group" aria-label="Your category"><span class="ck__lbl">Your category</span>{CATS.map(([v, l]) => <button type="button" class="cat" data-check-cat={v} aria-pressed="false">{l}</button>)}</div>
         <label class="sr-only" for="check-text">Your marketing line</label>
@@ -35,7 +35,7 @@ const ld = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name:
       <p class="ck__note">A first read, not legal advice. A flag means look again, not that a line breaks the law, and a clean read is not a clearance. Rules change, and your own college or regulator has the final word.</p>
       {SETTINGS.formEndpoint && (
         <form class="lead ck__lead" data-check-lead data-endpoint={SETTINGS.formEndpoint} novalidate>
-          <label class="lead__label" for="ck-email">Want a person to read it? Send it to Sergio</label>
+          <label class="lead__label" for="ck-email">Want a person to read it? Send it to us</label>
           <div class="lead__row">
             <input id="ck-email" name="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com" required>
             <button type="submit" class="btn btn--sm">Send it</button>

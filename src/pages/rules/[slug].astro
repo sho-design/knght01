@@ -12,7 +12,7 @@ const { r } = Astro.props;
 const d = r.data;
 const { Content } = await render(r);
 const ld = [{ '@context': 'https://schema.org', '@type': 'Article', headline: d.title, description: d.dek,
-  author: { '@type': 'Person', name: 'Sergio Ho' }, publisher: { '@type': 'Organization', name: 'KNGHT', url: 'https://knght.com/' },
+  author: { '@type': 'Organization', name: 'KNGHT', url: 'https://knght.com/' }, publisher: { '@type': 'Organization', name: 'KNGHT', url: 'https://knght.com/' },
   datePublished: '2026-10-01', mainEntityOfPage: `https://knght.com/rules/${r.id}/` }];
 ---
 <Base title={`${d.title} | KNGHT Rules`} description={d.dek} path={`rules/${r.id}/`} bodyClass="worldpage legalpage rulepage" ld={ld}>

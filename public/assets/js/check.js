@@ -124,7 +124,7 @@
       const res = await fetch(lead.dataset.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ _subject: `Claim check: ${cat || 'other'}`, email: email.value, news_optin: optin.checked, consent_text: words, consent_at: new Date().toISOString(), page: location.pathname, category: cat || 'other', text: text.value.slice(0, 2000) }) });
       if (!res.ok) throw new Error(res.status);
-      st.textContent = 'Sent. Sergio will read it and reply within one business day.';
+      st.textContent = 'Sent. We will read it and reply within one business day.';
       track('generate_lead', { lead_source: 'claim_check', category: cat || 'other' });
       lead.reset();
     } catch (err) { st.textContent = 'That did not go through. Email sho@knght.com instead.'; }

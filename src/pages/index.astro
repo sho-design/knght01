@@ -85,7 +85,6 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
   "areaServed": "Ontario, Canada",
   "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Wednesday", "Friday"], "opens": "13:00", "closes": "17:00" }],
   "address": { "@type": "PostalAddress", "addressLocality": "Toronto", "addressRegion": "ON", "addressCountry": "CA" },
-  "founder": { "@type": "Person", "name": "Sergio Ho", "jobTitle": "Founder and creative director", "worksFor": { "@type": "Organization", "name": "KNGHT" } },
   "makesOffer": [
     { "@type": "Offer", "name": "The Verdict", "description": "A scored audit of an existing brand world, judged layer by layer against the buyer and the regulator. Scored report in 5 business days from the kickoff call. Fee credited to a Build started within 60 days.", "priceSpecification": { "@type": "PriceSpecification", "minPrice": 3500, "priceCurrency": "CAD" } },
     { "@type": "Offer", "name": "The Build: a full world", "description": "A complete brand world from zero, all seven layers, from $25,000 CAD, delivered ready to launch. The Verdict fee is credited in full to a Build started within 60 days.", "priceSpecification": { "@type": "PriceSpecification", "minPrice": 25000, "priceCurrency": "CAD" } },
@@ -202,7 +201,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
       <div class="worlds__track">
         <div class="worlds__intro">
           <h2 class="sr-only" id="worlds-title">The worlds</h2>
-          <p data-reveal>Sergio Ho, KNGHT&rsquo;s founder, built every one of these, and a few are businesses we run ourselves. The cover images only set the mood. Open a world to see the actual work.</p>
+          <p data-reveal>KNGHT&rsquo;s founder built every one of these, and a few are businesses we run ourselves. The cover images only set the mood. Open a world to see the actual work.</p>
           <div class="wfilter" role="group" aria-label="Show worlds by layer"><button type="button" class="wfilter__chip" aria-pressed="true" data-layer="">All</button>{layers.filter((l) => worlds.some((w) => w.data.built[l.data.name])).map((l) => <button type="button" class="wfilter__chip" aria-pressed="false" data-layer={l.id}>{l.data.name}</button>)}</div>
         </div>
 
@@ -428,7 +427,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
       <a class="btn" href="/book/" data-magnetic>Book the free call
         <svg class="arrow" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
       </a>
-      <p class="cta-note">You&rsquo;ll speak with Sergio, not a salesperson.</p>
+      <p class="cta-note">You&rsquo;ll speak with the founder, not a salesperson.</p>
     </div>
   </section>
 
