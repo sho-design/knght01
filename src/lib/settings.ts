@@ -11,7 +11,7 @@ export const SETTINGS = {
     youtube: '',
     instagram: '',
     facebook: '',
-    linkedin: '',
+    linkedin: 'https://www.linkedin.com/company/knght/',
   },
   formEndpoint: (import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined)?.trim() || 'https://formspree.io/f/mljdykov',
 };
