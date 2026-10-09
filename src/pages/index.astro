@@ -56,21 +56,22 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
 <link rel="preload" as="image" href="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/223108b7-727b-4f95-83b3-b35e44c577ba.jpg">
 <link rel="stylesheet" href="/assets/css/site.css">
 <script is:inline>document.documentElement.classList.replace('no-js','js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('gsap')</script>
-{/* Hero mock-ups for review: ?hero=tone and ?hero=chips. Without the parameter the hero is unchanged. */}
-<script is:inline>{const r=document.documentElement,h=new URLSearchParams(location.search).get('hero');if(h==='tone'||h==='chips')r.dataset.hero=h;if(h==='chips')addEventListener('DOMContentLoaded',()=>r.classList.add('hero-turn'))}</script>
+{/* The hero's italic turn follows the category (src/scripts/hero-chips.js). ?hero=tone shows the tone mock-up instead.
+    A first visit opens on today's words, so nothing waits. Only when a category is already known (?for= or the last
+    visit) does the last line wait under its mask for its phrase; if the script never runs it is let go at DOMContentLoaded. */}
+<script is:inline>{const r=document.documentElement,q=new URLSearchParams(location.search),h=q.get('hero')==='tone'?'tone':'chips';r.dataset.hero=h;if(h==='chips'){let c=q.get('for');if(!c){try{c=localStorage.getItem('knght-cat')}catch(e){}}if(c==='coffee')c='food';if(['clinic','dental','medspa','law','spirits','food'].includes(c))r.classList.add('hero-wait');addEventListener('DOMContentLoaded',()=>r.classList.add('hero-turn'))}}</script>
 <style is:global>
-/* ?hero=tone: no italic. The claim stays white; the rest sits in the secondary grey. */
+/* ?hero=tone (a mock-up): no italic. The claim stays white; the rest sits in the secondary grey. */
 [data-hero="tone"] .hero__title .line:nth-child(n+3){color:var(--ash)}
 [data-hero="tone"] .hero__title em{font-style:normal}
 [data-hero="tone"] .hero__title .sheen{background:none;color:inherit;-webkit-text-fill-color:currentColor;animation:none}
-/* ?hero=chips: the italic turn follows the category (src/scripts/hero-chips.js). Old and new phrase share one cell;
+/* The italic turn follows the category (src/scripts/hero-chips.js). Old and new phrase share one cell;
    the block padding keeps the sheen's clipped background under the ascenders and descenders, the margin cancels it. */
 .hero__turn{display:inline-grid;white-space:nowrap}
 .hero__turn-w{grid-area:1/1;justify-self:start;padding-block:.3em;margin-block:-.3em}
-/* The last line waits below its mask until the script has put the opening phrase in (a returning visitor's
-   category), so it never rises as "get it wrong." and then changes. Usually that is no wait at all; on a slow
-   connection it is until the page is parsed. If the script never runs, the head script lets it go at DOMContentLoaded. */
-[data-hero="chips"]:not(.hero-turn) .hero__title .line:last-child > span{transform:translateY(calc(105% + .24em));transition:none}
+/* With a category already known, the last line waits below its mask until the script has put that category's
+   phrase in, so it never shows "get it wrong." and then changes. A first visit has nothing to wait for. */
+[data-hero="chips"].hero-wait:not(.hero-turn) .hero__title .line:last-child > span{transform:translateY(calc(105% + .24em));transition:none}
 /* Let go, it rises out of the mask on the headline's curve, whether or not the rest has started (site.css). */
 [data-hero="chips"] .hero__title .line:last-child > span{transition:transform 1.25s var(--ease-out)}
 </style>

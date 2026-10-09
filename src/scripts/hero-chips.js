@@ -1,9 +1,9 @@
-/* Hero mock-up, ?hero=chips: the italic turn follows the category.
+/* The hero's italic turn follows the category (every visit, unless ?hero=tone).
    The headline keeps its one italic phrase. Choosing a chip swaps only that phrase, in the
    "get the ___ wrong." shape: the old phrase leaves upward and the new one rises in on the
    headline's own curve. With no chip it reads "get it wrong." as today. Reduced motion swaps
    it instantly. Screen readers hear the new headline once, from a hidden polite copy.
-   Runs only when the head script has set data-hero="chips" (src/pages/index.astro). */
+   Runs when the head script has set data-hero="chips" (src/pages/index.astro), which it does by default. */
 
 // One phrase per category, each from the rule the site reads that category against
 // (src/data/categories.json, src/content/for, src/content/rules).
@@ -11,7 +11,7 @@ const TURNS = {
   '': 'get it wrong.',
   clinic: 'get the claim wrong.', // CPSO: advertising must be factual and verifiable
   dental: 'get the title wrong.', // RCDSO: say general practitioner or registered specialist
-  medspa: 'get the post wrong.', // Health Canada: no prescription drug promoted by brand name
+  medspa: 'get the post wrong.', // Health Canada: a prescription drug ad to the public is limited to name, price and quantity
   law: 'get the word wrong.', // Law Society: specialist is a title you earn, not a word you choose
   spirits: 'get the ad wrong.', // AGCO advertising standards and the CRTC alcohol code
   food: 'get the label wrong.', // CFIA labelling and allergen rules
