@@ -56,6 +56,22 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
 <link rel="preload" as="image" href="https://d2ol7oe51mr4n9.cloudfront.net/user_2vgr4LDcTnBdquYG4fMZ396AWcW/223108b7-727b-4f95-83b3-b35e44c577ba.jpg">
 <link rel="stylesheet" href="/assets/css/site.css">
 <script is:inline>document.documentElement.classList.replace('no-js','js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('gsap')</script>
+{/* Hero mock-ups for review: ?hero=tone and ?hero=chips. Without the parameter the hero is unchanged. */}
+<script is:inline>{const r=document.documentElement,h=new URLSearchParams(location.search).get('hero');if(h==='tone'||h==='chips')r.dataset.hero=h;if(h==='chips')addEventListener('DOMContentLoaded',()=>r.classList.add('hero-turn'))}</script>
+<style is:global>
+/* ?hero=tone: no italic. The claim stays white; the rest sits in the secondary grey. */
+[data-hero="tone"] .hero__title .line:nth-child(n+3){color:var(--ash)}
+[data-hero="tone"] .hero__title em{font-style:normal}
+[data-hero="tone"] .hero__title .sheen{background:none;color:inherit;-webkit-text-fill-color:currentColor;animation:none}
+/* ?hero=chips: the italic turn follows the category (src/scripts/hero-chips.js). Old and new phrase share one cell;
+   the block padding keeps the sheen's clipped background under the ascenders and descenders, the margin cancels it. */
+.hero__turn{display:inline-grid;white-space:nowrap}
+.hero__turn-w{grid-area:1/1;justify-self:start;padding-block:.3em;margin-block:-.3em}
+/* The last line waits below its mask until the script has put the opening phrase in (a returning visitor's
+   category), so it never rises as "get it wrong." and then changes. Usually that is no wait at all; on a slow
+   connection it is until the page is parsed. If the script never runs, the head script lets it go at DOMContentLoaded. */
+[data-hero="chips"]:not(.hero-turn) .hero__title .line:last-child > span{transform:translateY(calc(105% + .24em));transition:none}
+</style>
 <script is:inline type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -441,6 +457,11 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
   </div>
 </footer>
 
+<script>
+  // Hero mock-up: with ?hero=chips the italic turn follows the category chips. It does nothing otherwise.
+  // Placed before Motion and the page scripts so it runs first, before the headline rises.
+  import '../scripts/hero-chips.js';
+</script>
 <Motion />
 <script is:inline src="/assets/js/vendor/lenis.min.js" defer></script>
 <script is:inline src="/assets/js/site.js" defer></script>
