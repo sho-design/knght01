@@ -10,7 +10,7 @@ import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import SPRITE from '../../assets/knght-chess.svg?no-inline';
-import { SCENES } from './scenes/index.js';
+import { SCENES, PREVIEW } from './scenes/index.js';
 import { createBag } from './bag.js';
 import { createBase } from './base.js';
 import { KNIGHT_D, KNIGHT_EYE, KNIGHT_VIEWBOX, KNIGHT_SVG } from './knight.js';
@@ -52,16 +52,20 @@ function start(stage) {
     fine: mq('(hover: hover) and (pointer: fine)'),
   });
 
-  // ?ending=<id> forces a scene for QA and recordings, and leaves the bag alone.
-  // Only the registry's own ids count ("constructor" or "__proto__" are not endings); case and spaces are forgiven.
+  // ?ending=<id> forces a scene for QA and recordings, and leaves the bag alone. It also opens the preview endings
+  // (PREVIEW in scenes/index.js), which the bag never holds: the knight then steps through SCENES, then PREVIEW.
+  // Only the registries' own ids count ("constructor" or "__proto__" are not endings); case and spaces are forgiven.
+  const every = { ...SCENES, ...PREVIEW };
   let forced = null;
   try { forced = new URLSearchParams(location.search).get('ending'); } catch (e) { forced = null; }
   if (forced != null) {
     const asked = forced.trim();
-    forced = ids.find((id) => id.toLowerCase() === asked.toLowerCase()) || null;
-    if (!forced && asked) console.warn(`KNGHT footer: there is no ending called "${asked}". The endings are: ${ids.join(', ')}.`);
+    forced = Object.keys(every).find((id) => id.toLowerCase() === asked.toLowerCase()) || null;
+    if (!forced && asked) console.warn(`KNGHT footer: there is no ending called "${asked}". The endings are: ${Object.keys(every).join(', ')}.`);
   }
-  const bag = createBag(ids, forced);
+  const scenes = forced ? every : SCENES; // a visit's bag is SCENES alone
+  const list = Object.keys(scenes);
+  const bag = createBag(list, forced);
   const base = createBase({ gsap, stage, word, letters, reduce: flags.reduce });
   base.apply(true); // the shared rise is on from the start; each mount applies it again, on or off
 
@@ -69,7 +73,7 @@ function start(stage) {
   const modules = new Map();
   const load = (id) => {
     if (!modules.has(id)) {
-      modules.set(id, SCENES[id]().then((m) => m.default || m).catch((e) => { modules.delete(id); throw e; }));
+      modules.set(id, scenes[id]().then((m) => m.default || m).catch((e) => { modules.delete(id); throw e; }));
     }
     return modules.get(id);
   };
@@ -467,7 +471,7 @@ function start(stage) {
     live.textContent = '';
     // A beat later, so the same words are read again if they come round again.
     clearTimeout(said);
-    said = setTimeout(() => { live.textContent = `${name}. Ending ${ids.indexOf(id) + 1} of ${ids.length}.`; }, 80);
+    said = setTimeout(() => { live.textContent = `${name}. Ending ${list.indexOf(id) + 1} of ${list.length}.`; }, 80);
   };
   const hop = () => {
     if (flags.reduce || !glyph) return;
