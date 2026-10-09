@@ -237,13 +237,14 @@ scene does not take over. Either way the next scene starts with clean letters.
 | `back-rank` | The back rank | Rotation |
 | `title` | Title sequence | Preview |
 | `missing-i` | The missing I | Preview |
+| `last-line` | The last line | Preview |
 
 `classic.js` and `outline.js` stay in the folder as the base and the template for a new scene (section 7). They are in neither list.
 
-**Preview endings.** `PREVIEW` in `scenes/index.js` holds finished endings that are not in the rotation (now `title`
-and `missing-i`). The bag is built from `SCENES` alone, so a
+**Preview endings.** `PREVIEW` in `scenes/index.js` holds finished endings that are not in the rotation (now `title`,
+`missing-i` and `last-line`). The bag is built from `SCENES` alone, so a
 visit never gets one and never fetches one; the list itself adds about 0.5 KB (0.2 KB gzipped) to the host's chunk.
 `/?ending=<id>` opens an id from either list, and the knight then steps through `SCENES`, then `PREVIEW`, in order. To
 put one in the rotation, move its line from `PREVIEW` to `SCENES`. A preview scene must not import a module the host
-or a rotation scene also uses (`gsap/utils/paths.js`, `pieces.js`): the build would then share it between chunks and
+or a rotation scene also uses (`gsap/utils/paths.js`, `pieces.js`, `letters.js`): the build would then share it between chunks and
 change what a visit downloads. Take gsap's path tools from `ctx.plugins.MotionPathPlugin`, as dusk and back-rank do.

@@ -17,4 +17,5 @@ export const SCENES = {
 export const PREVIEW = {
   title: () => import('./title.js'),
   'missing-i': () => import('./missing-i.js'),
+  'last-line': () => import('./last-line.js'),
 };
