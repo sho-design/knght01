@@ -440,6 +440,35 @@ html.lenis,html.lenis body{height:auto}
 .footer__word{display:flex;justify-content:space-between;margin-top:clamp(40px,5vw,72px);font:500 clamp(5rem,24vw,26rem)/.76 var(--serif);letter-spacing:-.02em;padding-inline:calc(var(--gutter) * .5);user-select:none}
 .footer__word span{display:block;transform:translateY(18%)}
 .footer__base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;padding-block:22px;padding-right:64px;border-top:1px solid var(--rule);font-size:.82rem;color:var(--ash-2)}
+/* The homepage footer's endings (src/scripts/footer, SCENES.md). The stage is exactly the wordmark's box:
+   the word's margins pass through it, so wrapping the word moved nothing. A scene draws on layers inside it. */
+.footer__stage{position:relative;isolation:isolate}
+.footer__stage .footer__word{position:relative;z-index:1}
+.footer__layer{position:absolute;inset:0;z-index:2;pointer-events:none}
+.footer__layer--under{z-index:0}
+/* The backdrop: the whole footer, behind the links and the email (a floor for shadows). The footer isolates it. */
+.footer--endings{position:relative;isolation:isolate}
+.footer__layer--back{z-index:-1}
+.footer__layer > svg,.footer__layer > canvas{position:absolute;left:0;top:0;overflow:visible}
+/* A scene that takes over draws the letters itself: no rise (base.js) and no steel. */
+.footer__stage.is-own .footer__word .sheen{background:none;color:var(--argent);-webkit-text-fill-color:currentColor;animation:none}
+/* The steel's resting light, for when the hall's light is not moving (reduced motion) */
+.footer__word .sheen{--gx:50%}
+/* The footer line with the knight: centred between the two lines on wide screens, a mark beside them on phones */
+.footer__base--knight{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"k a" "k b";align-items:center;column-gap:10px;row-gap:12px}
+.footer__base--knight .footer__copy{grid-area:a}
+.footer__base--knight .footer__end{grid-area:b}
+.footer__knight{grid-area:k;position:relative;display:grid;place-items:center;width:44px;height:44px;margin:-12px -10px -12px -16px;padding:0;border:0;border-radius:50%;background:none;color:var(--ash-2);cursor:pointer;visibility:hidden;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color .35s var(--ease-out)}
+.footer__knight.is-ready{visibility:visible}
+.footer__knight svg{width:20px;height:20px;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+.footer__knight circle{fill:currentColor;stroke:none}
+.footer__knight:hover,.footer__knight:focus-visible{color:var(--argent)}
+.footer__knight:focus-visible{outline:1px solid var(--argent);outline-offset:-5px}
+@media (min-width:820px){
+  .footer__base--knight{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-areas:"a k b";column-gap:24px;padding-right:0}
+  .footer__base--knight .footer__end{justify-self:end;padding-right:64px}
+  .footer__knight{margin:-12px -11px}
+}
 
 /* Reveal */
 .js [data-reveal]{opacity:0;transform:translateY(40px);transition:opacity 1.1s var(--ease-out),transform 1.3s var(--ease-out)}
@@ -921,6 +950,7 @@ html.lenis,html.lenis body{height:auto}
 .gsap .chap__meta{opacity:1;transform:none;transition:none}
 .gsap .rung{translate:none}
 .gsap .footer__word span{transform:none} /* GSAP sets the start offset itself; the CSS one would double it */
+@media (prefers-reduced-motion:reduce){.footer__word span{transform:none}} /* no rise: the letters rest where they end */
 .footer__word{padding-bottom:.08em;margin-bottom:clamp(12px,2vw,28px)} /* clear of the footer line, whatever the serif's baseline */
 
 /* ===== The dial's codex: each question shows its layer's sigil and meaning (chapters.js, section 10) ===== */

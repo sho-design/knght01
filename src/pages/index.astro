@@ -9,6 +9,7 @@ const sameAs = Object.values(SETTINGS.social).filter((u) => u && /^https:\/\//.t
 import Meter from '../components/Meter.astro';
 import WorkGrid from '../components/WorkGrid.astro';
 import { CDN, CATEGORY, ROMAN, getWorlds, getLayers, worldLayers, workImages } from '../lib/site';
+import { KNIGHT_D, KNIGHT_EYE, KNIGHT_VIEWBOX } from '../scripts/footer/knight.js';
 const worlds = await getWorlds();
 const layers = await getLayers();
 const drawers: Record<string, { label: string; target: number; imgs: Awaited<ReturnType<typeof workImages>> }> = {
@@ -415,7 +416,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
 
 </main>
 
-<footer class="footer">
+<footer class="footer footer--endings">
   <div class="wrap">
     <div class="footer__grid">
       <div class="footer__lead">
@@ -430,9 +431,13 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
       </nav>
     </div>
   </div>
-  <div class="footer__word" aria-hidden="true"><span class="sheen">K</span><span class="sheen">N</span><span class="sheen">G</span><span class="sheen">H</span><span class="sheen">T</span></div>
+  <!-- The stage: the wordmark and the layers an ending draws on (src/scripts/footer, SCENES.md). -->
+  <div class="footer__stage" data-footer-stage>
+    <div class="footer__word" aria-hidden="true"><span class="sheen">K</span><span class="sheen">N</span><span class="sheen">G</span><span class="sheen">H</span><span class="sheen">T</span></div>
+  </div>
   <div class="wrap">
-    <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT. All rights reserved.</span><span>Built for Ontario's regulated categories.</span></div>
+    <div class="footer__base footer__base--knight"><span class="footer__copy">&copy; <span data-year>2026</span> KNGHT. All rights reserved.</span><button class="footer__knight" type="button" aria-label="Another ending" data-footer-swap><svg viewBox={KNIGHT_VIEWBOX} aria-hidden="true" focusable="false"><path d={KNIGHT_D}/><circle cx={KNIGHT_EYE.cx} cy={KNIGHT_EYE.cy} r={KNIGHT_EYE.r}/></svg></button><span class="footer__end">Built for Ontario's regulated categories.</span></div>
+    <p class="sr-only" aria-live="polite" data-footer-live></p>
   </div>
 </footer>
 

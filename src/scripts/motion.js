@@ -125,12 +125,8 @@ if (!reduce) {
       });
     }
 
-    /* The footer wordmark rises letter by letter. */
-    const foot = $('.footer__word');
-    if (foot) {
-      gsap.fromTo($$('span', foot), { yPercent: 18 }, { yPercent: 0, ease: 'power2.out', stagger: 0.12,
-        scrollTrigger: { trigger: foot, start: 'top bottom', end: 'bottom bottom', scrub: 0.5 } });
-    }
+    /* The footer wordmark's rise lives with the footer endings (src/scripts/footer/base.js),
+       so an ending that draws the letters itself can switch it off. */
 
     // Late layout changes (fonts, the hero pin, film posters) move every trigger.
     if (document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
