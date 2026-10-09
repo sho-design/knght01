@@ -186,13 +186,15 @@
     const y = scrollY;
     const vh = innerHeight;
 
-    // Nav: solid after the hero starts to go, hide when reading down, return on the way up
+    // Nav: solid after the hero starts to go. Above 900 px it always stays, so "Book the free call" is in reach.
+    // Up to 900 px it hides when reading down and returns on the way up; the phone's booking bar takes over meanwhile.
     if (nav) {
       nav.classList.toggle('is-solid', y > 40);
       const goingDown = y > lastY + 4;
       const goingUp = y < lastY - 4;
-      if (goingDown && y > vh) nav.classList.add('is-hidden');
-      else if (goingUp || y < vh) nav.classList.remove('is-hidden');
+      const narrow = innerWidth <= 900;
+      if (goingDown && y > vh && narrow) nav.classList.add('is-hidden');
+      else if (goingUp || y < vh || !narrow) nav.classList.remove('is-hidden');
     }
     lastY = y;
 
@@ -858,8 +860,12 @@
     const startEl = $('#worlds') || $('main > :first-child');
     const startTop = () => { const r = startEl.getBoundingClientRect(); return $('#worlds') ? r.top : r.bottom; };
     const measure = document.createElement('canvas').getContext('2d');
+    // The page's own height: the body's in-flow content (main and the footer). Never scrollHeight, which counts the
+    // portal layer itself: measured while the page was briefly taller, it would hold the page open below the footer.
+    // Unrounded, so the layer ends exactly where the footer does (rounding up would leave a 1 px strip).
+    const pageH = () => Math.max(document.body.getBoundingClientRect().height, innerHeight);
     const build = () => {
-      const docH = Math.max(document.documentElement.scrollHeight, innerHeight);
+      const docH = pageH();
       const vw = document.documentElement.clientWidth, vh = innerHeight, sx = scrollX, sy = scrollY;
       // Where words must not go: anything a visitor reads, clicks or looks at, and the white rooms.
       const avoid = [];
@@ -984,12 +990,18 @@
     }, 220);
 
     let lastH = 0, buildT = 0;
-    const rebuild = () => { clearTimeout(buildT); buildT = setTimeout(() => { lastH = document.documentElement.scrollHeight; build(); }, 400); };
+    const rebuild = () => { clearTimeout(buildT); buildT = setTimeout(() => { lastH = pageH(); build(); }, 400); };
     if (document.readyState === 'complete') rebuild(); else addEventListener('load', rebuild, { once: true });
     setTimeout(rebuild, 60);
     let lastW = innerWidth;
     addEventListener('resize', () => { if (Math.abs(innerWidth - lastW) > 40) { lastW = innerWidth; rebuild(); } });
-    if ('ResizeObserver' in window) new ResizeObserver(() => { if (Math.abs(document.documentElement.scrollHeight - lastH) > 300) rebuild(); }).observe(document.body);
+    // The portal layer follows the page at once, shorter as well as taller (it clips what falls outside, site.css),
+    // so it can never keep the page open past the footer. A big change also places the hall again.
+    if ('ResizeObserver' in window) new ResizeObserver(() => {
+      const h = pageH();
+      if (portalsEl.style.height) portalsEl.style.height = h + 'px';
+      if (Math.abs(h - lastH) > 300) rebuild();
+    }).observe(document.body);
 
     // Light sections (the offer, the self-check) hide the engraving.
     const rooms = $$('main > section, .chap, .footer');

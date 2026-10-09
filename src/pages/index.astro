@@ -71,6 +71,8 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
    category), so it never rises as "get it wrong." and then changes. Usually that is no wait at all; on a slow
    connection it is until the page is parsed. If the script never runs, the head script lets it go at DOMContentLoaded. */
 [data-hero="chips"]:not(.hero-turn) .hero__title .line:last-child > span{transform:translateY(calc(105% + .24em));transition:none}
+/* Let go, it rises out of the mask on the headline's curve, whether or not the rest has started (site.css). */
+[data-hero="chips"] .hero__title .line:last-child > span{transition:transform 1.25s var(--ease-out)}
 </style>
 <script is:inline type="application/ld+json">
 {

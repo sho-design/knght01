@@ -67,7 +67,8 @@ const start = () => {
   // 0.4s so it settles beside "to" crisply; the old one accelerates away just before it.
   const RISE = 'cubic-bezier(.16,1,.3,1)';
   const LEAVE = 'cubic-bezier(.5,0,.75,0)';
-  // The lines travel 105% of their .9em height plus the .24em mask: 1.185em. The phrase travels the same.
+  // The phrase travels the whole mask, 105% of the .9em line plus the .24em pad: 1.185em, so it is hidden at either end.
+  // (The lines' own intro is shorter: they paint at once and settle .08em, site.css.)
   const BELOW = 'translateY(1.185em)';
   const ABOVE = 'translateY(-1.185em)';
   const OUT_MS = 380, IN_AT = 220, IN_MS = 1000;
