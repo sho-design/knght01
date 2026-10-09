@@ -43,8 +43,10 @@
     window.gtag('config', GA_ID);
   }
   // Microsoft Clarity: heatmaps and session recordings. Text typed into fields is masked.
+  // It never runs on the free tools, so what a visitor types there stays on their device.
   const CLARITY_ID = 'yrly3zmoyn';
-  if (/^[a-z0-9]{8,12}$/.test(CLARITY_ID)) {
+  const TOOL = /^\/(check|plain|reply|line|keep|leak|sigil|herald|armoury|cartographer|waymarks)(\/|$)/;
+  if (/^[a-z0-9]{8,12}$/.test(CLARITY_ID) && !TOOL.test(location.pathname)) {
     window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
     const c = document.createElement('script');
     c.async = true;

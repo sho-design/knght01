@@ -47,7 +47,7 @@ import NavPanels from '../../components/NavPanels.astro';
 <main id="main">
   <section class="whero">
     <div class="wrap">
-      <p class="eyebrow">Privacy · Last updated 2 October 2026</p>
+      <p class="eyebrow">Privacy · Last updated 9 October 2026</p>
       <h1 class="display book__title" style="margin-top:24px">What we keep, <br>and <em>why.</em></h1>
       <p class="book__lede" style="margin-top:28px">KNGHT is a brand studio in Toronto, Ontario. We collect as little as we can, we use it only to answer you and do the work, and we never sell it. This page follows Canada's federal privacy law, PIPEDA, and Canada's anti-spam law, CASL.</p>
     </div>
@@ -58,12 +58,14 @@ import NavPanels from '../../components/NavPanels.astro';
       <p class="eyebrow">What we collect</p>
       <ul class="wrules">
         <li><b>When you book a call</b><span>Your name, email, the time you choose and anything you write in the booking questions, including a self-check score if you took one. Booking runs through Calendly, which stores these details for us.</span></li>
-        <li><b>When you ask for your scorecard by email</b><span>Your email address, your seven self-check answers, your score and the category you picked, plus your consent to hear from us.</span></li>
-        <li><b>When you ask for your sigil by email</b><span>Your email address, the business name you typed, your category and the virtue you chose, plus your consent to hear from us.</span></li>
+        <li><b>When you ask for your scorecard by email</b><span>Your email address, your seven self-check answers, your score and the category you picked. We also keep a record of the box for occasional notes: whether you ticked it, what it said, the time and the page.</span></li>
+        <li><b>When you ask for your sigil by email</b><span>Your email address, the business name you typed, your category and the virtue you chose. We also keep a record of the box for occasional notes: whether you ticked it, what it said, the time and the page.</span></li>
         <li><b>When you take the self-check</b><span>Your answers stay in your browser. Google Analytics counts that a self-check was finished, with the score and the weakest layer, but not who you are. Downloading your scorecard creates the image on your own device.</span></li>
+        <li><b>When you use a free tool</b><span>What you type stays in your browser. Google Analytics counts that the tool was used, with broad details such as your category or a result band, never your words.</span></li>
+        <li><b>When you send a line to Sergio</b><span>Your email, your category and the line you pasted, so Sergio can read it and reply. We also keep a record of the box for occasional notes: whether you ticked it, what it said, the time and the page.</span></li>
         <li><b>When you email us</b><span>Whatever you choose to send to sho@knght.com.</span></li>
         <li><b>How the site is used</b><span>We use Google Analytics to see which pages people read and which buttons they press, such as booking a call, finishing the self-check or downloading a sigil. It sets cookies and records your approximate location, device and browser, but not your name or email. We do not use it for advertising.</span></li>
-        <li><b>How pages are read</b><span>We use Microsoft Clarity to see where people scroll, click and get stuck. It records page sessions as replays and heatmaps, with anything typed into a field masked. It sets cookies and does not identify you by name.</span></li>
+        <li><b>How pages are read</b><span>We use Microsoft Clarity on our main pages to see where people scroll, click and get stuck. It records page sessions as replays and heatmaps. It never runs on the free tools. Text typed into fields is masked. It sets cookies and does not identify you by name.</span></li>
         <li><b>On your device</b><span>Small notes in your browser's storage: the category you picked, so the page reads for you next time, and in some free tools your work, so it is there when you come back. They stay on your device. Plus the Google Analytics and Microsoft Clarity cookies above. No advertising cookies.</span></li>
       </ul>
     </div>
@@ -87,7 +89,7 @@ import NavPanels from '../../components/NavPanels.astro';
         <li><b>Microsoft Clarity</b><span>Records anonymous scroll, click and session data so we can improve the site. You can block it by blocking cookies.</span></li>
         <li><b>Calendly</b><span>Holds booking details and sends confirmations and reminders.</span></li>
         <li><b>Our email provider</b><span>Delivers and stores email we send and receive.</span></li>
-        <li><b>Formspree</b><span>Receives scorecard and sigil requests and forwards them to us by email. Its servers are in the United States.</span></li>
+        <li><b>Formspree</b><span>Receives scorecard and sigil requests and lines sent to Sergio, and forwards them to us by email. Its servers are in the United States.</span></li>
         <li><b>Hosting and media</b><span>Vercel serves this site. Images and films load from a content delivery network, and fonts from Google Fonts. Like any website, these services see your IP address and browser type when they deliver files.</span></li>
       </ul>
       <p class="eyebrow" style="grid-column:2;margin-top:28px;text-transform:none;letter-spacing:.02em;font-size:.95rem">Some of these providers store data outside Canada, including in the United States, where it is subject to local law. We do not sell or rent personal information, and we do not use it to train AI models.</p>

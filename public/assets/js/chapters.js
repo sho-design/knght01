@@ -73,21 +73,10 @@
   const score = $('.score');
 
 
-  /* ---------- 6. The offer ladder: steps rise in order, sigils draw, the price counts up, cards lean to the cursor ---------- */
+  /* ---------- 6. The offer ladder: steps rise in order, sigils draw, cards lean to the cursor. The price reads 3,500 from the first frame. ---------- */
   const ladder = $('[data-ladder]');
   if (ladder) {
-    const run = () => {
-      ladder.classList.add('is-in');
-      const n = $('[data-count]', ladder);
-      if (!n || reduce) return;
-      const to = +n.dataset.count, t0 = performance.now(), dur = 1400;
-      const step = (t) => {
-        const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
-        n.textContent = Math.round(to * e).toLocaleString('en-CA');
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    };
+    const run = () => ladder.classList.add('is-in');
     if (G) { /* motion.js */ } else if ('IntersectionObserver' in window) {
       const lo = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { run(); lo.disconnect(); } }, { threshold: 0.25 });
       lo.observe(ladder);

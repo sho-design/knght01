@@ -1,5 +1,5 @@
 /* The reply scribe: drafts a public reply to a review that thanks, takes it offline and gives nothing away.
-   Templates and rules only, no AI. It runs in the browser and nothing is sent anywhere.
+   Templates and rules only, no AI. It runs in the browser, and what you type stays there.
    For clinics and law firms the draft never confirms the reviewer was a patient or a client. */
 (() => {
   const $ = (s, c = document) => c.querySelector(s);

@@ -1,5 +1,5 @@
 /* The leak: what missed calls and unanswered messages cost in a year, from the visitor's own numbers.
-   A year runs through the hourglass while the count climbs. Nothing is sent anywhere; the inputs are kept in this browser. */
+   A year runs through the hourglass while the count climbs. The inputs are kept in this browser; analytics gets only the category and a result band. */
 (() => {
   const $ = (s, c = document) => c.querySelector(s);
   const form = $('[data-leak]');

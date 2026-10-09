@@ -31,7 +31,8 @@ import Cta from '../components/Cta.astro';
         <form class="lead sigil__lead" data-sigil-lead data-endpoint={SETTINGS.formEndpoint} hidden novalidate>
           <label class="lead__label" for="sigil-email">Send it to your inbox</label>
           <div class="lead__row"><input id="sigil-email" name="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com" required><button type="submit" class="btn btn--sm">Send it</button></div>
-          <label class="lead__consent"><input name="consent" type="checkbox" required> Email me my sigil and occasional notes from KNGHT. Unsubscribe any time. <a class="link" href="/privacy/">Privacy</a></label>
+          <label class="lead__consent"><input name="news_optin" type="checkbox"> Also send me occasional notes from KNGHT. Unsubscribe any time. <a class="link" href="/privacy/">Privacy</a></label>
+          {SETTINGS.mailingAddress && <p class="lead__fine">KNGHT · {SETTINGS.mailingAddress} · <a href="mailto:sho@knght.com">sho@knght.com</a></p>}
           <p class="lead__status" data-sigil-status aria-live="polite"></p>
         </form>
         <p class="sigil__note">Drawn in your browser. Nothing you type leaves it unless you ask for your sigil by email. The border spells your name in the KNGHT cipher, so no two sigils are alike.</p>

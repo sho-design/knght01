@@ -97,12 +97,13 @@
   const fromUrl = new URLSearchParams(location.search).get('for');
   setCategory(fromUrl || store.get('knght-cat'), { persist: !!fromUrl });
 
-  /* ---------- Intake line ---------- */
+  /* ---------- Intake line: the quarter is set in settings.ts, and the line hides after its last day (Toronto time) ---------- */
   const intake = parseInt(meta('knght:intake'), 10);
-  if (intake > 0) {
+  const q = meta('knght:intake-quarter'), until = meta('knght:intake-until');
+  const d = {}; // today's date in Toronto, so the line ends at midnight there in summer and winter alike
+  try { new Intl.DateTimeFormat('en-US', { timeZone: 'America/Toronto', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).forEach((x) => { d[x.type] = x.value; }); } catch (e) {}
+  if (intake > 0 && q && until && d.year && `${d.year}-${d.month}-${d.day}` <= until) {
     const words = ['', 'One', 'Two', 'Three', 'Four', 'Five'];
-    const d = new Date();
-    const q = `Q${Math.floor(d.getMonth() / 3) + 1} ${d.getFullYear()}`;
     const n = words[intake] || String(intake);
     const noun = intake === 1 ? 'world opens' : 'worlds open';
     $$('[data-intake]').forEach((el) => {
@@ -199,14 +200,15 @@
   if (lead) lead.addEventListener('submit', async (e) => {
     e.preventDefault();
     const status = $('[data-lead-status]', lead);
-    const email = $('#lead-email', lead), consent = $('#lead-consent', lead);
+    const email = $('#lead-email', lead), optin = $('[name="news_optin"]', lead);
     if (!email.checkValidity()) { status.textContent = 'Enter an email address we can reach.'; email.focus(); return; }
-    if (!consent.checked) { status.textContent = 'Tick the box so we are allowed to email you.'; consent.focus(); return; }
+    // The scorecard is sent either way. The box only adds occasional notes, and the record keeps the words it showed.
+    const consent = { news_optin: optin.checked, consent_text: [...optin.parentNode.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim(), consent_at: new Date().toISOString(), page: location.pathname };
     status.textContent = 'Sending…';
     try {
       const res = await fetch(endpoint, {
         method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ _subject: lastVerdict ? `Scorecard request: ${lastVerdict.total}/70, weakest ${lastVerdict.weak}` : 'Scorecard request', email: email.value, consent: true, ...lastVerdict, category: $('#lead-cat', lead)?.value || null }),
+        body: JSON.stringify({ _subject: lastVerdict ? `Scorecard request: ${lastVerdict.total}/70, weakest ${lastVerdict.weak}` : 'Scorecard request', email: email.value, ...consent, ...lastVerdict, category: $('#lead-cat', lead)?.value || null }),
       });
       if (!res.ok) throw new Error(res.status);
       status.textContent = 'Sent. We will email your scorecard within one business day.';

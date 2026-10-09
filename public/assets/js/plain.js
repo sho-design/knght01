@@ -1,5 +1,5 @@
 /* The plain-speech test: strikes machine-sounding words, filler, long sentences and dashes, scores the copy,
-   and offers a plainer version made by simple, predictable swaps. Rules only, no AI. Nothing is sent anywhere. */
+   and offers a plainer version made by simple, predictable swaps. Rules only, no AI. What you type stays in the browser. */
 (() => {
   const $ = (s, c = document) => c.querySelector(s);
   const form = $('[data-plain]');

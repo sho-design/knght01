@@ -1,4 +1,4 @@
-/* KNGHT: forge your sigil. A black and white crest drawn from a name, a category and a virtue. Nothing leaves the browser. */
+/* KNGHT: forge your sigil. A black and white crest drawn from a name, a category and a virtue. What you type stays in the browser unless you ask for your sigil by email. */
 (() => {
   const $ = (s, c = document) => c.querySelector(s);
   const form = $('[data-sigil-form]');
@@ -650,11 +650,13 @@
       e.preventDefault();
       const status = $('[data-sigil-status]', lead);
       const email = lead.email.value.trim();
-      if (!lead.consent.checked || !/^\S+@\S+\.\S+$/.test(email)) { status.textContent = 'Add your email and tick the box.'; return; }
+      if (!/^\S+@\S+\.\S+$/.test(email)) { status.textContent = 'Add your email.'; return; }
+      // The sigil is sent either way. The box only adds occasional notes, and the record keeps the words it showed.
+      const optin = lead.news_optin, words = [...optin.parentNode.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim();
       status.textContent = 'Sending…';
       try {
         const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ _subject: `Sigil request: ${form.name.value || 'unnamed'}`, email, consent: true, source: 'sigil', name: form.name.value, category: form.cat.value, virtue: form.virtue.value }) });
+          body: JSON.stringify({ _subject: `Sigil request: ${form.name.value || 'unnamed'}`, email, news_optin: optin.checked, consent_text: words, consent_at: new Date().toISOString(), page: location.pathname, source: 'sigil', name: form.name.value, category: form.cat.value, virtue: form.virtue.value }) });
         if (!res.ok) throw new Error(res.status);
         status.textContent = 'Sent. We will email your sigil within one business day.';
         track('sigil_lead', { category: form.cat.value });

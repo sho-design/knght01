@@ -1,5 +1,5 @@
 /* The one-line forge: three answers forged into one line, the words flying in to take their places,
-   and a card in the business's own arms to keep at the desk. Nothing is sent anywhere. */
+   and a card in the business's own arms to keep at the desk. What you type stays in the browser. */
 (() => {
   const $ = (s, c = document) => c.querySelector(s);
   const form = $('[data-lineforge]');

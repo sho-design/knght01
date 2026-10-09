@@ -27,7 +27,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
 <meta name="description" content="Brand worlds for Ontario clinics, dentists, medspas, law firms, spirits and food, built inside your regulator's rules. Verdict from $3,500. Free call.">
 <meta name="theme-color" content="#000000">
 <!-- Site settings come from src/lib/settings.ts -->
-<meta name="knght:intake" content={SETTINGS.intake}>
+<meta name="knght:intake" content={SETTINGS.intake.count}><meta name="knght:intake-quarter" content={SETTINGS.intake.quarter}><meta name="knght:intake-until" content={SETTINGS.intake.until}>
 <meta name="knght:form-endpoint" content={SETTINGS.formEndpoint}>
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://knght.com/">
@@ -240,7 +240,7 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
           <div class="rung__top"><span class="rung__n">I</span><svg class="rung__sigil" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M7.5 21h9M4 6.5h16"/><path d="M6.5 6.5L3.5 13h6zM17.5 6.5l-3 6.5h6z"/><path d="M3.5 13a3 2 0 0 0 6 0M14.5 13a3 2 0 0 0 6 0"/></svg></div>
           <h3 class="rung__name">The <em>Verdict</em></h3>
           <p class="rung__line">A scored review of where you stand.</p>
-          <p class="rung__big"><span class="rung__cur">$</span><b data-count="3500">3,500</b><span class="rung__unit">CAD and up</span></p>
+          <p class="rung__big"><span class="rung__cur">$</span><b>3,500</b><span class="rung__unit">CAD and up</span></p>
           <ul class="rung__facts">
             <li>Every layer scored against your buyer and your regulator</li>
             <li>A ranked fix list, with an AI readiness check</li>
@@ -392,7 +392,8 @@ const SQUIRE = "<div class=\"layer__ai\" id=\"ai\"><p class=\"layer__ai-h\">AI i
               <input id="lead-email" name="email" type="email" autocomplete="email" placeholder="you@yourbusiness.com" required>
               <button type="submit" class="btn btn--sm">Send it</button>
             </div>
-            <label class="lead__consent"><input id="lead-consent" name="consent" type="checkbox" required> Email me my scorecard and occasional notes from KNGHT. Unsubscribe any time. <a class="link" href="/privacy/">Privacy</a></label>
+            <label class="lead__consent"><input name="news_optin" type="checkbox"> Also send me occasional notes from KNGHT. Unsubscribe any time. <a class="link" href="/privacy/">Privacy</a></label>
+            {SETTINGS.mailingAddress && <p class="lead__fine">KNGHT · {SETTINGS.mailingAddress} · <a href="mailto:sho@knght.com">sho@knght.com</a></p>}
             <p class="lead__status" data-lead-status aria-live="polite"></p>
           </form>
           <p class="result__note">A quick self-check, not the full Verdict. Analytics counts your score, not who you are. If you ask for the scorecard, we receive your scores, your category and your email.</p>

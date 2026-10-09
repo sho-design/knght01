@@ -303,6 +303,7 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 .world.is-match .world__sector{background:var(--argent);color:var(--sable);border-color:var(--argent)}
 .hero__intake{color:var(--argent)}
 .engage__intake{display:block;margin-top:10px;color:var(--ink);font-weight:500}
+.engage__intake[hidden]{display:none}
 
 /* World cards: link and film */
 .world__link{text-decoration:none;color:inherit}
@@ -330,6 +331,7 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 .lead__consent{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:.84rem;color:var(--ash)}
 .lead__consent input{margin-top:3px;accent-color:#fff}
 .lead__status{margin:10px 0 0;font-size:.88rem;color:var(--argent);min-height:1.2em}
+.lead__fine{margin:6px 0 0;font-size:.78rem;color:var(--ash)}
 
 /* Scroll-driven hero */
 .hero-scrub .hero-pin{height:190vh;position:relative}

@@ -104,23 +104,17 @@ if (!reduce) {
       band.classList.add('is-in');
     });
 
-    /* The offer ladder: three steps climb in order, the links draw, the price counts up. */
+    /* The offer ladder: three steps climb in order and the links draw. The price never counts; it reads 3,500 throughout. */
     const ladder = $('[data-ladder]');
     if (ladder) {
       const rungs = $$('.rung', ladder);
       gsap.set(rungs, { opacity: 0, y: 60, rotateX: -8, transformPerspective: 1400 });
-      const n = $('[data-count]', ladder);
       ScrollTrigger.create({
         trigger: ladder, start: 'top 80%', once: true,
         onEnter: () => {
           ladder.classList.add('is-in');
           gsap.to(rungs, { opacity: 1, y: 0, rotateX: 0, duration: 1.1, ease: EASE, stagger: 0.16,
             onComplete: () => gsap.set(rungs, { clearProps: 'opacity,transform' }) });
-          if (n) {
-            const to = +n.dataset.count, obj = { v: 0 };
-            gsap.to(obj, { v: to, duration: 1.6, ease: 'power3.out', delay: 0.3,
-              onUpdate: () => { n.textContent = Math.round(obj.v).toLocaleString('en-CA'); } });
-          }
         },
       });
     }

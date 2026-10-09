@@ -1,5 +1,5 @@
 /* Waymarks: a matching set of printable signs in the business's own arms. Each sign is drawn as SVG,
-   rasterised at print resolution and gathered into one PDF, a page per sign. Nothing is sent anywhere. */
+   rasterised at print resolution and gathered into one PDF, a page per sign. What you type stays in the browser. */
 (() => {
   const $ = (s, c = document) => c.querySelector(s);
   const form = $('[data-waymarks]');

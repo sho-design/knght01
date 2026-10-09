@@ -20,8 +20,8 @@
       t: 'A superlative', why: 'Best, number one and leading are comparisons you would have to prove. Health and legal regulators restrict claims of superiority.', src: 'Competition Act; college and Law Society marketing rules', fix: 'Replace it with a specific, checkable fact.' },
     { cats: ALL, re: /\b(eco[- ]friendly|environmentally friendly|green|sustainable|carbon[- ]neutral|net[- ]zero|planet[- ]friendly)\b/gi,
       t: 'An environmental claim', why: 'Since 2024 the Competition Act expects environmental claims to be backed by adequate and proper testing or substantiation.', src: 'Competition Act (2024 amendments)', fix: 'Name the specific thing you did, such as the material or the percentage.' },
-    { cats: ALL, re: /\b(starting at|starts at|from)\s*\$\s?\d+|\$\s?\d+\s*\+\s*(fees|tax)/gi,
-      t: 'A from-price', why: 'Advertising a price that leaves out fees the buyer must pay is drip pricing.', src: 'Competition Act, drip pricing', fix: 'Show the full price including any fee that cannot be avoided.' },
+    { cats: ALL, re: /\b(starting at|starts at|from)\s*\$\s?\d+(?:,\d{3})*(?:\.\d{2})?|\$\s?\d+(?:,\d{3})*(?:\.\d{2})?\s*\+\s*(fees|tax)/gi,
+      t: 'A from-price', why: 'Advertising a price that leaves out fees the buyer must pay is drip pricing. Taxes and other charges imposed by law are the exception.', src: 'Competition Act, drip pricing', fix: 'Show the full price including any fee that cannot be avoided.' },
     { cats: ALL, re: /\b(today only|this week only|this weekend only|last chance|ends tonight|only \d+ (spots|left)|hurry|act now)\b/gi,
       t: 'Urgency', why: 'Fine when it is true. A deadline or limit that keeps resetting can be misleading.', src: 'Competition Act', fix: 'Keep it only if the date or number is real.' },
     // Health
@@ -115,12 +115,14 @@
   const lead = $('[data-check-lead]');
   if (lead) lead.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const st = $('[data-check-status]', lead), email = $('#ck-email', lead), consent = $('#ck-consent', lead);
-    if (!email.checkValidity() || !consent.checked) { st.textContent = 'Add your email and tick the box.'; return; }
+    const st = $('[data-check-status]', lead), email = $('#ck-email', lead), optin = $('[name="news_optin"]', lead);
+    if (!email.checkValidity()) { st.textContent = 'Add your email.'; return; }
+    // Sending the line is the request. The box only adds occasional notes, and the record keeps the words it showed.
+    const words = [...optin.parentNode.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim();
     st.textContent = 'Sending…';
     try {
       const res = await fetch(lead.dataset.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ _subject: `Claim check: ${cat || 'other'}`, email: email.value, consent: true, category: cat || 'other', text: text.value.slice(0, 2000) }) });
+        body: JSON.stringify({ _subject: `Claim check: ${cat || 'other'}`, email: email.value, news_optin: optin.checked, consent_text: words, consent_at: new Date().toISOString(), page: location.pathname, category: cat || 'other', text: text.value.slice(0, 2000) }) });
       if (!res.ok) throw new Error(res.status);
       st.textContent = 'Sent. Sergio will read it and reply within one business day.';
       track('generate_lead', { lead_source: 'claim_check', category: cat || 'other' });
