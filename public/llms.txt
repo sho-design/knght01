@@ -20,7 +20,7 @@ Each world is built in this order. No layer is built before Lore.
 4. Map: site, search and AI visibility. Where people find your world and how they enter it.
 5. Ground: the physical space. Arrival, flow, signage and the screens on your walls.
 6. Artifacts: print, labels, packaging and forms. Everything a customer holds.
-7. Machinery: intake, booking, follow-up and reporting, with AI doing the repetitive work inside the rules. AI is the squire, not the knight: it drafts and reminds, and a person makes the call.
+7. Machinery: intake, booking, follow-up and reporting, with AI doing the repetitive work inside the rules. AI is the squire, not the knght: it drafts and reminds, and a person makes the call.
 
 ## Three ways to work with KNGHT
 
