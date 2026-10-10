@@ -738,6 +738,7 @@
     setTimeout(() => el.remove(), 500);
     if (codexReturn && codexReturn.focus) codexReturn.focus({ preventScroll: true });
   };
+  document.addEventListener('knght:codex', () => openCodex());
   const AX = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
   let moves = [], lastKey = 0;
   document.addEventListener('keydown', (e) => {
