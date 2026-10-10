@@ -1,6 +1,8 @@
 <script>
   // Bundled by Astro: GSAP, ScrollTrigger and SplitText. Placed before the page scripts so it runs first.
   import '../scripts/motion.js';
+  // The white rabbit: a small watcher on every page with a footer. Everything else loads only when someone follows it.
+  import '../scripts/wonderland/rabbit.js';
   // The homepage footer ends a different way on each visit. Only a page with the stage fetches the host and its scenes.
   if (document.querySelector('[data-footer-stage]')) import('../scripts/footer/stage.js');
 </script>
