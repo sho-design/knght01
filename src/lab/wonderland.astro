@@ -3,7 +3,10 @@
 // Never in a production build: astro.config.mjs serves it at /lab/wonderland/ under `astro dev`, or in a build made
 // with PUBLIC_WL_LAB=1. On the live site the only way to the game is the rabbit (or #down-the-rabbit-hole).
 // No Motion, no site.js.
-// It reads ?fen= (a start position), ?level= (the level focused first), ?seed= (her randomness) and ?reduce=1.
+// It reads ?fen= (a start position), ?level= (the level focused first), ?seed= (her randomness) and ?reduce=1, and for
+// round 2: ?moves= (SAN moves played from that start at once, comma or space separated, up to the first illegal one),
+// ?idle= (ms before the 'idle' event), ?now= (a date for the rabbit's watch) and ?preview=1 (KNGHT_WLG.qaPreview(id)).
+// The controller is window.KNGHT_WLG. Open the codex here only says "Codex.".
 ---
 <!doctype html>
 <html lang="en-CA">
@@ -45,12 +48,20 @@ body{background:#000}
     const game = mount(host, {
       reduce,
       onClimb: climbed,
+      onCodex: () => { said.textContent = 'Codex.'; },
       track: (name, params) => console.info('track', name, JSON.stringify(params)),
       bookHref: '/book/',
       fen: q.get('fen') || undefined,
       seed: q.has('seed') ? Number(q.get('seed')) : undefined,
       level: q.get('level') || undefined,
+      moves: q.get('moves')?.split(/[\s,]+/),
+      qa: {
+        idle: +q.get('idle') || undefined,
+        now: q.get('now') ? Date.parse(q.get('now')) : undefined,
+        preview: q.get('preview') === '1',
+      },
     });
+    window.KNGHT_WLG = game;
     game.land();
   });
 </script>

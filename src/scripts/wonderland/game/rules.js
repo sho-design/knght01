@@ -29,17 +29,25 @@ import { Chess } from 'chess.js';
 
 export const START = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
-export function createRules(fen) {
+// moves (the lab only): SAN moves played from the start position at once, up to the first that is not legal. They are
+// the game's own history, so take-backs, repetition and the endings count them like any other move.
+export function createRules(fen, moves) {
   const first = fen || START;
   let game;
   try { game = new Chess(first); } catch { game = new Chess(START); }
   const start = game.fen();
+  for (const san of moves || []) {
+    if (!san) continue;
+    try { game.move(san); } catch { break; }
+  }
   // chess.js rebuilds its verbose history on every call, so it is kept until the next move, undo or reset.
   let ver = 0, cached = -1, past = [];
   const hist = () => { if (cached !== ver) { past = game.history({ verbose: true }); cached = ver; } return past; };
 
   const api = {
     get fen() { return game.fen(); },
+    // The position the game started from (the lab's ?fen=, or the usual start), before any move.
+    get start() { return start; },
     turn: () => game.turn(),
     get: (sq) => game.get(sq) || null,
     // Every square, rank 8 first: [{ square, type, color } | null].
