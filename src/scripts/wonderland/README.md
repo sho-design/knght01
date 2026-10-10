@@ -238,7 +238,7 @@ which is wall clock already.
 | 1.95 to 3.0 | "Strategy first, then the sword." |
 | 2.3 to 5.0 | The knght tumbles past from lower right, turning 1.15 times and growing as it passes close. The figures start at 1.25 of the height and end at -0.3, so the roll never shows them early. |
 | 3.0 to 3.95 | "We say what we can prove." |
-| 3.95 to 4.9 | "No layer is built before Lore.", above the core. |
+| 3.95 to 4.9 | "No layer is built before Lore.", above the core. On a screen under 480 px tall (a phone held sideways) the lines and the rabbit's line are sized by the height (`clamp(1.15rem, 6vh, 1.6rem)`, up to 30ch wide), so each sets on one line between the bar and the core. |
 | 4.2 to 4.9 | The core: Lore, a black disc with a 1.4 px rim and the Lore sigil, rises toward you and slows. |
 | 4.6 | If the board is not ready: the fall holds here and the core breathes (±2% every 1.6 s); "The board is being set." After 12 s: "The board could not be set. Climb back up and try again." |
 | 4.9 | The hand-off: `land({ from })` with the core's centre and diameter and the world's roll (`from.roll`, +5.1°). The tunnel, figures and words fade (0.4 s); the core's ring grows past the board and fades (0.5 s); the bar turns black with a hairline. |
@@ -258,6 +258,9 @@ which is wall clock already.
 | 1560 at most | `land()` resolves. |
 
 Without `from` (the lab) the tilt starts at -6°. Under reduced motion there is no fall, no mirror and no tilt.
+While landing (`.wlg[data-phase="land"]`) the game clips its overflow (`overflow: clip`, which makes no scroll
+container): in perspective the turning board is briefly taller than its box, and the overlay must not scroll, or a
+classic scrollbar would flash and the game would lay out twice mid-turn.
 
 The tunnel is a function of the timeline's time (`fall.js`, `draw(t)`), so a paused timeline shows any moment
 exactly. The four lines and the figures are DOM and SVG moved by transform and opacity only.
@@ -371,7 +374,7 @@ pure and tested in node; its header is the full text.
 
 | Kind | Endings, in the order they are tried |
 | --- | --- |
-| Win (you mate) | The knght's move (mated by a knght; it offers the codex, section 2), She tips her king (Queen level), Alice becomes queen (a pawn became a queen), Quick work (under 20 of your moves), Clean (nothing of yours lost), The long game (50 or more of your moves), Checkmate |
+| Win (you mate) | The knght's move (mated by a knght, a pawn that becomes one included; it offers the codex, section 2), She tips her king (Queen level), Alice becomes queen (a pawn became a queen), Quick work (under 20 of your moves), Clean (nothing of yours lost), The long game (50 or more of your moves), Checkmate |
 | Loss (she mates) | Too fast (under 10 of your moves), The long loss |
 | Draw | Stalemate; Round and round (threefold, fifty moves, not enough pieces) |
 | Resign | Tip your king (asked first, then your king lies down) |

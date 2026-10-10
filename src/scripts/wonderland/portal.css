@@ -61,6 +61,10 @@ html.wl-hide body > :not(.wl) { visibility: hidden; }
   opacity: 0;
 }
 .wl-fall__say { max-width: min(22ch, calc(100vw - 32px)); }
+/* A phone held sideways: sized by the height, so each line sets on one line between the bar and the core. */
+@media (max-height: 480px) {
+  .wl-fall__line, .wl-fall__say { font-size: clamp(1.15rem, 6vh, 1.6rem); max-width: min(30ch, calc(100vw - 32px)); }
+}
 /* On the way up the four lines stay hidden, and the White Rabbit stands on Lore (drawn as the footer draws it). */
 .wl-fall.is-climb .wl-fall__line { visibility: hidden; }
 .wl-fall__rabbit {

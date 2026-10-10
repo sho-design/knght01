@@ -34,8 +34,9 @@
 //      tracked label over its value in Hanken 400 at 88 px (Cormorant's figures are old style, and a canvas cannot turn
 //      on its lining ones, so "1-0" would read "I-o").
 //   5. The moves, in plain notation (chess.js's SAN), as a justified paragraph the content's width: move numbers in
-//      Hanken 500, the moves in Cormorant 500, the result at the end in Hanken 600. It sets as large as fits (48 px down
-//      to 28 px); a game too long even at 28 px keeps its first 40% and its last 60% around "…", so the end is there.
+//      Hanken 500, the moves in Cormorant 500 with their figures in Hanken 500 (lining, at 80%, so "Nd1" never reads
+//      "NdI"), the result at the end in Hanken 600. It sets as large as fits (48 px down to 28 px); a game too long
+//      even at 28 px keeps its first 40% and its last 60% around "…", so the end is there.
 //   6. The foot: a 2 px rule, the KNGHT mark (the word in Cormorant 600 tracked .34em over the sword, as in the nav)
 //      at the left, and KNGHT.COM at the right on the same baseline.
 // The fonts are the page's own: it waits for document.fonts to load each face for the sheet's own text (at most 4 s),
@@ -48,6 +49,7 @@ const WD = 2160, HT = 2700, MX = 176, MY = 164, CW = WD - 2 * MX;
 const SERIF = '"Cormorant Garamond", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif';
 const SANS = '"Hanken Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif';
 const WHITE = '#fff', BLACK = '#000';
+const DIGIT = 0.8; // a move's figures in Hanken, as a share of the moves' Cormorant size (see sanDraw)
 const FACES = ['500 120px "Cormorant Garamond"', 'italic 400 120px "Cormorant Garamond"', '600 120px "Cormorant Garamond"',
   '400 40px "Hanken Grotesk"', '500 40px "Hanken Grotesk"', '600 40px "Hanken Grotesk"'];
 // The sword under the word, on its own 600-wide grid (the nav's viewBox 0 27 600 66), stroked 5.
@@ -235,12 +237,27 @@ function items(all, result, keep) {
   if (result) out.push({ result });
   return out;
 }
+// A move's letters in Cormorant and its figures in Hanken. Cormorant's figures are old style, so its 1 is a small
+// capital I and "Nd1" would read "NdI"; Hanken's are lining, set a little smaller to sit with Cormorant's capitals.
+const runs = (san) => String(san).split(/(\d)/).filter(Boolean);
+const digit = (fs) => sans(Math.round(fs * DIGIT), 500);
+function sanWidth(x, san, fs) {
+  let w = 0;
+  for (const r of runs(san)) { x.font = /\d/.test(r) ? digit(fs) : serif(fs, 500); w += x.measureText(r).width; }
+  return w;
+}
+function sanDraw(x, san, X, Y, fs) {
+  for (const r of runs(san)) {
+    x.font = /\d/.test(r) ? digit(fs) : serif(fs, 500);
+    x.fillText(r, X, Y);
+    X += x.measureText(r).width;
+  }
+}
 function measure(x, it, fs) {
   const nf = Math.round(fs * 0.6);
   if (it.more) { x.font = serif(fs, 500); return x.measureText(S.more).width; }
   if (it.result) { x.font = sans(Math.round(fs * 0.66), 600); return x.measureText(it.result).width; }
-  x.font = serif(fs, 500);
-  let w = x.measureText(it.san).width;
+  let w = sanWidth(x, it.san, fs);
   if (it.num) { x.font = sans(nf, 500); w += x.measureText(it.num).width + fs * 0.2; }
   return w;
 }
@@ -284,8 +301,7 @@ function moves(x, e, X, Y, width, height) {
       else {
         let sx = cx;
         if (it.num) { x.font = sans(nf, 500); x.fillText(it.num, sx, y); sx += x.measureText(it.num).width + fs * 0.2; }
-        x.font = serif(fs, 500);
-        x.fillText(it.san, sx, y);
+        sanDraw(x, it.san, sx, y, fs);
       }
       cx += iw;
     });

@@ -8,6 +8,10 @@
   color:#fff;font-family:var(--sans);font-size:1rem;line-height:1.4;-webkit-tap-highlight-color:transparent;overflow-x:clip}
 .wlg *,.wlg *::before,.wlg *::after{box-sizing:border-box}
 .wlg[data-phase="pre"]{visibility:hidden}
+/* The looking-glass turn (board.js land) runs in perspective, so for a moment the board is taller than its box. Clip it
+   while landing so the overlay never scrolls: a classic scrollbar would flash and the game would lay out twice
+   mid-turn. clip, not hidden, so no scroll container is made. */
+.wlg[data-phase="land"]{overflow:clip}
 .wlg-sprite{position:absolute;width:0;height:0;overflow:hidden}
 .wlg-probe{position:absolute;left:0;top:0;width:0;height:calc(100vh - var(--wl-bar-h,0px));height:calc(100dvh - var(--wl-bar-h,0px));visibility:hidden;pointer-events:none}
 

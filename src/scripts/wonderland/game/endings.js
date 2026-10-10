@@ -9,14 +9,16 @@
 // The facts, all read from rules.history() when the game ends (after take-backs):
 //   result     'win' | 'loss' | 'draw' (from rules.end()) or 'resign' (you tipped your king)
 //   reason     'checkmate' | 'stalemate' | 'threefold' | 'fifty' | 'insufficient' | 'resign'
-//   matedBy    the moving piece of the mating move ('p' 'n' 'b' 'r' 'q' 'k'), null when it is not a checkmate
+//   matedBy    the piece that gives the mate ('p' 'n' 'b' 'r' 'q' 'k'), a promoted pawn counting as what it became
+//              (f8=N# is a knght's mate); null when it is not a checkmate
 //   level      'pawn' | 'knght' | 'queen'
 //   promotedQueen  one of your moves promoted to a queen
 //   yourMoves  the number of white moves
 //   lost       the number of your pieces she captured, pawns included
 //
-// Wins (the first that applies): knght (mated by a knght), queen (at Queen level), alice (a pawn became a queen),
-// quick (under 20 of your moves), clean (nothing lost), long (50 or more of your moves), mate (always).
+// Wins (the first that applies): knght (mated by a knght, a pawn that becomes one included), queen (at Queen level),
+// alice (a pawn became a queen), quick (under 20 of your moves), clean (nothing lost), long (50 or more of your moves),
+// mate (always).
 // Losses: fast (under 10 of your moves), slow (every other loss). Draws: stalemate; round (threefold, fifty moves,
 // insufficient material). Resign: tip.
 //
@@ -77,7 +79,7 @@ export function makeEnding(rules, { level, result, reason, tipped = null, found,
   const lost = h.filter((m) => m.color === 'b' && m.captured).length;
   const promotedQueen = h.some((m) => m.color === 'w' && m.promotion === 'q');
   const mate = reason === 'checkmate';
-  const matedBy = mate && last ? last.piece : null;
+  const matedBy = mate && last ? (last.promotion || last.piece) : null;
   const id = classify({ result, reason, matedBy, level, promotedQueen, yourMoves, lost });
   const e = byId(id);
   const lv = levelName(level);
