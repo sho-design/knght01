@@ -21,6 +21,12 @@ src/scripts/wonderland/
                    lines, and the rabbit on the way back up
   portal.css       in chunk 1, as a string (?inline), injected once as <style id="wl-css">
   game/index.js    lazy chunk 2: the game. Exports mount(). The portal finds it with a literal glob.
+  game/endings.js  the twelve endings: the table and the rules that pick one (section 9)
+  game/memory.js   what this browser remembers: one localStorage key (section 9)
+  game/souvenir.js its own lazy chunk: "Keep this game", the game sheet drawn on the device (section 10)
+  game/cast.js     in chunk 2: the White Rabbit, the Cheshire Cat, Humpty Dumpty and the White Knght (section 11)
+  game/figures.js  in chunk 2: the cast's hairline drawings on the 24 grid
+  game/cast.css    in chunk 2, as a string (?inline), injected once as <style id="wlg-cast-css">
 ```
 
 ## 1. What a visitor who never finds it pays
@@ -35,13 +41,15 @@ against the same files at e9999eb (gzip level 9; brotli is what Vercel sends to 
 
 | File (already loaded by every page with a footer) | gzip | brotli | What |
 | --- | --- | --- | --- |
-| Motion chunk | +2,248 B | +2,043 B | `rabbit.js`: the placement, the run, the markup, the watcher, the ways in; `watch.js`: the drawing, the watch's hands and the Toronto clock |
-| `site.css` | +346 B | +266 B | the rabbit's style (`.wl-rb`) |
+| Motion chunk | +2,390 B | +2,127 B | `rabbit.js`: the placement, the run, the markup, the watcher, the ways in, the watch's hands on Toronto time, the pace in the hours, and the memory (the bow, the black rabbit); `watch.js`: the drawing and the Toronto clock |
+| `site.css` | +361 B | +277 B | the rabbit's style (`.wl-rb`), and the black rabbit (`.wl-rb.a`) |
 | `site.js` | +167 B | +174 B | the codex's third button, the candle light pausing under `html.wl-hide`, and the `knght:codex` listener |
-| `stage.*.js` | -17 B | -93 B | only its import line (the Motion chunk's new hash) |
-| **In all** | **+2,744 B** | **+2,390 B** | **no new request**, on load or when the footer comes into view |
+| `stage.*.js` | -18 B | -27 B | only its import line (the Motion chunk's new hash) |
+| **In all** | **+2,900 B** | **+2,551 B** | **no new request**, on load or when the footer comes into view |
 
-Round 1 was +2,569 B; round 2's fall added +175 B (the clock in `watch.js` and the listener in `site.js`).
+Round 1 was +2,569 B; round 2's fall added +175 B (the clock in `watch.js` and the listener in `site.js`), and the
+cast's footer work +156 B (the real hands, the pace, the memory read, the bow and the black rabbit, less the old fixed
+hands). 100 B are left under the ceiling, and the hashes in the import lines move the numbers by a byte or two.
 
 Checked in a browser too: `/`, `/process/`, `/book/`, a world page and `/check/`, at 390 (touch) and 1280 wide,
 loaded, scrolled to the footer and left 8 s, fetch exactly the files they fetched at e9999eb.
@@ -89,7 +97,7 @@ reads "You found the knght's move". A game without `onCodex` (the lab) dispatche
 
 ## 3. The rabbit (rabbit.js, watch.js)
 
-- **Drawing.** `RABBIT = { outline, watch, hands, eye, minute, hour }` (in `watch.js`; `rabbit.js` re-exports it) on
+- **Drawing.** `RABBIT = { outline, watch, eye, minute, hour }` (in `watch.js`; `rabbit.js` re-exports it) on
   the 24 grid: the White Rabbit as a seventh piece of the Story set, drawn fresh. It keeps the king's and bishop's collar (y 10 to 10.9) and skirt (to y 19.4); a rabbit's
   head faces right with its ears swept back, the eye like the knght's, and a pocket watch held out on a short chain.
   On the footer's black it is a solid white figure, the eye cut in black, the watch a hairline (1.1 px), with a
@@ -97,9 +105,18 @@ reads "You found the knght's move". A game without `onCodex` (the lab) dispatche
 - **The watch keeps Toronto time.** `toronto(date?)` in `watch.js` gives `{ h, m, open }` for America/Toronto (Intl);
   `open` is Wednesday or Friday from 1 to 5 pm (13:00 to 16:59), the hours for calls and visits. `minute` and `hour`
   both point to 12 at rest; turn them about the face's centre (16.4, 13.85), clockwise in degrees: the minute hand
-  `m * 6`, the hour hand `(h % 12) * 30 + m / 2`. The portal reads the time once, at open: the bar's rabbit shows it,
-  the fall's big watch ends its three turns on it, and on the way back up the rabbit says "I'm late." or, in those
-  hours, "Right on time. Calls are open until 5." A browser whose Intl cannot tell gets its own clock.
+  `m * 6`, the hour hand `(h % 12) * 30 + m / 2`. Every rabbit shows the real time there. The footer's rabbit reads it
+  once, when its run starts (`start()`): its hands are turned with SVG `transform="rotate(a 16.4 13.85)"`, and in the
+  hours it is not late, so the hops after its watch beat keep their 0.28 s pace; any other time it hurries at 0.22 s.
+  The portal reads the time once, at open: the bar's rabbit shows it, the fall's big watch ends its three turns on
+  it, and on the way back up the rabbit says "I'm late." or, in those hours, "Right on time. Calls are open until 5."
+  The rabbit waiting at the landing (section 11) says the same. A browser whose Intl cannot tell gets its own clock.
+- **It remembers you.** `start()` also reads the rabbit hole's one storage key once (section 9), in a try/catch, and
+  uses two flags of it, nothing else: `p`, a game played in this browser, and `a`, every ending found. After a game
+  played here the rabbit bows after its watch beat (16 degrees from its feet, 0.24 s down and back, once): in the
+  Story set it wears no hat to tip, and a hat would crowd its ears at 32 to 40 px, so it bows. Once all twelve
+  endings are found the layer takes class `a` and `site.css` draws the rabbit black with its white line and a white
+  eye (`.wl-rb.a`); it still bows. Storage that is missing or throws: a first visit's white rabbit, and no bow.
 - **Where.** On the border of the last `footer .footer__base`, in a layer appended to `<body>` (never inside the
   footer: the footer host removes what a scene did not make). The layer is `z-index: 60`, takes no pointer events
   except the hole's button, and never changes the footer's layout. Its style is the `.wl-rb` block at the end of
@@ -119,7 +136,8 @@ reads "You found the knght's move". A game without `onCodex` (the lab) dispatche
   and the body bobs twice; a tap on the rabbit then follows. Hops of 0.22 s after it. The dive: a hop 1.6 times as
   high onto the hole, down through the line (clipped at it), and a hairline ripple. About 3.5 to 4.5 s in all, and
   nothing loops. Hover or focus on the hole: the rim to .9 and 1.12 times the size.
-- **Reduced motion.** The hole and the rabbit appear at once, still, the rabbit just left of the hole with its watch out.
+- **Reduced motion.** The hole and the rabbit appear at once, still, the rabbit just left of the hole with its watch out
+  and its hands on the time. No bow; the black rabbit is still black.
 
 ## 4. The contract with the game
 
@@ -133,9 +151,11 @@ const controller = mount(host, {
   onClimb,    // the ending card's "Climb back up" calls this (it goes through history, like Back)
   track,      // (name, params) analytics; never throws
   bookHref,   // '/book/'
+  onCodex,    // the knght's move card's "Open the codex": the portal climbs, then dispatches knght:codex
 });
-await controller.land({ from: { x, y, d } }); // the board rises out of the core (centre and diameter, viewport px)
-controller.destroy();                          // idempotent: worker, animations, listeners, and host emptied
+await controller.land({ from: { x, y, d, roll } }); // the board rises out of the core (centre, diameter, the roll)
+controller.leaving();                                // the portal is closing: input, timers and her thinking stop
+controller.destroy();                                // idempotent: worker, animations, listeners, and host emptied
 ```
 
 - `host` is `<div class="wl-game">` after the bar: the viewport's width, at least `calc(100dvh - var(--wl-bar-h))`
@@ -154,8 +174,44 @@ controller.destroy();                          // idempotent: worker, animations
   final position square by square), and a tap on the board, Enter on a square, or "See the result" in the panel
   brings it back. New game works throughout.
 
-Namespaces: the portal uses `.wl`, `.wl-*`, `#wl-*`; the game `.wlg`, `.wlg-*`, `#wlg-*`. `--wl-bar-h` is the one
-shared custom property (the bar's height: 56 px plus the safe area).
+**The controller, round 2** (the header of `game/index.js` is the full text). Besides `land`, `leaving` and `destroy`,
+it is what the cast and the souvenir use; neither ever calls `land`, `leaving` or `destroy`.
+
+```js
+controller.on(type, fn)   // -> off(). Listeners run synchronously in order, each in try/catch; dropped on destroy
+controller.phase          // 'pre' | 'land' | 'pick' | 'you' | 'her' | 'moving' | 'promo' | 'end' | 'gone'
+controller.level, controller.ending, controller.hintsLeft
+controller.root           // the .wlg element
+controller.layer          // <div class="wlg-cast">: last child of .wlg, absolute, inset 0, no pointer events,
+                          //   z-index 9 (under the card's 10); its children opt in to taps
+controller.reduce, controller.signal, controller.qa   // signal: the game's own, aborted in destroy; qa: { idle, now }
+controller.rects()        // boxes in root coordinates: { layout, sq, root, stage, board (with its letters), her,
+                          //   herUsed, tag, you, youUsed, panel, status, last (text line boxes), controls, card, promo }
+controller.square(sq)     // -> { x, y, size }: the square's centre and size in root coordinates
+controller.hint()         // -> Promise<{ from, to, promotion, piece } | null>: her engine at Queen strength, on your
+                          //   side; 3 a game; the game's live region says it
+```
+
+| Event | Payload | When |
+| --- | --- | --- |
+| `land` | `{ at }`, 'start' or 'done' | when `land()` begins, and just before it resolves |
+| `card` | `{ kind }`, 'pick', 'end', 'confirm' or null | a card shown or hidden ("See the board" hides it) |
+| `level` | `{ level }` | a level was chosen |
+| `turn` | `{ who }`, 'you' or 'her' | the phase became yours or hers |
+| `select` | `{ square }`, or null | you picked up a piece, or put it back |
+| `move` | `{ by, move, check, mate, yourMoves, ply }` | a move has landed (chess.js's verbose move, frozen) |
+| `capture` | `{ by, piece, square, move }` | right after `move` when something was taken (`piece` 'n' is a knght) |
+| `promote` | `{ at, square, piece }`, at 'open', 'done' or 'cancel' | your promotion chooser |
+| `takeback` | `{ plies }` | Take back |
+| `idle` | `{ on }` | on after 20 s of your move with no input in the game (`qa.idle`); off at the next input |
+| `hint` | `{ from, to, promotion, piece, left }` | a hint has arrived |
+| `end` | `{ ending }` | the game ended, before the 1.2 s hold |
+| `restart` | `{}` | New game or Play again |
+| `layout` | `{}` | after a resize has been laid out |
+| `climb` | `{}` | from `leaving()` |
+
+Namespaces: the portal uses `.wl`, `.wl-*`, `#wl-*`; the game `.wlg`, `.wlg-*`, `#wlg-*`, and its cast `.wlc-*` (inside
+`.wlg-cast`). `--wl-bar-h` is the one shared custom property (the bar's height: 56 px plus the safe area).
 
 ## 5. The fall, second by second (on the wall clock)
 
@@ -275,16 +331,118 @@ hall and read layout on every frame, and kept the phone's main thread over 80% b
 - `/?ending=<id>` on the homepage exposes the site's GSAP as `KNGHT_FOOTER.gsap`; the rabbit's run is the top-level
   timeline whose tweens target `.wl-rb div>svg`.
 - The game alone: `/lab/wonderland/` (the game's harness, `src/lab/wonderland.astro`; it takes `?fen=`, `?level=`,
-  `?seed=` and `?reduce=1`). It exists only under `astro dev`, or in a build made with `PUBLIC_WL_LAB=1 npx astro
-  build --outDir <somewhere else>`. A production build has no `/lab/wonderland/`: the live site's only ways to the game
-  are the three in section 2, through the rabbit hole.
+  `?seed=` and `?reduce=1`, and for round 2 `?moves=` (SAN moves played at once), `?idle=` (ms before the Cheshire
+  Cat's quiet spell), `?now=` (a date for the rabbit's watch, e.g. `2026-10-14T14:30:00-04:00` is in the hours) and
+  `?preview=1` (`KNGHT_WLG.qaPreview(id)` shows any ending's card). The controller is `window.KNGHT_WLG`. It exists
+  only under `astro dev`, or in a build made with `PUBLIC_WL_LAB=1 npx astro build --outDir <somewhere else>`. A
+  production build has no `/lab/wonderland/`: the live site's only ways to the game are the three in section 2,
+  through the rabbit hole. (The lab imports the game on its own, so its build has a `watch.*.js` and a preload helper;
+  a production build must have neither.)
+- The cast: stills of a figure's motion come from its own animations (`el.getAnimations()`, paused, `currentTime`
+  set). A fen where she takes a free knght at Queen level shows the White Knght's fall:
+  `?fen=3qk3/8/8/3N4/8/8/8/4K3%20b%20-%20-%200%201`, then Queen. Humpty speaks at the first promotion:
+  `?fen=4k3/1P6/8/8/8/8/8/4K3%20w%20-%20-%200%201`. `?idle=1500` brings the grin.
+- The footer's memory: set `localStorage['knght-wonderland']` to `{"v":1,"p":1,"f":[],"a":0}` before the page loads
+  for the bow, with `"a":1` for the black rabbit.
 - After any change, check: the footer's height and the hole against the footer's links at 360, 390, 430 and 1440
   wide; ten presses of the footer knght with no leftovers warning; each way in and each way out (from the board, from
   the fall, from the iris, skipped), with the scroll position, focus, Lenis, overflow, `inert` and the plates'
   view-transition names restored; reduced motion; no CSP errors; and that pages scrolled to the footer fetch nothing
-  new until the hole is hovered, focused or tapped.
+  new until the hole is hovered, focused or tapped. For the cast: at 360x640, 375x667, 390x844, 430x932, 768x1024,
+  844x390, 1280x800 and 1440x900, no cast box over the board and its letters, the used part of either row, the status
+  and last lines, a control, the card or the promotion chooser, at the landing, the level, the grin, a take back
+  and a capture; Tab reaches the grin after the controls; the footer's hands with the page's clock moved into the
+  hours and out of them.
 
 ## 8. Words
 
 Every string is in the KNGHT voice: short plain sentences, no dashes as dashes, no exclamation marks, "knght" for the
-piece. The Carroll lines are public domain, and none of them names that piece.
+piece. The Carroll lines are public domain, quoted exactly where they are quoted, and none of them names that piece.
+The game's strings are all in `game/words.js` (the cast's in `W.cast`); the portal's few are in `portal.js` and
+`fall.js`. `watch.js` holds none.
+
+## 9. Endings and memory (game/endings.js, game/memory.js)
+
+Every finished game lands on exactly one of twelve endings; the rules are total (every outcome has a row) and
+exclusive (the first that applies wins). `endings.js` holds the table in tally order and `classify(facts)`, which is
+pure and tested in node; its header is the full text.
+
+| Kind | Endings, in the order they are tried |
+| --- | --- |
+| Win (you mate) | The knght's move (mated by a knght; it offers the codex, section 2), She tips her king (Queen level), Alice becomes queen (a pawn became a queen), Quick work (under 20 of your moves), Clean (nothing of yours lost), The long game (50 or more of your moves), Checkmate |
+| Loss (she mates) | Too fast (under 10 of your moves), The long loss |
+| Draw | Stalemate; Round and round (threefold, fifty moves, not enough pieces) |
+| Resign | Tip your king (asked first, then your king lies down) |
+
+A finished game becomes one frozen ending model: the `end` event's payload, `controller.ending`, and the souvenir's
+input. The live region says the last move and the ending at once; the card follows 1.2 s later with the ending's name,
+its line, the facts, the tally (12 dots and "N of 12 endings found."), the actions and a quiet row.
+
+**Memory.** One localStorage key, `knght-wonderland`: `{"v":1,"p":1,"f":["knght","quick"],"a":0}`. `p` is 1 once a
+move has been made in some game; `f` the endings found, by id, each once; `a` 1 when all twelve are. Nothing personal,
+no dates, no counts, and nothing is sent anywhere. Every read and write is in a try/catch; storage that is missing,
+blocked or full leaves a copy in `memory.js` that keeps the tally true for the page view, and a write merges what is
+stored first, so another tab's finds are kept. The footer's rabbit reads the key once for `p` and `a` (section 3).
+
+## 10. The souvenir (game/souvenir.js)
+
+"Keep this game", on every ending card, draws a black and white game sheet on the device (no server) and shares or
+saves it. It is its own lazy chunk, fetched only once an ending card is showing; `game/index.js` finds it with a
+literal glob, prepares the sheet when the card comes up and calls it on the press. The header of `game/souvenir.js`
+is its documentation.
+
+## 11. The cast (game/cast.js, game/figures.js, game/cast.css)
+
+Four of Carroll's characters around the board, drawn fresh as KNGHT hairline figures in the Story set's language: the
+24 grid, round caps and joins, bodies black, lines white, a hairline of 1.25 px (1.5 px from 760 px wide) that never
+scales. Nothing is copied from Tenniel or a cartoon: no fur, no faces with brows, nothing a chess piece would not carry.
+`figures.js` holds the drawings; the White Rabbit is `RABBIT` from `watch.js` (only `cast.js` imports the top level).
+`index.js` finds `cast.js` with a literal eager glob and calls `mountCast(controller)` once the board is built; the
+cast only listens and asks for a hint. It never calls `land`, `leaving` or `destroy`, never writes to the game's live
+region, and never takes the game's focus. Figures and captions are `aria-hidden`; the grin is its one control.
+
+**Where.** Everything is in the game's layer (`controller.layer`), placed in root coordinates from `controller.rects()`
+whenever the game lands, lays out, shows or hides a card, changes turn or moves. Taken: the board with its letters, the
+used part of each row (name, watch and taken pieces), the level tag, the status and last-move lines, every control,
+the card and the promotion chooser, each with 6 px to spare, and the root's edges inset 8. The slots:
+
+| Slot | Where |
+| --- | --- |
+| head, foot | the stage's width, above it and below it |
+| youEnd | the right end of your row, 40 px tall, from 72 px in |
+| controlsEnd | the right end of the controls row |
+| gap | landscape only: between the board and the panel |
+| columnTop, columnBottom | landscape only: the panel's column above the status, and below the controls |
+
+A figure needs 56 px of height in head, foot and the columns; a caption needs 22. A character with no room does not
+come, and the moment passes. A figure the layout now crowds moves to its next place or goes. Any card but the level
+picker sends the whole cast away; under the picker only the landing rabbit may stay, clear of it. On a 360 x 640 phone
+the board leaves no head or foot: the rabbit and the White Knght do not come, and Humpty and the grin speak nowhere.
+
+| Who | Where (in order) | When | What |
+| --- | --- | --- | --- |
+| The White Rabbit, 48 px (56 from 760) | foot, left, 8 px in; head; landscape: columnBottom, columnTop | 1.3 s after the landing starts (reduced motion: when it is done) | It checks its watch (Toronto time) and bobs twice; "I'm late.", or Wednesday and Friday from 1 to 5 pm "Right on time. Calls are open until 5."; at 4.6 s three hops toward the nearer edge and gone |
+| The Cheshire Cat: only its eyes and grin, 64 x 32 (80 x 40) | head, right; youEnd; landscape: columnTop, youEnd | `idle` on, while hints are left | The grin comes first, then the eyes; they blink every 4 to 6 s. "That depends a good deal on where you want to get to." A press (or Enter) asks `controller.hint()`; the eyes go, then the grin |
+| Humpty Dumpty on his wall, 36 x 40 (44 x 48) | controlsEnd, right; foot; landscape: gap, his wall's foot on the board's bottom edge; columnBottom | from the level chosen until a card, the end or the climb | "When I use a word, it means just what I choose it to mean." at the first take back and the first promotion of a game, wobbling on his wall |
+| The White Knght, 56 (64) | foot, right; head; landscape: columnBottom, columnTop | 120 ms after she takes one of your knghts | The rider tips back, falls head first and lands beside the horse with one bounce. "It's my own invention." Gone after 5 s |
+
+**The hint.** The grin is a `<button>`, at least 56 x 40, "Ask the Cheshire Cat for a hint. N left.", in the tab order
+after the panel's controls while it shows. Tab on the way to it does not send it away (the cast notes the key before
+the game's idle clock hears it). Her engine at Queen strength suggests your move; the game's live region says it
+("The Cheshire Cat suggests your knght from g1 to f3."), and the cast draws it over the board as a dotted path that
+takes no taps: white dots on black halos every 0.22 of a square, a knght's path as an L (two squares the long way,
+then one), and a dotted ring on the destination. It goes when you pick up a piece, move, start again, a card shows,
+the climb starts, or after 10 s. Three a game; the grin does not come back once they are used. A keyboard press puts
+focus back on the board.
+
+**Captions.** One at a time, Cormorant Garamond italic 15 px (14 under 400 wide), two lines at most, beside the
+speaker if there is room (160 px for Humpty), else above or below it in its slot, else in a free text slot, else
+nowhere. In 200 ms, held 3.2 s (the Cat 4 s), out 300 ms.
+
+**Reduced motion.** Fades only. The rabbit stands still with its watch out and leaves at 4 s; the grin and eyes fade in
+200 ms with no stagger over 100 ms and do not blink; Humpty does not wobble; the White Knght is already down; the
+path is drawn at once.
+
+**Taking it down.** `mountCast` returns `{ destroy }`, which the game calls first in its own `destroy()`; the cast also
+listens to the game's signal. Its timers, animations, listeners and elements all go; only its `<style>` stays, like
+the game's.

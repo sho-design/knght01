@@ -1,0 +1,48 @@
+/* The cast (game/cast.js): the White Rabbit, the Cheshire Cat, Humpty Dumpty and the White Knght, in the game's
+   .wlg-cast layer (game.css: absolute, inset 0, no pointer events, under the card). Injected once as
+   <style id="wlg-cast-css">. Strictly black and white. Figures and captions are aria-hidden; the grin is the only
+   control. --ink is the line (white on the board's black), --paper the halo under a line that crosses white. */
+.wlg-cast{--ink:#fff;--paper:#000;--cw:1.25px}
+@media (min-width:760px){.wlg-cast{--cw:1.5px}}
+
+/* ----- The drawings (figures.js) ----- */
+.wlc-fig{display:block;width:100%;height:100%;overflow:visible;fill:none;stroke:var(--ink);stroke-width:var(--cw);stroke-linecap:round;stroke-linejoin:round}
+.wlc-fig *{vector-effect:non-scaling-stroke}
+.wlc-fig .b{fill:#000}
+.wlc-fig .f{fill:#fff}
+.wlc-fig .c{fill:#fff;stroke:none}
+.wlc-fig .k{fill:#000;stroke:none}
+.wlc-fig .d{stroke:#fff}
+.wlc-fig .h{stroke:var(--paper);stroke-width:calc(var(--cw) * 3)}
+.wlc-fig g{transform-box:view-box}
+.wlc-lid{transform-origin:0 0}
+.wlc-hd{transform-origin:12px 15.5px}
+.wlc-rider{transform-origin:8.4px 8.2px}
+.wlc-ground{opacity:0}
+.wlc-knght[data-down] .wlc-ground{opacity:1}
+.wlc-watch{transform-origin:14.95px 10.9px}
+
+/* ----- Placed things: each sits at its own left/top in the layer, in root coordinates ----- */
+.wlc-at{position:absolute;left:0;top:0;opacity:0;pointer-events:none}
+.wlc-at[hidden]{display:none}
+.wlc-rabbit svg{transform-origin:50% 80.8%}
+
+/* ----- The grin: the cast's one control ----- */
+.wlc-grin-btn{display:block;margin:0;padding:4px 0;border:0;border-radius:4px;background:none;color:#fff;cursor:pointer;-webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.wlc-grin-btn[data-on]{pointer-events:auto}
+.wlc-grin-btn:focus{outline:none}
+.wlc-grin-btn:focus-visible{outline:1px solid #fff;outline-offset:3px}
+.wlc-grin-btn svg{pointer-events:none}
+
+/* ----- Captions: Cormorant italic, two lines at most ----- */
+.wlc-cap{position:absolute;left:0;top:0;width:max-content;max-width:340px;margin:0;opacity:0;font:italic 400 15px/1.25 var(--serif,"Cormorant Garamond",Georgia,serif);letter-spacing:0;color:#fff;text-wrap:balance;pointer-events:none;white-space:normal;-webkit-user-select:none;user-select:none}
+.wlc-cap[hidden]{display:none}
+.wlc-cap[data-side="r"]{text-align:right}
+@media (max-width:399.98px){.wlc-cap{font-size:14px}}
+
+/* ----- The Cheshire Cat's dotted path: over the board, never in the way of a tap ----- */
+.wlc-path{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.wlc-path .h{fill:#000}
+.wlc-path .c{fill:#fff}
+.wlc-path .r{fill:none;stroke:#fff;stroke-linecap:round}
+.wlc-path .rh{fill:none;stroke:#000;stroke-linecap:round}

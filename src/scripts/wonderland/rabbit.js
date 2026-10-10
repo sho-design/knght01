@@ -5,7 +5,7 @@
    This file sits in the Motion chunk on every page, so it is kept small (README.md, "Budget"). */
 import { gsap } from 'gsap';
 // The White Rabbit's drawing and its watch (watch.js). Re-exported for anything that still takes it from here.
-import { RABBIT } from './watch.js';
+import { RABBIT, toronto } from './watch.js';
 export { RABBIT };
 
 const doc = document;
@@ -38,7 +38,9 @@ const RIM = '<path d="M-11 0A11 2.86 0 0 ';
 
 const watch = (line) => {
   const footer = line.closest('footer'), born = performance.now();
-  let full, ran, timer, run, still, layer, fig, btn, hole, sig;
+  // T: the time in Toronto (the watch's hands, and the pace). M: what the rabbit hole remembers (game/memory.js):
+  // p, a game played here once (the rabbit bows); a, every ending found (the rabbit is drawn black).
+  let full, ran, timer, run, still, layer, fig, btn, hole, sig, T, M = {};
 
   // Where the hole and the run go, laid out in the layer's own coordinates. Nothing in the footer is covered: its
   // links, the email, LinkedIn and the knght button, with 8 px to spare, and the back-to-top column at every height.
@@ -85,27 +87,35 @@ const watch = (line) => {
       q({ x: P.p * p.step, y: -4 * arc * f * (1 - f), scaleY: s, scaleX: 1.6 - 0.6 * s });
     };
     gsap.set(w, { svgOrigin: '14.95 10.9' });
-    return gsap.timeline({ onComplete: () => { fig.style.display = 'none'; run = 0; } })
+    const tl = gsap.timeline({ onComplete: () => { fig.style.display = 'none'; run = 0; } })
       .from(hole, { scale: 0, duration: 0.35, ease: 'power2.out' })
       .from(fig, { opacity: 0, duration: 0.28 }, 0.15)
       .to(P, { p: k, duration: k * 0.28, ease: 'none', onUpdate: u }, 0.15)
       // The watch swings out from its chain and the body bobs twice.
       .call(() => fig.classList.add('t'))
       .to(w, { keyframes: { rotation: [0, -14, 10, 0], easeEach: 'sine.inOut' }, duration: 0.8 })
-      .to(fig, { scaleY: 0.96, duration: 0.2, yoyo: true, repeat: 3, ease: 'sine.inOut' }, '<')
-      .call(() => fig.classList.remove('t'))
-      .to(P, { p: p.n - 1, duration: (p.n - 1 - k) * 0.22, ease: 'none', onUpdate: u })
+      .to(fig, { scaleY: 0.96, duration: 0.2, yoyo: true, repeat: 3, ease: 'sine.inOut' }, '<');
+    // Someone who has played here once gets a bow from its feet (the Story set's rabbit wears no hat to tip).
+    if (M.p) tl.to(fig, { rotation: 16, duration: 0.24, yoyo: true, repeat: 1, repeatDelay: 0.12, ease: 'sine.inOut' });
+    // In the hours for calls it is not late, and keeps its pace; otherwise it hurries.
+    return tl.call(() => fig.classList.remove('t'))
+      .to(P, { p: p.n - 1, duration: (p.n - 1 - k) * (T.open ? 0.28 : 0.22), ease: 'none', onUpdate: u })
       // The dive: a higher hop onto the hole, down through the line, and a ripple.
       .to(fig, { x: p.n * p.step, duration: 0.22, ease: 'none' })
       .to(fig, { keyframes: [{ y: -arc * 1.6, duration: 0.11, ease: 'power1.out' }, { y: p.F * 0.85, duration: 0.39, ease: 'power2.in' }] }, '<')
       .fromTo(hole.nextSibling, { scale: 1, opacity: 0.6 }, { scale: 2.2, opacity: 0, svgOrigin: '0 0', duration: 0.5, immediateRender: false }, '>0.1');
   };
 
+  // One hand of the watch, turned about the face's centre (watch.js).
+  const hand = (d, a) => `<path d="${d}" transform="rotate(${a} 16.4 13.85)"/>`;
+
   const start = () => {
     ran = 1;
+    T = toronto();
+    try { M = JSON.parse(localStorage.getItem('knght-wonderland')) || {}; } catch (e) {}
     layer = doc.createElement('div');
-    layer.className = 'wl-rb';
-    layer.innerHTML = `<div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${RABBIT.outline}"/><g class="w"><path d="${RABBIT.watch}"/><path d="${RABBIT.hands}"/></g>`
+    layer.className = M.a ? 'wl-rb a' : 'wl-rb';
+    layer.innerHTML = `<div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${RABBIT.outline}"/><g class="w"><path d="${RABBIT.watch}"/>${hand(RABBIT.minute, T.m * 6)}${hand(RABBIT.hour, (T.h % 12) * 30 + T.m / 2)}</g>`
       + `<circle cx="${RABBIT.eye[0]}" cy="${RABBIT.eye[1]}" r=".6" fill="#000" stroke="none"/></svg></div>`
       + '<button type="button" aria-label="Follow the white rabbit"><svg viewBox="-24 -32 48 44" width="48" height="44" fill="none"><g class="o"><g>'
       + `<ellipse rx="11" ry="2.86" fill="#000" stroke="none"/>${RIM}1 11 0" stroke-opacity=".16"/>${RIM}0 11 0" class="l"/></g><ellipse rx="11" ry="2.86" opacity="0"/></g></svg></button>`;
