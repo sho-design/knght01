@@ -1,24 +1,44 @@
 # KNGHT Order
 
-KNGHT's own serif. It is built from three open fonts, so the letters are familiar, but no other font has this combination.
+KNGHT's own serif. Cormorant Garamond, with three changes that make it KNGHT's:
 
-| Style | Built from |
-|---|---|
-| Regular | Cormorant Garamond Medium for the lowercase, figures and punctuation. Ibarra Real Nova capitals, scaled to Cormorant's cap height, with Ibarra's own kerning. |
-| Italic | Cormorant Garamond Medium Italic for the capitals, figures and punctuation. Instrument Serif Italic lowercase, scaled up to sit with the roman, with its own kerning. |
+1. **Engraved capitals.** Every capital has one hairline cut down the middle of its thick strokes, the way capitals are cut into stone or engraved on a banknote. Thin strokes stay whole, so the line shows at headline sizes and disappears in small text.
+2. **The KNGHT glyphs.** The chess set, the seven layers, the nine worlds and seven brand marks are letters in the font. They sit on the baseline and take the text colour.
+3. **One weight up for small text.** A Medium cut for anything under about 28px, where Cormorant's hairlines thin out on phones.
 
-Both styles carry the KNGHT knight from `src/assets/knght-chess.svg` at U+265E. Type `♞` or `&#9822;` to set it.
+## Styles
 
-Old ligatures and stylistic alternates that would bring back a replaced letter (Cormorant's Th, for example) are removed. The hinting is removed too. Modern browsers render unhinted fonts smoothly.
+| File | From | Capitals |
+|---|---|---|
+| KNGHTOrder-Regular | Cormorant Garamond 400 | Engraved. `ss01` gives the plain ones |
+| KNGHTOrder-Italic | Cormorant Garamond 400 Italic | Engraved. `ss01` gives the plain ones |
+| KNGHTOrder-Medium | Cormorant Garamond 500 | Plain. `ss01` gives the engraved ones |
+| KNGHTOrder-MediumItalic | Cormorant Garamond 500 Italic | Plain. `ss01` gives the engraved ones |
+
+Use Regular and Italic for headlines and anything 28px and up. Use Medium below that.
+
+## The KNGHT glyphs
+
+Type the name between colons, such as `:knight:`, and it turns into the glyph. Or use the character itself. Browsers turn these shortcuts off on letter-spaced text, so use the character there.
+
+| Type | Character | Glyph |
+|---|---|---|
+| `:king:` `:queen:` `:rook:` `:bishop:` `:knight:` `:pawn:` | U+265A to U+265F | Filled chess pieces |
+| `:king-line:` … `:pawn-line:` | U+2654 to U+2659 | Hairline chess pieces |
+| `:lore:` `:law:` `:language:` `:map:` `:ground:` `:artifacts:` `:machinery:` | U+E001 to U+E007 | The seven layers, in order |
+| `:restoration:` `:blacklotus:` `:castleblack:` `:lisadang:` `:lorelyns:` `:rumraiders:` `:torontobeauty:` `:wellfit:` `:artcolouring:` | U+E011 to U+E019 | The nine worlds |
+| `:sword:` `:seal:` `:shield:` `:crown:` `:crystal:` `:dial:` `:divider:` | U+E021 to U+E027 | Brand marks |
+
+The chess pieces come from `src/assets/knght-chess.svg` and the layer and world sigils from `src/lib/sigils.ts`. The build reads both files, so a change to the artwork reaches the font on the next build. The brand marks are drawn in `build.py` on the same 24-unit grid.
+
+## Files
 
 ```
-fonts/KNGHTOrder-Regular.ttf          full character set, for design apps
-fonts/KNGHTOrder-Italic.ttf
-fonts/KNGHTOrder-Regular.latin.woff2  for the web: Latin, Latin-1 and the knight, about 27 KB each
-fonts/KNGHTOrder-Italic.latin.woff2
-sources/                              the four source files and their licences
-build.py                              rebuilds fonts/ from sources/
-OFL.txt                               the licence for KNGHT Order
+fonts/*.ttf          full character set, for Figma, Canva, Illustrator and print
+fonts/*.latin.woff2  for the web: Latin, Latin-1, the chess set and the KNGHT glyphs
+sources/             Cormorant Garamond, the four weights it is built from, and its licence
+build.py             rebuilds fonts/ from sources/
+OFL.txt              the licence for KNGHT Order
 ```
 
 ## Rebuild
@@ -28,17 +48,19 @@ pip install fonttools brotli skia-pathops
 python3 type/knght-order/build.py
 ```
 
-The scale factors, which glyphs come from which font and the knight's size are all near the bottom of `build.py`.
+The engraving depth, hairline weight and glyph list are at the bottom and top of `build.py`.
 
 ## Use on the web
 
 ```css
 @font-face{font-family:"KNGHT Order";src:url(/assets/fonts/KNGHTOrder-Regular.latin.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:"KNGHT Order";src:url(/assets/fonts/KNGHTOrder-Italic.latin.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"KNGHT Order";src:url(/assets/fonts/KNGHTOrder-Medium.latin.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"KNGHT Order";src:url(/assets/fonts/KNGHTOrder-MediumItalic.latin.woff2) format("woff2");font-weight:500;font-style:italic;font-display:swap}
 ```
 
-The site does not use the font yet. Putting it live means copying the two woff2 files to `public/assets/fonts/`, adding the rules above to `site.css`, putting `"KNGHT Order"` at the front of `--serif`, and dropping Cormorant from the Google Fonts link. Vercel serves the files from the site's own domain, so the CSP needs no change.
+The site does not use the font yet. Putting it live means copying the woff2 files to `public/assets/fonts/`, adding the rules above to `site.css`, putting `"KNGHT Order"` at the front of `--serif`, setting serif text under 28px to `font-weight:500`, and dropping Cormorant from the Google Fonts link. The site's security policy already allows fonts from its own domain.
 
 ## Licence
 
-KNGHT Order is a modified version of fonts under the SIL Open Font License 1.1, so it is under the same licence (see `OFL.txt`). KNGHT can use it anywhere, including in client work, print and logos. If KNGHT gives the font files to anyone, they go with the licence, and the font cannot be sold on its own. None of the source fonts has a Reserved Font Name, so the name KNGHT Order is free to use.
+KNGHT Order is a modified version of Cormorant Garamond, which is under the SIL Open Font License 1.1, so KNGHT Order is under the same licence (see `OFL.txt`). KNGHT can use it anywhere, including client work, print and logos. If KNGHT gives the font files to anyone, the licence goes with them, and the font cannot be sold on its own. Cormorant has no Reserved Font Name, so the name KNGHT Order is free to use.
