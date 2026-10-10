@@ -379,19 +379,9 @@ def chapter_sigils():
 CHAPTERS = [("worlds", "orb", ["worlds", "the-worlds", "chapter-1"]),
             ("work-with-us", "key", ["work-with-us", "chapter-2"]),
             ("the-layers", "shield", ["the-layers", "layers", "chapter-3"]),
-            ("self-check", None, ["self-check", "the-self-check", "score", "score-your-world", "chapter-4"]),
+            ("self-check", "gauge", ["self-check", "the-self-check", "score", "score-your-world", "chapter-4"]),
             ("verdict", "sword", ["verdict", "the-verdict", "chapter-5"])]
-# The rail draws the self-check with the Law layer's scales. In the font each thing has one icon and each icon one
-# thing, so the self-check gets the quiz's own segmented dial instead.
-
-def gauge_markup():
-    """Score your world: the quiz's segmented dial, seven segments over a half turn, with a needle."""
-    r, gap, out = 8.6, 13, []
-    for i in range(7):
-        a0 = math.radians(180 + i * 180 / 7 + gap / 2); a1 = math.radians(180 + (i + 1) * 180 / 7 - gap / 2)
-        x0, y0 = 12 + r * math.cos(a0), 16.4 + r * math.sin(a0); x1, y1 = 12 + r * math.cos(a1), 16.4 + r * math.sin(a1)
-        out.append(f'<path d="M{x0:.3f} {y0:.3f}A{r} {r} 0 0 1 {x1:.3f} {y1:.3f}"/>')
-    return "".join(out) + '<path d="M12 16.4l4.6-5.4M4.4 20.6h15.2"/><circle cx="12" cy="16.4" r="1.3"/>'
+# The self-check is the quiz's own segmented dial; the scales stay with the Law layer. One icon per thing.
 
 def menu_sigils():
     """The menu's sigils, from public/assets/js/site.js."""
@@ -399,12 +389,12 @@ def menu_sigils():
     table = js[js.index("const SIGILS = {"):js.index("};", js.index("const SIGILS = {"))]
     return dict(re.findall(r"""(\w+):\s*'(<[^']+)'""", table))
 
-# The menu items the chapter rail does not cover, with the menu's own sigil, or a mark drawn here where the
-# menu borrows a layer's (Free tools uses the Language quill).
+# The menu items the chapter rail does not cover, with the menu's own sigil. Free tools is the armoury chest;
+# the quill stays with the Language layer.
 MENU = [("who-its-for", "banner", None, ["who-its-for"]),
         ("how-it-works", "compass", None, ["how-it-works"]),
         ("rules-journal", "seal", None, ["rules-journal", "rules"]),
-        ("free-tools", None, '<path d="M4 11.2a8 5.2 0 0 1 16 0M4 11.2h16v9.4H4zM4 14.4h16M10.8 12.8h2.4v3.4h-2.4z"/>', ["free-tools", "armoury"])]
+        ("free-tools", "chest", None, ["free-tools", "armoury"])]
 
 # The Armoury, in the order the page lists the tools, one mark each. The one-line forge gets the anvil; the
 # Sigil tool an eight-point star; the Cartographer (Google Business Profile) a map pin, since the compass is How it works.
@@ -461,7 +451,7 @@ def marks(w):
     hair += [(f"tier.{n[4:]}", 0xE04A + i, [n], m) for i, (n, m) in enumerate(TIERS.items())]
     hair += [("mark.proposal", 0xE04C, ["proposal"], EXTRA["proposal"])]
     hair += [(f"tool.{n}", 0xE051 + i, [n], m) for i, (n, m) in enumerate(TOOLS.items())]
-    hair += [(f"chapter.{n}", 0xE061 + i, names, ch[k] if k else gauge_markup()) for i, (n, k, names) in enumerate(CHAPTERS)]
+    hair += [(f"chapter.{n}", 0xE061 + i, names, ch[k]) for i, (n, k, names) in enumerate(CHAPTERS)]
     hair += [(f"menu.{n}", 0xE066 + i, names, mn[k] if k else m) for i, (n, k, m, names) in enumerate(MENU)]
     for name, cp, names, spec in hair:
         out.append((name, [cp], names, hairline(spec, w)))

@@ -471,7 +471,8 @@
     const to = (p) => (p.startsWith('#') && onHome) ? p : new URL(p, rootUrl).pathname + (p.includes('#') ? p.slice(p.indexOf('#')) : '');
     const here = (p) => !p.includes('#') && new URL(p, rootUrl).pathname === location.pathname;
 
-    /* Sigils: hairline heraldry drawn on a 24 grid, same stroke as the mark. */
+    /* Sigils: hairline heraldry drawn on a 24 grid, same stroke as the mark. One sigil per item: the layers keep
+       the scales and the quill, so Score your world has the quiz's dial and Free tools the armoury chest. */
     const SIGILS = {
       orb: '<circle cx="12" cy="14" r="7"/><ellipse cx="12" cy="14" rx="3" ry="7"/><path d="M5 14h14M12 7V2M9.6 4h4.8"/>',
       shield: '<path d="M4.5 4h15v7.5c0 5-3.6 8.2-7.5 10-3.9-1.8-7.5-5-7.5-10z"/><path d="M4.5 8.5h15M4.7 13h14.6M6.4 17.3h11.2"/>',
@@ -479,8 +480,8 @@
       compass: '<circle cx="12" cy="12" r="9"/><path d="M12 5.5l2 6.5-2 6.5-2-6.5z"/><path d="M12 1.5v2M12 20.5v2M1.5 12h2M20.5 12h2"/>',
       seal: '<path d="M5 3h11.5a2.5 2.5 0 0 1 2.5 2.5V8M5 3a2 2 0 0 0-2 2v1h2M5 3v15"/><path d="M8 7.5h7M8 10.5h5"/><circle cx="15" cy="17" r="4.2"/><path d="M15 15.2l.6 1.2 1.3.2-.95.9.22 1.3-1.17-.62-1.17.62.22-1.3-.95-.9 1.3-.2z"/>',
       crest: '<path d="M5 4.5h14V11c0 4.6-3.3 7.6-7 9.4-3.7-1.8-7-4.8-7-9.4z"/><path d="M12 7.5v8M8.5 10.5h7"/>',
-      quill: '<path d="M20 3C13.5 4.2 8.6 9.4 6.6 16.4L5.4 21"/><path d="M6.8 15.6c3.4.2 6.8-1.2 9-3.6M9.4 10.8c2.4.1 4.6-.7 6.2-2"/>',
-      scales: '<path d="M12 3v18M7.5 21h9M4 6.5h16"/><path d="M6.5 6.5L3.5 13h6zM17.5 6.5l-3 6.5h6z"/><path d="M3.5 13a3 2 0 0 0 6 0M14.5 13a3 2 0 0 0 6 0"/>'
+      chest: '<path d="M4 11.2a8 5.2 0 0 1 16 0M4 11.2h16v9.4H4zM4 14.4h16M10.8 12.8h2.4v3.4h-2.4z"/>',
+      gauge: '<path d="M3.46 13.23A8.6 8.6 0 0 1 3.88 11.37M4.72 9.62A8.6 8.6 0 0 1 5.91 8.13M7.43 6.91A8.6 8.6 0 0 1 9.15 6.09M11.05 5.65A8.6 8.6 0 0 1 12.95 5.65M14.85 6.09A8.6 8.6 0 0 1 16.57 6.91M18.09 8.13A8.6 8.6 0 0 1 19.28 9.62M20.12 11.37A8.6 8.6 0 0 1 20.55 13.23"/><path d="M12 14.20l4.6-5.4M4.4 18.40h15.2"/><circle cx="12" cy="14.2" r="1.3"/>'
     };
     const sigil = (k) => `<svg class="mnav__sigil" viewBox="0 0 24 24" aria-hidden="true">${SIGILS[k]}</svg>`;
     const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
@@ -501,8 +502,8 @@
         ['What a medspa can say about Botox', 'rules/medspa-prescription-drug-ads/'],
         ['Selling spirits without the buzz', 'rules/alcohol-ads-strength-and-success/'],
         ['Why lawyers can’t say “specialist”', 'rules/lawyers-and-the-word-specialist/']] },
-      { label: 'Score your world', sigil: 'scales', href: '#score' },
-      { label: 'Free tools', sigil: 'quill', all: ['All free tools', 'armoury/'], items: [
+      { label: 'Score your world', sigil: 'gauge', href: '#score' },
+      { label: 'Free tools', sigil: 'chest', all: ['All free tools', 'armoury/'], items: [
         ['Claim checker', 'check/'], ['Reply scribe', 'reply/'], ['Licence keep', 'keep/'], ['Plain-speech test', 'plain/'], ['The one-line forge', 'line/'], ['The cartographer', 'cartographer/'], ['The herald', 'herald/'], ['Waymarks', 'waymarks/'], ['The leak', 'leak/'], ['Your sigil', 'sigil/']] }
     ];
     const link = ([label, p], cls, n) => `<li><a class="${cls}" href="${to(p)}"${here(p) ? ' aria-current="page"' : ''}>${n ? `<span class="mnav__num">${n}</span>` : ''}${label}</a></li>`;
@@ -510,7 +511,7 @@
       const head = `${sigil(m.sigil)}<span class="mnav__label">${m.label}</span>`;
       if (!m.items) return `<li class="mnav__item" style="--i:${i}"><a class="mnav__top" href="${to(m.href)}"${here(m.href) ? ' aria-current="page"' : ''}>${head}</a></li>`;
       const open = m.items.concat(m.all ? [m.all] : []).some(([, p]) => here(p));
-      const subs = (m.all ? [link(m.all, 'mnav__all')] : []).concat(m.items.map((it, k) => link(it, '', m.sigil === 'seal' || m.sigil === 'banner' || m.sigil === 'quill' ? '' : ROMAN[k])));
+      const subs = (m.all ? [link(m.all, 'mnav__all')] : []).concat(m.items.map((it, k) => link(it, '', m.sigil === 'seal' || m.sigil === 'banner' || m.sigil === 'chest' ? '' : ROMAN[k])));
       return `<li class="mnav__item${open ? ' is-open' : ''}" style="--i:${i}"><button type="button" class="mnav__top" aria-expanded="${open}" aria-controls="mnav-sub-${i}">${head}<span class="mnav__plus" aria-hidden="true"></span></button>`
         + `<div class="mnav__sub" id="mnav-sub-${i}"><ul>${subs.join('')}</ul></div></li>`;
     };
