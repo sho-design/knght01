@@ -42,25 +42,92 @@ export const W = {
   takenBack: 'Taken back. Your move.',
   fresh: 'New game. Choose how well the Black Queen plays.',
 
-  winHead: 'Checkmate. Your move.',
-  winLine: (id) => `You beat the Black Queen at ${levelName(id)} level.`,
   book: 'Book the free call',
   climb: 'Climb back up',
-  lossHead: 'Checkmate. The Black Queen wins this one.',
   again: 'Play again',
-  drawHead: 'A draw.',
+  codex: 'Open the codex',
+  keep: 'Keep this game',
+  keepBusy: 'Making the sheet',
+  keepSaved: 'The game sheet is saved.',
+  keepFail: 'The game sheet could not be made.',
   peek: 'See the board',
   result: 'See the result',
   peekLive: 'The board as the game ended. Tap it, or press Enter on a square, to see the result again.',
-  drawQuote: 'It takes all the running you can do, to keep in the same place.',
-  drawCredit: 'Lewis Carroll, Through the Looking-Glass',
-  drawWhy: {
-    stalemate: 'Stalemate.',
+
+  // Tip your king (resign), with its confirm card.
+  resign: 'Tip your king',
+  confirmHead: 'End the game here?',
+  confirmLede: 'Your king lies down and the game is hers.',
+  keepPlaying: 'Keep playing',
+  confirmLive: 'End the game here? Tip your king, or keep playing.',
+
+  // The endings. endings.js holds the table and its rules; these are its words. say is the live region's sentence.
+  end: {
+    knght: { name: 'The knght\'s move', line: 'Few people find the knght\'s move. You did.', say: 'Checkmate with your knght. Few people find the knght\'s move. You did.' },
+    queen: { name: 'She tips her king', line: 'Few beat her at Queen.', say: 'Checkmate. She tips her king. Few beat her at Queen.' },
+    alice: { name: 'Alice becomes queen', line: 'A pawn walked the whole board and became a queen.', say: 'Checkmate. A pawn walked the whole board and became a queen.' },
+    quick: { name: 'Quick work', line: 'Quick work. Strategy first, then the sword.', say: 'Checkmate. Quick work. Strategy first, then the sword.' },
+    clean: { name: 'Clean', line: 'Not one piece lost. We say what we can prove.', say: 'Checkmate. Not one piece lost. We say what we can prove.' },
+    long: { name: 'The long game', line: 'Patience is a strategy.', say: 'Checkmate. The long game. Patience is a strategy.' },
+    mate: { name: 'Checkmate', line: 'Checkmate. Your move.', say: 'Checkmate. Your move.' },
+    fast: { name: 'Too fast', line: 'Down the hole too fast. Lore first.', say: 'Checkmate. The Black Queen wins. Down the hole too fast. Lore first.' },
+    slow: {
+      name: 'The long loss', line: 'It takes all the running you can do, to keep in the same place.', credit: 'Lewis Carroll, Through the Looking-Glass',
+      say: 'Checkmate. The Black Queen wins. It takes all the running you can do, to keep in the same place.',
+    },
+    stalemate: { name: 'Stalemate', line: 'Nowhere to go, and nothing lost.', say: 'Stalemate. A draw. Nowhere to go, and nothing lost.' },
+    round: { name: 'Round and round', line: 'Round and round we went.', say: (why) => `A draw. ${why} Round and round we went.` },
+    tip: { name: 'Tip your king', line: 'Every world starts with a Verdict.', say: 'You tipped your king. Every world starts with a Verdict.' },
+  },
+  // The panel's status line once the game is over, by the ending's kind.
+  endStatus: { win: 'Checkmate. You win.', loss: 'Checkmate. She wins.', draw: 'A draw.', resign: 'You tipped your king.' },
+  // The card's quiet line of facts.
+  factsMate: (lv, n) => `${lv} level. Checkmate on move ${n}.`,
+  factsDraw: (lv, why) => `${lv} level. ${why}`,
+  factsTip: (lv, n) => `${lv} level. You tipped your king on move ${n}.`,
+  why: {
+    herStalemate: 'She had no legal move, and was not in check.',
+    youStalemate: 'You had no legal move, and were not in check.',
     threefold: 'The same position, three times.',
     fifty: 'Fifty moves without a capture or a pawn move.',
     insufficient: 'Not enough pieces left to checkmate.',
   },
+  tally: (n, of) => `${n} of ${of} endings found.`,
+  tallyAll: '12 of 12 endings found. The rabbit will remember.',
+
+  // The Cheshire Cat's hint, spoken in the game's live region (the only place a hint is said).
+  hint: ({ piece, from, to, promotion }) => (promotion
+    ? `The Cheshire Cat suggests your pawn from ${from} to ${to}. Alice becomes a ${PIECE[promotion]}.`
+    : `The Cheshire Cat suggests your ${PIECE[piece]} from ${from} to ${to}.`),
+
+  // For the cast (game/cast.js). Figures and captions are aria-hidden; only the grin's label is ever read.
+  cast: {
+    grin: (n) => `Ask the Cheshire Cat for a hint. ${n} left.`,
+    cheshire: 'That depends a good deal on where you want to get to.',
+    humpty: 'When I use a word, it means just what I choose it to mean.',
+    whiteKnght: 'It\'s my own invention.',
+    late: 'I\'m late.',
+    open: 'Right on time. Calls are open until 5.',
+  },
+
+  // For the game sheet (game/souvenir.js).
+  sheet: {
+    title: 'A game with the Black Queen',
+    her: 'The Black Queen',
+    level: 'Level',
+    moves: 'Moves',
+    result: 'Result',
+    more: '…',
+    site: 'knght.com',
+    mark: 'KNGHT',
+    // 10 October 2026: the day, the month in full, the year.
+    date: (d) => `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`,
+    // knght-game-2026-10-10.png
+    file: (d) => `knght-game-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}.png`,
+  },
 };
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const pad = (n) => String(n).padStart(2, '0');
 
 // A square's accessible name: "e2, white pawn", "e4, empty", with ", selected", ", move here" or ", take it".
 export function squareLabel(sq, piece, mark) {
