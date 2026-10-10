@@ -562,7 +562,7 @@ html.lenis,html.lenis body{height:auto}
 .nav__toggle[aria-expanded="true"] .tg__sword path,.nav__toggle[aria-expanded="true"] .tg__knight{stroke-dashoffset:0;transition:stroke-dashoffset .6s var(--ease-out) .85s}
 .nav__toggle[aria-expanded="true"] .tg__knight{transition-delay:.25s;transition-duration:.7s}
 .nav__toggle[aria-expanded="true"] .tg__eye{opacity:1;transition-delay:.8s}
-.mnav{position:fixed;inset:0;z-index:79;display:flex;flex-direction:column;justify-content:space-between;gap:32px;padding:calc(var(--nav-h) + env(safe-area-inset-top,0px) + 6vh) var(--gutter) calc(32px + env(safe-area-inset-bottom,0px));background:#000;opacity:0;transition:opacity .45s var(--ease);overflow-y:auto}
+.mnav{position:fixed;inset:0;z-index:79;display:flex;flex-direction:column;justify-content:space-between;gap:32px;padding:calc(var(--nav-h) + env(safe-area-inset-top,0px) + 6vh) var(--gutter) calc(32px + env(safe-area-inset-bottom,0px));background:#000;opacity:0;transition:opacity .45s var(--ease);overflow-y:auto;overscroll-behavior:contain}
 .mnav[hidden]{display:none}
 .mnav{pointer-events:none}
 .menu-open .mnav{opacity:1;pointer-events:auto}
@@ -837,7 +837,7 @@ html.lenis,html.lenis body{height:auto}
 @media (max-width:600px){.layer__ai-list li{grid-template-columns:minmax(0,1fr)}}
 
 /* The codex: found by the knight's move */
-.codex{position:fixed;inset:0;z-index:190;display:grid;place-items:center;padding:24px;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transition:opacity .5s var(--ease);overflow-y:auto}
+.codex{position:fixed;inset:0;z-index:190;display:grid;place-items:center;padding:24px;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transition:opacity .5s var(--ease);overflow-y:auto;overscroll-behavior:contain}
 .codex.is-on{opacity:1}
 .codex__in{width:min(640px,100%);display:flex;flex-direction:column;align-items:flex-start;gap:18px;padding:clamp(28px,5vw,56px);border:1px solid var(--rule-strong);background:#000}
 .codex__knight{width:46px;height:46px;fill:none;stroke:#fff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}

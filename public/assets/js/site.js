@@ -16,7 +16,16 @@
 
   /* ---------- Smooth scroll ---------- */
   if (!reduce && window.Lenis) {
-    lenis = new window.Lenis({ lerp: 0.085, smoothWheel: true, anchors: true, autoRaf: true });
+    // The phone menu and the codex scroll on their own while the page is held still. Stopped, Lenis cancels every
+    // swipe, so a swipe inside one of them is left to the browser while that layer still has room to move that way.
+    // At its end Lenis takes the swipe back and cancels it, so the page underneath never moves.
+    const ownScroll = ({ deltaY, event }) => {
+      const box = event.target instanceof Element && event.target.closest('#mnav, .codex');
+      if (!box) return true;
+      const room = deltaY > 0 ? box.scrollHeight - box.clientHeight - box.scrollTop : box.scrollTop;
+      return room < 1;
+    };
+    lenis = new window.Lenis({ lerp: 0.085, smoothWheel: true, anchors: true, autoRaf: true, virtualScroll: ownScroll });
   }
 
   /* ---------- Split headings into masked lines ---------- */
@@ -546,6 +555,23 @@
       $$('.mnav__item.is-open', panel).forEach((o) => { if (o !== item) { o.classList.remove('is-open'); $('button', o).setAttribute('aria-expanded', 'false'); } });
       item.classList.toggle('is-open', open);
       btn.setAttribute('aria-expanded', String(open));
+      // An opened list that runs past the bottom of the screen is brought up into view once it has opened,
+      // never past its own heading.
+      if (!open) return;
+      const sub = $('.mnav__sub', item);
+      let brought = false;
+      const bring = () => {
+        if (brought) return;
+        brought = true;
+        sub.removeEventListener('transitionend', opened);
+        if (!item.classList.contains('is-open')) return;
+        const p = panel.getBoundingClientRect(), r = item.getBoundingClientRect();
+        const by = Math.min(r.bottom - p.bottom + 24, r.top - p.top - parseFloat(getComputedStyle(panel).paddingTop));
+        if (by > 1) panel.scrollBy({ top: by, behavior: reduce ? 'auto' : 'smooth' });
+      };
+      const opened = (e) => { if (e.target === sub) bring(); };
+      sub.addEventListener('transitionend', opened);
+      setTimeout(bring, reduce ? 0 : 1000);
     }));
 
     let closeTimer = 0;
@@ -602,8 +628,8 @@
       <svg class="codex__knight" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 19.4Q5.6 18.9 4.9 17.4Q5.8 17.5 6.4 16.8Q5 16 4.7 14.2Q5.6 14.5 6.3 13.9Q5 12.8 5 10.9Q5.9 11.4 6.6 11Q5.8 9.6 6.1 7.9Q6.9 8.6 7.6 8.4Q7.3 6.8 8.1 5.4Q8.6 6.2 9.5 6.2L10.8 2.4L12.1 4.3C12.3 3.3 13.4 3.0 14.8 3.55Q14.05 4.0 13.9 4.8Q15.05 4.25 15.9 5.05Q15.15 5.35 14.85 5.95C16.52 6.90 17.79 8.33 18.6 10.6C19 11.8 18.6 13.2 17.3 13.2L15.6 12.7C14.6 12.4 13.8 12.9 13.8 13.9C14 15.9 16 17.4 16.9 19.4ZM5.6 19.4H18.2M4.6 21.5H19.2"/><circle cx="14.6" cy="8.4" r=".6"/></svg>
       <p class="eyebrow">You found the knght's move</p>
       <h2 class="display codex__h" id="codex-title">The <em>Codex</em></h2>
-      <p class="codex__lede">Seven rules we keep. Few people see this page.</p>
-      <ol class="codex__list">${CODEX.map((r, i) => `<li style="--i:${i}"><span>${['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'][i]}</span>${r}</li>`).join('')}</ol>
+      <p class="codex__lede">Eight rules we keep. Few people see this page.</p>
+      <ol class="codex__list">${CODEX.map((r, i) => `<li style="--i:${i}"><span>${['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'][i]}</span>${r}</li>`).join('')}</ol>
       <div class="codex__actions"><a class="btn" href="${up}book/">Book the free call</a><button type="button" class="link" data-codex-close>Close the codex</button></div>
     </div>`;
     document.body.appendChild(codexEl);
