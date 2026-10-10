@@ -39,7 +39,19 @@
       e.preventDefault();
       if (location.hash !== u.hash) history.pushState(null, '', u.hash);
     });
+    // Back or Forward during a glide: the browser puts the page back where it was, but a gliding Lenis ignores that
+    // and writes its glide back. Drop the glide so the place the browser restored stays. (Needs the pushState above.)
+    addEventListener('popstate', () => { if (lenis.isScrolling === 'smooth') lenis.reset(); });
   }
+  // The page under the phone menu and the codex is held still while either is open. One shared hold, so closing one
+  // of them never lets the page move under the other.
+  const holds = new Set();
+  const hold = (who, on) => {
+    if (on) holds.add(who); else holds.delete(who);
+    const still = holds.size > 0;
+    if (lenis) { if (still) lenis.stop(); else lenis.start(); }
+    document.body.style.overflow = still ? 'hidden' : '';
+  };
 
   /* ---------- Split headings into masked lines ---------- */
   if (!G) $$('[data-split]').forEach((el) => {
@@ -202,6 +214,11 @@
   const engage = $('.engage');
   let lastY = scrollY;
   let ticking = false;
+  // The phone bar hides only for scrolling the visitor does: a swipe, the wheel or a key. A jump to a #place, the
+  // browser putting a page back where it was, or the page growing under the reader never hides it.
+  let userAt = -1e9;
+  ['touchmove', 'wheel', 'keydown'].forEach((t) => addEventListener(t, () => { userAt = performance.now(); }, { passive: true }));
+  addEventListener('pageshow', () => { lastY = scrollY; });
 
   const frame = () => {
     ticking = false;
@@ -215,7 +232,8 @@
       const goingDown = y > lastY + 4;
       const goingUp = y < lastY - 4;
       const narrow = innerWidth <= 900;
-      if (goingDown && y > vh && narrow) nav.classList.add('is-hidden');
+      const byUser = performance.now() - userAt < 1000;
+      if (goingDown && byUser && y > vh && narrow) nav.classList.add('is-hidden');
       else if (goingUp || y < vh || !narrow) nav.classList.remove('is-hidden');
     }
     lastY = y;
@@ -555,12 +573,15 @@
     ($('.nav__end', navBar) || $('.wrap', navBar)).appendChild(toggle);
 
     const cta = $('.btn', navBar);
+    // The menu's button goes where the bar's button goes: the booking page, or on /book/ straight to the calendar.
+    const ctaHref = cta ? cta.getAttribute('href') : to('book/');
+    const ctaText = cta && (/call/i.test(cta.textContent) || ctaHref.charAt(0) === '#') ? cta.textContent.trim() : 'Book the free call';
     const panel = document.createElement('div');
     panel.id = 'mnav';
     panel.className = 'mnav';
     panel.hidden = true;
     panel.innerHTML = `<nav aria-label="Menu"><ol class="mnav__list">${MENU.map(group).join('')}</ol></nav>`
-      + `<div class="mnav__foot"><a class="btn" href="${to('book/')}">${cta && /call/i.test(cta.textContent) ? cta.textContent.trim() : 'Book the free call'}</a><a class="link" href="mailto:sho@knght.com">sho@knght.com</a></div>`;
+      + `<div class="mnav__foot"><a class="btn" href="${ctaHref}">${ctaText}</a><a class="link" href="mailto:sho@knght.com">sho@knght.com</a></div>`;
     document.body.appendChild(panel);
     // The same social icons as the footer, when any are set.
     const soc = $('.footer .social');
@@ -590,34 +611,77 @@
       setTimeout(bring, reduce ? 0 : 1000);
     }));
 
-    let closeTimer = 0;
+    let closeTimer = 0, leaveT = 0, inerted = [];
+    // While the menu is open the page behind it is inert: Tab, a screen reader and focus scrolling stay in the bar and
+    // the menu.
+    const behind = () => [...document.body.children].filter((el) => el !== panel && !el.contains(navBar) && el.tagName !== 'SCRIPT');
     const setMenu = (open) => {
       if (open === root.classList.contains('menu-open')) return;
-      clearTimeout(closeTimer);
+      clearTimeout(closeTimer); clearTimeout(leaveT); delete panel.dataset.leaving;
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
       if (open) {
         panel.hidden = false;
         requestAnimationFrame(() => root.classList.add('menu-open'));
         navBar.classList.remove('is-hidden');
-        if (lenis) lenis.stop();
-        document.body.style.overflow = 'hidden';
+        hold('menu', true);
+        inerted = behind().filter((el) => !el.inert);
+        inerted.forEach((el) => { el.inert = true; });
         setTimeout(() => { const first = $('.mnav__top', panel); if (first) first.focus({ preventScroll: true }); }, 60);
       } else {
         root.classList.remove('menu-open');
-        if (lenis) lenis.start();
-        document.body.style.overflow = '';
+        hold('menu', false);
+        inerted.forEach((el) => { el.inert = false; });
+        inerted = [];
         closeTimer = setTimeout(() => { panel.hidden = true; }, 450);
       }
     };
     toggle.addEventListener('click', () => setMenu(!root.classList.contains('menu-open')));
-    panel.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+    // A tap while the menu is fading out, or after a link to another page, lands on nothing: a quick second tap must
+    // not go through to whatever is underneath.
+    panel.addEventListener('click', (e) => {
+      if (!root.classList.contains('menu-open') || panel.dataset.leaving) { e.preventDefault(); e.stopPropagation(); }
+    }, true);
+    panel.addEventListener('click', (e) => {
+      const a = e.target.closest('a');
+      if (!a) return;
+      const mod = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button;
+      // The page you are on: close the menu and go back to its top, without loading it again.
+      if (a.getAttribute('aria-current') === 'page' && !mod) {
+        e.preventDefault();
+        setMenu(false);
+        if (lenis) lenis.scrollTo(0); else scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+        return;
+      }
+      // Another page: the menu stays up until that page arrives (or for four seconds, if it never does).
+      const u = new URL(a.href, location.href);
+      if (u.origin === location.origin && u.pathname !== location.pathname && !a.target && !a.hasAttribute('download') && !mod) {
+        panel.dataset.leaving = '1';
+        clearTimeout(leaveT);
+        leaveT = setTimeout(() => { delete panel.dataset.leaving; }, 4000);
+        return;
+      }
+      setMenu(false);
+    });
     // The mark and the bar's Book button close it too, before Lenis glides (a stopped Lenis goes nowhere).
     navBar.addEventListener('click', (e) => { if (e.target.closest('a') && root.classList.contains('menu-open')) setMenu(false); });
     // Back to a page kept in the browser's cache: it comes back with the menu closed.
-    addEventListener('pageshow', (e) => { if (e.persisted) setMenu(false); });
+    addEventListener('pageshow', (e) => {
+      if (!e.persisted) return;
+      setMenu(false);
+      $$('[data-vtn]').forEach((el) => { el.style.viewTransitionName = el.dataset.vtn; delete el.dataset.vtn; });
+    });
+    // The system Back button with the menu open: close it, so Back is seen to do something.
+    addEventListener('popstate', () => setMenu(false));
+    // Leaving with the menu still up: the page's named plates would be drawn above the menu during the page
+    // transition, so they sit this one out.
+    addEventListener('pageswap', (e) => {
+      if (!e.viewTransition || panel.hidden) return;
+      $$('[style*="view-transition-name"]').forEach((el) => { el.dataset.vtn = el.style.viewTransitionName; el.style.viewTransitionName = 'none'; });
+    });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && root.classList.contains('menu-open')) { setMenu(false); toggle.focus(); }
+      // Escape closes the top layer only: with the codex open over the menu, the codex goes first.
+      if (e.key === 'Escape' && root.classList.contains('menu-open') && !$('.codex.is-on')) { setMenu(false); toggle.focus(); }
     });
     matchMedia('(min-width: 901px)').addEventListener('change', (e) => { if (e.matches) setMenu(false); });
   }
@@ -653,8 +717,7 @@
       <div class="codex__actions"><a class="btn" href="${up}book/">Book the free call</a><button type="button" class="link" data-codex-close>Close the codex</button></div>
     </div>`;
     document.body.appendChild(codexEl);
-    if (lenis) lenis.stop();
-    document.body.style.overflow = 'hidden';
+    hold('codex', true);
     requestAnimationFrame(() => codexEl.classList.add('is-on'));
     const close = $('[data-codex-close]', codexEl);
     close.focus({ preventScroll: true });
@@ -666,8 +729,7 @@
     if (!codexEl) return;
     const el = codexEl; codexEl = null;
     el.classList.remove('is-on');
-    if (lenis) lenis.start();
-    document.body.style.overflow = '';
+    hold('codex', false);
     setTimeout(() => el.remove(), 500);
     if (codexReturn && codexReturn.focus) codexReturn.focus({ preventScroll: true });
   };
