@@ -1,0 +1,56 @@
+---
+// The Black Queen's game on its own, for QA: a black page with a stand-in for the portal's bar.
+// Not linked anywhere and not in the sitemap. No Motion, no site.js.
+// It reads ?fen= (a start position), ?level= (the level focused first), ?seed= (her randomness) and ?reduce=1.
+---
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Black Queen | KNGHT</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<style is:global>
+body{background:#000}
+.lab{--wl-bar-h:56px;min-height:100dvh;background:#000}
+.lab-bar{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:16px;height:var(--wl-bar-h);padding:0 16px;background:#000;border-bottom:1px solid rgba(255,255,255,.16)}
+.lab-bar p{margin:0;font:italic 400 1.15rem/1 var(--serif)}
+.lab-bar span{font-size:.8rem;color:var(--ash)}
+.wl-game{position:relative;z-index:3;min-height:calc(100dvh - var(--wl-bar-h))}
+</style>
+</head>
+<body>
+<div class="lab">
+  <header class="lab-bar"><p>Down the rabbit hole</p><span data-lab-said aria-live="polite"></span><button type="button" class="btn btn--ghost btn--sm" data-lab-climb>Climb back up</button></header>
+  <div class="wl-game"></div>
+</div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const host = document.querySelector('.wl-game');
+  const said = document.querySelector('[data-lab-said]');
+  const climbed = () => { said.textContent = 'Climbed.'; };
+  document.querySelector('[data-lab-climb]').addEventListener('click', climbed);
+  // Escape that the game did not use is the portal's: here it only says so.
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !e.defaultPrevented) climbed(); });
+  const reduce = q.get('reduce') === '1' || matchMedia('(prefers-reduced-motion: reduce)').matches;
+  import('../../scripts/wonderland/game/index.js').then(({ mount }) => {
+    const game = mount(host, {
+      reduce,
+      onClimb: climbed,
+      track: (name, params) => console.info('track', name, JSON.stringify(params)),
+      bookHref: '/book/',
+      fen: q.get('fen') || undefined,
+      seed: q.has('seed') ? Number(q.get('seed')) : undefined,
+      level: q.get('level') || undefined,
+    });
+    game.land();
+  });
+</script>
+</body>
+</html>

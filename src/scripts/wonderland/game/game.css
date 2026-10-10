@@ -1,0 +1,169 @@
+/* The Black Queen's board. Injected once as <style id="wlg-css">; everything is scoped under .wlg.
+   Strictly black and white: greys only for quiet states (labels, ticks, disabled). The page's site.css gives
+   .btn, .btn--ghost, .btn--sm, .link and .sr-only. --sq (one square, whole px) and --wlg-sw (the piece stroke,
+   in grid units) are set by board.js from the space the portal gives. */
+.wlg{--sq:40px;--gut:16px;--panel:280px;--wlg-sw:1.6;--ash:#a6a6a6;--ash-2:#7a7a7a;--serif:"Cormorant Garamond","Iowan Old Style",Palatino,Georgia,serif;--sans:"Hanken Grotesk","Helvetica Neue",Helvetica,Arial,sans-serif;
+  position:relative;box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:100%;
+  min-height:calc(100vh - var(--wl-bar-h,0px));min-height:calc(100dvh - var(--wl-bar-h,0px));padding:var(--gut);
+  color:#fff;font-family:var(--sans);font-size:1rem;line-height:1.4;-webkit-tap-highlight-color:transparent;overflow-x:clip}
+.wlg *,.wlg *::before,.wlg *::after{box-sizing:border-box}
+.wlg[data-phase="pre"]{visibility:hidden}
+.wlg-sprite{position:absolute;width:0;height:0;overflow:hidden}
+.wlg-probe{position:absolute;left:0;top:0;width:0;height:calc(100vh - var(--wl-bar-h,0px));height:calc(100dvh - var(--wl-bar-h,0px));visibility:hidden;pointer-events:none}
+
+/* ----- Layout: portrait stacks; landscape puts a panel beside the board ----- */
+.wlg-stage{position:relative;display:grid;grid-template-columns:calc(8 * var(--sq));grid-template-areas:"her" "board" "you" "panel";justify-content:center;padding:0 0 0 0}
+.wlg[data-layout="landscape"] .wlg-stage{grid-template-columns:calc(8 * var(--sq)) var(--panel);grid-template-rows:auto 1fr auto;grid-template-areas:"board her" "board panel" "board you";column-gap:clamp(40px,4vw,64px);padding-bottom:22px;padding-left:18px}
+.wlg[data-layout="portrait"] .wlg-stage{padding-left:0}
+.wlg-who--her{grid-area:her}
+.wlg-who--you{grid-area:you}
+.wlg-boardwrap{grid-area:board;position:relative;width:calc(8 * var(--sq));height:calc(8 * var(--sq));margin:10px 0 24px}
+.wlg[data-layout="landscape"] .wlg-boardwrap{margin:0}
+.wlg-panel{grid-area:panel;display:flex;flex-direction:column;gap:2px;margin-top:12px;min-width:0}
+.wlg[data-layout="landscape"] .wlg-panel{justify-content:center;margin:0;padding:24px 0}
+
+/* ----- The players ----- */
+.wlg-who{display:flex;align-items:center;gap:8px;height:32px;min-width:0;white-space:nowrap}
+.wlg-dot{flex:none;width:6px;height:6px;border-radius:50%;background:#fff;opacity:0;transition:opacity .25s}
+.wlg-who[data-turn] .wlg-dot{opacity:1}
+.wlg-name{flex:none;font:italic 400 1.35rem/1 var(--serif);letter-spacing:-.005em}
+.wlg-who--you .wlg-name{font-style:normal;font-family:var(--sans);font-size:.95rem;font-weight:500;letter-spacing:.02em}
+.wlg-watch{flex:none;width:14px;height:14px;fill:none;stroke:#fff;stroke-width:1;stroke-linecap:round;opacity:.55;transition:opacity .25s}
+.wlg-who[data-turn] .wlg-watch{opacity:1}
+.wlg-hand{transform-box:view-box;transform-origin:7px 7px}
+.wlg-taken{display:flex;align-items:center;flex:1 1 auto;min-width:0;overflow:hidden;padding-left:2px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 14px),transparent)}
+.wlg-taken .wlg-glyph{flex:none;width:16px;height:16px;margin-right:-6px;stroke-width:1.5;--ink:#fff;--body:#fff;--cut:#000}
+.wlg-taken .wlg-glyph[data-c="b"]{--body:#000;--cut:#fff}
+.wlg-tag{flex:none;margin-left:auto;font-size:.8rem;font-weight:500;font-variant-caps:all-small-caps;letter-spacing:.12em;color:var(--ash)}
+
+/* ----- Status, last move and the two controls ----- */
+.wlg-status{margin:0;font-size:.95rem;font-weight:500;line-height:1.35;min-height:1.35em}
+.wlg-last{margin:0;font-size:.85rem;line-height:1.4;color:var(--ash);min-height:1.4em}
+.wlg-controls{display:flex;flex-wrap:wrap;gap:4px 24px;margin-top:4px}
+.wlg .wlg-controls .link{background:none;border:0;padding:8px 0;min-height:40px;font:500 .9rem/1 var(--sans);color:#fff;cursor:pointer}
+.wlg .wlg-controls .link[aria-disabled="true"]{color:var(--ash-2);cursor:default}
+.wlg .wlg-controls .link[aria-disabled="true"]::after{opacity:.4}
+
+/* ----- The board ----- */
+.wlg-board{position:absolute;inset:0;transform-origin:50% 50%}
+.wlg-frame{position:absolute;inset:-1px;border:1px solid #fff;pointer-events:none}
+.wlg-squares{position:absolute;inset:0;display:grid;grid-template-columns:repeat(8,var(--sq));grid-template-rows:repeat(8,var(--sq));touch-action:none;forced-color-adjust:none;-webkit-user-select:none;user-select:none}
+.wlg-sq{--ink:#000;--paper:#fff;--tick:rgba(0,0,0,.55);position:relative;display:block;width:var(--sq);height:var(--sq);margin:0;padding:0;border:0;border-radius:0;background:var(--paper);color:var(--ink);cursor:pointer;-webkit-appearance:none;appearance:none;outline:none;forced-color-adjust:none}
+.wlg-sq[data-tone="dark"]{--ink:#fff;--paper:#000;--tick:rgba(255,255,255,.55)}
+.wlg-sq:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
+.wlg-sq[data-sel]{box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--ink)}
+/* the last move: four corner ticks on both squares */
+.wlg-sq[data-last]::before{content:"";position:absolute;inset:2px;pointer-events:none;--t:calc(var(--sq) * .18);
+  background:
+    linear-gradient(var(--tick),var(--tick)) left top/var(--t) 1px no-repeat,
+    linear-gradient(var(--tick),var(--tick)) left top/1px var(--t) no-repeat,
+    linear-gradient(var(--tick),var(--tick)) right top/var(--t) 1px no-repeat,
+    linear-gradient(var(--tick),var(--tick)) right top/1px var(--t) no-repeat,
+    linear-gradient(var(--tick),var(--tick)) left bottom/var(--t) 1px no-repeat,
+    linear-gradient(var(--tick),var(--tick)) left bottom/1px var(--t) no-repeat,
+    linear-gradient(var(--tick),var(--tick)) right bottom/var(--t) 1px no-repeat,
+    linear-gradient(var(--tick),var(--tick)) right bottom/1px var(--t) no-repeat}
+/* a legal square: the pawn's open seat. A capture: a ring round the piece. Check: a double ring round the king. */
+.wlg-sq[data-mark="target"]::after{content:"";position:absolute;left:37%;top:37%;width:26%;height:26%;border:1.25px solid var(--ink);border-radius:50%;pointer-events:none}
+.wlg-sq[data-mark="capture"]::after{content:"";position:absolute;inset:6%;border:1.25px solid var(--ink);border-radius:50%;pointer-events:none}
+.wlg-sq[data-check]::after{content:"";position:absolute;inset:6%;border:1px solid var(--ink);border-radius:50%;pointer-events:none;box-shadow:inset 0 0 0 calc(var(--sq) * .04 - 1px) var(--paper),inset 0 0 0 calc(var(--sq) * .04) var(--ink)}
+@media (hover:hover) and (pointer:fine){
+  .wlg-sq[data-mark="capture"]:hover::after{border-width:2px}
+  .wlg-sq[data-mark="target"]:hover::after{border-width:2px}
+}
+
+/* ----- Pieces: a layer over the squares, never in the way of a tap ----- */
+.wlg-pieces{position:absolute;inset:0;pointer-events:none}
+.wlg-pc{position:absolute;left:calc(var(--x) * var(--sq));top:calc(var(--y) * var(--sq));width:var(--sq);height:var(--sq);display:grid;place-items:center;z-index:1}
+.wlg-pc[data-lift]{z-index:3}
+.wlg-pc .wlg-glyph{width:88%;height:88%;stroke-width:var(--wlg-sw);overflow:visible}
+.wlg-glyph{display:block}
+/* The set's rule: --ink contrasts with the square, --body is the piece's own colour, --cut is the opposite of the body. */
+.wlg-pc[data-tone="light"]{--ink:#000}
+.wlg-pc[data-tone="dark"]{--ink:#fff}
+.wlg-glyph[data-c="w"]{--body:#fff;--cut:#000}
+.wlg-glyph[data-c="b"]{--body:#000;--cut:#fff}
+/* lifted (moving, dragged): its own colour as the body, the opposite as the outline, so it shows on both colours */
+.wlg-pc[data-lift] .wlg-glyph[data-c="w"]{--ink:#000}
+.wlg-pc[data-lift] .wlg-glyph[data-c="b"]{--ink:#fff}
+.wlg-pc[data-up] .wlg-glyph{transform:scale(1.04)}
+.wlg-pc[data-drag]{z-index:4;transition:none}
+
+/* ----- The labels, outside the frame ----- */
+.wlg-ranks,.wlg-files{position:absolute;display:flex;pointer-events:none;font-size:11px;font-weight:500;font-variant-caps:all-small-caps;letter-spacing:.12em;color:var(--ash);line-height:1}
+.wlg-ranks{font-variant-caps:normal;letter-spacing:0} /* figures need no small caps */
+.wlg-ranks{right:calc(100% + 6px);top:0;bottom:0;flex-direction:column}
+.wlg-files{left:0;right:0;top:calc(100% + 6px)}
+.wlg-ranks span,.wlg-files span{flex:1;display:flex;align-items:center;justify-content:center}
+.wlg-ranks span{justify-content:flex-end}
+
+/* ----- The promotion chooser: four cells over the file, queen first ----- */
+.wlg-promo{position:absolute;z-index:8;left:calc(var(--px) * var(--sq));top:0;width:var(--sq);display:flex;flex-direction:column;background:#000;box-shadow:0 0 0 1px #fff}
+.wlg-promo[hidden]{display:none}
+.wlg-promo button{display:grid;place-items:center;width:var(--sq);height:var(--sq);margin:0;padding:0;border:0;border-bottom:1px solid rgba(255,255,255,.32);background:#000;cursor:pointer;-webkit-appearance:none;appearance:none}
+.wlg-promo button:last-child{border-bottom:0}
+.wlg-promo .wlg-glyph{width:80%;height:80%;stroke-width:var(--wlg-sw);--ink:#fff;--body:#fff;--cut:#000}
+.wlg-promo button:focus-visible{outline:2px solid #fff;outline-offset:-4px}
+@media (hover:hover) and (pointer:fine){.wlg-promo button:hover{background:#fff}.wlg-promo button:hover .wlg-glyph{--ink:#000}}
+
+/* ----- Cards: the level picker and the endings ----- */
+.wlg-card{position:absolute;z-index:10;left:0;top:0;width:min(400px,100%);display:flex;flex-direction:column;align-items:stretch;gap:14px;padding:24px;background:#000;border:1px solid rgba(255,255,255,.32);text-align:left;max-height:calc(100dvh - var(--wl-bar-h,0px) - 16px);overflow-y:auto;overscroll-behavior:contain}
+.wlg-card[hidden]{display:none}
+.wlg-card:focus{outline:none}
+.wlg-eyebrow{display:flex;align-items:center;gap:12px;margin:0;font-size:.72rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--ash)}
+.wlg-eyebrow::before{content:"";width:24px;height:1px;background:currentColor;opacity:.7}
+.wlg-head{margin:0;font:500 clamp(1.9rem,7vw,2.6rem)/1.02 var(--serif);letter-spacing:-.01em;text-wrap:balance}
+.wlg-lede{margin:0;color:var(--ash);font-size:.95rem;line-height:1.45}
+.wlg-quote{margin:0;font:italic 400 1.3rem/1.25 var(--serif);text-wrap:pretty}
+.wlg-quote p{margin:0}
+.wlg-credit{margin:-6px 0 0;font-size:.72rem;font-weight:500;font-variant-caps:all-small-caps;letter-spacing:.12em;color:var(--ash)}
+.wlg-why{margin:0;color:var(--ash);font-size:.9rem}
+.wlg-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px;margin-top:6px}
+.wlg-actions .btn{min-height:48px;padding:0 22px}
+.wlg-levels{display:flex;flex-direction:column;gap:8px;margin-top:2px}
+.wlg-level{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:10px;width:100%;min-height:56px;margin:0;padding:0 20px 0 12px;border:1px solid rgba(255,255,255,.32);border-radius:999px;background:transparent;color:#fff;text-align:left;cursor:pointer;-webkit-appearance:none;appearance:none;transition:background-color .2s,color .2s,border-color .2s}
+.wlg-level .wlg-glyph{width:34px;height:34px;stroke-width:1;--ink:#fff;--body:#fff;--cut:#000}
+.wlg-level b{font:400 1.4rem/1 var(--serif)}
+.wlg-level small{font-size:.8rem;font-weight:500;font-variant-caps:all-small-caps;letter-spacing:.12em;color:var(--ash)}
+.wlg-level:focus-visible{outline:1px solid #fff;outline-offset:3px}
+.wlg-level:focus-visible,.wlg-level[data-on]{background:#fff;color:#000;border-color:#fff}
+.wlg-level:focus-visible .wlg-glyph,.wlg-level[data-on] .wlg-glyph{--ink:#000}
+.wlg-level:focus-visible small,.wlg-level[data-on] small{color:#4d4d4d}
+@media (hover:hover) and (pointer:fine){
+  .wlg-level:hover{background:#fff;color:#000;border-color:#fff}
+  .wlg-level:hover .wlg-glyph{--ink:#000}
+  .wlg-level:hover small{color:#4d4d4d}
+}
+/* short screens held sideways: the three levels sit in a row */
+.wlg[data-compact] .wlg-card{padding:16px;gap:10px}
+.wlg[data-compact] .wlg-head{font-size:1.7rem}
+.wlg[data-compact] .wlg-levels{flex-direction:row}
+.wlg[data-compact] .wlg-level{grid-template-columns:1fr;justify-items:center;gap:2px;min-height:0;padding:8px 6px;border-radius:18px;text-align:center}
+.wlg[data-compact] .wlg-level .wlg-glyph{width:28px;height:28px}
+
+@media (min-width:760px){
+  .wlg-card{padding:36px;gap:16px}
+  .wlg-ranks,.wlg-files{font-size:12px}
+}
+
+/* A row a card would half cover steps aside while the card is up. */
+.wlg-who[data-covered]{visibility:hidden}
+/* A big board, a little more type beside it */
+@media (min-width:1000px){
+  .wlg[data-layout="landscape"] .wlg-name{font-size:1.6rem}
+  .wlg[data-layout="landscape"] .wlg-who--you .wlg-name{font-size:1.05rem}
+  .wlg[data-layout="landscape"] .wlg-status{font-size:1.1rem}
+  .wlg[data-layout="landscape"] .wlg-last{font-size:.95rem}
+  .wlg[data-layout="landscape"] .wlg-tag{font-size:.85rem}
+  .wlg[data-layout="landscape"] .wlg-controls .link{font-size:.95rem}
+}
+
+/* Under a card the board is inert; nothing else changes. */
+.wlg-squares[inert] .wlg-sq{cursor:default}
+
+@media (prefers-reduced-motion:reduce){
+  .wlg-dot,.wlg-watch,.wlg-level{transition:none}
+}
+@media (forced-colors:active){
+  .wlg-card,.wlg-level{border-color:CanvasText}
+}
