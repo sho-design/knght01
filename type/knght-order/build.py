@@ -1,240 +1,365 @@
-"""Build KNGHT Order: a hybrid serif from three OFL fonts.
-Roman  = Cormorant Garamond 500 (base) + Ibarra Real Nova 400 capitals, scaled to Cormorant's cap height.
-Italic = Cormorant Garamond Italic 500 (base) + Instrument Serif Italic lowercase, scaled to the roman x-height.
-Both get the KNGHT knight at U+265E, drawn from src/assets/knght-chess.svg.
-Run from the repo root: python3 type/knght-order/build.py  (needs: pip install fonttools brotli skia-pathops)"""
-import sys, os, re, unicodedata
+"""Build KNGHT Order: Cormorant Garamond with engraved capitals and the KNGHT glyphs.
+
+Styles     Regular and Italic (from Cormorant 400) carry the engraved capitals by default; ss01 swaps in the plain ones.
+           Medium and Medium Italic (from Cormorant 500) are for text under about 28px. They keep the plain
+           capitals; ss01 swaps in the engraved ones.
+Engraving  one hairline cut down the middle of every stroke thicker than STEM. Thin strokes stay whole,
+           so the line shows on stems and bowls and disappears at small sizes.
+Glyphs     the chess set (U+2654 to U+265F) from src/assets/knght-chess.svg, the seven layers and nine worlds
+           from src/lib/sigils.ts, and seven brand marks drawn below, in the Private Use Area from U+E001.
+           Each one can also be typed as a ligature, such as :lore: or :knight:.
+
+Run from the repo root: python3 type/knght-order/build.py   (pip install fonttools brotli skia-pathops)"""
+import os, re, copy, math, unicodedata
+import xml.etree.ElementTree as ET
 from fontTools.ttLib import TTFont, newTable
 from fontTools.ttLib.tables import ttProgram, otTables as ot
 from fontTools.pens.ttGlyphPen import TTGlyphPen
-from fontTools.pens.transformPen import TransformPen
-from fontTools.pens.recordingPen import DecomposingRecordingPen
-from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.cu2quPen import Cu2QuPen
+from fontTools.pens.recordingPen import DecomposingRecordingPen
+from fontTools.pens.transformPen import TransformPen
+from fontTools.svgLib.path import SVGPath
 from fontTools.otlLib import builder as otl
-from fontTools.svgLib.path import parse_path
+from fontTools import subset
 import pathops
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.join(HERE, "..", "..")
 SRC, OUT = os.path.join(HERE, "sources"), os.path.join(HERE, "fonts")
-_svg = open(os.path.join(HERE, "..", "..", "src", "assets", "knght-chess.svg")).read()
-KNIGHT_D = re.search(r'<symbol id="knght-knight".*?class="knght-outline"[^>]*? d="([^"]+)"', _svg, re.S).group(1)
-os.makedirs(OUT, exist_ok=True)
+
+# ---------------------------------------------------------------- paths
+
+def to_path(draw):
+    p = pathops.Path(); draw(p.getPen()); return p
+
+def clean(p):
+    p.convertConicsToQuads(); p.simplify(); return p
+
+def stroke(p, w, cap=pathops.LineCap.ROUND_CAP):
+    q = pathops.Path(); p.draw(q.getPen())
+    q.stroke(w, cap, pathops.LineJoin.ROUND_JOIN, 4)
+    return clean(q)
+
+def union(*ps):
+    out = ps[0]
+    for p in ps[1:]: out = pathops.op(out, p, pathops.PathOp.UNION)
+    return out
+
+def minus(a, b): return pathops.op(a, b, pathops.PathOp.DIFFERENCE)
+
+def engrave(p, stem, t):
+    """Cut a hairline of width t down the middle of every stroke at least `stem` thick."""
+    core = minus(p, stroke(p, stem - t, pathops.LineCap.BUTT_CAP))
+    return minus(p, core)
+
+def glyph_path(font, name):
+    gs = font.getGlyphSet(); rec = DecomposingRecordingPen(gs); gs[name].draw(rec)
+    return clean(to_path(rec.replay))
+
+def to_glyph(p):
+    pen = TTGlyphPen(None); p.draw(Cu2QuPen(pen, 1.0, reverse_direction=True)); return pen.glyph()
+
+# ---------------------------------------------------------------- font plumbing
 
 def dehint(f):
     for t in ("fpgm", "prep", "cvt ", "hdmx", "LTSH", "VDMX", "DSIG"):
         if t in f: del f[t]
-    glyf = f["glyf"]
-    for g in glyf.glyphs.values():
-        g.expand(glyf)
-        if hasattr(g, "program"):
-            g.program = ttProgram.Program(); g.program.fromBytecode(b"")
+    for g in f["glyf"].glyphs.values():
+        g.expand(f["glyf"])
+        if hasattr(g, "program"): g.program = ttProgram.Program(); g.program.fromBytecode(b"")
     gasp = newTable("gasp"); gasp.version = 1; gasp.gaspRange = {0xFFFF: 0x000F}; f["gasp"] = gasp
     m = f["maxp"]
-    for a in ("maxZones","maxTwilightPoints","maxStorage","maxFunctionDefs","maxInstructionDefs","maxStackElements","maxSizeOfInstructions"):
-        setattr(m, a, 0 if a != "maxZones" else 1)
+    for a in ("maxTwilightPoints", "maxStorage", "maxFunctionDefs", "maxInstructionDefs", "maxStackElements", "maxSizeOfInstructions"):
+        setattr(m, a, 0)
+    m.maxZones = 1
 
-def outline(font, gname, scale):
-    gs = font.getGlyphSet(); rec = DecomposingRecordingPen(gs); gs[gname].draw(rec)
-    pen = TTGlyphPen(None); rec.replay(TransformPen(pen, (scale, 0, 0, scale, 0, 0)))
-    return pen.glyph(), round(font["hmtx"][gname][0] * scale)
+def decompose_all(f):
+    gs = f.getGlyphSet()
+    for g in f.getGlyphOrder():
+        if f["glyf"][g].isComposite():
+            rec = DecomposingRecordingPen(gs); gs[g].draw(rec); pen = TTGlyphPen(None); rec.replay(pen)
+            f["glyf"][g] = pen.glyph(); f["glyf"][g].recalcBounds(f["glyf"])
 
-def put(base, gname, glyph, adv):
-    glyf = base["glyf"]; glyf[gname] = glyph
-    glyph.recalcBounds(glyf)
-    base["hmtx"][gname] = (adv, getattr(glyph, "xMin", 0) if glyph.numberOfContours else 0)
+def set_glyph(f, name, glyph, adv=None, gdef_class=None):
+    glyf = f["glyf"]
+    if name not in glyf.glyphs:
+        order = f.getGlyphOrder() + [name]; f.setGlyphOrder(order); glyf.glyphOrder = order
+    glyf[name] = glyph; glyph.recalcBounds(glyf)
+    if adv is None: adv = f["hmtx"][name][0]
+    f["hmtx"][name] = (adv, glyph.xMin if glyph.numberOfContours else 0)
+    if gdef_class and "GDEF" in f and f["GDEF"].table.GlyphClassDef:
+        f["GDEF"].table.GlyphClassDef.classDefs[name] = gdef_class
 
-def flat_kerning(font):
-    """Every horizontal pair adjustment in the font's kern feature, as {(left, right): value}."""
-    out = {}
+def lookups_of(table, tags):
+    return {i for fr in table.FeatureList.FeatureRecord if fr.FeatureTag in tags for i in fr.Feature.LookupListIndex}
+
+def subtables(lk, ext):
+    for st in lk.SubTable:
+        yield st.ExtSubTable if lk.LookupType == ext else st
+
+def add_lookup(table, lk):
+    table.LookupList.Lookup.append(lk); table.LookupList.LookupCount = len(table.LookupList.Lookup)
+    return table.LookupList.LookupCount - 1
+
+def add_lookup_first(table, lk):
+    """Insert a lookup at the front of the list, so it runs before Cormorant's own ligatures and alternates,
+    and renumber every reference to the lookups that moved."""
+    table.LookupList.Lookup.insert(0, lk); table.LookupList.LookupCount = len(table.LookupList.Lookup)
+    for fr in table.FeatureList.FeatureRecord:
+        fr.Feature.LookupListIndex = [i + 1 for i in fr.Feature.LookupListIndex]
+    for lk2 in table.LookupList.Lookup[1:]:
+        for st in subtables(lk2, 7):
+            for attr in ("SubstLookupRecord", "LookAheadSubstLookupRecord"):
+                for rec in getattr(st, attr, None) or []: rec.LookupListIndex += 1
+            for sets in ("SubRuleSet", "SubClassSet", "ChainSubRuleSet", "ChainSubClassSet"):
+                for rs in getattr(st, sets, None) or []:
+                    if rs is None: continue
+                    for rule in (getattr(rs, "SubRule", None) or getattr(rs, "SubClassRule", None)
+                                 or getattr(rs, "ChainSubRule", None) or getattr(rs, "ChainSubClassRule", None) or []):
+                        for rec in rule.SubstLookupRecord: rec.LookupListIndex += 1
+    return 0
+
+def add_feature(font, tag, lookup_index, ui_name=None):
+    """Add a feature to every script and language, keeping the feature list sorted by tag."""
+    table = font["GSUB"].table
+    feat = ot.Feature(); feat.LookupListIndex = [lookup_index]; feat.LookupCount = 1; feat.FeatureParams = None
+    if ui_name:
+        params = ot.FeatureParamsStylisticSet(); params.Version = 0; params.UINameID = font["name"].addName(ui_name)
+        feat.FeatureParams = params
+    rec = ot.FeatureRecord(); rec.FeatureTag = tag; rec.Feature = feat
+    recs = table.FeatureList.FeatureRecord
+    old = list(range(len(recs))); recs.append(rec)
+    order = sorted(range(len(recs)), key=lambda i: (recs[i].FeatureTag, i))
+    remap = {o: n for n, o in enumerate(order)}
+    table.FeatureList.FeatureRecord = [recs[i] for i in order]; table.FeatureList.FeatureCount = len(recs)
+    for sr in table.ScriptList.ScriptRecord:
+        for ls in [sr.Script.DefaultLangSys] + [r.LangSys for r in sr.Script.LangSysRecord]:
+            if ls is None: continue
+            ls.FeatureIndex = sorted([remap[i] for i in ls.FeatureIndex] + [remap[len(old)]]); ls.FeatureCount = len(ls.FeatureIndex)
+            if ls.ReqFeatureIndex != 0xFFFF: ls.ReqFeatureIndex = remap[ls.ReqFeatureIndex]
+
+def append_to_feature(font, tag, lookup_index):
+    for fr in font["GSUB"].table.FeatureList.FeatureRecord:
+        if fr.FeatureTag == tag: fr.Feature.LookupListIndex.append(lookup_index); fr.Feature.LookupCount += 1
+
+def clone_kerning(font, alts):
+    """Give each alternate the same kerning as the glyph it stands in for. Alternates sit at the end of
+    the glyph order, so appending keeps every coverage and pair list sorted by glyph ID."""
     gpos = font["GPOS"].table
-    idx = {i for fr in gpos.FeatureList.FeatureRecord if fr.FeatureTag == "kern" for i in fr.Feature.LookupListIndex}
-    for li in sorted(idx):
-        lk = gpos.LookupList.Lookup[li]
-        for st in lk.SubTable:
-            if lk.LookupType == 9: st = st.ExtSubTable
-            if st.LookupType != 2: continue
-            cov = st.Coverage.glyphs
+    order = sorted(alts.items(), key=lambda kv: font.getGlyphID(kv[1]))
+    for li in lookups_of(gpos, {"kern"}):
+        for st in subtables(gpos.LookupList.Lookup[li], 9):
+            if getattr(st, "LookupType", 2) != 2: continue
             if st.Format == 1:
-                for g, ps in zip(cov, st.PairSet):
-                    for r in ps.PairValueRecord:
-                        v = getattr(r.Value1, "XAdvance", 0) if r.Value1 else 0
-                        if v: out.setdefault((g, r.SecondGlyph), v)
+                first = dict(zip(st.Coverage.glyphs, st.PairSet))
+                for ps in st.PairSet:
+                    byg = {r.SecondGlyph: r for r in ps.PairValueRecord}
+                    for o, a in order:
+                        if o in byg:
+                            r = copy.deepcopy(byg[o]); r.SecondGlyph = a; ps.PairValueRecord.append(r)
+                    ps.PairValueCount = len(ps.PairValueRecord)
+                for o, a in order:
+                    if o in first:
+                        st.Coverage.glyphs.append(a); st.PairSet.append(copy.deepcopy(first[o]))
+                st.PairSetCount = len(st.PairSet)
             else:
-                c1 = st.ClassDef1.classDefs; c2 = st.ClassDef2.classDefs
-                by2 = {}
-                for g, c in c2.items(): by2.setdefault(c, []).append(g)
-                for g in cov:
-                    row = st.Class1Record[c1.get(g, 0)]
-                    for c, rec in enumerate(row.Class2Record):
-                        v = getattr(rec.Value1, "XAdvance", 0) if rec.Value1 else 0
-                        if v and c in by2:
-                            for g2 in by2[c]: out.setdefault((g, g2), v)
+                for o, a in order:
+                    if o in st.Coverage.glyphs: st.Coverage.glyphs.append(a)
+                    if o in st.ClassDef1.classDefs: st.ClassDef1.classDefs[a] = st.ClassDef1.classDefs[o]
+                    if o in st.ClassDef2.classDefs: st.ClassDef2.classDefs[a] = st.ClassDef2.classDefs[o]
+
+def cap_family(font, caps):
+    """The capitals, plus every glyph GSUB can turn one into (contextual and local forms, ligatures that start with one)."""
+    gsub = font["GSUB"].table; out = set(caps); grew = True
+    while grew:
+        grew = False
+        for lk in gsub.LookupList.Lookup:
+            for st in subtables(lk, 7):
+                t = getattr(st, "LookupType", lk.LookupType)
+                pairs = []
+                if t == 1: pairs = st.mapping.items()
+                elif t == 3: pairs = [(k, v) for k, vs in st.alternates.items() for v in vs]
+                elif t == 4: pairs = [(k, l.LigGlyph) for k, ls in st.ligatures.items() for l in ls]
+                for k, v in pairs:
+                    if k in out and v not in out: out.add(v); grew = True
     return out
 
-def strip_kerning(font, gone):
-    """Remove pairs that touch replaced glyphs, so their old spacing cannot apply."""
-    gpos = font["GPOS"].table
-    for lk in gpos.LookupList.Lookup:
-        for st in lk.SubTable:
-            if lk.LookupType == 9: st = st.ExtSubTable
-            if getattr(st, "LookupType", None) != 2: continue
-            cov = st.Coverage.glyphs
-            if st.Format == 1:
-                keep = [(g, ps) for g, ps in zip(cov, st.PairSet) if g not in gone]
-                for _, ps in keep:
-                    ps.PairValueRecord = [r for r in ps.PairValueRecord if r.SecondGlyph not in gone]
-                    ps.PairValueCount = len(ps.PairValueRecord)
-                st.Coverage.glyphs = [g for g, _ in keep]; st.PairSet = [ps for _, ps in keep]; st.PairSetCount = len(keep)
-            else:
-                st.Coverage.glyphs = [g for g in cov if g not in gone]
-                for g in list(st.ClassDef2.classDefs):
-                    if g in gone: del st.ClassDef2.classDefs[g]
-                for g in list(st.ClassDef1.classDefs):
-                    if g in gone: del st.ClassDef1.classDefs[g]
+# ---------------------------------------------------------------- the KNGHT glyphs
 
-def add_kerning(font, pairs):
-    gpos = font["GPOS"].table
-    by_left = {}
-    for (l, r), v in pairs.items(): by_left.setdefault(l, {})[r] = v
-    recs = {}
-    for l, rs in by_left.items():
-        for r, v in rs.items():
-            vr = ot.ValueRecord(); vr.XAdvance = v
-            recs[(l, r)] = (vr, None)
-    st = otl.buildPairPosGlyphsSubtable(recs, font.getReverseGlyphMap())
-    lk = otl.buildLookup([st]); gpos.LookupList.Lookup.append(lk)
-    gpos.LookupList.LookupCount = len(gpos.LookupList.Lookup)
-    new = len(gpos.LookupList.Lookup) - 1
-    for fr in gpos.FeatureList.FeatureRecord:
-        if fr.FeatureTag == "kern":
-            fr.Feature.LookupListIndex.append(new); fr.Feature.LookupCount += 1
+GRID = 36                     # font units per unit of the 24-unit SVG grid
+BASE_Y = 21.5                 # grid y that sits on the baseline (the bottom plinth line)
+SIDE = 60                     # sidebearing on each side of a mark
 
-ALT_TAGS = {"salt","calt","swsh","case","cswh","titl","hist"} | {f"ss{i:02d}" for i in range(1,21)} | {f"cv{i:02d}" for i in range(1,100)}
+def grid_pen(pen):
+    return TransformPen(pen, (GRID, 0, 0, -GRID, 0, BASE_Y * GRID))
 
-def strip_substitutions(font, gone):
-    """Ligatures that contain a replaced glyph, and stylistic alternates of one, would bring the old design back."""
-    gsub = font["GSUB"].table
-    alt_lookups = {i for fr in gsub.FeatureList.FeatureRecord if fr.FeatureTag in ALT_TAGS for i in fr.Feature.LookupListIndex}
-    removed = 0
-    for li, lk in enumerate(gsub.LookupList.Lookup):
-        for st in lk.SubTable:
-            if lk.LookupType == 7: st = st.ExtSubTable
-            t = getattr(st, "LookupType", lk.LookupType)
-            if t == 4:
-                for first in list(st.ligatures):
-                    keep = [l for l in st.ligatures[first] if first not in gone and not any(c in gone for c in l.Component)]
-                    removed += len(st.ligatures[first]) - len(keep)
-                    if keep: st.ligatures[first] = keep
-                    else: del st.ligatures[first]
-            elif t in (1, 3) and li in alt_lookups:
-                m = st.mapping if t == 1 else st.alternates
-                for g in [g for g in m if g in gone]: del m[g]; removed += 1
-    return removed
+def svg_path(markup):
+    """A pathops Path from SVG elements written on the 24 grid."""
+    doc = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' + markup + "</svg>"
+    return to_path(lambda pen: SVGPath.fromstring(doc.encode()).draw(grid_pen(pen)))
 
-def subset_latin(src, dst):
-    from fontTools import subset
-    opts = subset.Options(); opts.flavor = "woff2"; opts.layout_features = ["*"]; opts.name_IDs = ["*"]; opts.notdef_outline = True
-    f = TTFont(src); sub = subset.Subsetter(opts)
-    sub.populate(unicodes=list(range(0x20, 0x7F)) + list(range(0xA0, 0x180)) + [0x131, 0x152, 0x153, 0x2BB, 0x2BC, 0x2C6, 0x2DA, 0x2DC]
-                 + list(range(0x2000, 0x2070)) + [0x2074, 0x20AC, 0x2116, 0x2122, 0x2190, 0x2191, 0x2192, 0x2193, 0x2212, 0x2215, 0x265E, 0xFEFF, 0xFFFD])
-    sub.subset(f); f.flavor = "woff2"; f.save(dst)
+def hairline(markup, w):
+    return stroke(svg_path(markup), w * GRID)
 
-def drop_features(font, tags):
-    for t in ("GSUB",):
-        tb = font[t].table
-        for fr in tb.FeatureList.FeatureRecord:
-            if fr.FeatureTag in tags: fr.Feature.LookupListIndex = []; fr.Feature.LookupCount = 0
+def place(p):
+    """Centre a mark between equal sidebearings and return (glyph, advance)."""
+    x0, y0, x1, y1 = p.bounds
+    p = to_path(lambda pen: p.draw(TransformPen(pen, (1, 0, 0, 1, SIDE - x0, 0))))
+    return to_glyph(p), round(x1 - x0 + 2 * SIDE)
 
-def knight(font, top, stroke):
-    """The KNGHT knight from src/assets/knght-chess.svg: filled silhouette, two plinth bars, the eye cut out."""
-    s = top / 19.9                                   # svg y 1.6 .. 21.5 -> 0 .. top
-    T = (s, 0, 0, -s, -3.9 * s + 40, 21.5 * s + stroke / 2)
-    def P(): return pathops.Path()
-    body = P(); parse_path(KNIGHT_D, TransformPen(body.getPen(), T))
-    shapes = [body]
-    for y, x0, x1 in ((19.4, 5.6, 18.2), (21.5, 4.6, 19.2)):
-        r = P(); pen = TransformPen(r.getPen(), T); h = stroke / s / 2
-        pen.moveTo((x0, y - h)); pen.lineTo((x1, y - h)); pen.lineTo((x1, y + h)); pen.lineTo((x0, y + h)); pen.closePath()
-        shapes.append(r)
-    eye = P(); pen = TransformPen(eye.getPen(), T)
-    cx, cy, rr = 14.6, 8.4, 0.62
-    k = 0.5523 * rr
-    pen.moveTo((cx + rr, cy)); pen.curveTo((cx + rr, cy + k), (cx + k, cy + rr), (cx, cy + rr))
-    pen.curveTo((cx - k, cy + rr), (cx - rr, cy + k), (cx - rr, cy)); pen.curveTo((cx - rr, cy - k), (cx - k, cy - rr), (cx, cy - rr))
-    pen.curveTo((cx + k, cy - rr), (cx + rr, cy - k), (cx + rr, cy)); pen.closePath()
-    u = pathops.op(shapes[0], shapes[1], pathops.PathOp.UNION)
-    u = pathops.op(u, shapes[2], pathops.PathOp.UNION)
-    u = pathops.op(u, eye, pathops.PathOp.DIFFERENCE)
-    pen = TTGlyphPen(None); u.draw(Cu2QuPen(pen, 1.0, reverse_direction=True))
-    g = pen.glyph(); adv = round(15.4 * s + 80)
-    return g, adv
+def chess_pieces(w):
+    """{name: (filled, outline)} for each piece in the KNGHT chess sprite."""
+    svg = open(os.path.join(REPO, "src", "assets", "knght-chess.svg")).read()
+    svg = re.sub(r"<!--.*?-->", "", svg, flags=re.S)
+    root = ET.fromstring(svg); ns = "{http://www.w3.org/2000/svg}"
+    out = {}
+    for sym in root.iter(ns + "symbol"):
+        name = sym.get("id").replace("knght-", "")
+        parts = {"outline": [], "details": [], "plinth": [], "eye": []}
+        for el in sym:
+            cls = (el.get("class") or "").replace("knght-", "")
+            if cls in parts:
+                attrs = " ".join(f'{k}="{v}"' for k, v in el.attrib.items() if k in ("d", "cx", "cy", "r"))
+                parts[cls].append(f"<{el.tag.replace(ns, '')} {attrs}/>")
+        body_path = svg_path("".join(parts["outline"])); body_path.fillType = pathops.FillType.EVEN_ODD
+        body_line = stroke(body_path, w * GRID)
+        details = hairline("".join(parts["details"]), w) if parts["details"] else None
+        plinth = hairline("".join(parts["plinth"]), w)
+        eye = svg_path("".join(parts["eye"]).replace('r=".6"', 'r=".72"')) if parts["eye"] else None
+        filled = union(clean(body_path), body_line, plinth)
+        if details: filled = minus(filled, details)
+        if eye: filled = minus(filled, eye)
+        line = union(body_line, plinth, *( [details] if details else [] ), *( [eye] if eye else [] ))
+        out[name] = (filled, line)
+    return out
 
-def add_glyph(font, name, uni, glyph, adv):
-    order = font.getGlyphOrder() + [name]
-    font.setGlyphOrder(order); font["glyf"].glyphOrder = order
-    put(font, name, glyph, adv)
-    for t in font["cmap"].tables:
-        if t.isUnicode(): t.cmap[uni] = name
-    font["maxp"].numGlyphs = len(order)
-    if "post" in font and font["post"].formatType == 2: font["post"].extraNames = getattr(font["post"], "extraNames", [])
+def sigils():
+    ts = open(os.path.join(REPO, "src", "lib", "sigils.ts")).read()
+    return dict(re.findall(r"""['"]?([a-z-]+)['"]?:\s*'(<[^']+)'""", ts))
 
-def rename(font, style, sources):
-    fam = "KNGHT Order"; ps = "KNGHTOrder-" + style
-    n = font["name"]
+def dial_markup():
+    """The seven-layer dial: seven arcs with a gap between each."""
+    r, gap, out = 8.5, 9, []
+    for i in range(7):
+        a0 = math.radians(-90 + i * 360 / 7 + gap / 2); a1 = math.radians(-90 + (i + 1) * 360 / 7 - gap / 2)
+        x0, y0 = 12 + r * math.cos(a0), 12 + r * math.sin(a0); x1, y1 = 12 + r * math.cos(a1), 12 + r * math.sin(a1)
+        out.append(f'<path d="M{x0:.3f} {y0:.3f}A{r} {r} 0 0 1 {x1:.3f} {y1:.3f}"/>')
+    return "".join(out) + '<circle cx="12" cy="12" r="1.1"/>'
+
+def seal_markup():
+    """A wax seal: a scalloped rim, an inner ring and a K."""
+    n, r0, r1, d = 14, 8.4, 9.6, []
+    for i in range(n + 1):
+        a = math.radians(i * 360 / n - 90); am = math.radians((i - .5) * 360 / n - 90)
+        x, y = 12 + r0 * math.cos(a), 12 + r0 * math.sin(a)
+        if i == 0: d.append(f"M{x:.3f} {y:.3f}")
+        else: d.append(f"Q{12 + r1 * math.cos(am):.3f} {12 + r1 * math.sin(am):.3f} {x:.3f} {y:.3f}")
+    return (f'<path d="{"".join(d)}Z"/><circle cx="12" cy="12" r="5.6"/>'
+            '<path d="M10.3 9.3v5.4M10.3 12.4l3.6-3.1M11.5 11.3l2.6 3.4"/>')
+
+BRAND = {
+    # The sword from the hero film, point down, striking into the stone.
+    "sword": '<path d="M12 21.4l-1.25-1.9V8.6h2.5v10.9z"/><path d="M7.2 8.6h9.6M12 8.6V4.7M12 10.4v7.4"/><circle cx="12" cy="3.6" r="1.05"/>',
+    "seal": seal_markup(),
+    "shield": '<path d="M12 2.8 19 5.4v6.1c0 4.6-3 7.9-7 9.7-4-1.8-7-5.1-7-9.7V5.4z"/><path d="M8.2 13.2 12 9.8l3.8 3.4"/>',
+    "crown": '<path d="M4.6 18.6h14.8M5.6 18.6 4.2 8.2l4.5 4.1L12 5.2l3.3 7.1 4.5-4.1-1.4 10.4"/><path d="M5.2 21h13.6"/>',
+    "crystal": '<path d="M8 4h8l4 5-8 12L4 9z"/><path d="M4 9h16M10 9l2 12 2-12M8 4l2 5 2-5 2 5 2-5"/>',
+    "dial": dial_markup(),
+    "divider": '<path d="M-6 12h14.6M15.4 12H30"/><path d="M12 9.6 14.4 12 12 14.4 9.6 12z"/>',
+}
+
+LAYERS = ["lore", "law", "language", "map", "ground", "artifacts", "machinery"]
+WORLDS = {"restoration-medical": "restoration", "black-lotus-coffee": "blacklotus", "castleblack-spirits": "castleblack",
+          "lisa-dang-immigration-law": "lisadang", "lorelyns": "lorelyns", "rum-raiders-ring": "rumraiders",
+          "toronto-beauty": "torontobeauty", "wellfit-social-club": "wellfit", "art-colouring": "artcolouring"}
+CHESS = ["king", "queen", "rook", "bishop", "knight", "pawn"]
+
+def marks(w):
+    """[(glyph name, codepoint, ligature name, path)] for every KNGHT glyph, at hairline weight w."""
+    out = []
+    pieces = chess_pieces(w)
+    for i, n in enumerate(CHESS):
+        filled, line = pieces[n]
+        out.append((f"chess.{n}", 0x265A + i, n, filled))
+        out.append((f"chess.{n}.line", 0x2654 + i, n + "-line", line))
+    sg = sigils()
+    for i, n in enumerate(LAYERS):
+        out.append((f"layer.{n}", 0xE001 + i, n, hairline(sg[n], w)))
+    for i, (slug, short) in enumerate(WORLDS.items()):
+        out.append((f"world.{short}", 0xE011 + i, short, hairline(sg[slug], w)))
+    for i, (n, m) in enumerate(BRAND.items()):
+        out.append((f"mark.{n}", 0xE021 + i, n, hairline(m, w)))
+    return out
+
+# ---------------------------------------------------------------- build
+
+def rename(font, family, style, weight):
+    n = font["name"]; italic = "Italic" in style
+    legacy_family = family if weight == 400 else f"{family} Medium"
+    legacy_style = "Italic" if italic else "Regular"
+    full = f"{family} {style}".replace(" Regular", "")
+    ps = (family.replace(" ", "") + "-" + style.replace(" ", ""))
     n.names = [r for r in n.names if r.nameID not in (1, 2, 3, 4, 5, 6, 16, 17, 21, 22, 25)]
-    for nid, val in ((1, fam), (2, style), (3, f"1.000;KNGHT;{ps}"), (4, f"{fam} {style}" if style != "Regular" else fam),
-                     (5, "Version 1.000"), (6, ps)):
-        n.setName(val, nid, 3, 1, 0x409); n.setName(val, nid, 1, 0, 0)
-    copy = "; ".join(sources) + ". Modifications copyright 2026 KNGHT."
-    n.setName(copy, 0, 3, 1, 0x409); n.setName(copy, 0, 1, 0, 0)
-    lic = "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://openfontlicense.org"
-    n.setName(lic, 13, 3, 1, 0x409); n.setName("https://openfontlicense.org", 14, 3, 1, 0x409)
-    desc = "A hybrid serif built for KNGHT from Cormorant Garamond, Ibarra Real Nova and Instrument Serif."
-    n.setName(desc, 10, 3, 1, 0x409)
-    font["OS/2"].achVendID = "KNGT"
-    font["head"].fontRevision = 1.0
+    vals = {1: legacy_family, 2: legacy_style, 3: f"2.000;KNGHT;{ps}", 4: full, 5: "Version 2.000", 6: ps}
+    if weight != 400: vals.update({16: family, 17: style})
+    for nid, val in vals.items():
+        n.setName(val, nid, 3, 1, 0x409)
+    n.names = [r for r in n.names if r.platformID == 3]
+    n.setName("Copyright 2015 The Cormorant Project Authors (github.com/CatharsisFonts/Cormorant). Modifications copyright 2026 KNGHT.", 0, 3, 1, 0x409)
+    n.setName("Cormorant Garamond with engraved capitals, the KNGHT chess set, the seven layers, the nine worlds and the KNGHT marks.", 10, 3, 1, 0x409)
+    n.setName("This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://openfontlicense.org", 13, 3, 1, 0x409)
+    n.setName("https://openfontlicense.org", 14, 3, 1, 0x409)
+    os2 = font["OS/2"]; os2.achVendID = "KNGT"; os2.usWeightClass = weight
+    os2.fsSelection = (os2.fsSelection & ~0x61) | (0x01 if italic else 0x40)
+    font["head"].macStyle = 0x02 if italic else 0
+    font["head"].fontRevision = 2.0
+    if "STAT" in font: del font["STAT"]
 
-def build(style, base_file, donor_file, pick, donor_scale, extra_kern_scale, drop):
-    base = TTFont(os.path.join(SRC, base_file)); donor = TTFont(os.path.join(SRC, donor_file))
-    for f in (base, donor): dehint(f)
-    bcm, dcm = base.getBestCmap(), donor.getBestCmap()
-    # decompose every base composite first, so nothing still points at an outline we replace
-    gs = base.getGlyphSet()
-    for g in base.getGlyphOrder():
-        gl = base["glyf"][g]
-        if gl.isComposite():
-            rec = DecomposingRecordingPen(gs); gs[g].draw(rec); pen = TTGlyphPen(None); rec.replay(pen)
-            ng = pen.glyph(); base["glyf"][g] = ng; ng.recalcBounds(base["glyf"])
-    gone = {}
-    for u, bname in bcm.items():
-        if u in dcm and pick(u):
-            glyph, adv = outline(donor, dcm[u], donor_scale)
-            put(base, bname, glyph, adv); gone[bname] = dcm[u]
-    # kerning: drop the base pairs for replaced glyphs, bring the donor's pairs for them
-    strip_kerning(base, set(gone))
-    d2b = {dcm[u]: bcm[u] for u in bcm if u in dcm}
-    pairs = {}
-    for (l, r), v in flat_kerning(donor).items():
-        if l in d2b and r in d2b and (d2b[l] in gone or d2b[r] in gone):
-            pairs[(d2b[l], d2b[r])] = round(v * extra_kern_scale)
-    pairs = {k: v for k, v in pairs.items() if v}
-    add_kerning(base, pairs)
-    print(style, "substitutions removed:", strip_substitutions(base, set(gone)))
-    drop_features(base, drop)
-    kg, kadv = knight(base, 700, 46 if style == "Regular" else 42)
-    add_glyph(base, "knght", 0x265E, kg, kadv)
-    rename(base, style, [
-        "Copyright 2015 The Cormorant Project Authors (github.com/CatharsisFonts/Cormorant)",
-        "Copyright 2007 The Ibarra Real Nova Project Authors (github.com/googlefonts/ibarrareal)" if style == "Regular"
-        else "Copyright 2022 The Instrument Serif Project Authors (github.com/Instrument/instrument-serif)"])
-    if style == "Italic":
-        base["OS/2"].fsSelection = (base["OS/2"].fsSelection & ~0x40) | 0x01; base["head"].macStyle = 0x02
-    ttf = os.path.join(OUT, f"KNGHTOrder-{style}.ttf"); base.save(ttf)
-    subset_latin(ttf, os.path.join(OUT, f"KNGHTOrder-{style}.latin.woff2"))
-    print(style, "replaced", len(gone), "glyphs;", len(pairs), "kerning pairs carried over")
+def subset_web(src, dst):
+    opts = subset.Options(); opts.flavor = "woff2"; opts.layout_features = ["*"]; opts.name_IDs = ["*"]; opts.notdef_outline = True
+    f = TTFont(src); s = subset.Subsetter(opts)
+    s.populate(unicodes=list(range(0x20, 0x7F)) + list(range(0xA0, 0x180)) + [0x131, 0x152, 0x153, 0x2BB, 0x2BC, 0x2C6, 0x2DA, 0x2DC]
+               + list(range(0x2000, 0x2070)) + [0x2074, 0x20AC, 0x2116, 0x2122, 0x2190, 0x2191, 0x2192, 0x2193, 0x2212, 0x2215, 0xFEFF, 0xFFFD]
+               + list(range(0x2654, 0x2660)) + list(range(0xE001, 0xE030)))
+    s.subset(f); f.flavor = "woff2"; f.save(dst)
 
-is_cap = lambda u: unicodedata.category(chr(u)) == "Lu"
-is_lower = lambda u: unicodedata.category(chr(u)) == "Ll" and u not in (0xDF,)
-build("Regular", "CormorantGaramond-Medium.ttf", "IbarraRealNova-Regular.ttf", is_cap, 625 / 673, 625 / 673, set())
-build("Italic", "CormorantGaramond-MediumItalic.ttf", "InstrumentSerif-Italic.ttf", is_lower, 418 / 516, 418 / 516, set())
+def build(src, style, weight, engraved_default, stem, t, w):
+    f = TTFont(os.path.join(SRC, src)); dehint(f); decompose_all(f)
+    cm = f.getBestCmap()
+    caps = {cm[u] for u in cm if unicodedata.category(chr(u)) == "Lu"}
+    family_caps = sorted(cap_family(f, caps), key=f.getGlyphID)
+    alt_suffix = ".plain" if engraved_default else ".engraved"
+    alts = {}
+    gdef = f["GDEF"].table.GlyphClassDef.classDefs if "GDEF" in f and f["GDEF"].table.GlyphClassDef else {}
+    for g in family_caps:
+        plain = glyph_path(f, g); cut = engrave(plain, stem, t); adv = f["hmtx"][g][0]
+        set_glyph(f, g, to_glyph(cut if engraved_default else plain), adv)
+        if g in caps:
+            a = g + alt_suffix; alts[g] = a
+            set_glyph(f, a, to_glyph(plain if engraved_default else cut), adv, gdef.get(g, 1))
+    clone_kerning(f, alts)
+    gsub = f["GSUB"].table
+    ss = add_lookup(gsub, otl.buildLookup([otl.buildSingleSubstSubtable(alts)]))
+    add_feature(f, "ss01", ss, "Plain capitals" if engraved_default else "Engraved capitals")
+    ligs = {}
+    colon = cm[ord(":")]
+    for name, uni, lig, p in marks(w):
+        g, adv = place(p); set_glyph(f, name, g, adv, 1)
+        for tb in f["cmap"].tables:
+            if tb.isUnicode() and (tb.format != 4 or uni <= 0xFFFF): tb.cmap[uni] = name
+        seq = [colon] + [cm[ord(c)] for c in lig] + [colon]
+        ligs[tuple(seq)] = name
+    lk = add_lookup_first(gsub, otl.buildLookup([otl.buildLigatureSubstSubtable(ligs)]))
+    append_to_feature(f, "liga", lk)
+    rename(f, "KNGHT Order", style, weight)
+    ttf = os.path.join(OUT, f"KNGHTOrder-{style.replace(' ', '')}.ttf"); f.save(ttf)
+    subset_web(ttf, ttf.replace(".ttf", ".latin.woff2"))
+    print(f"{style}: {len(alts)} capitals engraved{' by default' if engraved_default else ' under ss01'}, {len(ligs)} KNGHT glyphs")
+
+if __name__ == "__main__":
+    os.makedirs(OUT, exist_ok=True)
+    #     source file                         style            weight engraved  stem  cut  hairline
+    build("CormorantGaramond-Regular.ttf",      "Regular",       400, True,     62,   7,   1.35)
+    build("CormorantGaramond-Italic.ttf",       "Italic",        400, True,     55,   6.5, 1.35)
+    build("CormorantGaramond-Medium.ttf",       "Medium",        500, False,    77,   8,   1.6)
+    build("CormorantGaramond-MediumItalic.ttf", "Medium Italic", 500, False,    68,   7.5, 1.6)
