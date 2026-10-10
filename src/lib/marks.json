@@ -227,9 +227,9 @@
     "score-your-world",
     "chapter-4"
    ],
-   "means": "Score your world, the self-check (chapter IV)",
+   "means": "Score your world, the self-check (chapter IV): an astrolabe, the instrument for taking a reading of where you stand",
    "source": "public/assets/js/chapters.js",
-   "svg": "<path d=\"M3.46 13.23A8.6 8.6 0 0 1 3.88 11.37M4.72 9.62A8.6 8.6 0 0 1 5.91 8.13M7.43 6.91A8.6 8.6 0 0 1 9.15 6.09M11.05 5.65A8.6 8.6 0 0 1 12.95 5.65M14.85 6.09A8.6 8.6 0 0 1 16.57 6.91M18.09 8.13A8.6 8.6 0 0 1 19.28 9.62M20.12 11.37A8.6 8.6 0 0 1 20.55 13.23\"/><path d=\"M12 14.20l4.6-5.4M4.4 18.40h15.2\"/><circle cx=\"12\" cy=\"14.2\" r=\"1.3\"/>"
+   "svg": "<circle cx=\"12\" cy=\"13.6\" r=\"7.8\"/><circle cx=\"12\" cy=\"2.9\" r=\"1.2\"/><path d=\"M10.2 6.1 12 4.1l1.8 2\"/><circle cx=\"12\" cy=\"11.6\" r=\"4.2\"/><path d=\"M6.5 19.1 17.5 8.1M6.9 17.3l1.8 1.8M15.3 8.5l1.8 1.8\"/><circle cx=\"12\" cy=\"13.6\" r=\".9\"/>"
   },
   {
    "id": "verdict",
