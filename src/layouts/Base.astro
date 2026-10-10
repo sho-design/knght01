@@ -23,6 +23,7 @@ const {
     { href: '/#layers', label: 'The layers' },
     { href: '/process/', label: 'How it works' },
     { href: '/rules/', label: 'Rules' },
+    { href: '/about/', label: 'About' },
   ],
 } = Astro.props;
 const url = `https://knght.com/${path}`;
@@ -81,8 +82,8 @@ const url = `https://knght.com/${path}`;
   <div class="wrap">
     <Social />
     <div class="footer__base"><span>&copy; <span data-year>2026</span> KNGHT, Toronto. Wednesday and Friday, 1 to 5 pm.</span><span>{footer === 'home'
-      ? <Fragment><a href="/privacy/">Privacy</a> · <a href="/accessibility/">Accessibility</a> · <a href="/">knght.com</a></Fragment>
-      : <Fragment><a href="mailto:sho@knght.com">sho@knght.com</a> · <a href="/privacy/">Privacy</a> · <a href="/accessibility/">Accessibility</a></Fragment>}</span></div>
+      ? <Fragment><a href="/about/">About</a> · <a href="/privacy/">Privacy</a> · <a href="/accessibility/">Accessibility</a> · <a href="/">knght.com</a></Fragment>
+      : <Fragment><a href="mailto:sho@knght.com">sho@knght.com</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a> · <a href="/accessibility/">Accessibility</a></Fragment>}</span></div>
   </div>
 </footer>
 

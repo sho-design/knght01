@@ -411,6 +411,10 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
 .wcta .wrap{display:flex;flex-direction:column;align-items:center;gap:26px}
 .wcta h2{font-size:clamp(2.8rem,6.4vw,6.4rem)}
 .wcta p{margin:0;color:var(--ash);max-width:46ch}
+.wcta .wrules{width:min(100%,880px);text-align:left}
+/* About: the section headings are whole sentences, so they run a size down beside the text; the codex numerals run to VIII. */
+@media (min-width:901px){.aboutpage .wsec__h{font-size:clamp(2.6rem,5vw,4.6rem)}}
+.chapters--codex .chapter{grid-template-columns:72px minmax(0,1fr)}
 @media (max-width:900px){
   .whero__grid,.wsec__grid,.wrules li{grid-template-columns:minmax(0,1fr)}
   .whero__plate{max-width:460px}

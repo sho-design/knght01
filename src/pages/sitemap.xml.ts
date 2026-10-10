@@ -17,6 +17,7 @@ export const GET: APIRoute = async ({ site }) => {
     ['/llms.txt', 'public/llms.txt'],
     ['/book/', 'src/pages/book/index.astro'],
     ['/process/', 'src/pages/process.astro'],
+    ['/about/', 'src/pages/about/index.astro'],
     ['/rules/', 'src/pages/rules/index.astro'],
     ['/check/', 'src/pages/check.astro'],
     ['/reply/', 'src/pages/reply.astro'],

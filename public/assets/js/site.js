@@ -502,7 +502,9 @@
       compass: '<circle cx="12" cy="12" r="9"/><path d="M12 5.5l2 6.5-2 6.5-2-6.5z"/><path d="M12 1.5v2M12 20.5v2M1.5 12h2M20.5 12h2"/>',
       seal: '<path d="M5 3h11.5a2.5 2.5 0 0 1 2.5 2.5V8M5 3a2 2 0 0 0-2 2v1h2M5 3v15"/><path d="M8 7.5h7M8 10.5h5"/><circle cx="15" cy="17" r="4.2"/><path d="M15 15.2l.6 1.2 1.3.2-.95.9.22 1.3-1.17-.62-1.17.62.22-1.3-.95-.9 1.3-.2z"/>',
       chest: '<path d="M4 11.2a8 5.2 0 0 1 16 0M4 11.2h16v9.4H4zM4 14.4h16M10.8 12.8h2.4v3.4h-2.4z"/>',
-      astrolabe: '<circle cx="12" cy="13.6" r="7.8"/><circle cx="12" cy="2.9" r="1.2"/><path d="M10.2 6.1 12 4.1l1.8 2"/><circle cx="12" cy="11.6" r="4.2"/><path d="M6.5 19.1 17.5 8.1M6.9 17.3l1.8 1.8M15.3 8.5l1.8 1.8"/><circle cx="12" cy="13.6" r=".9"/>'
+      astrolabe: '<circle cx="12" cy="13.6" r="7.8"/><circle cx="12" cy="2.9" r="1.2"/><path d="M10.2 6.1 12 4.1l1.8 2"/><circle cx="12" cy="11.6" r="4.2"/><path d="M6.5 19.1 17.5 8.1M6.9 17.3l1.8 1.8M15.3 8.5l1.8 1.8"/><circle cx="12" cy="13.6" r=".9"/>',
+      // About: the page about KNGHT itself wears the KNGHT mark, the knght from the chess set (marks.json "knght").
+      knght: '<path d="M7 19.4Q5.6 18.9 4.9 17.4Q5.8 17.5 6.4 16.8Q5 16 4.7 14.2Q5.6 14.5 6.3 13.9Q5 12.8 5 10.9Q5.9 11.4 6.6 11Q5.8 9.6 6.1 7.9Q6.9 8.6 7.6 8.4Q7.3 6.8 8.1 5.4Q8.6 6.2 9.5 6.2L10.8 2.4L12.1 4.3C12.3 3.3 13.4 3.0 14.8 3.55Q14.05 4.0 13.9 4.8Q15.05 4.25 15.9 5.05Q15.15 5.35 14.85 5.95C16.52 6.90 17.79 8.33 18.6 10.6C19 11.8 18.6 13.2 17.3 13.2L15.6 12.7C14.6 12.4 13.8 12.9 13.8 13.9C14 15.9 16 17.4 16.9 19.4Z"/>'
     };
     const sigil = (k) => `<svg class="mnav__sigil" viewBox="0 0 24 24" aria-hidden="true">${SIGILS[k]}</svg>`;
     const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
@@ -525,7 +527,8 @@
         ['Why lawyers can’t say “specialist”', 'rules/lawyers-and-the-word-specialist/']] },
       { label: 'Score your world', sigil: 'astrolabe', href: '#score' },
       { label: 'Free tools', sigil: 'chest', all: ['All free tools', 'armoury/'], items: [
-        ['Claim checker', 'check/'], ['Reply scribe', 'reply/'], ['Licence keep', 'keep/'], ['Plain-speech test', 'plain/'], ['The one-line forge', 'line/'], ['The cartographer', 'cartographer/'], ['The herald', 'herald/'], ['Waymarks', 'waymarks/'], ['The leak', 'leak/'], ['Your sigil', 'sigil/']] }
+        ['Claim checker', 'check/'], ['Reply scribe', 'reply/'], ['Licence keep', 'keep/'], ['Plain-speech test', 'plain/'], ['The one-line forge', 'line/'], ['The cartographer', 'cartographer/'], ['The herald', 'herald/'], ['Waymarks', 'waymarks/'], ['The leak', 'leak/'], ['Your sigil', 'sigil/']] },
+      { label: 'About', sigil: 'knght', href: 'about/' }
     ];
     const link = ([label, p], cls, n) => `<li><a class="${cls}" href="${to(p)}"${here(p) ? ' aria-current="page"' : ''}>${n ? `<span class="mnav__num">${n}</span>` : ''}${label}</a></li>`;
     const group = (m, i) => {

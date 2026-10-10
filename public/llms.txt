@@ -58,6 +58,7 @@ Each world is built in this order. No layer is built before Lore.
 - [Artifacts](https://knght.com/layers/artifacts/): layer 6 of 7, what it is, what we make, what we check it against and examples from the worlds.
 - [Machinery](https://knght.com/layers/machinery/): layer 7 of 7, what it is, what we make, what we check it against and examples from the worlds.
 - [How a world gets built](https://knght.com/process/): the call, the Verdict, the Build, launch and the Keep.
+- [About KNGHT](https://knght.com/about/): the founder on how every world is built in conversation, and the eight rules KNGHT keeps.
 - [Rules](https://knght.com/rules/): short reads on marketing rules for regulated categories.
 - [Claim checker](https://knght.com/check/): paste an ad, label or headline and see which words Ontario regulators (CPSO, RCDSO, Law Society, AGCO, CFIA) or the Competition Act are likely to question, with a safer way to say it. Free, runs in the browser.
 - [Reply scribe](https://knght.com/reply/): paste a Google review, pick the stars and your category, and get a reply that thanks the reviewer, takes it offline and never confirms they were a patient or client. Flags risky edits live. Free, runs in the browser.

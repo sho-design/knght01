@@ -1,0 +1,135 @@
+---
+// About: the essence of KNGHT, told by its founder. The only page on the site that names him.
+// Keep his name here and in this page's JSON-LD only: not in the nav, the footers, llms.txt or any other schema.
+// The eight rules are word for word from the CODEX array in public/assets/js/site.js, and the sayings from SAYINGS.
+import Base from '../../layouts/Base.astro';
+import { SETTINGS } from '../../lib/settings';
+
+const sameAs = Object.values(SETTINGS.social).filter((u) => u && /^https:\/\//.test(u));
+const title = 'About KNGHT: Sergio Ho, founder and creative director';
+const description = 'Sergio Ho, founder and creative director of KNGHT, a brand worldbuilding studio in Toronto, on worldbuilding conversations and the eight rules KNGHT keeps.';
+const knght = { '@type': 'Organization', name: 'KNGHT', url: 'https://knght.com/' };
+const ld = [{
+  '@context': 'https://schema.org', '@type': 'AboutPage', name: title, url: 'https://knght.com/about/', description,
+  mainEntity: {
+    ...knght,
+    description: 'A brand worldbuilding studio in Toronto, Ontario.',
+    email: 'sho@knght.com',
+    address: { '@type': 'PostalAddress', addressLocality: 'Toronto', addressRegion: 'ON', addressCountry: 'CA' },
+    ...(sameAs.length ? { sameAs } : {}),
+    founder: { '@type': 'Person', name: 'Sergio Ho', jobTitle: 'Founder and creative director', worksFor: knght },
+  },
+}];
+
+const CODEX = [
+  ['I', 'No layer is built before Lore.', 'Every other layer reads from it.'],
+  ['II', 'Every word is checked against your regulator.', 'Know your regulator before your font.'],
+  ['III', 'We say what we can prove.', 'Every promise in the story has to be one the business can keep.'],
+  ['IV', 'Strategy first, then the sword.', 'Every world starts with a Verdict.'],
+  ['V', 'AI is the squire, not the knght.', 'AI drafts. A person makes the call.'],
+  ['VI', 'We took the I out of knight and made it a blade.', 'The I in the mark is the blade. It is not part of the name.'],
+  ['VII', 'We only show work we built.', 'Open a world to see the actual work.'],
+  ['VIII', 'If we cannot help, we say so.', ''],
+];
+const SAYINGS = ['Sell the care, not the cure.', 'The price is the price.', 'Every sign is a signature.', 'Systems keep promises when people are busy.', 'Earn the second visit.', 'What you leave out matters.'];
+const WORLDS = [
+  ['Restoration Medical', 'restoration-medical'], ['Black Lotus Coffee', 'black-lotus-coffee'], ['Castleblack Spirits', 'castleblack-spirits'],
+  ['Toronto Beauty', 'toronto-beauty'], ['Lorelyns Gourmet Desserts', 'lorelyns'], ['Rum Raiders Ring', 'rum-raiders-ring'],
+  ['Lisa Dang Immigration Law', 'lisa-dang-immigration-law'], ['Wellfit Social Club', 'wellfit-social-club'], ['Art Colouring', 'art-colouring'],
+];
+---
+<Base title={title} description={description} path="about/" ld={ld} bodyClass="worldpage aboutpage">
+  <section class="whero">
+    <div class="wrap">
+      <p class="eyebrow">About KNGHT</p>
+      <h1 class="display book__title" style="margin-top:24px">Who I am at my core <br>is who <em>KNGHT is.</em></h1>
+      <p class="for__answer">I&rsquo;m Sergio Ho, founder and creative director of KNGHT, a brand worldbuilding studio in Toronto, Ontario. I lead every call and every Verdict.</p>
+      <p class="for__answer">What I believe is what KNGHT believes. You will find it in two places: our worldbuilding conversations, and the rules we keep.</p>
+    </div>
+  </section>
+
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <div class="wsec__aside"><p class="eyebrow">In conversation</p><h2 class="display wsec__h" data-split>Every world is built <br><em>in conversation.</em></h2></div>
+      <div>
+        <div class="wsec__text" data-reveal>
+          <p>KNGHT does not hand over a logo and disappear. A world starts with plain questions.</p>
+          <p><em>What do you sell? <br>Who do you sell it to? <br>Who regulates you?</em></p>
+        </div>
+        <ul class="wrules" data-reveal style="margin-top:32px">
+          <li><b><a class="link" href="/book/">The first call</a></b><span>We look at your site and your category together, live, and I tell you what I see.</span></li>
+          <li><b><a class="link" href="/process/">The Verdict</a></b><span>Every layer is scored against your buyer and your regulator. Then a readout call walks you through it.</span></li>
+          <li><b><a class="link" href="/layers/lore/">Lore</a></b><span>Who are you? Who are you for? Who do you stand against? What are you called? Without clear answers, every later decision gets argued from scratch, and the brand drifts toward whoever touched it last.</span></li>
+          <li><b>At your place</b><span>I meet clients at their place. Calls and visits are on Wednesday and Friday, 1 to 5 pm, Toronto time.</span></li>
+          <li><b>After launch</b><span>In <a class="link" href="/process/">the Keep</a>, KNGHT runs the world. It grows without losing its rules.</span></li>
+          <li><b>In between</b><span>Paste a line into the <a class="link" href="/check/">claim checker</a> and send it. I read it and reply within one business day.</span></li>
+        </ul>
+        <div class="wsec__text" data-reveal style="margin-top:48px">
+          <p>Can everyone on your team say who you serve, and who you stand against, in one sentence? If not, that is where we start.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <div class="wsec__aside"><p class="eyebrow">The Codex</p><h2 class="display wsec__h" data-split>Eight rules <br><em>we keep.</em></h2></div>
+      <div>
+        <div class="wsec__text" data-reveal>
+          <p>Every world gets a codex in Lore: the rules every other layer follows. KNGHT has one too.</p>
+          <p>These eight rules are what I believe, and KNGHT keeps them.</p>
+        </div>
+        <ol class="chapters chapters--codex" style="margin-top:32px">{CODEX.map(([n, rule, gloss]) => (
+          <li class="chapter" data-reveal><span class="chapter__n">{n}</span><h3>{rule}</h3>{gloss && <p>{gloss}</p>}</li>
+        ))}</ol>
+        <div class="wsec__text" data-reveal style="margin-top:48px">
+          <p>A few more I hold to.</p>
+          <p><em set:html={SAYINGS.join(' <br>')} /></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <div class="wsec__aside"><p class="eyebrow">The studio</p><h2 class="display wsec__h" data-split>Where KNGHT <br><em>works.</em></h2></div>
+      <div class="wsec__text" data-reveal>
+        <p>KNGHT builds brand worlds for businesses that can&rsquo;t afford to get it wrong: clinics, dental clinics, medspas, law firms, spirits, and food and drink. KNGHT works where one wrong word can cost a licence and one weak launch can cost a year.</p>
+        <p>One world covers the whole business: the name, the voice, the website, the space, the print and the booking systems. Everything is checked against your regulator&rsquo;s rules.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wsec">
+    <div class="wrap wsec__grid">
+      <div class="wsec__aside"><p class="eyebrow">The worlds</p><h2 class="display wsec__h" data-split>Nine worlds. <br><em>I built every one.</em></h2></div>
+      <div class="wsec__text" data-reveal>
+        <p>{WORLDS.map(([name, slug]) => <Fragment><span style="white-space:nowrap"><a class="link" href={`/worlds/${slug}/`}>{name}</a>.</span> </Fragment>)}KNGHT still runs some of them.</p>
+        <p>Restoration Medical and Lisa Dang Immigration Law have all seven layers built. I was on the founding team of Black Lotus Coffee, and its Lore was built from day one.</p>
+        <p>Castleblack Spirits shows what Lore does. Its first brand leaned on pirate lore that did not land at home. The world was rebuilt around Jamaican heritage and flavour, with the same depth of story and none of the baggage.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wcta">
+    <div class="wrap">
+      <p class="eyebrow">The free call · 30 minutes</p>
+      <h2 class="display" data-split>Start with a <br><em class="sheen">conversation.</em></h2>
+      <p>Tell me what you&rsquo;re building, and I&rsquo;ll show you what to fix first. The call is free. No pitch and no obligation. You&rsquo;ll speak with me, not a salesperson.</p>
+      <p>You leave with:</p>
+      <ul class="wrules" data-reveal>
+        <li><b>Your three biggest risks</b><span>Named on the call.</span></li>
+        <li><b>One fix for this week</b><span>The exact change, at no charge. Yours to keep whether we work together or not.</span></li>
+        <li><b>A straight answer on fit</b><span>Either a Verdict is worth it, or it isn&rsquo;t yet and I tell you what to do first.</span></li>
+        <li><b>A fixed quote</b><span>If a Verdict makes sense: from $3,500 CAD, a scored report in 5 business days, and the fee credited to your Build within 60 days.</span></li>
+      </ul>
+      <p>Have your website address ready, plus one ad, label, menu or form you use today. That is all.</p>
+      <div class="actions" style="justify-content:center">
+        <a class="btn" href="/book/" data-magnetic>Book the free call
+          <svg class="arrow" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+        </a>
+        <span>or write to me at <a class="link" href="mailto:sho@knght.com">sho@knght.com</a></span>
+      </div>
+    </div>
+  </section>
+</Base>
