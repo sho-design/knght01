@@ -1697,6 +1697,7 @@ a.arm__tool:hover .arrow{transform:translateX(5px)}
 .wl-rb path,.wl-rb ellipse{vector-effect:non-scaling-stroke}
 .wl-rb>div svg{fill:#fff;stroke-width:1.1;filter:drop-shadow(0 0 1.5px #000);transform-origin:50% 80.8%}
 .wl-rb .w{fill:#000}
+.wl-rb.a>div svg{fill:#000}.wl-rb.a circle{fill:#fff}
 .wl-rb .t{pointer-events:auto}
 .wl-rb button{all:unset;position:absolute;width:48px;height:44px;border-radius:50%;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
 .wl-rb button:focus-visible{outline:1px solid #fff;outline-offset:2px;--s:1.12;--o:.9}
