@@ -15,7 +15,7 @@
     orb: '<circle cx="12" cy="14" r="7"/><ellipse cx="12" cy="14" rx="3" ry="7"/><path d="M5 14h14M12 7V2M9.6 4h4.8"/>',
     shield: '<path d="M4.5 4h15v7.5c0 5-3.6 8.2-7.5 10-3.9-1.8-7.5-5-7.5-10z"/><path d="M4.5 8.5h15M4.7 13h14.6M6.4 17.3h11.2"/>',
     scales: '<path d="M12 3v18M7.5 21h9M4 6.5h16"/><path d="M6.5 6.5L3.5 13h6zM17.5 6.5l-3 6.5h6z"/><path d="M3.5 13a3 2 0 0 0 6 0M14.5 13a3 2 0 0 0 6 0"/>',
-    gauge: '<path d="M3.46 13.23A8.6 8.6 0 0 1 3.88 11.37M4.72 9.62A8.6 8.6 0 0 1 5.91 8.13M7.43 6.91A8.6 8.6 0 0 1 9.15 6.09M11.05 5.65A8.6 8.6 0 0 1 12.95 5.65M14.85 6.09A8.6 8.6 0 0 1 16.57 6.91M18.09 8.13A8.6 8.6 0 0 1 19.28 9.62M20.12 11.37A8.6 8.6 0 0 1 20.55 13.23"/><path d="M12 14.20l4.6-5.4M4.4 18.40h15.2"/><circle cx="12" cy="14.2" r="1.3"/>',
+    astrolabe: '<circle cx="12" cy="13.6" r="7.8"/><circle cx="12" cy="2.9" r="1.2"/><path d="M10.2 6.1 12 4.1l1.8 2"/><circle cx="12" cy="11.6" r="4.2"/><path d="M6.5 19.1 17.5 8.1M6.9 17.3l1.8 1.8M15.3 8.5l1.8 1.8"/><circle cx="12" cy="13.6" r=".9"/>',
     key: '<circle cx="7" cy="12" r="4.2"/><circle cx="7" cy="12" r="1.4"/><path d="M11.2 12H21M17.5 12v3.2M20.5 12v2.4"/>',
     sword: '<circle cx="12" cy="3" r="1.6"/><path d="M12 4.6V7M8 7h8M10.8 8.2h2.4V19L12 22l-1.2-3z"/>',
     lore: '<path d="M12 6.5C9.8 5 6.9 4.6 4 5v13c2.9-.4 5.8 0 8 1.5 2.2-1.5 5.1-1.9 8-1.5V5c-2.9-.4-5.8 0-8 1.5zM12 6.5v13"/>',
@@ -35,7 +35,7 @@
     { n: 'I', t: 'The worlds', s: 'orb', el: $('#worlds') },
     { n: 'II', t: 'Work with us', s: 'key', el: $('#engage') },
     { n: 'III', t: 'The layers', s: 'shield', el: $('#layers') },
-    { n: 'IV', t: 'The self-check', s: 'gauge', el: $('#score') },
+    { n: 'IV', t: 'The self-check', s: 'astrolabe', el: $('#score') },
     { n: 'V', t: 'The Verdict', s: 'sword', el: verdictSec }
   ].filter((c) => c.el);
 
