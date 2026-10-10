@@ -13,10 +13,10 @@
     bell: '<path d="M5 17h14M6 17a6 6 0 0 1 12 0M12 9V7M10 7h4M3 20h18"/>',
     person: '<circle cx="12" cy="4.5" r="2"/><path d="M8 9h8l-1 6h-2v6h-2v-6H9z"/>',
     door: '<path d="M6 21V3h12v18M3 21h18M14 12h1"/>',
-    key: '<circle cx="7" cy="12" r="4.2"/><circle cx="7" cy="12" r="1.4"/><path d="M11.2 12H21M17.5 12v3.2M20.5 12v2.4"/>',
+    lock: '<path d="M7.6 10.6V7.6a4.4 4.4 0 0 1 8.8 0v3M5.4 10.6h13.2v10.4H5.4z"/><circle cx="12" cy="14.6" r="1.3"/><path d="M12 15.9v2.4"/>',
     out: '<path d="M5 21V3h9v4M5 21h9v-4M10 12h11M18 9l3 3-3 3"/>',
     moon: '<path d="M16 3a9 9 0 1 0 5 13A7.5 7.5 0 0 1 16 3z"/>',
-    crest: '<path d="M5 4h14v7c0 5-3.5 8-7 9.5C8.5 19 5 16 5 11z"/><path d="M9 10h6M12 7v9"/>',
+    bow: '<path d="M12 11.2C9.2 7 4.8 6.8 4.8 9.6s4.4 3.4 7.2 1.6zM12 11.2c2.8-4.2 7.2-4.4 7.2-1.6s-4.4 3.4-7.2 1.6z"/><circle cx="12" cy="11.2" r="1.2"/><path d="M11.2 12.3 8.4 19.6M12.8 12.3l2.8 7.3"/>',
     arrow: '<path d="M4 12h15M14 7l5 5-5 5"/>',
   };
   const SIGNS = [
@@ -26,10 +26,10 @@
     { id: 'rooms', label: 'Room', sub: '', icon: 'door', on: true, rooms: true },
     { id: 'right', label: 'This way', sub: '', icon: 'arrow', on: true, arrow: 'right' },
     { id: 'left', label: 'This way', sub: '', icon: 'arrow', on: false, arrow: 'left' },
-    { id: 'staff', label: 'Staff only', sub: 'Thank you', icon: 'key', on: false },
+    { id: 'staff', label: 'Staff only', sub: 'Thank you', icon: 'lock', on: false },
     { id: 'wayout', label: 'Way out', sub: 'Thank you for visiting', icon: 'out', on: false },
     { id: 'quiet', label: 'Quiet, please', sub: 'Appointments in progress', icon: 'moon', on: false },
-    { id: 'thanks', label: 'Thank you', sub: 'See you next time', icon: 'crest', on: false },
+    { id: 'thanks', label: 'Thank you', sub: 'See you next time', icon: 'bow', on: false },
   ];
   const st = { size: 'plate', paper: 'black', on: Object.fromEntries(SIGNS.map((s) => [s.id, s.on])) };
   try { const s = JSON.parse(localStorage.getItem('knght-waymarks') || 'null'); if (s) { Object.assign(st, s); if (s.name) form.name.value = s.name; if (s.cat) form.cat.value = s.cat; if (s.guard) form.guard.value = s.guard; if (s.rooms != null) form.rooms.value = s.rooms; } } catch (e) {}
@@ -54,7 +54,7 @@
       const k = 0.52, ox = 60 - 70 * k, oy = H / 2 - 240 * k;
       body += `<path d="${A.xf(sh, k, ox, oy)}" fill="none" stroke="${ink}" stroke-width="2.2" stroke-linejoin="round"/><path d="${A.xf(sh, k, ox, oy, 0.88)}" fill="none" stroke="${ink}" stroke-width=".8" opacity=".55" stroke-linejoin="round"/>`;
       if (!s.arrow) body += icon(s.icon, ox + 200 * k - 26, oy + 214 * k - 30, 52, ink, 1.4);
-      else body += icon('crest', ox + 200 * k - 20, oy + 214 * k - 24, 40, ink, 1.4);
+      else body += icon('arrow', ox + 200 * k - 20, oy + 214 * k - 24, 40, ink, 1.4);
       const tx = 250;
       body += `<text x="${tx}" y="${s.sub ? 150 : 172}" fill="${ink}" font-family="${SERIF}" font-size="${s.label.length > 14 ? 54 : 66}">${A.esc(s.label)}</text>`;
       if (s.sub) body += `<text x="${tx + 2}" y="198" fill="${ink}" opacity=".7" font-family="${SANS}" font-size="19" letter-spacing="3.5">${A.esc(s.sub.toUpperCase())}</text>`;
@@ -64,7 +64,7 @@
       // Wall sign: the shield above, the words below, a big arrow when it points somewhere.
       const k = 0.78, ox = W / 2 - 200 * k, oy = 70 - 46 * k;
       body += `<path d="${A.xf(sh, k, ox, oy)}" fill="none" stroke="${ink}" stroke-width="2.6" stroke-linejoin="round"/><path d="${A.xf(sh, k, ox, oy, 0.88)}" fill="none" stroke="${ink}" stroke-width="1" opacity=".55" stroke-linejoin="round"/>`;
-      body += icon(s.arrow ? 'crest' : s.icon, W / 2 - 48, oy + 214 * k - 56, 96, ink, 1.3);
+      body += icon(s.arrow ? 'arrow' : s.icon, W / 2 - 48, oy + 214 * k - 56, 96, ink, 1.3);
       const ly = s.arrow ? 520 : 560;
       body += `<text x="${W / 2}" y="${ly}" text-anchor="middle" fill="${ink}" font-family="${SERIF}" font-size="${s.label.length > 14 ? 92 : 112}">${A.esc(s.label)}</text>`;
       if (s.sub) body += `<text x="${W / 2}" y="${ly + 66}" text-anchor="middle" fill="${ink}" opacity=".7" font-family="${SANS}" font-size="28" letter-spacing="6">${A.esc(s.sub.toUpperCase())}</text>`;

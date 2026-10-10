@@ -19,29 +19,29 @@ Use Regular and Italic for headlines and anything 28px and up. Use Medium below 
 
 ## The KNGHT glyphs
 
-Type the name between colons, such as `:knight:`, and it turns into the glyph. Or use the character itself. Browsers turn these shortcuts off on letter-spaced text, so use the character there.
+**One icon per thing, everywhere.** KNGHT's icons are one vocabulary. Every icon means one thing, and every thing has one icon, on the site, on the signs the free tools print, and in this font. The list lives in `src/lib/marks.json`: each mark's id, what it means, its drawing, its code point and its typed names. The site's pages read it, this font is built from it, and `npm run marks` (which also runs before every build) fails if any icon on the site is not on the list, or if a drawing, name or code point repeats. To add a mark, add it to `marks.json`, then rebuild the font.
 
-**One icon per thing.** Every mark stands for one thing, and every thing has one mark. Where a mark has more than one name, the names mean the same thing (`:score:` and `:self-check:`). Where the site already draws an icon, the font uses the site's drawing.
+Type a mark's name between colons, such as `:knight:`, and it turns into the glyph, or use the character itself. Browsers turn these shortcuts off on letter-spaced text, so use the character there. Where a mark has more than one name, the names mean the same thing (`:score:` and `:self-check:`); `marks.json` lists them all.
 
-| Type | Character | Glyph |
+| Group | Type | Characters |
 |---|---|---|
-| `:king:` `:queen:` `:rook:` `:bishop:` `:knight:` `:pawn:` | U+265A to U+265F | Filled chess pieces |
-| `:king-line:` … `:pawn-line:` | U+2654 to U+2659 | Hairline chess pieces |
-| `:worlds:` `:work-with-us:` `:the-layers:` `:self-check:` `:verdict:` | U+E061 to U+E065 | The five chapters, from the chapter rail: orb, key, shield, the quiz's segmented dial, sword. Also `:chapter-1:` to `:chapter-5:`, `:layers:`, `:score:`, `:score-your-world:` and `:the-verdict:` |
-| `:who-its-for:` `:how-it-works:` `:rules-journal:` `:free-tools:` | U+E066 to U+E069 | The rest of the menu: the menu's banner, compass and sealed scroll, and an armoury chest. Also `:rules:` and `:armoury:` |
-| `:lore:` `:law:` `:language:` `:map:` `:ground:` `:artifacts:` `:machinery:` | U+E001 to U+E007 | The seven layers |
-| `:clinics:` `:dental:` `:medspas:` `:law-firms:` `:spirits:` `:food-and-drink:` `:fitness:` `:creative:` | U+E041 to U+E048 | The categories: stethoscope, tooth, sparkles, courthouse, barrel, bowl, heart with a pulse, scissors |
-| `:the-build:` `:the-keep:` `:proposal:` | U+E04A to U+E04C | The Build (a brick wall), The Keep (a lantern) and a signed proposal. The Verdict is the chapter sword |
-| `:line:` `:check:` `:reply:` `:plain:` `:cartographer:` `:herald:` `:waymarks:` `:sigil:` `:leak:` `:keep:` | U+E051 to U+E05A | The Armoury, in page order: anvil (the one-line forge), lens, letter, speech bubble, map pin, horn, signpost, eight-point star, drop, hourglass |
-| `:restoration:` `:blacklotus:` `:castleblack:` `:lisadang:` `:lorelyns:` `:rumraiders:` `:torontobeauty:` `:wellfit:` `:artcolouring:` | U+E011 to U+E019 | The nine worlds |
-| `:seal:` `:crown:` `:crystal:` `:divider:` | U+E022, U+E024, U+E025, U+E027 | Brand marks |
-| `:helm:` `:swords:` `:laurel:` `:gavel:` | U+E028 to U+E02B | Arms |
-| `:stone:` `:runering:` `:tower:` `:airship:` `:torch:` | U+E02C to U+E030 | The hero film: the sword in the stone, the rune ring (its runes spell KNGHT), the tower, the airship, the torch |
-| `:candle:` `:sunrise:` `:moon:` `:spyglass:` | U+E031 to U+E034 | The footer scenes |
+| **Chess** | `:king:` `:queen:` `:rook:` `:bishop:` `:knight:` `:pawn:`, and `:king-line:` … `:pawn-line:` | U+265A to U+265F, U+2654 to U+2659 |
+| **The five chapters** | `:worlds:` `:work-with-us:` `:the-layers:` `:self-check:` `:verdict:` | U+E061 to U+E065 |
+| **The rest of the menu** | `:who-its-for:` `:how-it-works:` `:rules-journal:` `:free-tools:` | U+E066 to U+E069 |
+| **The seven layers** | `:lore:` `:law:` `:language:` `:map:` `:ground:` `:artifacts:` `:machinery:` | U+E001 to U+E007 |
+| **The categories** | `:clinics:` `:dental:` `:medspas:` `:law-firms:` `:spirits:` `:food-and-drink:` `:fitness:` `:creative:` `:other:` | U+E041 to U+E049 |
+| **The ways in** | `:the-build:` `:the-keep:` `:proposal:` | U+E04A to U+E04C |
+| **The free tools (the Armoury)** | `:line:` `:check:` `:reply:` `:plain:` `:cartographer:` `:herald:` `:waymarks:` `:sigil:` `:leak:` `:keep:` | U+E051 to U+E05A |
+| **Sign pictograms (Herald and Waymarks)** | `:review:` `:book:` `:wifi:` `:contact:` `:link:` `:wait:` `:reception:` `:washroom:` `:room:` `:this-way:` `:staff-only:` `:way-out:` `:quiet:` `:thanks:` | U+E071 to U+E07E |
+| **The nine worlds** | `:restoration:` `:blacklotus:` `:castleblack:` `:lisadang:` `:lorelyns:` `:rumraiders:` `:torontobeauty:` `:wellfit:` `:artcolouring:` | U+E011 to U+E019 |
+| **Brand marks** | `:seal:` `:crown:` `:crystal:` `:divider:` | U+E022 to U+E027 |
+| **Arms** | `:helm:` `:swords:` `:laurel:` `:gavel:` | U+E028 to U+E02B |
+| **From the hero film** | `:stone:` `:runering:` `:tower:` `:airship:` `:torch:` | U+E02C to U+E030 |
+| **From the footer scenes** | `:candle:` `:sunrise:` `:spyglass:` | U+E031 to U+E034 |
+
+The chess pieces come from `src/assets/knght-chess.svg`; the chess knight is KNGHT's own mark.
 
 **Filled versions.** Every mark from U+E001 on has a solid version 0x100 above it (U+E101 for Lore), typed with `-fill`, such as `:seal-fill:`. Turning on `ss02` ("Filled marks") swaps every mark at once. Closed shapes fill and the lines inside them are cut out. Marks drawn only in lines look the same in both.
-
-The chess pieces come from `src/assets/knght-chess.svg`, the layer and world sigils from `src/lib/sigils.ts`, the chapter sigils from `public/assets/js/chapters.js` and the menu sigils from `public/assets/js/site.js`. The build reads all four, so a change to the artwork reaches the font on the next build. Every other mark is drawn in `build.py` on the same 24-unit grid and line weight. The build stops if two marks share a typed name.
 
 ## Files
 
@@ -49,6 +49,7 @@ The chess pieces come from `src/assets/knght-chess.svg`, the layer and world sig
 fonts/*.ttf          full character set, for Figma, Canva, Illustrator and print
 fonts/*.latin.woff2  for the web: Latin, Latin-1, the chess set and every KNGHT glyph
 sources/             Cormorant Garamond, the four weights it is built from, and its licence
+../../src/lib/marks.json   every KNGHT mark (the icon vocabulary the site uses too)
 build.py             rebuilds fonts/ from sources/
 OFL.txt              the licence for KNGHT Order
 ```

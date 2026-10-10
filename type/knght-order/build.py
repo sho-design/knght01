@@ -5,13 +5,13 @@ Styles     Regular and Italic (from Cormorant 400) carry the engraved capitals b
            capitals; ss01 swaps in the engraved ones.
 Engraving  one hairline cut down the middle of every stroke thicker than STEM. Thin strokes stay whole,
            so the line shows on stems and bowls and disappears at small sizes.
-Glyphs     the chess set (U+2654 to U+265F) from src/assets/knght-chess.svg, the seven layers and nine worlds
-           from src/lib/sigils.ts, and the brand marks, categories, tiers and Armoury tools drawn below, in the
-           Private Use Area from U+E001. Each one can also be typed as a ligature, such as :lore: or :knight:.
+Glyphs     the chess set (U+2654 to U+265F) from src/assets/knght-chess.svg, and every KNGHT mark from
+           src/lib/marks.json (the one icon list the site uses too), in the Private Use Area from U+E001.
+           Each one can also be typed as a ligature, such as :lore: or :knight:.
            Every mark has a filled version 0x100 above it, typed as :lore-fill:; ss02 swaps them all.
 
 Run from the repo root: python3 type/knght-order/build.py   (pip install fonttools brotli skia-pathops)"""
-import os, re, copy, math, unicodedata
+import os, re, copy, json, math, unicodedata
 import xml.etree.ElementTree as ET
 from fontTools.ttLib import TTFont, newTable
 from fontTools.ttLib.tables import ttProgram, otTables as ot
@@ -205,11 +205,21 @@ def svg_path(markup, rotate=None):
         SVGPath.fromstring(doc.encode()).draw(pen)
     return to_path(draw)
 
-def hairline(spec, w):
-    """Stroke a mark: SVG markup, or a list of markup and turned() parts."""
-    parts = spec if isinstance(spec, list) else [spec]
-    paths = [stroke(svg_path(p[3], p[:3]) if isinstance(p, tuple) else svg_path(p), w * GRID) for p in parts]
-    return union(*paths)
+ROTATE = re.compile(r'<g transform="rotate\(([-\d.]+) ([-\d.]+) ([-\d.]+)\)">(.*?)</g>', re.S)
+
+def parts(svg):
+    """Split a mark's SVG into plain markup and rotated groups, since fontTools ignores rotate()."""
+    out, last = [], 0
+    for m in ROTATE.finditer(svg):
+        if svg[last:m.start()].strip(): out.append((0, 12, 12, svg[last:m.start()]))
+        out.append((float(m.group(1)), float(m.group(2)), float(m.group(3)), m.group(4)))
+        last = m.end()
+    if svg[last:].strip(): out.append((0, 12, 12, svg[last:]))
+    return [svg_path(m, (d, cx, cy) if d else None) for d, cx, cy, m in out]
+
+def hairline(svg, w):
+    """Stroke a mark's SVG at hairline weight w (in grid units)."""
+    return union(*[stroke(p, w * GRID) for p in parts(svg)])
 
 def place(p):
     """Centre a mark between equal sidebearings and return (glyph, advance)."""
@@ -243,183 +253,19 @@ def chess_pieces(w):
         out[name] = (filled, line)
     return out
 
-def sigils():
-    ts = open(os.path.join(REPO, "src", "lib", "sigils.ts")).read()
-    return dict(re.findall(r"""['"]?([a-z-]+)['"]?:\s*'(<[^']+)'""", ts))
-
-def seal_markup():
-    """A wax seal: a scalloped rim, an inner ring and a K."""
-    n, r0, r1, d = 14, 8.4, 9.6, []
-    for i in range(n + 1):
-        a = math.radians(i * 360 / n - 90); am = math.radians((i - .5) * 360 / n - 90)
-        x, y = 12 + r0 * math.cos(a), 12 + r0 * math.sin(a)
-        if i == 0: d.append(f"M{x:.3f} {y:.3f}")
-        else: d.append(f"Q{12 + r1 * math.cos(am):.3f} {12 + r1 * math.sin(am):.3f} {x:.3f} {y:.3f}")
-    return (f'<path d="{"".join(d)}Z"/><circle cx="12" cy="12" r="5.6"/>'
-            '<path d="M10.3 9.3v5.4M10.3 12.4l3.6-3.1M11.5 11.3l2.6 3.4"/>')
-
-BRAND = {
-    "seal": seal_markup(),
-    "crown": '<path d="M4.6 18.6h14.8M5.6 18.6 4.2 8.2l4.5 4.1L12 5.2l3.3 7.1 4.5-4.1-1.4 10.4z"/><path d="M5.2 21h13.6"/>',
-    "crystal": '<path d="M8 4h8l4 5-8 12L4 9z"/><path d="M4 9h16M10 9l2 12 2-12M8 4l2 5 2-5 2 5 2-5"/>',
-    "divider": '<path d="M-6 12h14.6M15.4 12H30"/><path d="M12 9.6 14.4 12 12 14.4 9.6 12z"/>',
-}
-
-def turned(deg, cx, cy, markup):
-    """A part of a mark rotated about (cx, cy) on the grid. fontTools ignores rotate() inside the SVG, so it is done here."""
-    return (deg, cx, cy, markup)
-
-def laurel_markup():
-    """Two laurel branches meeting at the foot: an outline leaf at each of four nodes, and one at each tip."""
-    def leaf(x, y, deg, L=3.8, w=1.45):
-        a = math.radians(deg); tx, ty = x + L * math.sin(a), y - L * math.cos(a)
-        nx, ny = math.cos(a) * w, math.sin(a) * w; mx, my = (x + tx) / 2, (y + ty) / 2
-        return f'<path d="M{x:.2f} {y:.2f}Q{mx + nx:.2f} {my + ny:.2f} {tx:.2f} {ty:.2f}Q{mx - nx:.2f} {my - ny:.2f} {x:.2f} {y:.2f}z"/>'
-    out = ['<path d="M11.2 20.8C7.2 19 5.2 15.2 5.4 10.2M12.8 20.8c4-1.8 6-5.6 5.8-10.6"/>']
-    for side in (-1, 1):
-        for t in (0.3, 0.56, 0.82):
-            y = 20.6 - 10.4 * t; x = 12 + side * (1.0 + 5.4 * math.sin(t * 1.5))
-            out.append(leaf(x, y, side * -50))
-        out.append(leaf(12 + side * 6.6, 10.2, side * -8))
-    return "".join(out)
-
-RUNES = {  # Elder Futhark, drawn around the origin, 3.2 tall, "up" points out of the ring
-    "K": "M.8 -1.6l-1.6 1.6 1.6 1.6",                       # kaunan
-    "N": "M0 -1.6v3.2M-.8 -.5l1.6 1",                       # naudiz
-    "G": "M-1 -1.6l2 3.2M1 -1.6l-2 3.2",                    # gebo
-    "H": "M-.9 -1.6v3.2M.9 -1.6v3.2M-.9 -.6l1.8 1.2",       # hagalaz
-    "T": "M0 -1.6v3.2M-1 -.6l1 -1 1 1",                     # tiwaz
-}
-
-def runering_markup():
-    """The rune ring from the hero film. Read clockwise from the top, its runes spell KNGHT."""
-    out = ['<circle cx="12" cy="12" r="10.2"/><circle cx="12" cy="12" r="3.3"/>']
-    for i, letter in enumerate("KNGHT"):
-        out.append(turned(i * 72, 12, 12, f'<path d="{_offset(RUNES[letter], 12, 5.25)}"/>'))
-    return out
-
-def _offset(d, x, y):
-    """Move a path written around the origin (absolute M, relative everything else) to (x, y)."""
-    return re.sub(r"M(-?[\d.]+) (-?[\d.]+)", lambda m: f"M{float(m.group(1)) + x:.3f} {float(m.group(2)) + y:.3f}", d)
-
-def sword_upright(x=12, top=1.6, hilt=15.4):
-    """A sword point up, for crossing: a one-line blade, guard, grip and pommel."""
-    return f'<path d="M{x} {top}V{hilt}M{x - 2.6} {hilt}h5.2M{x} {hilt}v3"/><circle cx="{x}" cy="{hilt + 3.9}" r=".9"/>'
-
-MORE = {
-    # Arms
-    "helm": '<path d="M6.6 21V11.2C6.6 6.6 9 3.6 12 3.6s5.4 3 5.4 7.6V21M5 21h14M8.4 10.8h7.2M12 10.8v6.4"/><path d="M12 3.6c.3-1.5 1.8-2.4 4-2.2-.9.5-1.4 1.2-1.5 2"/>',
-    "swords": [turned(-40, 12, 11.6, sword_upright()), turned(40, 12, 11.6, sword_upright())],
-    "laurel": laurel_markup(),
-    "gavel": [turned(-40, 10, 10, '<rect x="4.6" y="4.6" width="9" height="4.4" rx=".6"/><path d="M6.4 4.6v4.4M11.8 4.6v4.4M9.1 9v10.4"/>'),
-              '<path d="M12.6 21.2h8.6"/><rect x="13.8" y="18.2" width="6.2" height="3" rx=".4"/>'],
-    # The film
-    "stone": '<path d="M3.2 21.2h17.6l-1.8-4.4-2.8-1.6-1.4-2.6H9.2l-1.6 2.6-2.8 1.8z"/><path d="M11 12.6V6.4h2v6.2M8.4 6.4h7.2M12 6.4V3.5"/><circle cx="12" cy="2.6" r=".85"/>',
-    "runering": runering_markup(),
-    "tower": '<path d="M9 21.5V9.4L12 2.6l3 6.8v12.1M4.5 21.5h15M6.6 21.5v-6.2L9 13.2M17.4 21.5v-6.2L15 13.2M12 11.6v3.2M10.6 21.5v-2.6a1.4 1.4 0 0 1 2.8 0v2.6"/>',
-    "airship": '<ellipse cx="12.6" cy="8.4" rx="7.6" ry="3.6"/><path d="M5 8.4h15.2M5.2 8.4 2.6 5.8M5.2 8.4l-2.6 2.6M9.6 11.6l.8 3.6M15.6 11.6l-.8 3.6M9.8 15.2h5.6l-.8 2.2h-4z"/>',
-    "torch": '<path d="M10.6 21.2 9.7 11.4h4.6l-.9 9.8z"/><path d="M8.4 8.8h7.2l-.8 2.6H9.2z"/><path d="M12 8.6c-2.2-1-2.8-3-1.2-5.4.3 1.4 1 2 1.7 1.6.2-1.2.9-2 2.1-2.4-.4 1.4.6 2.6.2 4-.3 1.2-1.2 1.9-2.8 2.2z"/>',
-    # Footer scenes
-    "candle": '<path d="M9.4 21V10.6h5.2V21M6.4 21.2h11.2M12 10.6V9.2M14.6 12.4c-.7.5-.7 1.6 0 2.2"/><path d="M12 9c-1.5-.7-2-2.3-.9-4 .4-.6.7-1.3.9-2.4.5 1.2 1.7 2.3 1.7 3.9 0 1.3-.6 2.1-1.7 2.5z"/>',
-    "sunrise": '<path d="M2.4 18h19.2M6.6 18a5.4 5.4 0 0 1 10.8 0M12 7v2.6M5.4 10.4l1.8 1.8M18.6 10.4l-1.8 1.8M2.6 14.8h2.6M18.8 14.8h2.6M7.4 21h9.2"/>',
-    "moon": '<path d="M14.6 3.4a8.8 8.8 0 1 0 6.2 13.2A7.2 7.2 0 0 1 14.6 3.4z"/><path d="M18.6 4.6v2.6M17.3 5.9h2.6"/>',
-    "spyglass": [turned(-32, 12, 12, '<rect x="2.6" y="10.7" width="5" height="2.6" rx=".3"/><rect x="7.6" y="10.1" width="5.6" height="3.8" rx=".3"/><rect x="13.2" y="9.2" width="7.6" height="5.6" rx=".4"/><path d="M1.4 11.4v1.2"/>')],
-}
-
-LAYERS = ["lore", "law", "language", "map", "ground", "artifacts", "machinery"]
-WORLDS = {"restoration-medical": "restoration", "black-lotus-coffee": "blacklotus", "castleblack-spirits": "castleblack",
-          "lisa-dang-immigration-law": "lisadang", "lorelyns": "lorelyns", "rum-raiders-ring": "rumraiders",
-          "toronto-beauty": "torontobeauty", "wellfit-social-club": "wellfit", "art-colouring": "artcolouring"}
 CHESS = ["king", "queen", "rook", "bishop", "knight", "pawn"]
 
-def sparkles_markup():
-    """Medspas: three four-point sparkles."""
-    def star(x, y, r):
-        k = r * .18
-        return f"M{x} {y - r}Q{x + k} {y - k} {x + r} {y}Q{x + k} {y + k} {x} {y + r}Q{x - k} {y + k} {x - r} {y}Q{x - k} {y - k} {x} {y - r}z"
-    return f'<path d="{star(10, 13.4, 7.4)}"/><path d="{star(18.4, 5, 2.6)}"/><path d="{star(18.8, 18.6, 2)}"/>'
-
-CATEGORIES = {
-    # One mark for each category KNGHT serves, in the order of src/data/categories.json.
-    # Clinics get a stethoscope, not a cross: the red cross emblem is protected in Canada. No category reuses a
-    # world's or a layer's object: medspas are not a bottle (Artifacts), fitness is not a weight (Wellfit).
-    "clinic": '<path d="M7 3.2v5.2a5 5 0 0 0 10 0V3.2M5.8 3.2h2.4M15.8 3.2h2.4M12 13.4v2.8a3.9 3.9 0 0 0 7.8 0v-1.8"/><circle cx="19.8" cy="12.8" r="1.7"/>',
-    "dental": '<path d="M8.2 3.8C5.6 3.8 4.3 6 4.7 8.7c.4 2.6 1.7 4 2.1 6.6.4 2.7.8 5.6 2.2 5.6 1.6 0 1.4-4.7 3-4.7s1.4 4.7 3 4.7c1.4 0 1.8-2.9 2.2-5.6.4-2.6 1.7-4 2.1-6.6.4-2.7-.9-4.9-3.5-4.9-1.6 0-2.4 1-3.8 1s-2.2-1-3.8-1z"/>',
-    "medspa": sparkles_markup(),
-    "law": '<path d="M12 2.8 3.6 7.6h16.8zM5 9.4h14M4.2 18.6h15.6M3 21.2h18M6.6 9.4v9.2M10.2 9.4v9.2M13.8 9.4v9.2M17.4 9.4v9.2"/>',
-    "spirits": '<path d="M7.2 3h9.6c1.7 3.2 1.7 14.8 0 18H7.2C5.5 17.8 5.5 6.2 7.2 3z"/><path d="M6 7.4h12M6 16.6h12M6.2 12h11.6"/><circle cx="12" cy="9.6" r=".9"/>',
-    "food": '<path d="M3.4 11.4h17.2c0 4.8-3.8 8.6-8.6 8.6s-8.6-3.8-8.6-8.6zM8.8 21.2h6.4M8.6 8.6c-.9-1.1.9-2.1 0-3.4M12 8.6c-.9-1.1.9-2.1 0-3.4M15.4 8.6c-.9-1.1.9-2.1 0-3.4"/>',
-    "fitness": '<path d="M12 20.4C6.4 16.6 3.2 13.4 3.2 9.4a4.6 4.6 0 0 1 8.8-1.8 4.6 4.6 0 0 1 8.8 1.8c0 4-3.2 7.2-8.8 11z"/><path d="M5.4 12.4h3.2l1.4-2.6 2.2 5.2 1.6-3.4 1.2.8h3.6"/>',
-    "creative": '<circle cx="7.2" cy="17.6" r="2.7"/><circle cx="16.8" cy="17.6" r="2.7"/><path d="M9 15.6 16.4 3.2M15 15.6 7.6 3.2"/>',
-}
-
-# Typed names follow the site's /for/ pages, so :law: stays the Law layer and :law-firms: is the category.
-CATEGORY_NAMES = {"clinic": "clinics", "dental": "dental", "medspa": "medspas", "law": "law-firms", "spirits": "spirits",
-                  "food": "food-and-drink", "fitness": "fitness", "creative": "creative"}
-
-TIERS = {
-    # The three ways in, from the home page. The Verdict is the chapter rail's sword (see CHAPTERS). The Build is a
-    # brick wall, not a castle: the site already draws two castles (the Ground layer and Castleblack).
-    "the-build": '<path d="M3 6.6h18v14.6H3zM3 11.4h18M3 16.2h18M9 6.6v4.8M15 6.6v4.8M6 11.4v4.8M12 11.4v4.8M18 11.4v4.8M9 16.2v5M15 16.2v5"/>',
-    "the-keep": '<path d="M9 6.2h6l1.2 2.2v9.4L15 20H9l-1.2-2.2V8.4zM10.6 6.2V4.8a1.4 1.4 0 0 1 2.8 0v1.4M7.8 9.2h8.4M7.8 17h8.4"/><path d="M12 15.6c-1.3-.6-1.5-1.9-.6-3.2.3.7.8 1 1.2.8.5.8.5 1.7-.6 2.4z"/>',
-}
-
-EXTRA = {
-    # A proposal: a page with a signature line.
-    "proposal": '<path d="M6 2.8h12v18.4H6zM9 7h6M9 10h6M9 13h3.6M8.8 17.4c.8-1.5 1.5-1.5 1.9 0s1.2 1.5 1.9-.2 1.4-1 2.4.4"/>',
-}
-
-def chapter_sigils():
-    """The five chapter sigils on the home page's chapter rail, from public/assets/js/chapters.js."""
-    js = open(os.path.join(REPO, "public", "assets", "js", "chapters.js")).read()
-    table = js[js.index("const PATHS = {"):js.index("};", js.index("const PATHS = {"))]
-    return dict(re.findall(r"""(\w+):\s*'(<[^']+)'""", table))
-
-# The home page's five chapters, in rail order, with the sigil chapters.js gives each one.
-CHAPTERS = [("worlds", "orb", ["worlds", "the-worlds", "chapter-1"]),
-            ("work-with-us", "key", ["work-with-us", "chapter-2"]),
-            ("the-layers", "shield", ["the-layers", "layers", "chapter-3"]),
-            ("self-check", "gauge", ["self-check", "the-self-check", "score", "score-your-world", "chapter-4"]),
-            ("verdict", "sword", ["verdict", "the-verdict", "chapter-5"])]
-# The self-check is the quiz's own segmented dial; the scales stay with the Law layer. One icon per thing.
-
-def menu_sigils():
-    """The menu's sigils, from public/assets/js/site.js."""
-    js = open(os.path.join(REPO, "public", "assets", "js", "site.js")).read()
-    table = js[js.index("const SIGILS = {"):js.index("};", js.index("const SIGILS = {"))]
-    return dict(re.findall(r"""(\w+):\s*'(<[^']+)'""", table))
-
-# The menu items the chapter rail does not cover, with the menu's own sigil. Free tools is the armoury chest;
-# the quill stays with the Language layer.
-MENU = [("who-its-for", "banner", None, ["who-its-for"]),
-        ("how-it-works", "compass", None, ["how-it-works"]),
-        ("rules-journal", "seal", None, ["rules-journal", "rules"]),
-        ("free-tools", "chest", None, ["free-tools", "armoury"])]
-
-# The Armoury, in the order the page lists the tools, one mark each. The one-line forge gets the anvil; the
-# Sigil tool an eight-point star; the Cartographer (Google Business Profile) a map pin, since the compass is How it works.
-TOOLS = {
-    "line": '<path d="M2.2 8H19v2.4c-1.7.3-2.7 1.5-2.7 3.1V15h2.2v3.2h-13V15h2.2v-1.5C7.7 11.9 6.6 10.7 5 10.4 3.7 10.2 2.8 9.4 2.2 8z"/><path d="M4 21.2h16M14.4 4.6l1.6-1.6M17.2 5.6l2-.8M11.6 4.2 11 2.6"/>',
-    "check": '<circle cx="10" cy="10" r="6.4"/><path d="M14.7 14.7l6.2 6.2M7.2 10.2l2 2 3.6-3.8"/>',
-    "reply": '<path d="M3 6.4h18v12.4H3z"/><path d="M3 6.4l7.8 6.1M21 6.4l-7.8 6.1"/><circle cx="12" cy="13.4" r="1.6"/>',
-    "plain": '<path d="M4 4.6h16v10.6h-9.4L6.4 19.4v-4.2H4z"/><path d="M7.4 8.6h9.2M7.4 11.6h5.8"/>',
-    "cartographer": '<path d="M12 21.4s-6.6-6.4-6.6-11.4a6.6 6.6 0 0 1 13.2 0c0 5-6.6 11.4-6.6 11.4z"/><circle cx="12" cy="10" r="2.4"/>',
-    "herald": '<path d="M2.4 10.4v3.2M3.4 11.2h9.2c2.3 0 4.3-1.5 5.6-4.2h1.4v10h-1.4c-1.3-2.7-3.3-4.2-5.6-4.2H3.4z"/><path d="M7.2 12.8v5.8l2.2-1.4 2.2 1.4v-5.8"/>',
-    "waymarks": '<path d="M12 2.8v18.6M8.4 21.4h7.2M12 4.8h7.4l2 2-2 2H12M12 10.6H4.6l-2 2 2 2H12"/>',
-    "sigil": [turned(0, 12, 12, '<path d="M5.4 5.4h13.2v13.2H5.4z"/>'), turned(45, 12, 12, '<path d="M5.4 5.4h13.2v13.2H5.4z"/>')],
-    "leak": '<path d="M12 3c3 4.2 6.2 7.6 6.2 11.4a6.2 6.2 0 0 1-12.4 0C5.8 10.6 9 7.2 12 3z"/><path d="M9.2 14.8a2.9 2.9 0 0 0 2.4 2.8"/>',
-    "keep": '<path d="M6.4 3h11.2M6.4 21h11.2M8 3c0 4.6 3.6 6.2 3.6 9S8 16.4 8 21M16 3c0 4.6-3.6 6.2-3.6 9s3.6 4.4 3.6 9M9.4 7.2h5.2M12 12.6v3.4M9.6 20.4c.6-1.6 1.5-2.4 2.4-2.4s1.8.8 2.4 2.4"/>',
-}
+def registry():
+    """The KNGHT marks, from src/lib/marks.json: the one list the site and this font both draw from."""
+    return json.load(open(os.path.join(REPO, "src", "lib", "marks.json")))["marks"]
 
 FILL = 0x100   # a mark's filled version sits this far above it
 
 def filled(spec, w):
     """The solid version of a hairline mark: closed shapes filled, outer lines kept,
     and every line that falls inside a filled shape cut out as a thinner gap."""
-    parts = spec if isinstance(spec, list) else [spec]
     closed, every = pathops.Path(), []
-    for p in parts:
-        path = svg_path(p[3], p[:3]) if isinstance(p, tuple) else svg_path(p)
+    for path in parts(spec):
         every.append(path)
         for c in path.contours:
             pts = list(c.points)
@@ -432,30 +278,19 @@ def filled(spec, w):
     return minus(body, cuts)
 
 def marks(w):
-    """[(glyph name, codepoints, ligature names, path)] for every KNGHT glyph, at hairline weight w.
-    One glyph per thing and one thing per glyph: several typed names only where they name the same thing.
-    Every hairline mark also gets a filled version, FILL code points up, named with -fill."""
+    """[(glyph name, codepoints, typed names, path)] for every KNGHT glyph, at hairline weight w.
+    The chess set comes from the sprite; every other mark from the registry, with a filled version FILL above it."""
     out = []
     pieces = chess_pieces(w)
     for i, n in enumerate(CHESS):
         solid, line = pieces[n]
         out.append((f"chess.{n}", [0x265A + i], [n], solid))
         out.append((f"chess.{n}.line", [0x2654 + i], [n + "-line"], line))
-    sg, ch, mn = sigils(), chapter_sigils(), menu_sigils()
-    hair = []   # (glyph name, codepoint, typed names, spec)
-    hair += [(f"layer.{n}", 0xE001 + i, [n], sg[n]) for i, n in enumerate(LAYERS)]
-    hair += [(f"world.{short}", 0xE011 + i, [short], sg[slug]) for i, (slug, short) in enumerate(WORLDS.items())]
-    hair += [(f"mark.{n}", cp, [n], BRAND[n]) for n, cp in (("seal", 0xE022), ("crown", 0xE024), ("crystal", 0xE025), ("divider", 0xE027))]
-    hair += [(f"mark.{n}", 0xE028 + i, [n], m) for i, (n, m) in enumerate(MORE.items())]
-    hair += [(f"category.{n}", 0xE041 + i, [CATEGORY_NAMES[n]], m) for i, (n, m) in enumerate(CATEGORIES.items())]
-    hair += [(f"tier.{n[4:]}", 0xE04A + i, [n], m) for i, (n, m) in enumerate(TIERS.items())]
-    hair += [("mark.proposal", 0xE04C, ["proposal"], EXTRA["proposal"])]
-    hair += [(f"tool.{n}", 0xE051 + i, [n], m) for i, (n, m) in enumerate(TOOLS.items())]
-    hair += [(f"chapter.{n}", 0xE061 + i, names, ch[k]) for i, (n, k, names) in enumerate(CHAPTERS)]
-    hair += [(f"menu.{n}", 0xE066 + i, names, mn[k] if k else m) for i, (n, k, m, names) in enumerate(MENU)]
-    for name, cp, names, spec in hair:
-        out.append((name, [cp], names, hairline(spec, w)))
-        out.append((name + ".fill", [cp + FILL], [n + "-fill" for n in names], filled(spec, w)))
+    for m in registry():
+        if not m["codepoint"]: continue          # the KNGHT knight is the chess knight above
+        cp, name = int(m["codepoint"], 16), f'{m["group"]}.{m["id"]}'
+        out.append((name, [cp], m["names"], hairline(m["svg"], w)))
+        out.append((name + ".fill", [cp + FILL], [n + "-fill" for n in m["names"]], filled(m["svg"], w)))
     return out
 
 # ---------------------------------------------------------------- build
@@ -487,7 +322,7 @@ def subset_web(src, dst):
     f = TTFont(src); s = subset.Subsetter(opts)
     s.populate(unicodes=list(range(0x20, 0x7F)) + list(range(0xA0, 0x180)) + [0x131, 0x152, 0x153, 0x2BB, 0x2BC, 0x2C6, 0x2DA, 0x2DC]
                + list(range(0x2000, 0x2070)) + [0x2074, 0x20AC, 0x2116, 0x2122, 0x2190, 0x2191, 0x2192, 0x2193, 0x2212, 0x2215, 0xFEFF, 0xFFFD]
-               + list(range(0x2654, 0x2660)) + list(range(0xE001, 0xE070)) + list(range(0xE101, 0xE170)))
+               + list(range(0x2654, 0x2660)) + list(range(0xE001, 0xE080)) + list(range(0xE101, 0xE180)))
     s.subset(f); f.flavor = "woff2"; f.save(dst)
 
 def build(src, style, weight, engraved_default, stem, t, w):
