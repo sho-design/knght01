@@ -18,7 +18,9 @@ html.wl-hide body > :not(.wl) { visibility: hidden; }
   -webkit-tap-highlight-color: transparent;
 }
 .wl:focus { outline: none; }
-/* While the hole closes over the page (and opens again on the way out) the page shows through the iris. */
+/* While the hole closes over the page (and opens again on the way out) the page shows through the iris. On the way
+   up through the fall ("rise") it is black and catches taps (a tap skips to the top); once the page is back
+   ("climb") taps go through to it. */
 .wl[data-phase="iris"], .wl[data-phase="climb"] { background: transparent; }
 .wl[data-phase="climb"] { pointer-events: none; }
 
@@ -41,9 +43,11 @@ html.wl-hide body > :not(.wl) { visibility: hidden; }
   pointer-events: none;
 }
 .wl-fall canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; }
-.wl-fall__fg { position: absolute; inset: 0; }
+/* The figures roll with the tunnel (fall.js sets the world's rotation about the centre); the words never do. */
+.wl-fall__fg, .wl-fall__world, .wl-fall__words { position: absolute; inset: 0; }
+.wl-fall__world { transform-origin: 50% 50%; }
 .wl-fall__fig { position: absolute; left: 0; top: 0; max-width: none; overflow: visible; will-change: transform; }
-.wl-fall__line {
+.wl-fall__line, .wl-fall__say {
   position: absolute;
   left: 0;
   top: 0;
@@ -56,6 +60,24 @@ html.wl-hide body > :not(.wl) { visibility: hidden; }
   text-wrap: balance;
   opacity: 0;
 }
+.wl-fall__say { max-width: min(22ch, calc(100vw - 32px)); }
+/* On the way up the four lines stay hidden, and the White Rabbit stands on Lore (drawn as the footer draws it). */
+.wl-fall.is-climb .wl-fall__line { visibility: hidden; }
+.wl-fall__rabbit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  overflow: visible;
+  opacity: 0;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.wl-fall__rabbit path { vector-effect: non-scaling-stroke; }
+.wl-fall__rabbit .w { fill: #000; }
 
 /* The bar: the dialog's title and the way out, always there. Transparent while falling; black once landed. */
 .wl-bar {
@@ -127,6 +149,14 @@ html.wl-hide body > :not(.wl) { visibility: hidden; }
   color: #fff;
 }
 .wl-msg[hidden] { display: none; }
+
+/* Climb back up: the page turns back into place under the opening iris (portal.js, turn()). A same-document view
+   transition of its own: the page's old picture is not shown, and nothing animates but the turn on its new one, which
+   portal.js adds. The overlay is its own group ('wl') and stays live above it. These outrank site.css's rules for
+   page to page transitions. */
+:root.wl-turn::view-transition-old(root), :root.wl-turn::view-transition-old(wl) { display: none; }
+:root.wl-turn::view-transition-new(root), :root.wl-turn::view-transition-new(wl),
+:root.wl-turn::view-transition-group(root), :root.wl-turn::view-transition-group(wl) { animation: none; }
 
 /* High contrast modes keep the drawing as it is: it is already black and white. */
 .wl { forced-color-adjust: none; }

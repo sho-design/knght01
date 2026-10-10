@@ -4,15 +4,9 @@
    #down-the-rabbit-hole lead to the same place. The overlay, the fall and the game load only then (README.md).
    This file sits in the Motion chunk on every page, so it is kept small (README.md, "Budget"). */
 import { gsap } from 'gsap';
-
-// The White Rabbit, drawn as a seventh piece of the KNGHT Story set on its 24 grid: the king's collar and skirt,
-// a rabbit's head facing right with its ears swept back, and a pocket watch held out on a short chain.
-export const RABBIT = {
-  outline: 'M7 19.4c1.2-1.05 2.85-3.85 3-8.5h-.95q-.45 0-.45-.45 0-.45.45-.45h1.35c-.3-.6-.5-1.4-.4-2.2.1-.8.4-1.4.9-1.8C10 4.9 8.7 3 8.7 1.4c0-.4.4-.4.7-.1 1.2 1.1 2 2.6 2.4 4.1-.2-1.5-.5-3.4-.1-4.6.15-.4.5-.4.7 0 .7 1.4.9 3 .8 4.7 1.1.3 2 1.2 2.3 2.2.2.7-.2 1.3-.9 1.4-.6.1-1 .4-1 .9h1.35q.45 0 .45.45 0 .45-.45.45h-.95c.15 4.65 1.8 7.45 3 8.5z',
-  watch: 'M14.95 10.9q1.45.1 1.45 1.5m0 0a1.45 1.45 0 1 1 0 2.9 1.45 1.45 0 1 1 0-2.9z',
-  hands: 'M16.4 13.85v-.8m0 .8l.6.35',
-  eye: [13.85, 7.3],
-};
+// The White Rabbit's drawing and its watch (watch.js). Re-exported for anything that still takes it from here.
+import { RABBIT } from './watch.js';
+export { RABBIT };
 
 const doc = document;
 let portal;
