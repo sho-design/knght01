@@ -26,6 +26,19 @@
       return room < 1;
     };
     lenis = new window.Lenis({ lerp: 0.085, smoothWheel: true, anchors: true, autoRaf: true, virtualScroll: ownScroll });
+    // A tap on a link to a place on this page: Lenis glides there (anchors), so the browser must not jump there
+    // first, or the destination flashes for a frame and the glide starts back where the page was. The address still
+    // gets the #place. Keyboard presses (detail 0) keep the browser's own jump, which also moves the focus along.
+    document.addEventListener('click', (e) => {
+      if (!lenis || !e.detail || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target instanceof Element && e.target.closest('a[href*="#"]');
+      if (!a || (a.target && a.target !== '_self')) return;
+      const u = new URL(a.href, location.href);
+      if (u.origin !== location.origin || u.pathname !== location.pathname || !u.hash) return;
+      if (!document.getElementById(decodeURIComponent(u.hash.slice(1)))) return;
+      e.preventDefault();
+      if (location.hash !== u.hash) history.pushState(null, '', u.hash);
+    });
   }
 
   /* ---------- Split headings into masked lines ---------- */
@@ -678,12 +691,29 @@
   });
   const markEl = $('.nav .mark');
   if (markEl) {
-    let hold = 0, held = false;
-    const start = () => { held = false; clearTimeout(hold); hold = setTimeout(() => { held = true; markEl.classList.remove('is-holding'); openCodex(); }, 900); markEl.classList.add('is-holding'); };
-    const stop = () => { clearTimeout(hold); markEl.classList.remove('is-holding'); };
+    // A touch screen has no hover, so a thumb that stays on the mark draws the blade out of the name (site.css,
+    // .is-drawn), and a tap on the home page, where the mark only goes back to the top, draws it for a moment.
+    // A quick tap anywhere else goes home at once.
+    let hold = 0, held = false, touch = false, drawT = 0, undrawT = 0;
+    const undraw = () => { clearTimeout(drawT); clearTimeout(undrawT); markEl.classList.remove('is-drawn'); };
+    const draw = (ms) => { clearTimeout(undrawT); markEl.classList.add('is-drawn'); if (ms) undrawT = setTimeout(undraw, ms); };
+    const start = (e) => {
+      touch = e.pointerType !== 'mouse';
+      held = false; clearTimeout(hold);
+      hold = setTimeout(() => { held = true; markEl.classList.remove('is-holding'); openCodex(); if (touch) undrawT = setTimeout(undraw, 600); }, 900);
+      markEl.classList.add('is-holding');
+      if (touch) { clearTimeout(drawT); drawT = setTimeout(() => draw(), 180); }
+    };
+    const stop = () => {
+      clearTimeout(hold); clearTimeout(drawT); markEl.classList.remove('is-holding');
+      if (!held && markEl.classList.contains('is-drawn')) { clearTimeout(undrawT); undrawT = setTimeout(undraw, 1200); }
+    };
     markEl.addEventListener('pointerdown', start);
     ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => markEl.addEventListener(ev, stop));
-    markEl.addEventListener('click', (e) => { if (held) { e.preventDefault(); held = false; } });
+    markEl.addEventListener('click', (e) => {
+      if (held) { e.preventDefault(); held = false; return; }
+      if (touch && (markEl.getAttribute('href') || '').charAt(0) === '#') draw(1800);
+    });
     markEl.addEventListener('contextmenu', (e) => e.preventDefault());
   }
 

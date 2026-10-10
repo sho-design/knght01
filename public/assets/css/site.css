@@ -94,6 +94,15 @@ h2.display{font-size:clamp(3rem,8vw,8.25rem)}
   .mark.is-holding .mark__i b{animation:iGlow .9s linear forwards}
 }
 @keyframes iGlow{to{text-shadow:0 0 14px #fff,0 0 4px #fff}}
+/* A touch screen has no hover: holding the mark draws the blade out of the name the same way (site.js sets .is-drawn),
+   and the I fills with light while the thumb stays. No link preview or text selection under the thumb, or the hold is lost. */
+.mark{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.mark.is-drawn .mark__word{color:#fff;-webkit-text-fill-color:#fff}
+.mark.is-drawn .mark__r{transform:translateX(.82em)}
+.mark.is-drawn .mark__i b{clip-path:inset(0 0 0 0);transform:none}
+.mark.is-drawn svg{clip-path:inset(0 100% 0 0);opacity:0}
+.mark.is-drawn .mark__say{opacity:1;transform:none;transition-delay:.55s}
+.mark.is-drawn.is-holding .mark__i b{animation:iGlow .9s linear forwards}
 @media (prefers-reduced-motion: reduce){.mark__i b,.mark__r,.mark svg,.mark__say{transition:none}}
 .nav ul{display:flex;gap:clamp(20px,3vw,40px);list-style:none;margin:0;padding:0}
 .nav ul a{position:relative;display:inline-block;text-decoration:none;color:var(--ash);font-size:.92rem;overflow:hidden;transition:color .3s}
