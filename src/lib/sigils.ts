@@ -13,7 +13,7 @@ export const SIGILS: Record<string, string> = {
 export const WORLD_SIGILS: Record<string, string> = {
   'restoration-medical': '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M7.5 12h9"/><path d="M5.2 17.6c2-1.4 4.3-2.1 6.8-2.1s4.8.7 6.8 2.1"/>',
   'black-lotus-coffee': '<path d="M12 4c2.2 2.6 2.2 6.6 0 9.2-2.2-2.6-2.2-6.6 0-9.2z"/><path d="M12 13.2c-1.6-2.8-4.6-4.2-7.6-3.8.4 3 2.8 5.4 7.6 3.8zM12 13.2c1.6-2.8 4.6-4.2 7.6-3.8-.4 3-2.8 5.4-7.6 3.8z"/><path d="M5 17.5h14M8 20.5h8"/>',
-  'castleblack-spirits': '<path d="M7 21V8h2V5.5h2V8h2V5.5h2V8h2v13z"/><path d="M10.5 21v-3.5a1.5 1.5 0 0 1 3 0V21M10.5 12h3"/>',
+  'castleblack-spirits': '<path d="M4.4 10h3.2v11H4.4zM16.4 10h3.2v11h-3.2zM7.6 13.4h8.8V21H7.6zM3.6 10 6 4.8 8.4 10zM15.6 10 18 4.8 20.4 10z"/><path d="M10.4 21v-3.2a1.6 1.6 0 0 1 3.2 0V21M6 13.2v2.2M18 13.2v2.2M18 4.8V2.4l2.2.9-2.2.9"/>',
   'lisa-dang-immigration-law': '<path d="M5 21V10a7 7 0 0 1 14 0v11"/><path d="M9 21v-9a3 3 0 0 1 6 0v9"/><path d="M3 21h18"/>',
   lorelyns: '<path d="M6 11h12l-1.6 9H7.6z"/><path d="M6 11a6 4.5 0 0 1 12 0"/><path d="M12 6.5V4M9.5 15.5h5"/>',
   'rum-raiders-ring': '<circle cx="12" cy="5" r="2"/><path d="M12 7v13M8 10h8"/><path d="M4.5 13.5c0 4 3.4 6.5 7.5 6.5s7.5-2.5 7.5-6.5M4.5 13.5 3 15.5M19.5 13.5 21 15.5"/>',
