@@ -6,8 +6,9 @@ Styles     Regular and Italic (from Cormorant 400) carry the engraved capitals b
 Engraving  one hairline cut down the middle of every stroke thicker than STEM. Thin strokes stay whole,
            so the line shows on stems and bowls and disappears at small sizes.
 Glyphs     the chess set (U+2654 to U+265F) from src/assets/knght-chess.svg, the seven layers and nine worlds
-           from src/lib/sigils.ts, and 31 brand marks drawn below, in the Private Use Area from U+E001.
-           Each one can also be typed as a ligature, such as :lore: or :knight:.
+           from src/lib/sigils.ts, and the brand marks, categories, tiers and Armoury tools drawn below, in the
+           Private Use Area from U+E001. Each one can also be typed as a ligature, such as :lore: or :knight:.
+           Every mark has a filled version 0x100 above it, typed as :lore-fill:; ss02 swaps them all.
 
 Run from the repo root: python3 type/knght-order/build.py   (pip install fonttools brotli skia-pathops)"""
 import os, re, copy, math, unicodedata
@@ -271,7 +272,7 @@ BRAND = {
     "sword": '<path d="M12 21.4l-1.25-1.9V8.6h2.5v10.9z"/><path d="M7.2 8.6h9.6M12 8.6V4.7M12 10.4v7.4"/><circle cx="12" cy="3.6" r="1.05"/>',
     "seal": seal_markup(),
     "shield": '<path d="M12 2.8 19 5.4v6.1c0 4.6-3 7.9-7 9.7-4-1.8-7-5.1-7-9.7V5.4z"/><path d="M8.2 13.2 12 9.8l3.8 3.4"/>',
-    "crown": '<path d="M4.6 18.6h14.8M5.6 18.6 4.2 8.2l4.5 4.1L12 5.2l3.3 7.1 4.5-4.1-1.4 10.4"/><path d="M5.2 21h13.6"/>',
+    "crown": '<path d="M4.6 18.6h14.8M5.6 18.6 4.2 8.2l4.5 4.1L12 5.2l3.3 7.1 4.5-4.1-1.4 10.4z"/><path d="M5.2 21h13.6"/>',
     "crystal": '<path d="M8 4h8l4 5-8 12L4 9z"/><path d="M4 9h16M10 9l2 12 2-12M8 4l2 5 2-5 2 5 2-5"/>',
     "dial": dial_markup(),
     "divider": '<path d="M-6 12h14.6M15.4 12H30"/><path d="M12 9.6 14.4 12 12 14.4 9.6 12z"/>',
@@ -356,23 +357,86 @@ WORLDS = {"restoration-medical": "restoration", "black-lotus-coffee": "blacklotu
           "toronto-beauty": "torontobeauty", "wellfit-social-club": "wellfit", "art-colouring": "artcolouring"}
 CHESS = ["king", "queen", "rook", "bishop", "knight", "pawn"]
 
+CATEGORIES = {
+    # One mark for each category KNGHT serves, in the order of src/data/categories.json.
+    # Clinics get a stethoscope, not a cross: the red cross emblem is protected in Canada.
+    "clinic": '<path d="M7 3.2v5.2a5 5 0 0 0 10 0V3.2M5.8 3.2h2.4M15.8 3.2h2.4M12 13.4v2.8a3.9 3.9 0 0 0 7.8 0v-1.8"/><circle cx="19.8" cy="12.8" r="1.7"/>',
+    "dental": '<path d="M8.2 3.8C5.6 3.8 4.3 6 4.7 8.7c.4 2.6 1.7 4 2.1 6.6.4 2.7.8 5.6 2.2 5.6 1.6 0 1.4-4.7 3-4.7s1.4 4.7 3 4.7c1.4 0 1.8-2.9 2.2-5.6.4-2.6 1.7-4 2.1-6.6.4-2.7-.9-4.9-3.5-4.9-1.6 0-2.4 1-3.8 1s-2.2-1-3.8-1z"/>',
+    "medspa": '<path d="M9.4 21.2h5.2a1.4 1.4 0 0 0 1.4-1.4v-8.6H8v8.6a1.4 1.4 0 0 0 1.4 1.4zM9.6 11.2V9h4.8v2.2M10.6 9V5.2a1.4 1.4 0 0 1 2.8 0V9M8 15.4h8M19 2.6v3.6M17.2 4.4h3.6"/>',
+    "law": '<path d="M12 2.8 3.6 7.6h16.8zM5 9.4h14M4.2 18.6h15.6M3 21.2h18M6.6 9.4v9.2M10.2 9.4v9.2M13.8 9.4v9.2M17.4 9.4v9.2"/>',
+    "spirits": '<path d="M5.4 7.6h13.2l-1.4 12.6a1 1 0 0 1-1 .9H7.8a1 1 0 0 1-1-.9z"/><path d="M6.2 13.2h11.6"/><rect x="9.2" y="14.6" width="3.4" height="3.4" rx=".4"/>',
+    "food": '<path d="M3.4 11.4h17.2c0 4.8-3.8 8.6-8.6 8.6s-8.6-3.8-8.6-8.6zM8.8 21.2h6.4M8.6 8.6c-.9-1.1.9-2.1 0-3.4M12 8.6c-.9-1.1.9-2.1 0-3.4M15.4 8.6c-.9-1.1.9-2.1 0-3.4"/>',
+    "fitness": '<path d="M2.4 12h1.8M19.8 12h1.8M8.4 12h7.2"/><rect x="4.2" y="8.6" width="2.1" height="6.8" rx=".5"/><rect x="6.3" y="7" width="2.1" height="10" rx=".5"/><rect x="17.7" y="8.6" width="2.1" height="6.8" rx=".5"/><rect x="15.6" y="7" width="2.1" height="10" rx=".5"/>',
+    "creative": [turned(42, 12, 12, '<path d="M10.4 2.6h3.2v14.2L12 20.4l-1.6-3.6z"/><path d="M10.4 16.8h3.2M10.4 5.4h3.2"/>')],
+}
+
+# Typed names follow the site's /for/ pages, so :law: stays the Law layer and :law-firms: is the category.
+CATEGORY_NAMES = {"clinic": "clinics", "dental": "dental", "medspa": "medspas", "law": "law-firms", "spirits": "spirits",
+                  "food": "food-and-drink", "fitness": "fitness", "creative": "creative"}
+
+TIERS = {
+    # The three ways in, from the home page.
+    "the-verdict": '<circle cx="12" cy="8.6" r="5.6"/><path d="M9.4 13.6 7.8 20.8l2.4-1.4 1.6 1.9.4-6.1M14.6 13.6l1.6 7.2-2.4-1.4-1.6 1.9M9.8 7l2.2 3.8L14.2 7"/>',
+    "the-build": '<path d="M2.8 21.2h18.4M4.6 21.2V10.4h3.4v10.8M16 21.2V10.4h3.4v10.8M8 21.2v-9h8v9M10.1 12.2V7.4L12 3l1.9 4.4v4.8M10.7 21.2v-2.9a1.3 1.3 0 0 1 2.6 0v2.9M4.6 10.4V8.8h1.1v1.6M6.9 10.4V8.8H8v1.6M16 10.4V8.8h1.1v1.6M18.3 10.4V8.8h1.1v1.6M12 8.4v1.6"/>',
+    "the-keep": '<path d="M9 6.2h6l1.2 2.2v9.4L15 20H9l-1.2-2.2V8.4zM10.6 6.2V4.8a1.4 1.4 0 0 1 2.8 0v1.4M7.8 9.2h8.4M7.8 17h8.4"/><path d="M12 15.6c-1.3-.6-1.5-1.9-.6-3.2.3.7.8 1 1.2.8.5.8.5 1.7-.6 2.4z"/>',
+}
+
+EXTRA = {
+    # A proposal: a rolled scroll tied with a ribbon and sealed.
+    "proposal": '<path d="M5.4 7.6h13.6a2.6 2.6 0 0 1 0 5.2H5.4a2.6 2.6 0 0 1 0-5.2z"/><circle cx="5.4" cy="10.2" r="1"/><path d="M12 12.8v1.4M11 18.2l-.9 3M13 18.2l.9 3"/><circle cx="12" cy="16.2" r="2.1"/>',
+    # The free tools without a mark of their own yet.
+    "line": '<path d="M12 2.8 16.4 9.4 12 16.6 7.6 9.4z"/><path d="M12 16.6v-5.2M3 20.6h18"/><circle cx="12" cy="9.8" r=".2"/>',
+    "plain": '<path d="M4 4.6h16v10.6h-9.4L6.4 19.4v-4.2H4z"/><path d="M7.4 8.6h9.2M7.4 11.6h5.8"/>',
+}
+
+# The Armoury, in the order the page lists the tools. Each tool name types its mark.
+TOOLS = {"line": "line", "check": "lens", "reply": "letter", "plain": "plain", "cartographer": "compass",
+         "herald": "horn", "waymarks": "signpost", "sigil": "anvil", "leak": "drop", "keep": "hourglass"}
+
+FILL = 0x100   # a mark's filled version sits this far above it
+
+def filled(spec, w):
+    """The solid version of a hairline mark: closed shapes filled, outer lines kept,
+    and every line that falls inside a filled shape cut out as a thinner gap."""
+    parts = spec if isinstance(spec, list) else [spec]
+    closed, every = pathops.Path(), []
+    for p in parts:
+        path = svg_path(p[3], p[:3]) if isinstance(p, tuple) else svg_path(p)
+        every.append(path)
+        for c in path.contours:
+            pts = list(c.points)
+            ends_at_start = len(pts) > 2 and math.dist(pts[0], pts[-1]) < 1
+            if (c.verbs and c.verbs[-1] == pathops.PathVerb.CLOSE) or ends_at_start: c.draw(closed.getPen())
+    lines = union(*[stroke(p, w * GRID) for p in every])
+    body = union(clean(closed), lines) if list(closed.contours) else lines
+    inner = minus(body, stroke(body, 1.9 * w * GRID, pathops.LineCap.BUTT_CAP))
+    cuts = pathops.op(union(*[stroke(p, .72 * w * GRID) for p in every]), inner, pathops.PathOp.INTERSECTION)
+    return minus(body, cuts)
+
 def marks(w):
-    """[(glyph name, codepoint, ligature name, path)] for every KNGHT glyph, at hairline weight w."""
+    """[(glyph name, codepoints, ligature names, path)] for every KNGHT glyph, at hairline weight w.
+    Every hairline mark also gets a filled version, FILL code points up, named with -fill."""
     out = []
     pieces = chess_pieces(w)
     for i, n in enumerate(CHESS):
-        filled, line = pieces[n]
-        out.append((f"chess.{n}", 0x265A + i, n, filled))
-        out.append((f"chess.{n}.line", 0x2654 + i, n + "-line", line))
+        solid, line = pieces[n]
+        out.append((f"chess.{n}", [0x265A + i], [n], solid))
+        out.append((f"chess.{n}.line", [0x2654 + i], [n + "-line"], line))
     sg = sigils()
-    for i, n in enumerate(LAYERS):
-        out.append((f"layer.{n}", 0xE001 + i, n, hairline(sg[n], w)))
-    for i, (slug, short) in enumerate(WORLDS.items()):
-        out.append((f"world.{short}", 0xE011 + i, short, hairline(sg[slug], w)))
-    for i, (n, m) in enumerate(BRAND.items()):
-        out.append((f"mark.{n}", 0xE021 + i, n, hairline(m, w)))
-    for i, (n, m) in enumerate(MORE.items()):
-        out.append((f"mark.{n}", 0xE028 + i, n, hairline(m, w)))
+    hair = []   # (glyph name, codepoint, ligature names, spec)
+    hair += [(f"layer.{n}", 0xE001 + i, [n], sg[n]) for i, n in enumerate(LAYERS)]
+    hair += [(f"world.{short}", 0xE011 + i, [short], sg[slug]) for i, (slug, short) in enumerate(WORLDS.items())]
+    hair += [(f"mark.{n}", 0xE021 + i, [n], m) for i, (n, m) in enumerate(BRAND.items())]
+    hair += [(f"mark.{n}", 0xE028 + i, [n], m) for i, (n, m) in enumerate(MORE.items())]
+    hair += [(f"category.{n}", 0xE041 + i, [CATEGORY_NAMES[n]], m) for i, (n, m) in enumerate(CATEGORIES.items())]
+    hair += [(f"tier.{n[4:]}", 0xE049 + i, [n] + (["castle"] if n == "the-build" else []), m) for i, (n, m) in enumerate(TIERS.items())]
+    hair += [(f"mark.{n}", 0xE04C + i, [] if n in TOOLS else [n], m) for i, (n, m) in enumerate(EXTRA.items())]
+    cps = {name: [cp] for name, cp, _, _ in hair}; names = {name: list(l) for name, _, l, _ in hair}
+    for i, (tool, mark) in enumerate(TOOLS.items()):   # the tools share their marks' outlines
+        cps[f"mark.{mark}"].append(0xE051 + i); names[f"mark.{mark}"].append(tool)
+    for name, _, _, spec in hair:
+        out.append((name, cps[name], names[name], hairline(spec, w)))
+        out.append((name + ".fill", [c + FILL for c in cps[name]], [n + "-fill" for n in names[name]], filled(spec, w)))
     return out
 
 # ---------------------------------------------------------------- build
@@ -404,7 +468,7 @@ def subset_web(src, dst):
     f = TTFont(src); s = subset.Subsetter(opts)
     s.populate(unicodes=list(range(0x20, 0x7F)) + list(range(0xA0, 0x180)) + [0x131, 0x152, 0x153, 0x2BB, 0x2BC, 0x2C6, 0x2DA, 0x2DC]
                + list(range(0x2000, 0x2070)) + [0x2074, 0x20AC, 0x2116, 0x2122, 0x2190, 0x2191, 0x2192, 0x2193, 0x2212, 0x2215, 0xFEFF, 0xFFFD]
-               + list(range(0x2654, 0x2660)) + list(range(0xE001, 0xE060)))
+               + list(range(0x2654, 0x2660)) + list(range(0xE001, 0xE060)) + list(range(0xE101, 0xE160)))
     s.subset(f); f.flavor = "woff2"; f.save(dst)
 
 def build(src, style, weight, engraved_default, stem, t, w):
@@ -427,18 +491,25 @@ def build(src, style, weight, engraved_default, stem, t, w):
     add_feature(f, "ss01", ss, "Plain capitals" if engraved_default else "Engraved capitals")
     ligs = {}
     colon = cm[ord(":")]
-    for name, uni, lig, p in marks(w):
+    solid = {}
+    for name, unis, lignames, p in marks(w):
         g, adv = place(p); set_glyph(f, name, g, adv, 1)
         for tb in f["cmap"].tables:
-            if tb.isUnicode() and (tb.format != 4 or uni <= 0xFFFF): tb.cmap[uni] = name
-        seq = [colon] + [cm[ord(c)] for c in lig] + [colon]
-        ligs[tuple(seq)] = name
+            if tb.isUnicode():
+                for uni in unis: tb.cmap[uni] = name
+        for lig in lignames:
+            seq = tuple([colon] + [cm[ord(c)] for c in lig] + [colon])
+            if seq in ligs: raise SystemExit(f":{lig}: is used by both {ligs[seq]} and {name}")
+            ligs[seq] = name
+        if name.endswith(".fill"): solid[name[:-5]] = name
+    ss2 = add_lookup(gsub, otl.buildLookup([otl.buildSingleSubstSubtable(solid)]))
+    add_feature(f, "ss02", ss2, "Filled marks")
     lk = add_lookup_first(gsub, otl.buildLookup([otl.buildLigatureSubstSubtable(ligs)]))
     append_to_feature(f, "liga", lk)
     rename(f, "KNGHT Order", style, weight)
     ttf = os.path.join(OUT, f"KNGHTOrder-{style.replace(' ', '')}.ttf"); f.save(ttf)
     subset_web(ttf, ttf.replace(".ttf", ".latin.woff2"))
-    print(f"{style}: {len(alts)} capitals engraved{' by default' if engraved_default else ' under ss01'}, {len(ligs)} KNGHT glyphs")
+    print(f"{style}: {len(alts)} capitals engraved{' by default' if engraved_default else ' under ss01'}, {len(solid)} marks with filled versions, {len(ligs)} :name: shortcuts")
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
