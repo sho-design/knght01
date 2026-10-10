@@ -609,6 +609,10 @@
     };
     toggle.addEventListener('click', () => setMenu(!root.classList.contains('menu-open')));
     panel.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+    // The mark and the bar's Book button close it too, before Lenis glides (a stopped Lenis goes nowhere).
+    navBar.addEventListener('click', (e) => { if (e.target.closest('a') && root.classList.contains('menu-open')) setMenu(false); });
+    // Back to a page kept in the browser's cache: it comes back with the menu closed.
+    addEventListener('pageshow', (e) => { if (e.persisted) setMenu(false); });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && root.classList.contains('menu-open')) { setMenu(false); toggle.focus(); }
     });
