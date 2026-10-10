@@ -575,8 +575,9 @@ html.lenis,html.lenis body{height:auto}
 .nav__toggle[aria-expanded="true"] .tg__eye{opacity:1;transition-delay:.8s}
 .mnav{position:fixed;inset:0;z-index:79;display:flex;flex-direction:column;justify-content:space-between;gap:32px;padding:calc(var(--nav-h) + env(safe-area-inset-top,0px) + 6vh) var(--gutter) calc(32px + env(safe-area-inset-bottom,0px));background:#000;opacity:0;transition:opacity .45s var(--ease);overflow-y:auto;overscroll-behavior:contain}
 .mnav[hidden]{display:none}
-.mnav{pointer-events:none}
-.menu-open .mnav{opacity:1;pointer-events:auto}
+/* While it fades out the panel still catches taps (site.js swallows them), so a quick second tap never lands on the page. */
+.menu-open .mnav{opacity:1}
+.nav__toggle,.mnav a,.mnav button{-webkit-tap-highlight-color:transparent}
 .menu-open .nav{transform:none;background:#000;border-color:var(--rule)}
 .mnav__list{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
 .mnav__list li{border-bottom:1px solid var(--rule);opacity:0;transform:translateY(18px);transition:opacity .5s var(--ease-out),transform .6s var(--ease-out);transition-delay:calc(var(--i) * 60ms + 80ms)}
