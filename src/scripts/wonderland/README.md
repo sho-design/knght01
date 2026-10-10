@@ -24,13 +24,15 @@ and none when the footer comes into view. The portal chunk is fetched when someo
 hole (or the codex's button), and on the press at the latest. The game chunk starts loading the moment the overlay
 opens, in parallel with the fall; its worker starts when the board has landed.
 
-**Budget.** `rabbit.js` was given 2.2 KB gzipped. It adds 2.49 KB gzipped (2.3 KB brotli, which is what Vercel
-sends to browsers that ask for it) to the Motion chunk, measured as the difference between the chunk with and
-without it. Roughly: the drawing 0.27 KB, its style 0.42 KB, the placement 0.36 KB, the run 0.35 KB, the markup
-0.24 KB, the rest the watcher and the codex and address listeners. The simplest way under budget is to move the
-style string (`CSS` in `rabbit.js`, all under `.wl-rb`) into `public/assets/css/site.css`, which every page loads
-anyway; that leaves about 2.1 KB. Measure again after any change: gzip the Motion chunk (level 9) with and without
-the import line in `Motion.astro`.
+**Budget.** `rabbit.js` was given 2.2 KB gzipped. On the merged build (portal and game together) the Motion chunk
+grows by about 2,040 bytes gzipped (level 6 or 9; about 1,870 bytes brotli, which is what Vercel sends to
+browsers that ask for it), against the same chunk built without it. `site.js` grows by 112 bytes gzipped for the codex's third button. The
+page's HTML and `site.css` do not change. So a visitor who never finds the rabbit pays about 2.1 KB gzipped, in
+files they already download, and no new request. Roughly: the drawing 0.27 KB, its style 0.42 KB, the placement
+0.36 KB, the run 0.35 KB, the markup 0.24 KB, the rest the watcher and the codex and address listeners. If it ever
+needs to shrink, move the style string (`CSS` in `rabbit.js`, all under `.wl-rb`) into
+`public/assets/css/site.css`, which every page loads anyway. Measure again after any change: gzip the Motion chunk
+(level 9) with and without the import line in `Motion.astro`.
 
 **Import rules** (they keep the footer's chunk graph as it is; see the preview rule in `../footer/SCENES.md`):
 
@@ -90,7 +92,7 @@ inside `host`; the game touches nothing outside it except its own `<style id="wl
 ```js
 const controller = mount(host, {
   reduce,     // prefers-reduced-motion, read at open
-  signal,     // an AbortSignal, aborted when the overlay starts to close: use it for every listener
+  signal,     // an AbortSignal, aborted on close right after destroy(): use it for every listener
   onClimb,    // the ending card's "Climb back up" calls this (it goes through history, like Back)
   track,      // (name, params) analytics; never throws
   bookHref,   // '/book/'
@@ -144,8 +146,9 @@ the overlay are left to the browser (`data-lenis-prevent`), and nothing behind c
 overlay stops there, so the page's own handlers (the knght's move on the arrow keys, the menu's Escape) never see it.
 
 Climb back up (the bar's button, Escape, an ending's button) goes back through history when the portal added the
-entry, so it and the phone's Back do the same thing (a 400 ms fallback closes anyway). On close: the game fades
-(0.2 s), `destroy()`, the page is put back (visible, not inert, overflow as it was, Lenis running, the scroll where it
+entry, so it and the phone's Back do the same thing (a 400 ms fallback closes anyway). On close: the board stops
+taking input at once and fades (0.2 s), then `destroy()` and the signal's abort (the game also ends itself when its
+signal aborts, so the abort waits for the fade), the page is put back (visible, not inert, overflow as it was, Lenis running, the scroll where it
 was), the iris opens on it from where you went in (0.65 s), and focus goes back where it was, without scrolling.
 Under reduced motion all of it happens at once.
 

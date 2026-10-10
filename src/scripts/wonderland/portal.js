@@ -67,7 +67,7 @@ export function open({ from = 'hash', origin = null, returnFocus = null } = {}) 
     weStopped: !!lenis && !lenis.isStopped,
     overflow: [body.style.overflow, root.style.overflow],
     origin: origin || { x: innerWidth / 2, y: innerHeight / 2 },
-    game: new AbortController(), // the game's listeners: aborted as the overlay starts to close
+    game: new AbortController(), // the game's listeners: aborted once the board has faded, with destroy()
     own: new AbortController(), // the portal's: aborted once it is gone
     state: 'open', pushed: false, inerted: [], controller: null, failed: false, waiting: false,
   };
@@ -258,12 +258,14 @@ export function close(reason = 'climb') {
   clearTimeout(s.waitT);
   clearTimeout(s.sayT);
   if (location.hash === HASH) history.replaceState(history.state, '', location.pathname + location.search);
-  s.game.abort();
   if (s.tl) s.tl.kill();
   if (s.fall) s.fall.breathe(false);
+  // The board takes no more input, but stays drawn while it fades: the game ends after the fade (its signal aborting
+  // also ends it, so the abort waits too).
   s.host.inert = true;
   const putBack = () => {
     try { if (s.controller) s.controller.destroy(); } catch (e) { console.error('KNGHT wonderland:', e); }
+    s.game.abort();
     s.controller = null;
     if (s.fall) s.fall.destroy();
     restore(s);
