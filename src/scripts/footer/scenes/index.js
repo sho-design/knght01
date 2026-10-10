@@ -10,6 +10,9 @@ export const SCENES = {
   'letter-to-piece': () => import('./letter-to-piece.js'),
   dusk: () => import('./dusk.js'),
   'back-rank': () => import('./back-rank.js'),
+  guard: () => import('./guard.js'),
+  checkmate: () => import('./checkmate.js'),
+  sunrise: () => import('./sunrise.js'),
 };
 
 /* Preview only: finished endings the owner can open with ?ending=<id>. Never in the visitor bag.

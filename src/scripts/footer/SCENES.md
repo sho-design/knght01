@@ -235,6 +235,9 @@ scene does not take over. Either way the next scene starts with clean letters.
 | `letter-to-piece` | Letter to piece | Rotation |
 | `dusk` | Dusk | Rotation. Also stands its knght shadow in the N-G gap, by the owner's choice. No other ending may. |
 | `back-rank` | The back rank | Rotation |
+| `guard` | The guard | Rotation |
+| `checkmate` | Checkmate | Rotation |
+| `sunrise` | Sunrise | Rotation |
 | `title` | Title sequence | Preview |
 | `missing-i` | The missing I | Preview |
 | `last-line` | The last line | Preview |
