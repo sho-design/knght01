@@ -1,6 +1,8 @@
 ---
 // The Black Queen's game on its own, for QA: a black page with a stand-in for the portal's bar.
-// Not linked anywhere and not in the sitemap. No Motion, no site.js.
+// Never in a production build: astro.config.mjs serves it at /lab/wonderland/ under `astro dev`, or in a build made
+// with PUBLIC_WL_LAB=1. On the live site the only way to the game is the rabbit (or #down-the-rabbit-hole).
+// No Motion, no site.js.
 // It reads ?fen= (a start position), ?level= (the level focused first), ?seed= (her randomness) and ?reduce=1.
 ---
 <!doctype html>
@@ -39,7 +41,7 @@ body{background:#000}
   // Escape that the game did not use is the portal's: here it only says so.
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !e.defaultPrevented) climbed(); });
   const reduce = q.get('reduce') === '1' || matchMedia('(prefers-reduced-motion: reduce)').matches;
-  import('../../scripts/wonderland/game/index.js').then(({ mount }) => {
+  import('../scripts/wonderland/game/index.js').then(({ mount }) => {
     const game = mount(host, {
       reduce,
       onClimb: climbed,

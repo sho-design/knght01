@@ -39,12 +39,7 @@ on(window, 'hashchange', onHash);
 on(doc, 'DOMContentLoaded', onHash);
 
 /* ---------- The rabbit on the footer line ---------- */
-const CSS = '.wl-rb{position:absolute;width:100%;z-index:60;pointer-events:none}.wl-rb *{position:absolute;left:0;top:0}.wl-rb>div{width:100%;overflow:hidden}'
-  + '.wl-rb svg{overflow:visible;stroke:#fff;stroke-linecap:round;stroke-linejoin:round}.wl-rb path,.wl-rb ellipse{vector-effect:non-scaling-stroke}'
-  + '.wl-rb>div svg{fill:#fff;stroke-width:1.1;filter:drop-shadow(0 0 1.5px #000);transform-origin:50% 80.8%}.wl-rb .w{fill:#000}.wl-rb .t{pointer-events:auto}'
-  + '.wl-rb button{all:unset;position:absolute;width:48px;height:44px;border-radius:50%;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}'
-  + '.wl-rb button:focus-visible{outline:1px solid #fff;outline-offset:2px;--s:1.12;--o:.9}@media (hover:hover){.wl-rb button:hover{--s:1.12;--o:.9}}'
-  + '.wl-rb .l{stroke-opacity:var(--o,.55);transition:.25s}.wl-rb .o{transform:scale(var(--s,1));transition:.25s}';
+// Its style lives in site.css ("The white rabbit"), which every page loads anyway: no bytes in this chunk.
 const RIM = '<path d="M-11 0A11 2.86 0 0 ';
 
 const watch = (line) => {
@@ -116,8 +111,7 @@ const watch = (line) => {
     ran = 1;
     layer = doc.createElement('div');
     layer.className = 'wl-rb';
-    // Its own small style travels with it (start() runs once per page).
-    layer.innerHTML = `<style id="wl-rabbit-css">${CSS}</style><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${RABBIT.outline}"/><g class="w"><path d="${RABBIT.watch}"/><path d="${RABBIT.hands}"/></g>`
+    layer.innerHTML = `<div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${RABBIT.outline}"/><g class="w"><path d="${RABBIT.watch}"/><path d="${RABBIT.hands}"/></g>`
       + `<circle cx="${RABBIT.eye[0]}" cy="${RABBIT.eye[1]}" r=".6" fill="#000" stroke="none"/></svg></div>`
       + '<button type="button" aria-label="Follow the white rabbit"><svg viewBox="-24 -32 48 44" width="48" height="44" fill="none"><g class="o"><g>'
       + `<ellipse rx="11" ry="2.86" fill="#000" stroke="none"/>${RIM}1 11 0" stroke-opacity=".16"/>${RIM}0 11 0" class="l"/></g><ellipse rx="11" ry="2.86" opacity="0"/></g></svg></button>`;

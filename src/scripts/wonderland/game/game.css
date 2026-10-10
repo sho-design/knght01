@@ -43,6 +43,7 @@
 .wlg .wlg-controls .link{background:none;border:0;padding:8px 0;min-height:40px;font:500 .9rem/1 var(--sans);color:#fff;cursor:pointer}
 .wlg .wlg-controls .link[aria-disabled="true"]{color:var(--ash-2);cursor:default}
 .wlg .wlg-controls .link[aria-disabled="true"]::after{opacity:.4}
+.wlg .wlg-controls .link[hidden]{display:none}
 
 /* ----- The board ----- */
 .wlg-board{position:absolute;inset:0;transform-origin:50% 50%}
@@ -120,6 +121,8 @@
 .wlg-why{margin:0;color:var(--ash);font-size:.9rem}
 .wlg-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px;margin-top:6px}
 .wlg-actions .btn{min-height:48px;padding:0 22px}
+.wlg .wlg-peek{align-self:flex-start;min-height:40px;margin:-4px 0 -6px;padding:8px 0;background:none;border:0;font:500 .9rem/1 var(--sans);color:var(--ash);cursor:pointer}
+.wlg .wlg-peek:focus-visible{outline:1px solid #fff;outline-offset:4px}
 .wlg-levels{display:flex;flex-direction:column;gap:8px;margin-top:2px}
 .wlg-level{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:10px;width:100%;min-height:56px;margin:0;padding:0 20px 0 12px;border:1px solid rgba(255,255,255,.32);border-radius:999px;background:transparent;color:#fff;text-align:left;cursor:pointer;-webkit-appearance:none;appearance:none;transition:background-color .2s,color .2s,border-color .2s}
 .wlg-level .wlg-glyph{width:34px;height:34px;stroke-width:1;--ink:#fff;--body:#fff;--cut:#000}

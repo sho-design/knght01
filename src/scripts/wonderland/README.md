@@ -11,6 +11,7 @@ The **portal** (this folder's top level) owns the rabbit, the overlay, the page 
 ```
 src/scripts/wonderland/
   rabbit.js        eager: the rabbit on the footer line, the ways in, follow(). In the Motion chunk on every page.
+                   Its style is in public/assets/css/site.css ("The white rabbit"), not in the chunk.
   portal.js        lazy chunk 1: the overlay, scroll and focus, Lenis, history, Climb back up, the hand-off
   fall.js          in chunk 1: the tunnel (canvas), the watch and the knght falling past, the four lines
   portal.css       in chunk 1, as a string (?inline), injected once as <style id="wl-css">
@@ -24,15 +25,28 @@ and none when the footer comes into view. The portal chunk is fetched when someo
 hole (or the codex's button), and on the press at the latest. The game chunk starts loading the moment the overlay
 opens, in parallel with the fall; its worker starts when the board has landed.
 
-**Budget.** `rabbit.js` was given 2.2 KB gzipped. On the merged build (portal and game together) the Motion chunk
-grows by about 2,040 bytes gzipped (level 6 or 9; about 1,870 bytes brotli, which is what Vercel sends to
-browsers that ask for it), against the same chunk built without it. `site.js` grows by 112 bytes gzipped for the codex's third button. The
-page's HTML and `site.css` do not change. So a visitor who never finds the rabbit pays about 2.1 KB gzipped, in
-files they already download, and no new request. Roughly: the drawing 0.27 KB, its style 0.42 KB, the placement
-0.36 KB, the run 0.35 KB, the markup 0.24 KB, the rest the watcher and the codex and address listeners. If it ever
-needs to shrink, move the style string (`CSS` in `rabbit.js`, all under `.wl-rb`) into
-`public/assets/css/site.css`, which every page loads anyway. Measure again after any change: gzip the Motion chunk
-(level 9) with and without the import line in `Motion.astro`.
+**Budget.** `rabbit.js` was given 2.2 KB gzipped in the Motion chunk. Measured on the production build against the
+same files at e9999eb (gzip level 9; brotli is what Vercel sends to browsers that ask for it):
+
+| File (already loaded by every page with a footer) | gzip | brotli | What |
+| --- | --- | --- | --- |
+| Motion chunk | +2,092 B | +1,909 B | `rabbit.js`: the drawing, the placement, the run, the markup, the watcher, the ways in |
+| `site.css` | +346 B | +266 B | the rabbit's style (`.wl-rb`) |
+| `site.js` | +146 B | +128 B | the codex's third button, and the candle light pausing under `html.wl-hide` |
+| `stage.*.js` | -15 B | -32 B | only its import line (the Motion chunk's new hash) |
+| **In all** | **+2,569 B** | **+2,271 B** | **no new request**, on load or when the footer comes into view |
+
+Checked in a browser too: `/`, `/process/`, `/book/`, a world page and `/check/`, at 390 (touch) and 1280 wide,
+loaded, scrolled to the footer and left 8 s, fetch exactly the files they fetched at e9999eb.
+
+Keep it that way:
+
+- **No second entry that imports anything lazily.** Vite's preload helper lives inside the Motion chunk only while the
+  Motion chunk is the one entry with a dynamic `import()`. A page script with its own `import()` (the lab harness was
+  one) makes Rollup move the helper into a shared `preload-helper.*.js`, which every page then fetches. That is why the
+  lab is not in `src/pages` (section 7). After a build, `ls dist/_astro | grep preload` must print nothing.
+- Measure again after any change: gzip the Motion chunk (level 9) and compare it with a build without the import line
+  in `Motion.astro`, and add the `.wl-rb` block of `site.css`.
 
 **Import rules** (they keep the footer's chunk graph as it is; see the preview rule in `../footer/SCENES.md`):
 
@@ -66,7 +80,8 @@ for any page script that wants to pause itself. Nothing has to listen.
   1.5 px black drop shadow where it passes over the homepage letters.
 - **Where.** On the border of the last `footer .footer__base`, in a layer appended to `<body>` (never inside the
   footer: the footer host removes what a scene did not make). The layer is `z-index: 60`, takes no pointer events
-  except the hole's button, and never changes the footer's layout.
+  except the hole's button, and never changes the footer's layout. Its style is the `.wl-rb` block at the end of
+  `site.css`, so the layer needs no `<style>` of its own.
 - **Placement.** The hole starts at 70% of the line and moves in 8 px steps, alternately left and right, until its
   48 x 44 hit box clears every link, button and field in the footer (each with 8 px to spare) and the back-to-top
   column (from the button's left minus 12 px to the edge, at every height). The run starts nine hops to the left
@@ -109,6 +124,13 @@ controller.destroy();                          // idempotent: worker, animations
   the board cannot be built; the portal then shows its error line. Under reduced motion `from` is not passed.
 - Keys: the game listens only inside `host`. When it uses Escape (to drop a selection, to close the promotion
   chooser) it calls `preventDefault()`; otherwise Escape bubbles and the portal climbs.
+- Size: in portrait a square is `min((width - 40) / 8, (height - 220) / 8, 72)` px, so every square and every button
+  of the promotion chooser is at least 40 px on a 360 px phone (43 at 390, 48 at 430).
+- Endings: the card waits 1.2 s after the last move (reduced motion too: a pause is not motion), so the mating move,
+  its ticks and the check ring are seen first; the live region speaks at once. On a phone the card covers most of the
+  board, so it has a quiet "See the board": the card steps aside, focus stays on the board (arrow keys read the
+  final position square by square), and a tap on the board, Enter on a square, or "See the result" in the panel
+  brings it back. New game works throughout.
 
 Namespaces: the portal uses `.wl`, `.wl-*`, `#wl-*`; the game `.wlg`, `.wlg-*`, `#wlg-*`. `--wl-bar-h` is the one
 shared custom property (the bar's height: 56 px plus the safe area).
@@ -152,13 +174,20 @@ signal aborts, so the abort waits for the fade), the page is put back (visible, 
 was), the iris opens on it from where you went in (0.65 s), and focus goes back where it was, without scrolling.
 Under reduced motion all of it happens at once.
 
+The page's own frame loops are told nothing, so they must not do work the visitor cannot see: while `html.wl-hide`
+is set, `site.js`'s candle light (the hall's `frame`) skips its frames. Without that it wrote styles on the hidden
+hall and read layout on every frame, and kept the phone's main thread over 80% busy under a still board.
+
 ## 7. QA
 
 - `?wl-qa` on any page exposes `window.KNGHT_WL = { gsap, tl, fall, phase }` once the overlay opens, to pause and
   step the fall (`tl.pause(); tl.seek(2.5, false)`).
 - `/?ending=<id>` on the homepage exposes the site's GSAP as `KNGHT_FOOTER.gsap`; the rabbit's run is the top-level
   timeline whose tweens target `.wl-rb div>svg`.
-- The game alone: `/lab/wonderland/` (the game's harness).
+- The game alone: `/lab/wonderland/` (the game's harness, `src/lab/wonderland.astro`; it takes `?fen=`, `?level=`,
+  `?seed=` and `?reduce=1`). It exists only under `astro dev`, or in a build made with `PUBLIC_WL_LAB=1 npx astro
+  build --outDir <somewhere else>`. A production build has no `/lab/wonderland/`: the live site's only ways to the game
+  are the three in section 2, through the rabbit hole.
 - After any change, check: the footer's height and the hole against the footer's links at 360, 390, 430 and 1440
   wide; ten presses of the footer knght with no leftovers warning; each way in and each way out, with the scroll
   position, focus, Lenis, overflow and `inert` restored; reduced motion; no CSP errors; and that pages scrolled to the

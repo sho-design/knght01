@@ -13,6 +13,7 @@ import { createEngine } from './engine.js';
 import { W, LEVELS, PIECE_TITLE, sayMove } from './words.js';
 
 const BUDGET = { pawn: 150, knght: 600, queen: 1500 };
+const HOLD = 1200; // ms between the last move of a game and its ending card
 const EASE_OUT = 'cubic-bezier(.16,1,.3,1)';
 const WORTH = { q: 9, r: 5, b: 3, n: 3, p: 1, k: 0 };
 let remembered = null; // the last level chosen, kept in module memory only
@@ -39,7 +40,7 @@ export function mount(host, opts = {}) {
     + `<div class="wlg-boardwrap"><p class="sr-only" id="wlg-help">${W.boardHelp}</p></div>`
     + `<div class="wlg-who wlg-who--you"><span class="wlg-dot" aria-hidden="true"></span><span class="wlg-name">${W.you}</span><span class="wlg-taken" aria-hidden="true"></span></div>`
     + '<div class="wlg-panel"><p class="wlg-status"></p><p class="wlg-last"></p>'
-    + `<div class="wlg-controls"><button type="button" class="link" data-act="back">${W.takeBack}</button><button type="button" class="link" data-act="new">${W.newGame}</button></div></div>`
+    + `<div class="wlg-controls"><button type="button" class="link" data-act="result" hidden>${W.result}</button><button type="button" class="link" data-act="back">${W.takeBack}</button><button type="button" class="link" data-act="new">${W.newGame}</button></div></div>`
     + '<section class="wlg-card" hidden tabindex="-1" aria-labelledby="wlg-card-h"></section>'
     + '</div></div>';
 
@@ -48,7 +49,7 @@ export function mount(host, opts = {}) {
   const wrap = $('.wlg-boardwrap'), card = $('.wlg-card'), statusEl = $('.wlg-status'), lastEl = $('.wlg-last');
   const herRow = $('.wlg-who--her'), youRow = $('.wlg-who--you'), panel = $('.wlg-panel'), tag = $('.wlg-tag');
   const herTaken = herRow.querySelector('.wlg-taken'), youTaken = youRow.querySelector('.wlg-taken'), hand = $('.wlg-hand');
-  const backBtn = $('[data-act="back"]'), newBtn = $('[data-act="new"]');
+  const backBtn = $('[data-act="back"]'), newBtn = $('[data-act="new"]'), resultBtn = $('[data-act="result"]');
 
   const rules = createRules(opts.fen);
   const board = createBoard(wrap, { reduce });
@@ -61,7 +62,7 @@ export function mount(host, opts = {}) {
   const signal = ac.signal;
   const timers = new Set();
   let destroyed = false, landing = null, phase = 'pre', level = null, sel = null, targets = new Map();
-  let promoAt = null, promoFresh = false, token = 0, watch = null, flip = false;
+  let promoAt = null, promoFresh = false, token = 0, watch = null, flip = false, peeking = false;
   let seed = (opts.seed >>> 0) || ((Math.random() * 4294967296) >>> 0);
   const nextSeed = () => (seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0);
   const sleep = (ms) => new Promise((r) => { const t = setTimeout(() => { timers.delete(t); r(); }, Math.max(0, ms)); timers.add(t); });
@@ -74,7 +75,8 @@ export function mount(host, opts = {}) {
     if (destroyed) return;
     const w = host.clientWidth || window.innerWidth, h = probe.offsetHeight || window.innerHeight;
     const gut = w >= 760 ? 32 : 16, side = w >= 1100 ? 320 : 280;
-    const tall = Math.floor(Math.min((w - 48) / 8, (h - 220) / 8, 72));
+    // Portrait: 20 px either side of the board, so a 360 px phone still gets 40 px squares (the smallest tap target).
+    const tall = Math.floor(Math.min((w - 40) / 8, (h - 220) / 8, 72));
     const wide = Math.floor(Math.min((h - 2 * gut - 24) / 8, (w - side - 96) / 8, 80));
     const landscape = (w >= 760 && wide > tall) || (w < 760 && w > h);
     const sq = Math.max(24, landscape ? wide : tall);
@@ -111,19 +113,48 @@ export function mount(host, opts = {}) {
     }
   }
   function showCard(html, { rise = !reduce, delay = 0 } = {}) {
-    card.innerHTML = html;
+    if (html != null) card.innerHTML = html;
+    setPeek(false);
     card.hidden = false;
     board.squares.inert = true;
     placeCard();
     if (rise) card.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay, easing: EASE_OUT, fill: 'backwards' });
   }
-  function hideCard() {
-    card.hidden = true;
-    card.innerHTML = '';
-    board.squares.inert = false;
+  function uncover() {
     herRow.removeAttribute('data-covered');
     youRow.removeAttribute('data-covered');
   }
+  function hideCard() {
+    setPeek(false);
+    card.hidden = true;
+    card.inert = false;
+    card.innerHTML = '';
+    board.squares.inert = false;
+    uncover();
+  }
+  // After an ending, "See the board" puts the card aside and leaves the final position to look at (and, by
+  // keyboard, to read square by square). A tap on the board, Enter on a square or "See the result" brings it back.
+  function setPeek(on) {
+    peeking = on;
+    root.toggleAttribute('data-peek', on);
+    resultBtn.hidden = !on;
+  }
+  function peek() {
+    if (phase !== 'end' || card.hidden) return;
+    const had = card.contains(document.activeElement);
+    setPeek(true);
+    card.hidden = true;
+    board.squares.inert = false;
+    uncover();
+    if (had) board.setCursor(board.cursor, true); // focus stays on the board, so the keyboard can read it
+    say(W.peekLive);
+  }
+  function unpeek() {
+    if (phase !== 'end' || !peeking) return;
+    showCard(null);
+    focusCard();
+  }
+  function focusCard() { const b = card.querySelector('.btn'); if (b) b.focus(); }
 
   /* ----- What the page shows: markers, labels, the two rows, the status ----- */
   function refresh() {
@@ -180,6 +211,7 @@ export function mount(host, opts = {}) {
   }
 
   function activate(s) {
+    if (phase === 'end') { unpeek(); return; }
     if (phase === 'her' || phase === 'moving') { say(W.thinking); return; }
     if (phase !== 'you') return;
     const p = rules.get(s);
@@ -312,25 +344,33 @@ export function mount(host, opts = {}) {
     sel = null;
     targets = new Map();
     const actions = (first) => `<div class="wlg-actions">${first}<button type="button" class="btn btn--ghost" data-act="climb">${W.climb}</button></div>`;
+    const peekLink = `<button type="button" class="link wlg-peek" data-act="peek">${W.peek}</button>`;
     let html, head;
     if (end.result === 'win') {
       head = W.winHead;
       html = `<h2 class="wlg-head" id="wlg-card-h">${head}</h2><p class="wlg-lede">${W.winLine(level)}</p>`
-        + actions(`<a class="btn" href="${bookHref}">${W.book}</a>`);
+        + actions(`<a class="btn" href="${bookHref}">${W.book}</a>`) + peekLink;
     } else if (end.result === 'loss') {
       head = W.lossHead;
       html = `<h2 class="wlg-head" id="wlg-card-h">${head}</h2>`
-        + actions(`<button type="button" class="btn" data-act="again">${W.again}</button>`);
+        + actions(`<button type="button" class="btn" data-act="again">${W.again}</button>`) + peekLink;
     } else {
       head = W.drawHead;
       html = `<h2 class="wlg-head" id="wlg-card-h">${head}</h2><p class="wlg-why">${W.drawWhy[end.reason] || ''}</p>`
         + `<blockquote class="wlg-quote"><p>${W.drawQuote}</p></blockquote><p class="wlg-credit">${W.drawCredit}</p>`
-        + actions(`<button type="button" class="btn" data-act="again">${W.again}</button>`);
+        + actions(`<button type="button" class="btn" data-act="again">${W.again}</button>`) + peekLink;
     }
     statusEl.textContent = head;
     refresh();
-    showCard(`<p class="wlg-eyebrow">${W.pickEyebrow}</p>${html}`);
-    card.querySelector('.btn').focus();
+    // The card waits, so the last move, its ticks and the check ring are seen before anything covers the board.
+    // (Reduced motion too: the pause is not motion, and there the move itself is instant.) Taps on the board do
+    // nothing meanwhile; New game still works, and then the card never comes.
+    const t = token;
+    sleep(HOLD).then(() => {
+      if (destroyed || t !== token || phase !== 'end') return;
+      showCard(`<p class="wlg-eyebrow">${W.pickEyebrow}</p>${html}`);
+      focusCard();
+    });
     const extra = end.result === 'win' ? ` ${W.winLine(level)}` : end.result === 'draw' ? ` ${W.drawWhy[end.reason] || ''}` : '';
     say(`${line ? `${line} ` : ''}${head}${extra}`);
     track('rabbit_game_end', { result: end.result, reason: end.reason, level, moves: Math.ceil(rules.plies() / 2) });
@@ -375,6 +415,7 @@ export function mount(host, opts = {}) {
     if (!b) return;
     if (b.dataset.level) choose(b.dataset.level);
     else if (b.dataset.act === 'again') restart();
+    else if (b.dataset.act === 'peek') peek();
     else if (b.dataset.act === 'climb') { try { if (opts.onClimb) opts.onClimb(); } catch {} }
   }, { signal });
 
@@ -412,6 +453,7 @@ export function mount(host, opts = {}) {
   }
   backBtn.addEventListener('click', () => { if (backBtn.getAttribute('aria-disabled') !== 'true') takeBack(); }, { signal });
   newBtn.addEventListener('click', () => { if (newBtn.getAttribute('aria-disabled') !== 'true') restart(); }, { signal });
+  resultBtn.addEventListener('click', unpeek, { signal });
 
   bindBoard(board, signal, {
     activate,

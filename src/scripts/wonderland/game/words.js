@@ -49,6 +49,9 @@ export const W = {
   lossHead: 'Checkmate. The Black Queen wins this one.',
   again: 'Play again',
   drawHead: 'A draw.',
+  peek: 'See the board',
+  result: 'See the result',
+  peekLive: 'The board as the game ended. Tap it, or press Enter on a square, to see the result again.',
   drawQuote: 'It takes all the running you can do, to keep in the same place.',
   drawCredit: 'Lewis Carroll, Through the Looking-Glass',
   drawWhy: {

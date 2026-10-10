@@ -1687,3 +1687,19 @@ a.arm__tool:hover .arrow{transform:translateX(5px)}
 .sigil__stage svg{max-height:calc(100svh - var(--nav-h) - 110px);width:auto;max-width:100%;margin:0 auto}
 .sigil__tilt[hidden]{display:none}
 @media (max-width:900px){.sigil__stage svg{max-height:none;width:100%}}
+
+/* ---------- The white rabbit on the footer line (src/scripts/wonderland/rabbit.js). It is drawn only when the
+   reader reaches the footer; this is its whole style, kept here so the Motion chunk carries none of it. ---------- */
+.wl-rb{position:absolute;width:100%;z-index:60;pointer-events:none}
+.wl-rb *{position:absolute;left:0;top:0}
+.wl-rb>div{width:100%;overflow:hidden}
+.wl-rb svg{overflow:visible;stroke:#fff;stroke-linecap:round;stroke-linejoin:round}
+.wl-rb path,.wl-rb ellipse{vector-effect:non-scaling-stroke}
+.wl-rb>div svg{fill:#fff;stroke-width:1.1;filter:drop-shadow(0 0 1.5px #000);transform-origin:50% 80.8%}
+.wl-rb .w{fill:#000}
+.wl-rb .t{pointer-events:auto}
+.wl-rb button{all:unset;position:absolute;width:48px;height:44px;border-radius:50%;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.wl-rb button:focus-visible{outline:1px solid #fff;outline-offset:2px;--s:1.12;--o:.9}
+@media (hover:hover){.wl-rb button:hover{--s:1.12;--o:.9}}
+.wl-rb .l{stroke-opacity:var(--o,.55);transition:.25s}
+.wl-rb .o{transform:scale(var(--s,1));transition:.25s}

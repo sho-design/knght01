@@ -1163,6 +1163,7 @@
     const start = performance.now();
     const frame = (now) => {
       requestAnimationFrame(frame); // keep the light alive even if one step below fails
+      if (root.classList.contains('wl-hide')) return; // hidden under the rabbit hole (wonderland/portal.css)
       const t = (now - start) / 1000;
       if (!fine) {
         // No cursor: the light drifts with the reading position.
