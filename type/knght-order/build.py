@@ -247,15 +247,6 @@ def sigils():
     ts = open(os.path.join(REPO, "src", "lib", "sigils.ts")).read()
     return dict(re.findall(r"""['"]?([a-z-]+)['"]?:\s*'(<[^']+)'""", ts))
 
-def dial_markup():
-    """The seven-layer dial: seven arcs with a gap between each."""
-    r, gap, out = 8.5, 9, []
-    for i in range(7):
-        a0 = math.radians(-90 + i * 360 / 7 + gap / 2); a1 = math.radians(-90 + (i + 1) * 360 / 7 - gap / 2)
-        x0, y0 = 12 + r * math.cos(a0), 12 + r * math.sin(a0); x1, y1 = 12 + r * math.cos(a1), 12 + r * math.sin(a1)
-        out.append(f'<path d="M{x0:.3f} {y0:.3f}A{r} {r} 0 0 1 {x1:.3f} {y1:.3f}"/>')
-    return "".join(out) + '<circle cx="12" cy="12" r="1.1"/>'
-
 def seal_markup():
     """A wax seal: a scalloped rim, an inner ring and a K."""
     n, r0, r1, d = 14, 8.4, 9.6, []
@@ -268,13 +259,9 @@ def seal_markup():
             '<path d="M10.3 9.3v5.4M10.3 12.4l3.6-3.1M11.5 11.3l2.6 3.4"/>')
 
 BRAND = {
-    # The sword from the hero film, point down, striking into the stone.
-    "sword": '<path d="M12 21.4l-1.25-1.9V8.6h2.5v10.9z"/><path d="M7.2 8.6h9.6M12 8.6V4.7M12 10.4v7.4"/><circle cx="12" cy="3.6" r="1.05"/>',
     "seal": seal_markup(),
-    "shield": '<path d="M12 2.8 19 5.4v6.1c0 4.6-3 7.9-7 9.7-4-1.8-7-5.1-7-9.7V5.4z"/><path d="M8.2 13.2 12 9.8l3.8 3.4"/>',
     "crown": '<path d="M4.6 18.6h14.8M5.6 18.6 4.2 8.2l4.5 4.1L12 5.2l3.3 7.1 4.5-4.1-1.4 10.4z"/><path d="M5.2 21h13.6"/>',
     "crystal": '<path d="M8 4h8l4 5-8 12L4 9z"/><path d="M4 9h16M10 9l2 12 2-12M8 4l2 5 2-5 2 5 2-5"/>',
-    "dial": dial_markup(),
     "divider": '<path d="M-6 12h14.6M15.4 12H30"/><path d="M12 9.6 14.4 12 12 14.4 9.6 12z"/>',
 }
 
@@ -323,9 +310,6 @@ MORE = {
     # Arms
     "helm": '<path d="M6.6 21V11.2C6.6 6.6 9 3.6 12 3.6s5.4 3 5.4 7.6V21M5 21h14M8.4 10.8h7.2M12 10.8v6.4"/><path d="M12 3.6c.3-1.5 1.8-2.4 4-2.2-.9.5-1.4 1.2-1.5 2"/>',
     "swords": [turned(-40, 12, 11.6, sword_upright()), turned(40, 12, 11.6, sword_upright())],
-    "banner": '<path d="M6 21.5V3.6"/><circle cx="6" cy="2.7" r=".9"/><path d="M6 4.4h12.5l-3.4 3.4 3.4 3.4H6"/><path d="M3.8 21.5h4.4"/>',
-    "key": '<circle cx="12" cy="6.2" r="3.4"/><circle cx="12" cy="6.2" r="1.1"/><path d="M12 9.6v11.6M12 16.4h3.2M12 19.2h2.4"/>',
-    "scroll": '<path d="M4.5 3.5h15a1.5 1.5 0 0 1 0 3h-15a1.5 1.5 0 0 1 0-3zM4.5 17.5h15a1.5 1.5 0 0 1 0 3h-15a1.5 1.5 0 0 1 0-3z"/><path d="M6 6.5v11M18 6.5v11M8.6 10h6.8M8.6 13h6.8"/>',
     "laurel": laurel_markup(),
     "gavel": [turned(-40, 10, 10, '<rect x="4.6" y="4.6" width="9" height="4.4" rx=".6"/><path d="M6.4 4.6v4.4M11.8 4.6v4.4M9.1 9v10.4"/>'),
               '<path d="M12.6 21.2h8.6"/><rect x="13.8" y="18.2" width="6.2" height="3" rx=".4"/>'],
@@ -340,15 +324,6 @@ MORE = {
     "sunrise": '<path d="M2.4 18h19.2M6.6 18a5.4 5.4 0 0 1 10.8 0M12 7v2.6M5.4 10.4l1.8 1.8M18.6 10.4l-1.8 1.8M2.6 14.8h2.6M18.8 14.8h2.6M7.4 21h9.2"/>',
     "moon": '<path d="M14.6 3.4a8.8 8.8 0 1 0 6.2 13.2A7.2 7.2 0 0 1 14.6 3.4z"/><path d="M18.6 4.6v2.6M17.3 5.9h2.6"/>',
     "spyglass": [turned(-32, 12, 12, '<rect x="2.6" y="10.7" width="5" height="2.6" rx=".3"/><rect x="7.6" y="10.1" width="5.6" height="3.8" rx=".3"/><rect x="13.2" y="9.2" width="7.6" height="5.6" rx=".4"/><path d="M1.4 11.4v1.2"/>')],
-    # The Armoury's free tools
-    "horn": '<path d="M2.4 10.4v3.2M3.4 11.2h9.2c2.3 0 4.3-1.5 5.6-4.2h1.4v10h-1.4c-1.3-2.7-3.3-4.2-5.6-4.2H3.4z"/><path d="M7.2 12.8v5.8l2.2-1.4 2.2 1.4v-5.8"/>',
-    "hourglass": '<path d="M6.4 3h11.2M6.4 21h11.2M8 3c0 4.6 3.6 6.2 3.6 9S8 16.4 8 21M16 3c0 4.6-3.6 6.2-3.6 9s3.6 4.4 3.6 9M9.4 7.2h5.2M12 12.6v3.4M9.6 20.4c.6-1.6 1.5-2.4 2.4-2.4s1.8.8 2.4 2.4"/>',
-    "compass": '<circle cx="12" cy="12" r="9"/><path d="M12 4.4l1.6 6 6 1.6-6 1.6-1.6 6-1.6-6-6-1.6 6-1.6z"/><path d="M12 2.4v1.2"/>',
-    "signpost": '<path d="M12 2.8v18.6M8.4 21.4h7.2M12 4.8h7.4l2 2-2 2H12M12 10.6H4.6l-2 2 2 2H12"/>',
-    "drop": '<path d="M12 3c3 4.2 6.2 7.6 6.2 11.4a6.2 6.2 0 0 1-12.4 0C5.8 10.6 9 7.2 12 3z"/><path d="M9.2 14.8a2.9 2.9 0 0 0 2.4 2.8"/>',
-    "lens": '<circle cx="10" cy="10" r="6.4"/><path d="M14.7 14.7l6.2 6.2M7.2 10.2l2 2 3.6-3.8"/>',
-    "letter": '<path d="M3 6.4h18v12.4H3z"/><path d="M3 6.4l7.8 6.1M21 6.4l-7.8 6.1"/><circle cx="12" cy="13.4" r="1.6"/>',
-    "anvil": '<path d="M2.2 8H19v2.4c-1.7.3-2.7 1.5-2.7 3.1V15h2.2v3.2h-13V15h2.2v-1.5C7.7 11.9 6.6 10.7 5 10.4 3.7 10.2 2.8 9.4 2.2 8z"/><path d="M4 21.2h16M14.4 4.6l1.6-1.6M17.2 5.6l2-.8M11.6 4.2 11 2.6"/>',
 }
 
 LAYERS = ["lore", "law", "language", "map", "ground", "artifacts", "machinery"]
@@ -357,17 +332,25 @@ WORLDS = {"restoration-medical": "restoration", "black-lotus-coffee": "blacklotu
           "toronto-beauty": "torontobeauty", "wellfit-social-club": "wellfit", "art-colouring": "artcolouring"}
 CHESS = ["king", "queen", "rook", "bishop", "knight", "pawn"]
 
+def sparkles_markup():
+    """Medspas: three four-point sparkles."""
+    def star(x, y, r):
+        k = r * .18
+        return f"M{x} {y - r}Q{x + k} {y - k} {x + r} {y}Q{x + k} {y + k} {x} {y + r}Q{x - k} {y + k} {x - r} {y}Q{x - k} {y - k} {x} {y - r}z"
+    return f'<path d="{star(10, 13.4, 7.4)}"/><path d="{star(18.4, 5, 2.6)}"/><path d="{star(18.8, 18.6, 2)}"/>'
+
 CATEGORIES = {
     # One mark for each category KNGHT serves, in the order of src/data/categories.json.
-    # Clinics get a stethoscope, not a cross: the red cross emblem is protected in Canada.
+    # Clinics get a stethoscope, not a cross: the red cross emblem is protected in Canada. No category reuses a
+    # world's or a layer's object: medspas are not a bottle (Artifacts), fitness is not a weight (Wellfit).
     "clinic": '<path d="M7 3.2v5.2a5 5 0 0 0 10 0V3.2M5.8 3.2h2.4M15.8 3.2h2.4M12 13.4v2.8a3.9 3.9 0 0 0 7.8 0v-1.8"/><circle cx="19.8" cy="12.8" r="1.7"/>',
     "dental": '<path d="M8.2 3.8C5.6 3.8 4.3 6 4.7 8.7c.4 2.6 1.7 4 2.1 6.6.4 2.7.8 5.6 2.2 5.6 1.6 0 1.4-4.7 3-4.7s1.4 4.7 3 4.7c1.4 0 1.8-2.9 2.2-5.6.4-2.6 1.7-4 2.1-6.6.4-2.7-.9-4.9-3.5-4.9-1.6 0-2.4 1-3.8 1s-2.2-1-3.8-1z"/>',
-    "medspa": '<path d="M9.4 21.2h5.2a1.4 1.4 0 0 0 1.4-1.4v-8.6H8v8.6a1.4 1.4 0 0 0 1.4 1.4zM9.6 11.2V9h4.8v2.2M10.6 9V5.2a1.4 1.4 0 0 1 2.8 0V9M8 15.4h8M19 2.6v3.6M17.2 4.4h3.6"/>',
+    "medspa": sparkles_markup(),
     "law": '<path d="M12 2.8 3.6 7.6h16.8zM5 9.4h14M4.2 18.6h15.6M3 21.2h18M6.6 9.4v9.2M10.2 9.4v9.2M13.8 9.4v9.2M17.4 9.4v9.2"/>',
-    "spirits": '<path d="M5.4 7.6h13.2l-1.4 12.6a1 1 0 0 1-1 .9H7.8a1 1 0 0 1-1-.9z"/><path d="M6.2 13.2h11.6"/><rect x="9.2" y="14.6" width="3.4" height="3.4" rx=".4"/>',
+    "spirits": '<path d="M7.2 3h9.6c1.7 3.2 1.7 14.8 0 18H7.2C5.5 17.8 5.5 6.2 7.2 3z"/><path d="M6 7.4h12M6 16.6h12M6.2 12h11.6"/><circle cx="12" cy="9.6" r=".9"/>',
     "food": '<path d="M3.4 11.4h17.2c0 4.8-3.8 8.6-8.6 8.6s-8.6-3.8-8.6-8.6zM8.8 21.2h6.4M8.6 8.6c-.9-1.1.9-2.1 0-3.4M12 8.6c-.9-1.1.9-2.1 0-3.4M15.4 8.6c-.9-1.1.9-2.1 0-3.4"/>',
-    "fitness": '<path d="M2.4 12h1.8M19.8 12h1.8M8.4 12h7.2"/><rect x="4.2" y="8.6" width="2.1" height="6.8" rx=".5"/><rect x="6.3" y="7" width="2.1" height="10" rx=".5"/><rect x="17.7" y="8.6" width="2.1" height="6.8" rx=".5"/><rect x="15.6" y="7" width="2.1" height="10" rx=".5"/>',
-    "creative": [turned(42, 12, 12, '<path d="M10.4 2.6h3.2v14.2L12 20.4l-1.6-3.6z"/><path d="M10.4 16.8h3.2M10.4 5.4h3.2"/>')],
+    "fitness": '<path d="M12 20.4C6.4 16.6 3.2 13.4 3.2 9.4a4.6 4.6 0 0 1 8.8-1.8 4.6 4.6 0 0 1 8.8 1.8c0 4-3.2 7.2-8.8 11z"/><path d="M5.4 12.4h3.2l1.4-2.6 2.2 5.2 1.6-3.4 1.2.8h3.6"/>',
+    "creative": '<circle cx="7.2" cy="17.6" r="2.7"/><circle cx="16.8" cy="17.6" r="2.7"/><path d="M9 15.6 16.4 3.2M15 15.6 7.6 3.2"/>',
 }
 
 # Typed names follow the site's /for/ pages, so :law: stays the Law layer and :law-firms: is the category.
@@ -375,23 +358,68 @@ CATEGORY_NAMES = {"clinic": "clinics", "dental": "dental", "medspa": "medspas", 
                   "food": "food-and-drink", "fitness": "fitness", "creative": "creative"}
 
 TIERS = {
-    # The three ways in, from the home page.
-    "the-verdict": '<circle cx="12" cy="8.6" r="5.6"/><path d="M9.4 13.6 7.8 20.8l2.4-1.4 1.6 1.9.4-6.1M14.6 13.6l1.6 7.2-2.4-1.4-1.6 1.9M9.8 7l2.2 3.8L14.2 7"/>',
-    "the-build": '<path d="M2.8 21.2h18.4M4.6 21.2V10.4h3.4v10.8M16 21.2V10.4h3.4v10.8M8 21.2v-9h8v9M10.1 12.2V7.4L12 3l1.9 4.4v4.8M10.7 21.2v-2.9a1.3 1.3 0 0 1 2.6 0v2.9M4.6 10.4V8.8h1.1v1.6M6.9 10.4V8.8H8v1.6M16 10.4V8.8h1.1v1.6M18.3 10.4V8.8h1.1v1.6M12 8.4v1.6"/>',
+    # The three ways in, from the home page. The Verdict is the chapter rail's sword (see CHAPTERS). The Build is a
+    # brick wall, not a castle: the site already draws two castles (the Ground layer and Castleblack).
+    "the-build": '<path d="M3 6.6h18v14.6H3zM3 11.4h18M3 16.2h18M9 6.6v4.8M15 6.6v4.8M6 11.4v4.8M12 11.4v4.8M18 11.4v4.8M9 16.2v5M15 16.2v5"/>',
     "the-keep": '<path d="M9 6.2h6l1.2 2.2v9.4L15 20H9l-1.2-2.2V8.4zM10.6 6.2V4.8a1.4 1.4 0 0 1 2.8 0v1.4M7.8 9.2h8.4M7.8 17h8.4"/><path d="M12 15.6c-1.3-.6-1.5-1.9-.6-3.2.3.7.8 1 1.2.8.5.8.5 1.7-.6 2.4z"/>',
 }
 
 EXTRA = {
-    # A proposal: a rolled scroll tied with a ribbon and sealed.
-    "proposal": '<path d="M5.4 7.6h13.6a2.6 2.6 0 0 1 0 5.2H5.4a2.6 2.6 0 0 1 0-5.2z"/><circle cx="5.4" cy="10.2" r="1"/><path d="M12 12.8v1.4M11 18.2l-.9 3M13 18.2l.9 3"/><circle cx="12" cy="16.2" r="2.1"/>',
-    # The free tools without a mark of their own yet.
-    "line": '<path d="M12 2.8 16.4 9.4 12 16.6 7.6 9.4z"/><path d="M12 16.6v-5.2M3 20.6h18"/><circle cx="12" cy="9.8" r=".2"/>',
-    "plain": '<path d="M4 4.6h16v10.6h-9.4L6.4 19.4v-4.2H4z"/><path d="M7.4 8.6h9.2M7.4 11.6h5.8"/>',
+    # A proposal: a page with a signature line.
+    "proposal": '<path d="M6 2.8h12v18.4H6zM9 7h6M9 10h6M9 13h3.6M8.8 17.4c.8-1.5 1.5-1.5 1.9 0s1.2 1.5 1.9-.2 1.4-1 2.4.4"/>',
 }
 
-# The Armoury, in the order the page lists the tools. Each tool name types its mark.
-TOOLS = {"line": "line", "check": "lens", "reply": "letter", "plain": "plain", "cartographer": "compass",
-         "herald": "horn", "waymarks": "signpost", "sigil": "anvil", "leak": "drop", "keep": "hourglass"}
+def chapter_sigils():
+    """The five chapter sigils on the home page's chapter rail, from public/assets/js/chapters.js."""
+    js = open(os.path.join(REPO, "public", "assets", "js", "chapters.js")).read()
+    table = js[js.index("const PATHS = {"):js.index("};", js.index("const PATHS = {"))]
+    return dict(re.findall(r"""(\w+):\s*'(<[^']+)'""", table))
+
+# The home page's five chapters, in rail order, with the sigil chapters.js gives each one.
+CHAPTERS = [("worlds", "orb", ["worlds", "the-worlds", "chapter-1"]),
+            ("work-with-us", "key", ["work-with-us", "chapter-2"]),
+            ("the-layers", "shield", ["the-layers", "layers", "chapter-3"]),
+            ("self-check", None, ["self-check", "the-self-check", "score", "score-your-world", "chapter-4"]),
+            ("verdict", "sword", ["verdict", "the-verdict", "chapter-5"])]
+# The rail draws the self-check with the Law layer's scales. In the font each thing has one icon and each icon one
+# thing, so the self-check gets the quiz's own segmented dial instead.
+
+def gauge_markup():
+    """Score your world: the quiz's segmented dial, seven segments over a half turn, with a needle."""
+    r, gap, out = 8.6, 13, []
+    for i in range(7):
+        a0 = math.radians(180 + i * 180 / 7 + gap / 2); a1 = math.radians(180 + (i + 1) * 180 / 7 - gap / 2)
+        x0, y0 = 12 + r * math.cos(a0), 16.4 + r * math.sin(a0); x1, y1 = 12 + r * math.cos(a1), 16.4 + r * math.sin(a1)
+        out.append(f'<path d="M{x0:.3f} {y0:.3f}A{r} {r} 0 0 1 {x1:.3f} {y1:.3f}"/>')
+    return "".join(out) + '<path d="M12 16.4l4.6-5.4M4.4 20.6h15.2"/><circle cx="12" cy="16.4" r="1.3"/>'
+
+def menu_sigils():
+    """The menu's sigils, from public/assets/js/site.js."""
+    js = open(os.path.join(REPO, "public", "assets", "js", "site.js")).read()
+    table = js[js.index("const SIGILS = {"):js.index("};", js.index("const SIGILS = {"))]
+    return dict(re.findall(r"""(\w+):\s*'(<[^']+)'""", table))
+
+# The menu items the chapter rail does not cover, with the menu's own sigil, or a mark drawn here where the
+# menu borrows a layer's (Free tools uses the Language quill).
+MENU = [("who-its-for", "banner", None, ["who-its-for"]),
+        ("how-it-works", "compass", None, ["how-it-works"]),
+        ("rules-journal", "seal", None, ["rules-journal", "rules"]),
+        ("free-tools", None, '<path d="M4 11.2a8 5.2 0 0 1 16 0M4 11.2h16v9.4H4zM4 14.4h16M10.8 12.8h2.4v3.4h-2.4z"/>', ["free-tools", "armoury"])]
+
+# The Armoury, in the order the page lists the tools, one mark each. The one-line forge gets the anvil; the
+# Sigil tool an eight-point star; the Cartographer (Google Business Profile) a map pin, since the compass is How it works.
+TOOLS = {
+    "line": '<path d="M2.2 8H19v2.4c-1.7.3-2.7 1.5-2.7 3.1V15h2.2v3.2h-13V15h2.2v-1.5C7.7 11.9 6.6 10.7 5 10.4 3.7 10.2 2.8 9.4 2.2 8z"/><path d="M4 21.2h16M14.4 4.6l1.6-1.6M17.2 5.6l2-.8M11.6 4.2 11 2.6"/>',
+    "check": '<circle cx="10" cy="10" r="6.4"/><path d="M14.7 14.7l6.2 6.2M7.2 10.2l2 2 3.6-3.8"/>',
+    "reply": '<path d="M3 6.4h18v12.4H3z"/><path d="M3 6.4l7.8 6.1M21 6.4l-7.8 6.1"/><circle cx="12" cy="13.4" r="1.6"/>',
+    "plain": '<path d="M4 4.6h16v10.6h-9.4L6.4 19.4v-4.2H4z"/><path d="M7.4 8.6h9.2M7.4 11.6h5.8"/>',
+    "cartographer": '<path d="M12 21.4s-6.6-6.4-6.6-11.4a6.6 6.6 0 0 1 13.2 0c0 5-6.6 11.4-6.6 11.4z"/><circle cx="12" cy="10" r="2.4"/>',
+    "herald": '<path d="M2.4 10.4v3.2M3.4 11.2h9.2c2.3 0 4.3-1.5 5.6-4.2h1.4v10h-1.4c-1.3-2.7-3.3-4.2-5.6-4.2H3.4z"/><path d="M7.2 12.8v5.8l2.2-1.4 2.2 1.4v-5.8"/>',
+    "waymarks": '<path d="M12 2.8v18.6M8.4 21.4h7.2M12 4.8h7.4l2 2-2 2H12M12 10.6H4.6l-2 2 2 2H12"/>',
+    "sigil": [turned(0, 12, 12, '<path d="M5.4 5.4h13.2v13.2H5.4z"/>'), turned(45, 12, 12, '<path d="M5.4 5.4h13.2v13.2H5.4z"/>')],
+    "leak": '<path d="M12 3c3 4.2 6.2 7.6 6.2 11.4a6.2 6.2 0 0 1-12.4 0C5.8 10.6 9 7.2 12 3z"/><path d="M9.2 14.8a2.9 2.9 0 0 0 2.4 2.8"/>',
+    "keep": '<path d="M6.4 3h11.2M6.4 21h11.2M8 3c0 4.6 3.6 6.2 3.6 9S8 16.4 8 21M16 3c0 4.6-3.6 6.2-3.6 9s3.6 4.4 3.6 9M9.4 7.2h5.2M12 12.6v3.4M9.6 20.4c.6-1.6 1.5-2.4 2.4-2.4s1.8.8 2.4 2.4"/>',
+}
 
 FILL = 0x100   # a mark's filled version sits this far above it
 
@@ -415,6 +443,7 @@ def filled(spec, w):
 
 def marks(w):
     """[(glyph name, codepoints, ligature names, path)] for every KNGHT glyph, at hairline weight w.
+    One glyph per thing and one thing per glyph: several typed names only where they name the same thing.
     Every hairline mark also gets a filled version, FILL code points up, named with -fill."""
     out = []
     pieces = chess_pieces(w)
@@ -422,21 +451,21 @@ def marks(w):
         solid, line = pieces[n]
         out.append((f"chess.{n}", [0x265A + i], [n], solid))
         out.append((f"chess.{n}.line", [0x2654 + i], [n + "-line"], line))
-    sg = sigils()
-    hair = []   # (glyph name, codepoint, ligature names, spec)
+    sg, ch, mn = sigils(), chapter_sigils(), menu_sigils()
+    hair = []   # (glyph name, codepoint, typed names, spec)
     hair += [(f"layer.{n}", 0xE001 + i, [n], sg[n]) for i, n in enumerate(LAYERS)]
     hair += [(f"world.{short}", 0xE011 + i, [short], sg[slug]) for i, (slug, short) in enumerate(WORLDS.items())]
-    hair += [(f"mark.{n}", 0xE021 + i, [n], m) for i, (n, m) in enumerate(BRAND.items())]
+    hair += [(f"mark.{n}", cp, [n], BRAND[n]) for n, cp in (("seal", 0xE022), ("crown", 0xE024), ("crystal", 0xE025), ("divider", 0xE027))]
     hair += [(f"mark.{n}", 0xE028 + i, [n], m) for i, (n, m) in enumerate(MORE.items())]
     hair += [(f"category.{n}", 0xE041 + i, [CATEGORY_NAMES[n]], m) for i, (n, m) in enumerate(CATEGORIES.items())]
-    hair += [(f"tier.{n[4:]}", 0xE049 + i, [n] + (["castle"] if n == "the-build" else []), m) for i, (n, m) in enumerate(TIERS.items())]
-    hair += [(f"mark.{n}", 0xE04C + i, [] if n in TOOLS else [n], m) for i, (n, m) in enumerate(EXTRA.items())]
-    cps = {name: [cp] for name, cp, _, _ in hair}; names = {name: list(l) for name, _, l, _ in hair}
-    for i, (tool, mark) in enumerate(TOOLS.items()):   # the tools share their marks' outlines
-        cps[f"mark.{mark}"].append(0xE051 + i); names[f"mark.{mark}"].append(tool)
-    for name, _, _, spec in hair:
-        out.append((name, cps[name], names[name], hairline(spec, w)))
-        out.append((name + ".fill", [c + FILL for c in cps[name]], [n + "-fill" for n in names[name]], filled(spec, w)))
+    hair += [(f"tier.{n[4:]}", 0xE04A + i, [n], m) for i, (n, m) in enumerate(TIERS.items())]
+    hair += [("mark.proposal", 0xE04C, ["proposal"], EXTRA["proposal"])]
+    hair += [(f"tool.{n}", 0xE051 + i, [n], m) for i, (n, m) in enumerate(TOOLS.items())]
+    hair += [(f"chapter.{n}", 0xE061 + i, names, ch[k] if k else gauge_markup()) for i, (n, k, names) in enumerate(CHAPTERS)]
+    hair += [(f"menu.{n}", 0xE066 + i, names, mn[k] if k else m) for i, (n, k, m, names) in enumerate(MENU)]
+    for name, cp, names, spec in hair:
+        out.append((name, [cp], names, hairline(spec, w)))
+        out.append((name + ".fill", [cp + FILL], [n + "-fill" for n in names], filled(spec, w)))
     return out
 
 # ---------------------------------------------------------------- build
@@ -468,7 +497,7 @@ def subset_web(src, dst):
     f = TTFont(src); s = subset.Subsetter(opts)
     s.populate(unicodes=list(range(0x20, 0x7F)) + list(range(0xA0, 0x180)) + [0x131, 0x152, 0x153, 0x2BB, 0x2BC, 0x2C6, 0x2DA, 0x2DC]
                + list(range(0x2000, 0x2070)) + [0x2074, 0x20AC, 0x2116, 0x2122, 0x2190, 0x2191, 0x2192, 0x2193, 0x2212, 0x2215, 0xFEFF, 0xFFFD]
-               + list(range(0x2654, 0x2660)) + list(range(0xE001, 0xE060)) + list(range(0xE101, 0xE160)))
+               + list(range(0x2654, 0x2660)) + list(range(0xE001, 0xE070)) + list(range(0xE101, 0xE170)))
     s.subset(f); f.flavor = "woff2"; f.save(dst)
 
 def build(src, style, weight, engraved_default, stem, t, w):
