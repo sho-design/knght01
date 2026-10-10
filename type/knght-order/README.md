@@ -3,7 +3,7 @@
 KNGHT's own serif. Cormorant Garamond, with three changes that make it KNGHT's:
 
 1. **Engraved capitals.** Every capital has one hairline cut down the middle of its thick strokes, the way capitals are cut into stone or engraved on a banknote. Thin strokes stay whole, so the line shows at headline sizes and disappears in small text.
-2. **The KNGHT glyphs.** The chess set, the seven layers, the nine worlds and seven brand marks are letters in the font. They sit on the baseline and take the text colour.
+2. **The KNGHT glyphs.** The chess set, the seven layers, the nine worlds and 31 brand marks are letters in the font. They sit on the baseline and take the text colour.
 3. **One weight up for small text.** A Medium cut for anything under about 28px, where Cormorant's hairlines thin out on phones.
 
 ## Styles
@@ -28,8 +28,12 @@ Type the name between colons, such as `:knight:`, and it turns into the glyph. O
 | `:lore:` `:law:` `:language:` `:map:` `:ground:` `:artifacts:` `:machinery:` | U+E001 to U+E007 | The seven layers, in order |
 | `:restoration:` `:blacklotus:` `:castleblack:` `:lisadang:` `:lorelyns:` `:rumraiders:` `:torontobeauty:` `:wellfit:` `:artcolouring:` | U+E011 to U+E019 | The nine worlds |
 | `:sword:` `:seal:` `:shield:` `:crown:` `:crystal:` `:dial:` `:divider:` | U+E021 to U+E027 | Brand marks |
+| `:helm:` `:swords:` `:banner:` `:key:` `:scroll:` `:laurel:` `:gavel:` | U+E028 to U+E02E | Arms |
+| `:stone:` `:runering:` `:tower:` `:airship:` `:torch:` | U+E02F to U+E033 | The hero film: the sword in the stone, the rune ring (its runes spell KNGHT), the towers, the airships, the Verdict torch |
+| `:candle:` `:sunrise:` `:moon:` `:spyglass:` | U+E034 to U+E037 | The footer scenes: Candle, Sunrise, Dusk and The lookout |
+| `:horn:` `:hourglass:` `:compass:` `:signpost:` `:drop:` `:lens:` `:letter:` `:anvil:` | U+E038 to U+E03F | The Armoury tools: Herald, Keep, Cartographer, Waymarks, Leak, Check, Reply and Sigil |
 
-The chess pieces come from `src/assets/knght-chess.svg` and the layer and world sigils from `src/lib/sigils.ts`. The build reads both files, so a change to the artwork reaches the font on the next build. The brand marks are drawn in `build.py` on the same 24-unit grid.
+The chess pieces come from `src/assets/knght-chess.svg` and the layer and world sigils from `src/lib/sigils.ts`. The build reads both files, so a change to the artwork reaches the font on the next build. The brand marks are drawn in `build.py` on the same 24-unit grid and line weight. To add one, add a line to `MORE` and rebuild; it takes the next code point.
 
 ## Files
 

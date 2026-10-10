@@ -6,7 +6,7 @@ Styles     Regular and Italic (from Cormorant 400) carry the engraved capitals b
 Engraving  one hairline cut down the middle of every stroke thicker than STEM. Thin strokes stay whole,
            so the line shows on stems and bowls and disappears at small sizes.
 Glyphs     the chess set (U+2654 to U+265F) from src/assets/knght-chess.svg, the seven layers and nine worlds
-           from src/lib/sigils.ts, and seven brand marks drawn below, in the Private Use Area from U+E001.
+           from src/lib/sigils.ts, and 31 brand marks drawn below, in the Private Use Area from U+E001.
            Each one can also be typed as a ligature, such as :lore: or :knight:.
 
 Run from the repo root: python3 type/knght-order/build.py   (pip install fonttools brotli skia-pathops)"""
@@ -193,13 +193,22 @@ SIDE = 60                     # sidebearing on each side of a mark
 def grid_pen(pen):
     return TransformPen(pen, (GRID, 0, 0, -GRID, 0, BASE_Y * GRID))
 
-def svg_path(markup):
-    """A pathops Path from SVG elements written on the 24 grid."""
+def svg_path(markup, rotate=None):
+    """A pathops Path from SVG elements written on the 24 grid, optionally rotated (degrees, cx, cy) on that grid."""
     doc = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' + markup + "</svg>"
-    return to_path(lambda pen: SVGPath.fromstring(doc.encode()).draw(grid_pen(pen)))
+    def draw(pen):
+        pen = grid_pen(pen)
+        if rotate:
+            deg, cx, cy = rotate; c, s = math.cos(math.radians(deg)), math.sin(math.radians(deg))
+            pen = TransformPen(pen, (c, s, -s, c, cx - cx * c + cy * s, cy - cx * s - cy * c))
+        SVGPath.fromstring(doc.encode()).draw(pen)
+    return to_path(draw)
 
-def hairline(markup, w):
-    return stroke(svg_path(markup), w * GRID)
+def hairline(spec, w):
+    """Stroke a mark: SVG markup, or a list of markup and turned() parts."""
+    parts = spec if isinstance(spec, list) else [spec]
+    paths = [stroke(svg_path(p[3], p[:3]) if isinstance(p, tuple) else svg_path(p), w * GRID) for p in parts]
+    return union(*paths)
 
 def place(p):
     """Centre a mark between equal sidebearings and return (glyph, advance)."""
@@ -268,6 +277,79 @@ BRAND = {
     "divider": '<path d="M-6 12h14.6M15.4 12H30"/><path d="M12 9.6 14.4 12 12 14.4 9.6 12z"/>',
 }
 
+def turned(deg, cx, cy, markup):
+    """A part of a mark rotated about (cx, cy) on the grid. fontTools ignores rotate() inside the SVG, so it is done here."""
+    return (deg, cx, cy, markup)
+
+def laurel_markup():
+    """Two laurel branches meeting at the foot: an outline leaf at each of four nodes, and one at each tip."""
+    def leaf(x, y, deg, L=3.8, w=1.45):
+        a = math.radians(deg); tx, ty = x + L * math.sin(a), y - L * math.cos(a)
+        nx, ny = math.cos(a) * w, math.sin(a) * w; mx, my = (x + tx) / 2, (y + ty) / 2
+        return f'<path d="M{x:.2f} {y:.2f}Q{mx + nx:.2f} {my + ny:.2f} {tx:.2f} {ty:.2f}Q{mx - nx:.2f} {my - ny:.2f} {x:.2f} {y:.2f}z"/>'
+    out = ['<path d="M11.2 20.8C7.2 19 5.2 15.2 5.4 10.2M12.8 20.8c4-1.8 6-5.6 5.8-10.6"/>']
+    for side in (-1, 1):
+        for t in (0.3, 0.56, 0.82):
+            y = 20.6 - 10.4 * t; x = 12 + side * (1.0 + 5.4 * math.sin(t * 1.5))
+            out.append(leaf(x, y, side * -50))
+        out.append(leaf(12 + side * 6.6, 10.2, side * -8))
+    return "".join(out)
+
+RUNES = {  # Elder Futhark, drawn around the origin, 3.2 tall, "up" points out of the ring
+    "K": "M.8 -1.6l-1.6 1.6 1.6 1.6",                       # kaunan
+    "N": "M0 -1.6v3.2M-.8 -.5l1.6 1",                       # naudiz
+    "G": "M-1 -1.6l2 3.2M1 -1.6l-2 3.2",                    # gebo
+    "H": "M-.9 -1.6v3.2M.9 -1.6v3.2M-.9 -.6l1.8 1.2",       # hagalaz
+    "T": "M0 -1.6v3.2M-1 -.6l1 -1 1 1",                     # tiwaz
+}
+
+def runering_markup():
+    """The rune ring from the hero film. Read clockwise from the top, its runes spell KNGHT."""
+    out = ['<circle cx="12" cy="12" r="10.2"/><circle cx="12" cy="12" r="3.3"/>']
+    for i, letter in enumerate("KNGHT"):
+        out.append(turned(i * 72, 12, 12, f'<path d="{_offset(RUNES[letter], 12, 5.25)}"/>'))
+    return out
+
+def _offset(d, x, y):
+    """Move a path written around the origin (absolute M, relative everything else) to (x, y)."""
+    return re.sub(r"M(-?[\d.]+) (-?[\d.]+)", lambda m: f"M{float(m.group(1)) + x:.3f} {float(m.group(2)) + y:.3f}", d)
+
+def sword_upright(x=12, top=1.6, hilt=15.4):
+    """A sword point up, for crossing: a one-line blade, guard, grip and pommel."""
+    return f'<path d="M{x} {top}V{hilt}M{x - 2.6} {hilt}h5.2M{x} {hilt}v3"/><circle cx="{x}" cy="{hilt + 3.9}" r=".9"/>'
+
+MORE = {
+    # Arms
+    "helm": '<path d="M6.6 21V11.2C6.6 6.6 9 3.6 12 3.6s5.4 3 5.4 7.6V21M5 21h14M8.4 10.8h7.2M12 10.8v6.4"/><path d="M12 3.6c.3-1.5 1.8-2.4 4-2.2-.9.5-1.4 1.2-1.5 2"/>',
+    "swords": [turned(-40, 12, 11.6, sword_upright()), turned(40, 12, 11.6, sword_upright())],
+    "banner": '<path d="M6 21.5V3.6"/><circle cx="6" cy="2.7" r=".9"/><path d="M6 4.4h12.5l-3.4 3.4 3.4 3.4H6"/><path d="M3.8 21.5h4.4"/>',
+    "key": '<circle cx="12" cy="6.2" r="3.4"/><circle cx="12" cy="6.2" r="1.1"/><path d="M12 9.6v11.6M12 16.4h3.2M12 19.2h2.4"/>',
+    "scroll": '<path d="M4.5 3.5h15a1.5 1.5 0 0 1 0 3h-15a1.5 1.5 0 0 1 0-3zM4.5 17.5h15a1.5 1.5 0 0 1 0 3h-15a1.5 1.5 0 0 1 0-3z"/><path d="M6 6.5v11M18 6.5v11M8.6 10h6.8M8.6 13h6.8"/>',
+    "laurel": laurel_markup(),
+    "gavel": [turned(-40, 10, 10, '<rect x="4.6" y="4.6" width="9" height="4.4" rx=".6"/><path d="M6.4 4.6v4.4M11.8 4.6v4.4M9.1 9v10.4"/>'),
+              '<path d="M12.6 21.2h8.6"/><rect x="13.8" y="18.2" width="6.2" height="3" rx=".4"/>'],
+    # The film
+    "stone": '<path d="M3.2 21.2h17.6l-1.8-4.4-2.8-1.6-1.4-2.6H9.2l-1.6 2.6-2.8 1.8z"/><path d="M11 12.6V6.4h2v6.2M8.4 6.4h7.2M12 6.4V3.5"/><circle cx="12" cy="2.6" r=".85"/>',
+    "runering": runering_markup(),
+    "tower": '<path d="M9 21.5V9.4L12 2.6l3 6.8v12.1M4.5 21.5h15M6.6 21.5v-6.2L9 13.2M17.4 21.5v-6.2L15 13.2M12 11.6v3.2M10.6 21.5v-2.6a1.4 1.4 0 0 1 2.8 0v2.6"/>',
+    "airship": '<ellipse cx="12.6" cy="8.4" rx="7.6" ry="3.6"/><path d="M5 8.4h15.2M5.2 8.4 2.6 5.8M5.2 8.4l-2.6 2.6M9.6 11.6l.8 3.6M15.6 11.6l-.8 3.6M9.8 15.2h5.6l-.8 2.2h-4z"/>',
+    "torch": '<path d="M10.6 21.2 9.7 11.4h4.6l-.9 9.8z"/><path d="M8.4 8.8h7.2l-.8 2.6H9.2z"/><path d="M12 8.6c-2.2-1-2.8-3-1.2-5.4.3 1.4 1 2 1.7 1.6.2-1.2.9-2 2.1-2.4-.4 1.4.6 2.6.2 4-.3 1.2-1.2 1.9-2.8 2.2z"/>',
+    # Footer scenes
+    "candle": '<path d="M9.4 21V10.6h5.2V21M6.4 21.2h11.2M12 10.6V9.2M14.6 12.4c-.7.5-.7 1.6 0 2.2"/><path d="M12 9c-1.5-.7-2-2.3-.9-4 .4-.6.7-1.3.9-2.4.5 1.2 1.7 2.3 1.7 3.9 0 1.3-.6 2.1-1.7 2.5z"/>',
+    "sunrise": '<path d="M2.4 18h19.2M6.6 18a5.4 5.4 0 0 1 10.8 0M12 7v2.6M5.4 10.4l1.8 1.8M18.6 10.4l-1.8 1.8M2.6 14.8h2.6M18.8 14.8h2.6M7.4 21h9.2"/>',
+    "moon": '<path d="M14.6 3.4a8.8 8.8 0 1 0 6.2 13.2A7.2 7.2 0 0 1 14.6 3.4z"/><path d="M18.6 4.6v2.6M17.3 5.9h2.6"/>',
+    "spyglass": [turned(-32, 12, 12, '<rect x="2.6" y="10.7" width="5" height="2.6" rx=".3"/><rect x="7.6" y="10.1" width="5.6" height="3.8" rx=".3"/><rect x="13.2" y="9.2" width="7.6" height="5.6" rx=".4"/><path d="M1.4 11.4v1.2"/>')],
+    # The Armoury's free tools
+    "horn": '<path d="M2.4 10.4v3.2M3.4 11.2h9.2c2.3 0 4.3-1.5 5.6-4.2h1.4v10h-1.4c-1.3-2.7-3.3-4.2-5.6-4.2H3.4z"/><path d="M7.2 12.8v5.8l2.2-1.4 2.2 1.4v-5.8"/>',
+    "hourglass": '<path d="M6.4 3h11.2M6.4 21h11.2M8 3c0 4.6 3.6 6.2 3.6 9S8 16.4 8 21M16 3c0 4.6-3.6 6.2-3.6 9s3.6 4.4 3.6 9M9.4 7.2h5.2M12 12.6v3.4M9.6 20.4c.6-1.6 1.5-2.4 2.4-2.4s1.8.8 2.4 2.4"/>',
+    "compass": '<circle cx="12" cy="12" r="9"/><path d="M12 4.4l1.6 6 6 1.6-6 1.6-1.6 6-1.6-6-6-1.6 6-1.6z"/><path d="M12 2.4v1.2"/>',
+    "signpost": '<path d="M12 2.8v18.6M8.4 21.4h7.2M12 4.8h7.4l2 2-2 2H12M12 10.6H4.6l-2 2 2 2H12"/>',
+    "drop": '<path d="M12 3c3 4.2 6.2 7.6 6.2 11.4a6.2 6.2 0 0 1-12.4 0C5.8 10.6 9 7.2 12 3z"/><path d="M9.2 14.8a2.9 2.9 0 0 0 2.4 2.8"/>',
+    "lens": '<circle cx="10" cy="10" r="6.4"/><path d="M14.7 14.7l6.2 6.2M7.2 10.2l2 2 3.6-3.8"/>',
+    "letter": '<path d="M3 6.4h18v12.4H3z"/><path d="M3 6.4l7.8 6.1M21 6.4l-7.8 6.1"/><circle cx="12" cy="13.4" r="1.6"/>',
+    "anvil": '<path d="M2.2 8H19v2.4c-1.7.3-2.7 1.5-2.7 3.1V15h2.2v3.2h-13V15h2.2v-1.5C7.7 11.9 6.6 10.7 5 10.4 3.7 10.2 2.8 9.4 2.2 8z"/><path d="M4 21.2h16M14.4 4.6l1.6-1.6M17.2 5.6l2-.8M11.6 4.2 11 2.6"/>',
+}
+
 LAYERS = ["lore", "law", "language", "map", "ground", "artifacts", "machinery"]
 WORLDS = {"restoration-medical": "restoration", "black-lotus-coffee": "blacklotus", "castleblack-spirits": "castleblack",
           "lisa-dang-immigration-law": "lisadang", "lorelyns": "lorelyns", "rum-raiders-ring": "rumraiders",
@@ -289,6 +371,8 @@ def marks(w):
         out.append((f"world.{short}", 0xE011 + i, short, hairline(sg[slug], w)))
     for i, (n, m) in enumerate(BRAND.items()):
         out.append((f"mark.{n}", 0xE021 + i, n, hairline(m, w)))
+    for i, (n, m) in enumerate(MORE.items()):
+        out.append((f"mark.{n}", 0xE028 + i, n, hairline(m, w)))
     return out
 
 # ---------------------------------------------------------------- build
@@ -320,7 +404,7 @@ def subset_web(src, dst):
     f = TTFont(src); s = subset.Subsetter(opts)
     s.populate(unicodes=list(range(0x20, 0x7F)) + list(range(0xA0, 0x180)) + [0x131, 0x152, 0x153, 0x2BB, 0x2BC, 0x2C6, 0x2DA, 0x2DC]
                + list(range(0x2000, 0x2070)) + [0x2074, 0x20AC, 0x2116, 0x2122, 0x2190, 0x2191, 0x2192, 0x2193, 0x2212, 0x2215, 0xFEFF, 0xFFFD]
-               + list(range(0x2654, 0x2660)) + list(range(0xE001, 0xE030)))
+               + list(range(0x2654, 0x2660)) + list(range(0xE001, 0xE060)))
     s.subset(f); f.flavor = "woff2"; f.save(dst)
 
 def build(src, style, weight, engraved_default, stem, t, w):
