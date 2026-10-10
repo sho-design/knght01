@@ -320,9 +320,11 @@ hall and read layout on every frame, and kept the phone's main thread over 80% b
 - `?wl-qa` on any page exposes `window.KNGHT_WL = { gsap, tl, fall, phase, clock, climb(stage), game }` once the
   overlay opens. `clock` is whichever driver is running, the fall's or the climb's: `clock.pause()`,
   `clock.seek(t)`, `clock.resume()`, `clock.t`. Stills of the fall: `clock.pause(); clock.seek(2.0)` (seek forward:
-  the timeline's calls fire as it passes them). `climb(stage)` starts a climb (through history, so wait for
-  `phase === 'rise'`); the clock is then the climb's (c). `fall.core()` gives the hand-off (`{ x, y, d, roll }`);
-  `game` is the controller.
+  the timeline's calls fire as it passes them, and they fire going back too, so a seek back across 4.9 s lands the
+  board). On a slow machine a test's round trip can outlast the fall: hold the clock from the page itself, in a
+  `requestAnimationFrame` loop that pauses it the frame `KNGHT_WL.clock` appears. `climb(stage)` starts a climb
+  (through history, so wait for `phase === 'rise'`); the clock is then the climb's (c). `fall.core()` gives the
+  hand-off (`{ x, y, d, roll }`); `game` is the controller.
 - Stills of the landing: seek the fall to 4.9 (the hand-off calls `land()`), then pause every animation in
   `document.getAnimations()` and set its `currentTime` to the ms you want (keep the list from the first still: a
   paused animation past its end is no longer listed). Stills of the page turn: the animation on
