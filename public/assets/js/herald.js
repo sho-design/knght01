@@ -15,18 +15,18 @@
 
   /* What the sign is for */
   const ICON = {
-    quill: '<path d="M20 3C13.5 4.2 8.6 9.4 6.6 16.4L5.4 21"/><path d="M6.8 15.6c3.4.2 6.8-1.2 9-3.6M9.4 10.8c2.4.1 4.6-.7 6.2-2"/>',
-    hourglass: '<path d="M6 3h12M6 21h12M7.5 3c0 5.5 9 6 9 9s-9 3.5-9 9M16.5 3c0 5.5-9 6-9 9s9 3.5 9 9"/>',
-    key: '<circle cx="7" cy="12" r="4.2"/><circle cx="7" cy="12" r="1.4"/><path d="M11.2 12H21M17.5 12v3.2M20.5 12v2.4"/>',
-    crest: '<path d="M5 4h14v7c0 5-3.5 8-7 9.5C8.5 19 5 16 5 11z"/><path d="M9 10h6M12 7v9"/>',
-    scroll: '<path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7"/><path d="M7 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2M9 9h7M9 12h7M9 15h5"/>',
+    review: '<path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9z"/>',
+    book: '<path d="M4 5.6h16v15H4zM4 9.8h16M8 3.2v4.4M16 3.2v4.4M8.6 15l2.2 2.2 4.6-4.6"/>',
+    wifi: '<path d="M3 9.4a12.8 12.8 0 0 1 18 0M5.9 12.4a8.6 8.6 0 0 1 12.2 0M8.8 15.4a4.4 4.4 0 0 1 6.4 0"/><circle cx="12" cy="18.6" r="1.3"/>',
+    contact: '<path d="M2.8 5h18.4v14H2.8z"/><circle cx="8.4" cy="10.2" r="2.2"/><path d="M5.2 16.2c.6-1.9 1.8-2.8 3.2-2.8s2.6.9 3.2 2.8M14 9.4h4.4M14 12.4h4.4M14 15.4h3"/>',
+    link: '<g transform="rotate(-45 12 12)"><rect x="2.4" y="9.2" width="10.6" height="5.6" rx="2.8"/><rect x="11" y="9.2" width="10.6" height="5.6" rx="2.8"/></g>',
   };
   const PURPOSE = {
-    review: { icon: 'quill', line: 'Tell us how we did.', fields: [['url', 'Your Google review link', 'https://g.page/r/…/review', 'In your Google Business Profile, tap “Ask for reviews” and copy the link.']] },
-    book: { icon: 'hourglass', line: 'Book your next visit.', tag: 'booking', fields: [['url', 'Your booking page', 'https://yourbusiness.com/book']] },
-    wifi: { icon: 'key', line: 'Scan to join our Wi-Fi.', fields: [['ssid', 'Network name', 'Guest'], ['pass', 'Password', ''], ['sec', 'Security', 'WPA']] },
-    contact: { icon: 'crest', line: 'Save our details.', fields: [['cname', 'Name on the card', 'Your business'], ['phone', 'Phone (optional)', ''], ['email', 'Email (optional)', ''], ['web', 'Website (optional)', '']] },
-    link: { icon: 'scroll', line: 'See the menu.', tag: 'menu', fields: [['url', 'The link', 'https://yourbusiness.com/menu']] },
+    review: { icon: 'review', line: 'Tell us how we did.', fields: [['url', 'Your Google review link', 'https://g.page/r/…/review', 'In your Google Business Profile, tap “Ask for reviews” and copy the link.']] },
+    book: { icon: 'book', line: 'Book your next visit.', tag: 'booking', fields: [['url', 'Your booking page', 'https://yourbusiness.com/book']] },
+    wifi: { icon: 'wifi', line: 'Scan to join our Wi-Fi.', fields: [['ssid', 'Network name', 'Guest'], ['pass', 'Password', ''], ['sec', 'Security', 'WPA']] },
+    contact: { icon: 'contact', line: 'Save our details.', fields: [['cname', 'Name on the card', 'Your business'], ['phone', 'Phone (optional)', ''], ['email', 'Email (optional)', ''], ['web', 'Website (optional)', '']] },
+    link: { icon: 'link', line: 'See the menu.', tag: 'menu', fields: [['url', 'The link', 'https://yourbusiness.com/menu']] },
   };
   const SIZE = { sign: { w: 850, h: 1100, place: 'front-desk' }, card: { w: 400, h: 600, place: 'table' }, sticker: { w: 300, h: 300, place: 'sticker' } };
 

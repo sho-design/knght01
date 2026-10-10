@@ -5,8 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
+    "build": "node scripts/check-marks.mjs && astro build",
+    "preview": "astro preview",
+    "marks": "node scripts/check-marks.mjs"
   },
   "dependencies": {
     "astro": "^7.3.5",

@@ -1,0 +1,875 @@
+{
+ "about": "The KNGHT marks: one icon per thing and one thing per icon. Every icon on the site and in the KNGHT Order font comes from here. npm run marks checks that nothing drifts.",
+ "grid": "24 by 24, hairline, round caps and joins; the site sets the stroke width",
+ "marks": [
+  {
+   "id": "lore",
+   "group": "layers",
+   "codepoint": "E001",
+   "names": [
+    "lore"
+   ],
+   "means": "The Lore layer",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M12 6.5C9.8 5 6.9 4.6 4 5v13c2.9-.4 5.8 0 8 1.5 2.2-1.5 5.1-1.9 8-1.5V5c-2.9-.4-5.8 0-8 1.5zM12 6.5v13\"/>"
+  },
+  {
+   "id": "law",
+   "group": "layers",
+   "codepoint": "E002",
+   "names": [
+    "law"
+   ],
+   "means": "The Law layer",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M12 3v18M7.5 21h9M4 6.5h16\"/><path d=\"M6.5 6.5L3.5 13h6zM17.5 6.5l-3 6.5h6z\"/><path d=\"M3.5 13a3 2 0 0 0 6 0M14.5 13a3 2 0 0 0 6 0\"/>"
+  },
+  {
+   "id": "language",
+   "group": "layers",
+   "codepoint": "E003",
+   "names": [
+    "language"
+   ],
+   "means": "The Language layer",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M20 3C13.5 4.2 8.6 9.4 6.6 16.4L5.4 21\"/><path d=\"M6.8 15.6c3.4.2 6.8-1.2 9-3.6M9.4 10.8c2.4.1 4.6-.7 6.2-2\"/>"
+  },
+  {
+   "id": "map",
+   "group": "layers",
+   "codepoint": "E004",
+   "names": [
+    "map"
+   ],
+   "means": "The Map layer",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M3 6.2 9 4l6 2.2L21 4v13.8L15 20l-6-2.2L3 20z\"/><path d=\"M9 4v13.8M15 6.2V20\"/>"
+  },
+  {
+   "id": "ground",
+   "group": "layers",
+   "codepoint": "E005",
+   "names": [
+    "ground"
+   ],
+   "means": "The Ground layer",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M4.5 21V9.5h2.5V6.5h2.5v3h1.5v-3h2v3h1.5v-3h2.5v3h2.5V21z\"/><path d=\"M10 21v-4.5a2 2 0 0 1 4 0V21\"/>"
+  },
+  {
+   "id": "artifacts",
+   "group": "layers",
+   "codepoint": "E006",
+   "names": [
+    "artifacts"
+   ],
+   "means": "The Artifacts layer",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M10 2.5h4V6l2.2 3.2V21H7.8V9.2L10 6z\"/><path d=\"M7.8 12h8.4v5H7.8z\"/>"
+  },
+  {
+   "id": "machinery",
+   "group": "layers",
+   "codepoint": "E007",
+   "names": [
+    "machinery"
+   ],
+   "means": "The Machinery layer",
+   "source": "src/lib/sigils.ts",
+   "svg": "<circle cx=\"12\" cy=\"12\" r=\"2.6\"/><circle cx=\"12\" cy=\"12\" r=\"6.6\"/><path d=\"M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1\"/>"
+  },
+  {
+   "id": "restoration-medical",
+   "group": "worlds",
+   "codepoint": "E011",
+   "names": [
+    "restoration"
+   ],
+   "means": "The Restoration Medical world",
+   "source": "src/lib/sigils.ts",
+   "svg": "<circle cx=\"12\" cy=\"12\" r=\"8.5\"/><path d=\"M12 7.5v9M7.5 12h9\"/><path d=\"M5.2 17.6c2-1.4 4.3-2.1 6.8-2.1s4.8.7 6.8 2.1\"/>"
+  },
+  {
+   "id": "black-lotus-coffee",
+   "group": "worlds",
+   "codepoint": "E012",
+   "names": [
+    "blacklotus"
+   ],
+   "means": "The Black Lotus Coffee world",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M12 4c2.2 2.6 2.2 6.6 0 9.2-2.2-2.6-2.2-6.6 0-9.2z\"/><path d=\"M12 13.2c-1.6-2.8-4.6-4.2-7.6-3.8.4 3 2.8 5.4 7.6 3.8zM12 13.2c1.6-2.8 4.6-4.2 7.6-3.8-.4 3-2.8 5.4-7.6 3.8z\"/><path d=\"M5 17.5h14M8 20.5h8\"/>"
+  },
+  {
+   "id": "castleblack-spirits",
+   "group": "worlds",
+   "codepoint": "E013",
+   "names": [
+    "castleblack"
+   ],
+   "means": "The Castleblack Spirits world",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M4.4 10h3.2v11H4.4zM16.4 10h3.2v11h-3.2zM7.6 13.4h8.8V21H7.6zM3.6 10 6 4.8 8.4 10zM15.6 10 18 4.8 20.4 10z\"/><path d=\"M10.4 21v-3.2a1.6 1.6 0 0 1 3.2 0V21M6 13.2v2.2M18 13.2v2.2M18 4.8V2.4l2.2.9-2.2.9\"/>"
+  },
+  {
+   "id": "lisa-dang-immigration-law",
+   "group": "worlds",
+   "codepoint": "E014",
+   "names": [
+    "lisadang"
+   ],
+   "means": "The Lisa Dang Immigration Law world",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M5 21V10a7 7 0 0 1 14 0v11\"/><path d=\"M9 21v-9a3 3 0 0 1 6 0v9\"/><path d=\"M3 21h18\"/>"
+  },
+  {
+   "id": "lorelyns",
+   "group": "worlds",
+   "codepoint": "E015",
+   "names": [
+    "lorelyns"
+   ],
+   "means": "The Lorelyns Gourmet Desserts world",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M6 11h12l-1.6 9H7.6z\"/><path d=\"M6 11a6 4.5 0 0 1 12 0\"/><path d=\"M12 6.5V4M9.5 15.5h5\"/>"
+  },
+  {
+   "id": "rum-raiders-ring",
+   "group": "worlds",
+   "codepoint": "E016",
+   "names": [
+    "rumraiders"
+   ],
+   "means": "The Rum Raiders Ring world",
+   "source": "src/lib/sigils.ts",
+   "svg": "<circle cx=\"12\" cy=\"5\" r=\"2\"/><path d=\"M12 7v13M8 10h8\"/><path d=\"M4.5 13.5c0 4 3.4 6.5 7.5 6.5s7.5-2.5 7.5-6.5M4.5 13.5 3 15.5M19.5 13.5 21 15.5\"/>"
+  },
+  {
+   "id": "toronto-beauty",
+   "group": "worlds",
+   "codepoint": "E017",
+   "names": [
+    "torontobeauty"
+   ],
+   "means": "The Toronto Beauty world",
+   "source": "src/lib/sigils.ts",
+   "svg": "<ellipse cx=\"12\" cy=\"9.5\" rx=\"5.5\" ry=\"6.5\"/><path d=\"M12 16v5M9 21h6\"/><path d=\"M9.5 7.5c.8-1.2 2-1.8 3.3-1.6\"/>"
+  },
+  {
+   "id": "wellfit-social-club",
+   "group": "worlds",
+   "codepoint": "E018",
+   "names": [
+    "wellfit"
+   ],
+   "means": "The Wellfit Social Club world",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M8.6 10.2V8.5a3.4 3.4 0 0 1 6.8 0v1.7\"/><circle cx=\"12\" cy=\"15\" r=\"5.6\"/><path d=\"M10 15h4\"/>"
+  },
+  {
+   "id": "art-colouring",
+   "group": "worlds",
+   "codepoint": "E019",
+   "names": [
+    "artcolouring"
+   ],
+   "means": "The Art Colouring world",
+   "source": "src/lib/sigils.ts",
+   "svg": "<path d=\"M12 3.5a8.5 8.5 0 1 0 0 17c1.6 0 2-1.2 1.4-2.2-.7-1.2.1-2.6 1.6-2.6H18a2.5 2.5 0 0 0 2.5-2.5A8.5 8.5 0 0 0 12 3.5z\"/><circle cx=\"8\" cy=\"10\" r=\"1\"/><circle cx=\"12\" cy=\"7.5\" r=\"1\"/><circle cx=\"16\" cy=\"10\" r=\"1\"/>"
+  },
+  {
+   "id": "worlds",
+   "group": "chapters",
+   "codepoint": "E061",
+   "names": [
+    "worlds",
+    "the-worlds",
+    "chapter-1"
+   ],
+   "means": "The worlds (chapter I)",
+   "source": "public/assets/js/chapters.js",
+   "svg": "<circle cx=\"12\" cy=\"14\" r=\"7\"/><ellipse cx=\"12\" cy=\"14\" rx=\"3\" ry=\"7\"/><path d=\"M5 14h14M12 7V2M9.6 4h4.8\"/>"
+  },
+  {
+   "id": "work-with-us",
+   "group": "chapters",
+   "codepoint": "E062",
+   "names": [
+    "work-with-us",
+    "chapter-2"
+   ],
+   "means": "Work with us (chapter II)",
+   "source": "public/assets/js/chapters.js",
+   "svg": "<circle cx=\"7\" cy=\"12\" r=\"4.2\"/><circle cx=\"7\" cy=\"12\" r=\"1.4\"/><path d=\"M11.2 12H21M17.5 12v3.2M20.5 12v2.4\"/>"
+  },
+  {
+   "id": "the-layers",
+   "group": "chapters",
+   "codepoint": "E063",
+   "names": [
+    "the-layers",
+    "layers",
+    "chapter-3"
+   ],
+   "means": "The seven layers together (chapter III)",
+   "source": "public/assets/js/chapters.js",
+   "svg": "<path d=\"M4.5 4h15v7.5c0 5-3.6 8.2-7.5 10-3.9-1.8-7.5-5-7.5-10z\"/><path d=\"M4.5 8.5h15M4.7 13h14.6M6.4 17.3h11.2\"/>"
+  },
+  {
+   "id": "self-check",
+   "group": "chapters",
+   "codepoint": "E064",
+   "names": [
+    "self-check",
+    "the-self-check",
+    "score",
+    "score-your-world",
+    "chapter-4"
+   ],
+   "means": "Score your world, the self-check (chapter IV): an astrolabe, the instrument for taking a reading of where you stand",
+   "source": "public/assets/js/chapters.js",
+   "svg": "<circle cx=\"12\" cy=\"13.6\" r=\"7.8\"/><circle cx=\"12\" cy=\"2.9\" r=\"1.2\"/><path d=\"M10.2 6.1 12 4.1l1.8 2\"/><circle cx=\"12\" cy=\"11.6\" r=\"4.2\"/><path d=\"M6.5 19.1 17.5 8.1M6.9 17.3l1.8 1.8M15.3 8.5l1.8 1.8\"/><circle cx=\"12\" cy=\"13.6\" r=\".9\"/>"
+  },
+  {
+   "id": "verdict",
+   "group": "chapters",
+   "codepoint": "E065",
+   "names": [
+    "verdict",
+    "the-verdict",
+    "chapter-5"
+   ],
+   "means": "The Verdict (chapter V, and the first way in)",
+   "source": "public/assets/js/chapters.js",
+   "svg": "<circle cx=\"12\" cy=\"3\" r=\"1.6\"/><path d=\"M12 4.6V7M8 7h8M10.8 8.2h2.4V19L12 22l-1.2-3z\"/>"
+  },
+  {
+   "id": "who-its-for",
+   "group": "menu",
+   "codepoint": "E066",
+   "names": [
+    "who-its-for"
+   ],
+   "means": "Who it's for",
+   "source": "public/assets/js/site.js",
+   "svg": "<path d=\"M5 2.5v19M5 3.5h14v13l-3.5-2.6L12 16.5V3.5\"/>"
+  },
+  {
+   "id": "how-it-works",
+   "group": "menu",
+   "codepoint": "E067",
+   "names": [
+    "how-it-works"
+   ],
+   "means": "How it works",
+   "source": "public/assets/js/site.js",
+   "svg": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 5.5l2 6.5-2 6.5-2-6.5z\"/><path d=\"M12 1.5v2M12 20.5v2M1.5 12h2M20.5 12h2\"/>"
+  },
+  {
+   "id": "rules-journal",
+   "group": "menu",
+   "codepoint": "E068",
+   "names": [
+    "rules-journal",
+    "rules"
+   ],
+   "means": "The Rules journal",
+   "source": "public/assets/js/site.js",
+   "svg": "<path d=\"M5 3h11.5a2.5 2.5 0 0 1 2.5 2.5V8M5 3a2 2 0 0 0-2 2v1h2M5 3v15\"/><path d=\"M8 7.5h7M8 10.5h5\"/><circle cx=\"15\" cy=\"17\" r=\"4.2\"/><path d=\"M15 15.2l.6 1.2 1.3.2-.95.9.22 1.3-1.17-.62-1.17.62.22-1.3-.95-.9 1.3-.2z\"/>"
+  },
+  {
+   "id": "free-tools",
+   "group": "menu",
+   "codepoint": "E069",
+   "names": [
+    "free-tools",
+    "armoury"
+   ],
+   "means": "The free tools (the Armoury)",
+   "source": "public/assets/js/site.js",
+   "svg": "<path d=\"M4 11.2a8 5.2 0 0 1 16 0M4 11.2h16v9.4H4zM4 14.4h16M10.8 12.8h2.4v3.4h-2.4z\"/>"
+  },
+  {
+   "id": "clinics",
+   "group": "categories",
+   "codepoint": "E041",
+   "names": [
+    "clinics"
+   ],
+   "means": "The Clinics category",
+   "source": "public/assets/js/sigil.js",
+   "svg": "<path d=\"M12 2v20\"/><path d=\"M12 5c-3.2 0-3.2 3 0 3s3.2 3 0 3-3.2 3 0 3 3.2 3 0 3\"/><path d=\"M10.6 2.6h2.8\"/>"
+  },
+  {
+   "id": "dental",
+   "group": "categories",
+   "codepoint": "E042",
+   "names": [
+    "dental"
+   ],
+   "means": "The Dental category",
+   "source": "public/assets/js/sigil.js",
+   "svg": "<path d=\"M7.2 3.6C4.6 3.6 3.6 5.8 4.1 8.6c.4 2.2 1.4 3.6 1.8 6 .5 3 .9 5.9 2.4 5.9s1.6-3.2 2.2-5.3c.4-1.3.9-1.7 1.5-1.7s1.1.4 1.5 1.7c.6 2.1.7 5.3 2.2 5.3s1.9-2.9 2.4-5.9c.4-2.4 1.4-3.8 1.8-6 .5-2.8-.5-5-3.1-5-2 0-2.9 1.2-4.8 1.2S9.2 3.6 7.2 3.6z\"/>"
+  },
+  {
+   "id": "medspas",
+   "group": "categories",
+   "codepoint": "E043",
+   "names": [
+    "medspas"
+   ],
+   "means": "The Medspas category",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M10 6.0Q11.332 12.068 17.4 13.4Q11.332 14.732000000000001 10 20.8Q8.668 14.732000000000001 2.5999999999999996 13.4Q8.668 12.068 10 6.0z\"/><path d=\"M18.4 2.4Q18.868 4.532 21.0 5Q18.868 5.468 18.4 7.6Q17.932 5.468 15.799999999999999 5Q17.932 4.532 18.4 2.4z\"/><path d=\"M18.8 16.6Q19.16 18.240000000000002 20.8 18.6Q19.16 18.96 18.8 20.6Q18.44 18.96 16.8 18.6Q18.44 18.240000000000002 18.8 16.6z\"/>"
+  },
+  {
+   "id": "law-firms",
+   "group": "categories",
+   "codepoint": "E044",
+   "names": [
+    "law-firms"
+   ],
+   "means": "The Law firms category",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M12 2.8 3.6 7.6h16.8zM5 9.4h14M4.2 18.6h15.6M3 21.2h18M6.6 9.4v9.2M10.2 9.4v9.2M13.8 9.4v9.2M17.4 9.4v9.2\"/>"
+  },
+  {
+   "id": "spirits",
+   "group": "categories",
+   "codepoint": "E045",
+   "names": [
+    "spirits"
+   ],
+   "means": "The Spirits category",
+   "source": "public/assets/js/sigil.js",
+   "svg": "<path d=\"M7.2 3h9.6c1.6 3 1.6 15 0 18H7.2C5.6 18 5.6 6 7.2 3z\"/><path d=\"M6.1 8h11.8M6.1 16h11.8M12 3v18\"/>"
+  },
+  {
+   "id": "food-and-drink",
+   "group": "categories",
+   "codepoint": "E046",
+   "names": [
+    "food-and-drink"
+   ],
+   "means": "The Food and drink category",
+   "source": "public/assets/js/sigil.js",
+   "svg": "<path d=\"M12 22V5\"/><path d=\"M12 6c-2-1-3-3-2-4 2 0 3 2 2 4zM12 6c2-1 3-3 2-4-2 0-3 2-2 4zM12 11c-2.5-.5-4-2.5-3.5-4 2 0 3.5 2 3.5 4zM12 11c2.5-.5 4-2.5 3.5-4-2 0-3.5 2-3.5 4zM12 16c-2.5-.5-4-2.5-3.5-4 2 0 3.5 2 3.5 4zM12 16c2.5-.5 4-2.5 3.5-4-2 0-3.5 2-3.5 4z\"/>"
+  },
+  {
+   "id": "fitness",
+   "group": "categories",
+   "codepoint": "E047",
+   "names": [
+    "fitness"
+   ],
+   "means": "The Fitness and wellness category",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M12 20.4C6.4 16.6 3.2 13.4 3.2 9.4a4.6 4.6 0 0 1 8.8-1.8 4.6 4.6 0 0 1 8.8 1.8c0 4-3.2 7.2-8.8 11z\"/><path d=\"M5.4 12.4h3.2l1.4-2.6 2.2 5.2 1.6-3.4 1.2.8h3.6\"/>"
+  },
+  {
+   "id": "creative",
+   "group": "categories",
+   "codepoint": "E048",
+   "names": [
+    "creative"
+   ],
+   "means": "The Creative products category",
+   "source": "type/knght-order",
+   "svg": "<circle cx=\"7.2\" cy=\"17.6\" r=\"2.7\"/><circle cx=\"16.8\" cy=\"17.6\" r=\"2.7\"/><path d=\"M9 15.6 16.4 3.2M15 15.6 7.6 3.2\"/>"
+  },
+  {
+   "id": "other",
+   "group": "categories",
+   "codepoint": "E049",
+   "names": [
+    "other"
+   ],
+   "means": "Any other business (the Sigil tool's default)",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M3.6 13.4 12 5l8.4 8.4M3.6 19 12 10.6l8.4 8.4\"/>"
+  },
+  {
+   "id": "the-build",
+   "group": "ways-in",
+   "codepoint": "E04A",
+   "names": [
+    "the-build"
+   ],
+   "means": "The Build, the second way in",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M3 6.6h18v14.6H3zM3 11.4h18M3 16.2h18M9 6.6v4.8M15 6.6v4.8M6 11.4v4.8M12 11.4v4.8M18 11.4v4.8M9 16.2v5M15 16.2v5\"/>"
+  },
+  {
+   "id": "the-keep",
+   "group": "ways-in",
+   "codepoint": "E04B",
+   "names": [
+    "the-keep"
+   ],
+   "means": "The Keep, the third way in: a lantern, the light KNGHT keeps burning after launch",
+   "source": "type/knght-order",
+   "svg": "<circle cx=\"12\" cy=\"2.5\" r=\"1.1\"/><path d=\"M12 3.6v.6M7.6 7.4 12 4.2l4.4 3.2zM7 7.4h10M8.2 7.4l-.6 11.4M15.8 7.4l.6 11.4M6.6 18.8h10.8M8 18.8l.8 2.4h6.4l.8-2.4\"/><path d=\"M12 16.6c-1.6-.7-2-2.3-1-3.9.4-.7.8-1.5 1-2.6.6 1.3 1.9 2.4 1.9 4.2 0 1.3-.7 2-1.9 2.3z\"/>"
+  },
+  {
+   "id": "proposal",
+   "group": "ways-in",
+   "codepoint": "E04C",
+   "names": [
+    "proposal"
+   ],
+   "means": "A KNGHT proposal",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M6 2.8h12v18.4H6zM9 7h6M9 10h6M9 13h3.6M8.8 17.4c.8-1.5 1.5-1.5 1.9 0s1.2 1.5 1.9-.2 1.4-1 2.4.4\"/>"
+  },
+  {
+   "id": "tool-line",
+   "group": "tools",
+   "codepoint": "E051",
+   "names": [
+    "line"
+   ],
+   "means": "The one-line forge (free tool)",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M2.2 8H19v2.4c-1.7.3-2.7 1.5-2.7 3.1V15h2.2v3.2h-13V15h2.2v-1.5C7.7 11.9 6.6 10.7 5 10.4 3.7 10.2 2.8 9.4 2.2 8z\"/><path d=\"M4 21.2h16M14.4 4.6l1.6-1.6M17.2 5.6l2-.8M11.6 4.2 11 2.6\"/>"
+  },
+  {
+   "id": "tool-check",
+   "group": "tools",
+   "codepoint": "E052",
+   "names": [
+    "check"
+   ],
+   "means": "The claim checker (free tool)",
+   "source": "type/knght-order",
+   "svg": "<circle cx=\"10\" cy=\"10\" r=\"6.4\"/><path d=\"M14.7 14.7l6.2 6.2M7.2 10.2l2 2 3.6-3.8\"/>"
+  },
+  {
+   "id": "tool-reply",
+   "group": "tools",
+   "codepoint": "E053",
+   "names": [
+    "reply"
+   ],
+   "means": "The reply scribe (free tool)",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M3 6.4h18v12.4H3z\"/><path d=\"M3 6.4l7.8 6.1M21 6.4l-7.8 6.1\"/><circle cx=\"12\" cy=\"13.4\" r=\"1.6\"/>"
+  },
+  {
+   "id": "tool-plain",
+   "group": "tools",
+   "codepoint": "E054",
+   "names": [
+    "plain"
+   ],
+   "means": "The plain-speech test (free tool)",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M4 4.6h16v10.6h-9.4L6.4 19.4v-4.2H4z\"/><path d=\"M7.4 8.6h9.2M7.4 11.6h5.8\"/>"
+  },
+  {
+   "id": "tool-cartographer",
+   "group": "tools",
+   "codepoint": "E055",
+   "names": [
+    "cartographer"
+   ],
+   "means": "The cartographer (free tool)",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M12 21.4s-6.6-6.4-6.6-11.4a6.6 6.6 0 0 1 13.2 0c0 5-6.6 11.4-6.6 11.4z\"/><circle cx=\"12\" cy=\"10\" r=\"2.4\"/>"
+  },
+  {
+   "id": "tool-herald",
+   "group": "tools",
+   "codepoint": "E056",
+   "names": [
+    "herald"
+   ],
+   "means": "The herald (free tool)",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M2.4 10.4v3.2M3.4 11.2h9.2c2.3 0 4.3-1.5 5.6-4.2h1.4v10h-1.4c-1.3-2.7-3.3-4.2-5.6-4.2H3.4z\"/><path d=\"M7.2 12.8v5.8l2.2-1.4 2.2 1.4v-5.8\"/>"
+  },
+  {
+   "id": "tool-waymarks",
+   "group": "tools",
+   "codepoint": "E057",
+   "names": [
+    "waymarks"
+   ],
+   "means": "Waymarks (free tool)",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M12 2.8v18.6M8.4 21.4h7.2M12 4.8h7.4l2 2-2 2H12M12 10.6H4.6l-2 2 2 2H12\"/>"
+  },
+  {
+   "id": "tool-sigil",
+   "group": "tools",
+   "codepoint": "E058",
+   "names": [
+    "sigil"
+   ],
+   "means": "Your sigil (free tool)",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M5.4 5.4h13.2v13.2H5.4z\"/><g transform=\"rotate(45 12 12)\"><path d=\"M5.4 5.4h13.2v13.2H5.4z\"/></g>"
+  },
+  {
+   "id": "tool-leak",
+   "group": "tools",
+   "codepoint": "E059",
+   "names": [
+    "leak"
+   ],
+   "means": "The leak calculator (free tool)",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M12 3c3 4.2 6.2 7.6 6.2 11.4a6.2 6.2 0 0 1-12.4 0C5.8 10.6 9 7.2 12 3z\"/><path d=\"M9.2 14.8a2.9 2.9 0 0 0 2.4 2.8\"/>"
+  },
+  {
+   "id": "tool-keep",
+   "group": "tools",
+   "codepoint": "E05A",
+   "names": [
+    "keep"
+   ],
+   "means": "The licence keep (free tool)",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M6.4 3h11.2M6.4 21h11.2M8 3c0 4.6 3.6 6.2 3.6 9S8 16.4 8 21M16 3c0 4.6-3.6 6.2-3.6 9s3.6 4.4 3.6 9M9.4 7.2h5.2M12 12.6v3.4M9.6 20.4c.6-1.6 1.5-2.4 2.4-2.4s1.8.8 2.4 2.4\"/>"
+  },
+  {
+   "id": "seal",
+   "group": "brand",
+   "codepoint": "E022",
+   "names": [
+    "seal"
+   ],
+   "means": "The wax seal pressed on a Verdict",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M12.000 3.600Q14.136 2.641 15.645 4.432Q17.986 4.494 18.567 6.763Q20.649 7.835 20.189 10.131Q21.600 12.000 20.189 13.869Q20.649 16.165 18.567 17.237Q17.986 19.506 15.645 19.568Q14.136 21.359 12.000 20.400Q9.864 21.359 8.355 19.568Q6.014 19.506 5.433 17.237Q3.351 16.165 3.811 13.869Q2.400 12.000 3.811 10.131Q3.351 7.835 5.433 6.763Q6.014 4.494 8.355 4.432Q9.864 2.641 12.000 3.600Z\"/><circle cx=\"12\" cy=\"12\" r=\"5.6\"/><path d=\"M10.3 9.3v5.4M10.3 12.4l3.6-3.1M11.5 11.3l2.6 3.4\"/>"
+  },
+  {
+   "id": "crown",
+   "group": "brand",
+   "codepoint": "E024",
+   "names": [
+    "crown"
+   ],
+   "means": "The crown",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M4.6 18.6h14.8M5.6 18.6 4.2 8.2l4.5 4.1L12 5.2l3.3 7.1 4.5-4.1-1.4 10.4z\"/><path d=\"M5.2 21h13.6\"/>"
+  },
+  {
+   "id": "crystal",
+   "group": "brand",
+   "codepoint": "E025",
+   "names": [
+    "crystal"
+   ],
+   "means": "The crystal core from the hero film",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M8 4h8l4 5-8 12L4 9z\"/><path d=\"M4 9h16M10 9l2 12 2-12M8 4l2 5 2-5 2 5 2-5\"/>"
+  },
+  {
+   "id": "divider",
+   "group": "brand",
+   "codepoint": "E027",
+   "names": [
+    "divider"
+   ],
+   "means": "A section divider",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M-6 12h14.6M15.4 12H30\"/><path d=\"M12 9.6 14.4 12 12 14.4 9.6 12z\"/>"
+  },
+  {
+   "id": "helm",
+   "group": "arms",
+   "codepoint": "E028",
+   "names": [
+    "helm"
+   ],
+   "means": "The knight's helm",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M6.6 21V11.2C6.6 6.6 9 3.6 12 3.6s5.4 3 5.4 7.6V21M5 21h14M8.4 10.8h7.2M12 10.8v6.4\"/><path d=\"M12 3.6c.3-1.5 1.8-2.4 4-2.2-.9.5-1.4 1.2-1.5 2\"/>"
+  },
+  {
+   "id": "swords",
+   "group": "arms",
+   "codepoint": "E029",
+   "names": [
+    "swords"
+   ],
+   "means": "Crossed swords",
+   "source": "type/knght-order",
+   "svg": "<g transform=\"rotate(-40 12 11.6)\"><path d=\"M12 1.6V15.4M9.4 15.4h5.2M12 15.4v3\"/><circle cx=\"12\" cy=\"19.3\" r=\".9\"/></g><g transform=\"rotate(40 12 11.6)\"><path d=\"M12 1.6V15.4M9.4 15.4h5.2M12 15.4v3\"/><circle cx=\"12\" cy=\"19.3\" r=\".9\"/></g>"
+  },
+  {
+   "id": "laurel",
+   "group": "arms",
+   "codepoint": "E02A",
+   "names": [
+    "laurel"
+   ],
+   "means": "The laurel",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M11.2 20.8C7.2 19 5.2 15.2 5.4 10.2M12.8 20.8c4-1.8 6-5.6 5.8-10.6\"/><path d=\"M8.65 17.48Q11.04 17.37 11.56 15.04Q9.17 15.15 8.65 17.48z\"/><path d=\"M6.98 14.78Q9.37 14.67 9.89 12.33Q7.50 12.44 6.98 14.78z\"/><path d=\"M5.91 12.07Q8.30 11.96 8.82 9.63Q6.43 9.74 5.91 12.07z\"/><path d=\"M5.40 10.20Q7.10 8.52 5.93 6.44Q4.23 8.12 5.40 10.20z\"/><path d=\"M15.35 17.48Q14.83 15.15 12.44 15.04Q12.96 17.37 15.35 17.48z\"/><path d=\"M17.02 14.78Q16.50 12.44 14.11 12.33Q14.63 14.67 17.02 14.78z\"/><path d=\"M18.09 12.07Q17.57 9.74 15.18 9.63Q15.70 11.96 18.09 12.07z\"/><path d=\"M18.60 10.20Q19.77 8.12 18.07 6.44Q16.90 8.52 18.60 10.20z\"/>"
+  },
+  {
+   "id": "gavel",
+   "group": "arms",
+   "codepoint": "E02B",
+   "names": [
+    "gavel"
+   ],
+   "means": "The gavel",
+   "source": "type/knght-order",
+   "svg": "<g transform=\"rotate(-40 10 10)\"><rect x=\"4.6\" y=\"4.6\" width=\"9\" height=\"4.4\" rx=\".6\"/><path d=\"M6.4 4.6v4.4M11.8 4.6v4.4M9.1 9v10.4\"/></g><path d=\"M12.6 21.2h8.6\"/><rect x=\"13.8\" y=\"18.2\" width=\"6.2\" height=\"3\" rx=\".4\"/>"
+  },
+  {
+   "id": "stone",
+   "group": "film",
+   "codepoint": "E02C",
+   "names": [
+    "stone"
+   ],
+   "means": "The sword in the stone, from the hero film",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M3.2 21.2h17.6l-1.8-4.4-2.8-1.6-1.4-2.6H9.2l-1.6 2.6-2.8 1.8z\"/><path d=\"M11 12.6V6.4h2v6.2M8.4 6.4h7.2M12 6.4V3.5\"/><circle cx=\"12\" cy=\"2.6\" r=\".85\"/>"
+  },
+  {
+   "id": "runering",
+   "group": "film",
+   "codepoint": "E02D",
+   "names": [
+    "runering"
+   ],
+   "means": "The rune ring from the hero film; its runes spell KNGHT",
+   "source": "type/knght-order",
+   "svg": "<circle cx=\"12\" cy=\"12\" r=\"10.2\"/><circle cx=\"12\" cy=\"12\" r=\"3.3\"/><path d=\"M12.800 3.650l-1.6 1.6 1.6 1.6\"/><g transform=\"rotate(72 12 12)\"><path d=\"M12.000 3.650v3.2M11.200 4.750l1.6 1\"/></g><g transform=\"rotate(144 12 12)\"><path d=\"M11.000 3.650l2 3.2M13.000 3.650l-2 3.2\"/></g><g transform=\"rotate(216 12 12)\"><path d=\"M11.100 3.650v3.2M12.900 3.650v3.2M11.100 4.650l1.8 1.2\"/></g><g transform=\"rotate(288 12 12)\"><path d=\"M12.000 3.650v3.2M11.000 4.650l1 -1 1 1\"/></g>"
+  },
+  {
+   "id": "tower",
+   "group": "film",
+   "codepoint": "E02E",
+   "names": [
+    "tower"
+   ],
+   "means": "The techno-gothic tower from the hero film",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M9 21.5V9.4L12 2.6l3 6.8v12.1M4.5 21.5h15M6.6 21.5v-6.2L9 13.2M17.4 21.5v-6.2L15 13.2M12 11.6v3.2M10.6 21.5v-2.6a1.4 1.4 0 0 1 2.8 0v2.6\"/>"
+  },
+  {
+   "id": "airship",
+   "group": "film",
+   "codepoint": "E02F",
+   "names": [
+    "airship"
+   ],
+   "means": "The airship from the hero film",
+   "source": "type/knght-order",
+   "svg": "<ellipse cx=\"12.6\" cy=\"8.4\" rx=\"7.6\" ry=\"3.6\"/><path d=\"M5 8.4h15.2M5.2 8.4 2.6 5.8M5.2 8.4l-2.6 2.6M9.6 11.6l.8 3.6M15.6 11.6l-.8 3.6M9.8 15.2h5.6l-.8 2.2h-4z\"/>"
+  },
+  {
+   "id": "torch",
+   "group": "film",
+   "codepoint": "E030",
+   "names": [
+    "torch"
+   ],
+   "means": "The torch over the Verdict section",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M10.6 21.2 9.7 11.4h4.6l-.9 9.8z\"/><path d=\"M8.4 8.8h7.2l-.8 2.6H9.2z\"/><path d=\"M12 8.6c-2.2-1-2.8-3-1.2-5.4.3 1.4 1 2 1.7 1.6.2-1.2.9-2 2.1-2.4-.4 1.4.6 2.6.2 4-.3 1.2-1.2 1.9-2.8 2.2z\"/>"
+  },
+  {
+   "id": "candle",
+   "group": "footer",
+   "codepoint": "E031",
+   "names": [
+    "candle"
+   ],
+   "means": "The Candle footer scene",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M9.4 21V10.6h5.2V21M6.4 21.2h11.2M12 10.6V9.2M14.6 12.4c-.7.5-.7 1.6 0 2.2\"/><path d=\"M12 9c-1.5-.7-2-2.3-.9-4 .4-.6.7-1.3.9-2.4.5 1.2 1.7 2.3 1.7 3.9 0 1.3-.6 2.1-1.7 2.5z\"/>"
+  },
+  {
+   "id": "sunrise",
+   "group": "footer",
+   "codepoint": "E032",
+   "names": [
+    "sunrise"
+   ],
+   "means": "The Sunrise footer scene",
+   "source": "type/knght-order",
+   "svg": "<path d=\"M2.4 18h19.2M6.6 18a5.4 5.4 0 0 1 10.8 0M12 7v2.6M5.4 10.4l1.8 1.8M18.6 10.4l-1.8 1.8M2.6 14.8h2.6M18.8 14.8h2.6M7.4 21h9.2\"/>"
+  },
+  {
+   "id": "spyglass",
+   "group": "footer",
+   "codepoint": "E034",
+   "names": [
+    "spyglass"
+   ],
+   "means": "The lookout's spyglass, a footer scene",
+   "source": "type/knght-order",
+   "svg": "<g transform=\"rotate(-32 12 12)\"><rect x=\"2.6\" y=\"10.7\" width=\"5\" height=\"2.6\" rx=\".3\"/><rect x=\"7.6\" y=\"10.1\" width=\"5.6\" height=\"3.8\" rx=\".3\"/><rect x=\"13.2\" y=\"9.2\" width=\"7.6\" height=\"5.6\" rx=\".4\"/><path d=\"M1.4 11.4v1.2\"/></g>"
+  },
+  {
+   "id": "review",
+   "group": "signs",
+   "codepoint": "E071",
+   "names": [
+    "review"
+   ],
+   "means": "A review or a rating: the Herald's review sign and the Reply tool's stars",
+   "source": "src/pages/reply.astro",
+   "svg": "<path d=\"M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9z\"/>"
+  },
+  {
+   "id": "book",
+   "group": "signs",
+   "codepoint": "E072",
+   "names": [
+    "book"
+   ],
+   "means": "Herald sign: book your next visit",
+   "source": "public/assets/js/herald.js",
+   "svg": "<path d=\"M4 5.6h16v15H4zM4 9.8h16M8 3.2v4.4M16 3.2v4.4M8.6 15l2.2 2.2 4.6-4.6\"/>"
+  },
+  {
+   "id": "wifi",
+   "group": "signs",
+   "codepoint": "E073",
+   "names": [
+    "wifi"
+   ],
+   "means": "Herald sign: join our Wi-Fi",
+   "source": "public/assets/js/herald.js",
+   "svg": "<path d=\"M3 9.4a12.8 12.8 0 0 1 18 0M5.9 12.4a8.6 8.6 0 0 1 12.2 0M8.8 15.4a4.4 4.4 0 0 1 6.4 0\"/><circle cx=\"12\" cy=\"18.6\" r=\"1.3\"/>"
+  },
+  {
+   "id": "contact",
+   "group": "signs",
+   "codepoint": "E074",
+   "names": [
+    "contact"
+   ],
+   "means": "Herald card: save our details",
+   "source": "public/assets/js/herald.js",
+   "svg": "<path d=\"M2.8 5h18.4v14H2.8z\"/><circle cx=\"8.4\" cy=\"10.2\" r=\"2.2\"/><path d=\"M5.2 16.2c.6-1.9 1.8-2.8 3.2-2.8s2.6.9 3.2 2.8M14 9.4h4.4M14 12.4h4.4M14 15.4h3\"/>"
+  },
+  {
+   "id": "link",
+   "group": "signs",
+   "codepoint": "E075",
+   "names": [
+    "link"
+   ],
+   "means": "Herald sign: see the menu, or any link",
+   "source": "public/assets/js/herald.js",
+   "svg": "<g transform=\"rotate(-45 12 12)\"><rect x=\"2.4\" y=\"9.2\" width=\"10.6\" height=\"5.6\" rx=\"2.8\"/><rect x=\"11\" y=\"9.2\" width=\"10.6\" height=\"5.6\" rx=\"2.8\"/></g>"
+  },
+  {
+   "id": "wait",
+   "group": "signs",
+   "codepoint": "E076",
+   "names": [
+    "wait"
+   ],
+   "means": "Waymarks sign: please wait here",
+   "source": "public/assets/js/waymarks.js",
+   "svg": "<path d=\"M7 3v9h10V3M6 12h12v3H6zM7 15v6M17 15v6\"/>"
+  },
+  {
+   "id": "reception",
+   "group": "signs",
+   "codepoint": "E077",
+   "names": [
+    "reception"
+   ],
+   "means": "Waymarks sign: reception",
+   "source": "public/assets/js/waymarks.js",
+   "svg": "<path d=\"M5 17h14M6 17a6 6 0 0 1 12 0M12 9V7M10 7h4M3 20h18\"/>"
+  },
+  {
+   "id": "washroom",
+   "group": "signs",
+   "codepoint": "E078",
+   "names": [
+    "washroom"
+   ],
+   "means": "Waymarks sign: washroom",
+   "source": "public/assets/js/waymarks.js",
+   "svg": "<circle cx=\"12\" cy=\"4.5\" r=\"2\"/><path d=\"M8 9h8l-1 6h-2v6h-2v-6H9z\"/>"
+  },
+  {
+   "id": "room",
+   "group": "signs",
+   "codepoint": "E079",
+   "names": [
+    "room"
+   ],
+   "means": "Waymarks sign: room",
+   "source": "public/assets/js/waymarks.js",
+   "svg": "<path d=\"M6 21V3h12v18M3 21h18M14 12h1\"/>"
+  },
+  {
+   "id": "this-way",
+   "group": "signs",
+   "codepoint": "E07A",
+   "names": [
+    "this-way"
+   ],
+   "means": "Waymarks sign: this way (and every forward arrow)",
+   "source": "public/assets/js/waymarks.js",
+   "svg": "<path d=\"M4 12h15M14 7l5 5-5 5\"/>"
+  },
+  {
+   "id": "staff-only",
+   "group": "signs",
+   "codepoint": "E07B",
+   "names": [
+    "staff-only"
+   ],
+   "means": "Waymarks sign: staff only",
+   "source": "public/assets/js/waymarks.js",
+   "svg": "<path d=\"M7.6 10.6V7.6a4.4 4.4 0 0 1 8.8 0v3M5.4 10.6h13.2v10.4H5.4z\"/><circle cx=\"12\" cy=\"14.6\" r=\"1.3\"/><path d=\"M12 15.9v2.4\"/>"
+  },
+  {
+   "id": "way-out",
+   "group": "signs",
+   "codepoint": "E07C",
+   "names": [
+    "way-out"
+   ],
+   "means": "Waymarks sign: way out",
+   "source": "public/assets/js/waymarks.js",
+   "svg": "<path d=\"M5 21V3h9v4M5 21h9v-4M10 12h11M18 9l3 3-3 3\"/>"
+  },
+  {
+   "id": "quiet",
+   "group": "signs",
+   "codepoint": "E07D",
+   "names": [
+    "quiet"
+   ],
+   "means": "Waymarks sign: quiet, please",
+   "source": "public/assets/js/waymarks.js",
+   "svg": "<path d=\"M16 3a9 9 0 1 0 5 13A7.5 7.5 0 0 1 16 3z\"/>"
+  },
+  {
+   "id": "thanks",
+   "group": "signs",
+   "codepoint": "E07E",
+   "names": [
+    "thanks"
+   ],
+   "means": "Waymarks sign: thank you",
+   "source": "public/assets/js/waymarks.js",
+   "svg": "<path d=\"M12 11.2C9.2 7 4.8 6.8 4.8 9.6s4.4 3.4 7.2 1.6zM12 11.2c2.8-4.2 7.2-4.4 7.2-1.6s-4.4 3.4-7.2 1.6z\"/><circle cx=\"12\" cy=\"11.2\" r=\"1.2\"/><path d=\"M11.2 12.3 8.4 19.6M12.8 12.3l2.8 7.3\"/>"
+  },
+  {
+   "id": "knght",
+   "group": "brand",
+   "codepoint": null,
+   "names": [],
+   "means": "KNGHT itself: the knight from the chess set (in the font at U+265E)",
+   "source": "src/assets/knght-chess.svg",
+   "svg": "<path d=\"M7 19.4Q5.6 18.9 4.9 17.4Q5.8 17.5 6.4 16.8Q5 16 4.7 14.2Q5.6 14.5 6.3 13.9Q5 12.8 5 10.9Q5.9 11.4 6.6 11Q5.8 9.6 6.1 7.9Q6.9 8.6 7.6 8.4Q7.3 6.8 8.1 5.4Q8.6 6.2 9.5 6.2L10.8 2.4L12.1 4.3C12.3 3.3 13.4 3.0 14.8 3.55Q14.05 4.0 13.9 4.8Q15.05 4.25 15.9 5.05Q15.15 5.35 14.85 5.95C16.52 6.90 17.79 8.33 18.6 10.6C19 11.8 18.6 13.2 17.3 13.2L15.6 12.7C14.6 12.4 13.8 12.9 13.8 13.9C14 15.9 16 17.4 16.9 19.4Z\"/>"
+  }
+ ]
+}
