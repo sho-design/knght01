@@ -1,0 +1,132 @@
+/* The overlay that follows the white rabbit (portal.js). Injected once as <style id="wl-css"> and scoped to .wl.
+   The game styles itself under .wlg. Black and white only; greys for hairlines and quiet text. */
+
+/* The page behind stops painting once the hole has closed over it. Its layout never changes, so nothing moves. */
+html.wl-hide body > :not(.wl) { visibility: hidden; }
+
+.wl {
+  --wl-bar-h: calc(56px + env(safe-area-inset-top, 0px));
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #000;
+  color: #fff;
+  font-family: var(--sans);
+  -webkit-tap-highlight-color: transparent;
+}
+.wl:focus { outline: none; }
+/* While the hole closes over the page (and opens again on the way out) the page shows through the iris. */
+.wl[data-phase="iris"], .wl[data-phase="climb"] { background: transparent; }
+.wl[data-phase="climb"] { pointer-events: none; }
+
+.wl-iris {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  pointer-events: none;
+}
+.wl-iris circle { vector-effect: non-scaling-stroke; }
+
+.wl-fall {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.wl-fall canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; }
+.wl-fall__fg { position: absolute; inset: 0; }
+.wl-fall__fig { position: absolute; left: 0; top: 0; max-width: none; overflow: visible; will-change: transform; }
+.wl-fall__line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: max-content;
+  max-width: min(16ch, calc(100vw - 32px));
+  margin: 0;
+  font: italic 400 clamp(1.5rem, 5.4vw, 2.6rem)/1.15 var(--serif);
+  color: rgba(255, 255, 255, .9);
+  text-align: center;
+  text-wrap: balance;
+  opacity: 0;
+}
+
+/* The bar: the dialog's title and the way out, always there. Transparent while falling; black once landed. */
+.wl-bar {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-sizing: border-box;
+  height: var(--wl-bar-h);
+  padding: env(safe-area-inset-top, 0px) 16px 0;
+  border-bottom: 1px solid transparent;
+  transition: background-color .4s, border-color .4s;
+}
+.wl[data-phase="land"] .wl-bar, .wl[data-phase="play"] .wl-bar { background: #000; border-bottom-color: rgba(255, 255, 255, .16); }
+.wl-bar__where {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  font: 500 .74rem/1 var(--sans);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ash);
+  white-space: nowrap;
+}
+.wl-bar__glyph {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  max-width: none;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+}
+.wl-bar__glyph path { vector-effect: non-scaling-stroke; }
+.wl-bar__glyph .w { fill: #000; }
+.wl .wl-climb { flex: none; }
+@media (max-width: 399.98px) {
+  .wl-bar__words { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+}
+@media (min-width: 760px) { .wl-bar { padding-inline: 32px; } }
+
+.wl-game {
+  position: relative;
+  z-index: 3;
+  min-height: calc(100dvh - var(--wl-bar-h));
+}
+
+/* The one thing the portal says on screen: the board could not be set. */
+.wl-msg {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  top: 50%;
+  z-index: 4;
+  margin: 0 auto;
+  max-width: 22ch;
+  transform: translateY(-50%);
+  font: italic 400 clamp(1.4rem, 5vw, 2.1rem)/1.2 var(--serif);
+  text-align: center;
+  text-wrap: balance;
+  color: #fff;
+}
+.wl-msg[hidden] { display: none; }
+
+/* High contrast modes keep the drawing as it is: it is already black and white. */
+.wl { forced-color-adjust: none; }

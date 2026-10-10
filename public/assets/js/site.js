@@ -714,7 +714,7 @@
       <h2 class="display codex__h" id="codex-title">The <em>Codex</em></h2>
       <p class="codex__lede">Eight rules we keep. Few people see this page.</p>
       <ol class="codex__list">${CODEX.map((r, i) => `<li style="--i:${i}"><span>${['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'][i]}</span>${r}</li>`).join('')}</ol>
-      <div class="codex__actions"><a class="btn" href="${up}book/">Book the free call</a><button type="button" class="link" data-codex-close>Close the codex</button></div>
+      <div class="codex__actions"><a class="btn" href="${up}book/">Book the free call</a><button type="button" class="link" data-codex-rabbit>Follow the rabbit</button><button type="button" class="link" data-codex-close>Close the codex</button></div>
     </div>`;
     document.body.appendChild(codexEl);
     hold('codex', true);
@@ -722,6 +722,11 @@
     const close = $('[data-codex-close]', codexEl);
     close.focus({ preventScroll: true });
     close.addEventListener('click', closeCodex);
+    // The white rabbit (src/scripts/wonderland): the codex closes and hands focus back first, then the fall begins.
+    $('[data-codex-rabbit]', codexEl).addEventListener('click', () => {
+      closeCodex();
+      document.dispatchEvent(new CustomEvent('knght:rabbit', { detail: { from: 'codex' } }));
+    });
     codexEl.addEventListener('click', (e) => { if (e.target === codexEl) closeCodex(); });
     sendEvent('codex_found');
   };
