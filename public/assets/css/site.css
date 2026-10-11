@@ -1115,6 +1115,15 @@ html.has-hall body{background:transparent}
 
 .hall-say{transition:opacity .45s}
 .hall-say.is-blocked,.hall-portal.is-blocked{opacity:0!important}
+/* Phones and tablets: the same light, lighter for Safari. A fast flick to the bottom of the homepage crashed Safari on
+   an iPhone, and these full-screen layers are what it holds at three times the pixels. The grain holds still at the
+   size of the screen (moving, it was four screens large). The glow and the field draw white over black, which looks the
+   same blended or not, so they skip the blend. A saying moves inside its depth instead of on a layer of its own. */
+@media not all and (hover:hover) and (pointer:fine){
+  .grain{inset:0;animation:none}
+  .hall__glow,.hall-field{mix-blend-mode:normal}
+  .hall-say{will-change:auto}
+}
 
 /* ---------- The reel: what KNGHT does, in six scenes ---------- */
 .reel{position:relative;border-top:1px solid var(--rule)}

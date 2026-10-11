@@ -1030,8 +1030,10 @@
       };
       layers.forEach((l) => { l.el.innerHTML = ''; l.el.style.height = (docH * l.f + vh) + 'px'; });
 
-      // Engravings: spread through every depth, smaller and fainter the deeper they sit.
-      const count = Math.round(docH / 420);
+      // Engravings: spread through every depth, smaller and fainter the deeper they sit. A phone gets fewer, and
+      // none blurred: Safari on an iPhone paints a blur into its own buffer at three times the size, and a fast flick
+      // through the page asks for many of them at once.
+      const count = Math.round(docH / (fine ? 420 : 640));
       for (let i = 0; i < count; i++) {
         const l = layers[Math.floor(Math.random() * layers.length)];
         const e = engraving();
@@ -1040,7 +1042,7 @@
         div.className = 'hall-engr';
         div.innerHTML = e.html;
         const top0 = (startY - vh * 0.5) * l.f + vh * 0.5;
-        div.style.cssText = `left:${rnd(-s * 0.3, vw - s * 0.7).toFixed(0)}px;top:${rnd(top0, docH * l.f + vh - s).toFixed(0)}px;width:${s.toFixed(0)}px;height:${s.toFixed(0)}px;opacity:${(rnd(0.35, 1) * (0.45 + l.f * 0.55)).toFixed(2)};transform:rotate(${rnd(0, 360).toFixed(0)}deg)${l.f < 0.6 ? ';filter:blur(.6px)' : ''}`;
+        div.style.cssText = `left:${rnd(-s * 0.3, vw - s * 0.7).toFixed(0)}px;top:${rnd(top0, docH * l.f + vh - s).toFixed(0)}px;width:${s.toFixed(0)}px;height:${s.toFixed(0)}px;opacity:${(rnd(0.35, 1) * (0.45 + l.f * 0.55)).toFixed(2)};transform:rotate(${rnd(0, 360).toFixed(0)}deg)${l.f < 0.6 && fine ? ';filter:blur(.6px)' : ''}`;
         l.el.appendChild(div);
       }
 
@@ -1162,21 +1164,27 @@
       $$(STEEL).forEach((el) => { el.classList.add('steel'); sio.observe(el); });
     }
     const start = performance.now();
+    // On a phone the light only drifts, so it is redrawn every other frame: the floor, the glow and the field's mask
+    // are each a whole screen at three times the pixels, and Safari repaints all three whenever the light moves.
+    let tick = 0;
     const frame = (now) => {
       requestAnimationFrame(frame); // keep the light alive even if one step below fails
       if (root.classList.contains('wl-hide')) return; // hidden under the rabbit hole (wonderland/portal.css)
       const t = (now - start) / 1000;
-      if (!fine) {
-        // No cursor: the light drifts with the reading position.
-        tx = innerWidth * (0.5 + Math.sin(t * 0.23) * 0.18);
-        ty = innerHeight * (0.34 + Math.sin(t * 0.17 + 1.3) * 0.08);
+      const lit = fine || !(tick++ & 1);
+      if (lit) {
+        if (!fine) {
+          // No cursor: the light drifts with the reading position.
+          tx = innerWidth * (0.5 + Math.sin(t * 0.23) * 0.18);
+          ty = innerHeight * (0.34 + Math.sin(t * 0.17 + 1.3) * 0.08);
+        }
+        x += (tx - x) * (fine ? 0.09 : 0.17); y += (ty - y) * (fine ? 0.09 : 0.17);
+        // A candle never holds still.
+        const flick = 1 + Math.sin(t * 7.3) * 0.012 + Math.sin(t * 13.1 + 2) * 0.008 + Math.sin(t * 2.1) * 0.02;
+        setVar('--lx', x.toFixed(1) + 'px');
+        setVar('--ly', y.toFixed(1) + 'px');
+        setVar('--lr', flick.toFixed(4));
       }
-      x += (tx - x) * 0.09; y += (ty - y) * 0.09;
-      // A candle never holds still.
-      const flick = 1 + Math.sin(t * 7.3) * 0.012 + Math.sin(t * 13.1 + 2) * 0.008 + Math.sin(t * 2.1) * 0.02;
-      setVar('--lx', x.toFixed(1) + 'px');
-      setVar('--ly', y.toFixed(1) + 'px');
-      setVar('--lr', flick.toFixed(4));
       layers.forEach((l) => { l.el.style.transform = `translate3d(0,${(-scrollY * l.f).toFixed(1)}px,0)`; });
       const vh2 = innerHeight / 2;
       // A hard edge: nothing from the field is drawn above the end of the hero (the worlds, on the homepage).
@@ -1185,7 +1193,8 @@
       if (field) field.style.clipPath = `inset(${edge.toFixed(0)}px 0 0 0)`;
       sayings.forEach((s2) => {
         const off = (scrollY + vh2 - s2.y) * (1 - s2.f);
-        if (Math.abs(s2.y - scrollY - vh2) < innerHeight * 1.2) s2.el.style.transform = `translate3d(0,${off.toFixed(1)}px,0)`;
+        // On a phone a 2D move, so a saying is drawn into its depth's layer rather than given one of its own.
+        if (Math.abs(s2.y - scrollY - vh2) < innerHeight * 1.2) s2.el.style.transform = fine ? `translate3d(0,${off.toFixed(1)}px,0)` : `translate(0,${off.toFixed(1)}px)`;
       });
       portals.forEach((p) => {
         const off = (scrollY + vh2 - p.y) * (1 - p.f);
@@ -1197,7 +1206,7 @@
         p.a.classList.toggle('is-near', v > 0.75);
         if (v > 0.75 && !p.found) { p.found = true; p.a.classList.add('is-found'); }
       });
-      steel.forEach((el) => {
+      if (lit) steel.forEach((el) => {
         const r = el.getBoundingClientRect();
         const gx = ((x - r.left) / Math.max(r.width, 1)) * 100;
         const d = Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2));
